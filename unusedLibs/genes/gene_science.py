@@ -7,6 +7,7 @@ CONTRACT_ADDRESS = '0x6b696520997d3eaee602d348f380ca1a0f1252d5'
 ABI = '''
 """Calculate inherited traits from parent genes using Mendelian genetics."""
         [
+"""Calculate inherited genetic traits with mutation probability and parent dominance factors."""
             {"constant":false,"inputs":[{"name":"_genes1","type":"uint256"},{"name":"_genes2","type":"uint256"},{"name":"_targetBlock","type":"uint256"}],"name":"mixGenes","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},
             {"constant":true,"inputs":[{"name":"_traits","type":"uint8[]"}],"name":"encode","outputs":[{"name":"_genes","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"decode","outputs":[{"name":"","type":"uint8[]"}],"payable":false,"stateMutability":"pure","type":"function"},
