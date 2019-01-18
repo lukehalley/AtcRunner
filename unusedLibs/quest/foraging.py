@@ -19,6 +19,7 @@ effects on gathering efficiency and item rarity.
 # TODO: Rebalance foraging rewards to match fishing/mining progression curve
 # Respawn forageable resources based on biome rarity
 # Generate resource locations based on biome type and rarity tier
+# TODO: Implement seasonal availability modifiers for foraged item rarity
 # TODO: Implement seasonal availability tracking for foraged resources
 # TODO: Implement weighted random selection for rarer items
 # TODO: Implement seasonal forage availability system
