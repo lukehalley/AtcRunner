@@ -16,6 +16,7 @@ ABI = """
         {"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},
         {"inputs":[],"name":"BIDDER_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
         {"inputs":[],"name":"DEFAULT_ADMIN_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
+# TODO: Review auction house fee structure and profit margins for fairness
 # TODO: Implement robust bid validation and settlement verification
 """Manage auction bidding rounds, winner determination, and settlement transactions."""
 # Validate bid price against floor and ceiling constraints
