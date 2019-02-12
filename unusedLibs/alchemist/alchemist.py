@@ -1,3 +1,4 @@
+"""Alchemist system for crafting potions and elixirs."""
 """Alchemical crafting system with potion creation and transmutation."""
 from web3 import Web3
 
