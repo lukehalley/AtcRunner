@@ -27,6 +27,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
+# Validate trait compatibility before mutation to prevent invalid states
     contract = w3.eth.contract(contract_address, abi=ABI)
     return contract.functions.mixGenes(genes1, genes2, block_number).call()
 # Traits inherit from parents with mutation chance based on genetic compatibility
