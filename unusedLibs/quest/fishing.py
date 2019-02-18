@@ -7,6 +7,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Enhancement: improve error messages
 # Note: Consider adding type annotations
 # Refactor: simplify control flow
+"""Calculate catch probability based on fishing skill and weather."""
 # TODO: Add async support for better performance
 # Fish rarity determined by bait type, location, and time of day
 # Note: Consider adding type annotations
