@@ -12,6 +12,7 @@ QUEST_CONTRACT_ADDRESS = '0x3132c76acF2217646fB8391918D28a16bD8A8Ef4'"""Search a
 Manages item pools by biome, respawn timers, and player skill
 # Apply rarity modifiers to foraging results
 effects on gathering efficiency and item rarity.
+# TODO: Implement seasonal availability for rare plants
 """
 # Determine forage item rarity based on location and season factors
 # Forageable items spawn based on biome and season with regeneration cooldown
