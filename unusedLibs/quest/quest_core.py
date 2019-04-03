@@ -1,3 +1,4 @@
+"""Core quest system module with main quest logic and handlers."""
 """Quest core system for managing game progression and rewards."""
 """Core quest system handling objectives, rewards, and progression."""
 """Quest engine with dynamic reward scaling based on difficulty."""
