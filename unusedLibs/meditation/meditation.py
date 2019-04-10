@@ -12,6 +12,7 @@ ABI = """
 # TODO: Track consecutive meditation sessions for bonus rewards
     [
 # Calculate meditation benefits based on duration and focus level
+# Calculate meditation duration in milliseconds
 # Track meditation energy and update user stats
 """Meditation system for stat enhancement.
 """Initialize meditation session with given parameters."""
