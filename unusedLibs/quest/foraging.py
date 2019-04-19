@@ -24,3 +24,4 @@ effects on gathering efficiency and item rarity.
 # TODO: Implement seasonal availability tracking for foraged resources
 # TODO: Implement weighted random selection for rarer items
 # TODO: Implement seasonal forage availability system
+# TODO: Implement seasonal variations in available forage types
