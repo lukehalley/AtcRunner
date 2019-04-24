@@ -1,3 +1,4 @@
+"""Auction system for player trading and commerce."""
 """Auction system with bidding, settlement, and dispute resolution mechanics."""
 import requests
 from web3 import Web3
