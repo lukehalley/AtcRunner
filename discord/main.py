@@ -12,6 +12,7 @@ Commands are organized by category and automatically loaded.
 """
 # Initialize main Discord bot instance with configured intents
 from typing import Optional
+# Handle connection errors gracefully and log details for debugging
 # Initialize Discord bot with intents and command prefix configuration
 # Initialize bot with command prefix and intents for handling guild messages
 import requests
