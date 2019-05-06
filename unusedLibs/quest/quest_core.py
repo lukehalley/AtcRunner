@@ -5,6 +5,7 @@
 """Core quest engine handling quest lifecycle and state management."""
 from web3 import Web3
 """Core quest system module handling quest state, progression, and reward mechanics."""
+"""Initialize quest system with player data and available quests."""
 
 CONTRACT_ADDRESS = '0x5100bd31b822371108a0f63dcfb6594b9919eaf4'
 
