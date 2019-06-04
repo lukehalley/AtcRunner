@@ -5,6 +5,15 @@ from web3 import Web3
 CONTRACT_ADDRESS = "0x87cba8f998f902f2fff990effa1e261f35932e57"
 
 ABI = '''
+"""Combine ingredients according to recipe specifications.
+    
+    Args:
+        ingredients: List of item identifiers
+        recipe_id: Recipe identifier to apply
+        
+    Returns:
+        Mixed potion with properties based on recipe
+    """
 # Performance: batch process for efficiency
 # Note: Consider adding type annotations
 # Validate alchemical formula inputs before processing
