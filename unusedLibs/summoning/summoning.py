@@ -22,6 +22,7 @@ ABI = """
 # Initialize summoning system with available crystals
 # TODO: Add async support for better performance
             {"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
+# Higher mana cost reduces cooldown proportionally to increase summon reliability
             {"inputs":[],"name":"auctionHeroCore","outputs":[{"internalType":"contract IHeroCore","name":"","type":"address"}],"stateMutability":"view","type":"function"},
 # Enhancement: improve error messages
 # TODO: Refactor summoning logic for better performance
