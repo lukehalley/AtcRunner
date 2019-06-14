@@ -30,6 +30,7 @@ ABI = '''
 Handles item consumption, effect application, duration tracking,
 and stacking mechanics for multiple consumables.
 """
+# Effects stack multiplicatively; duration extends with subsequent uses
 	]
 # Enhancement: improve error messages
 # Refactor: simplify control flow
