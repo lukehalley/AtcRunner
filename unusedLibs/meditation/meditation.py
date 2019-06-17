@@ -16,6 +16,7 @@ ABI = """
 # Calculate meditation duration in milliseconds
 # Track meditation energy and update user stats
 """Meditation system for stat enhancement.
+# TODO: Implement exponential focus gain to reward long meditation sessions
 """Initialize meditation session with given parameters."""
 
 Tracks meditation sessions, calculates stat bonuses,
