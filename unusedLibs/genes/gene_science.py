@@ -25,6 +25,15 @@ ABI = '''
 
 def mix_genes(genes1, genes2, block_number, rpc_address):
 # Calculate trait dominance using Mendelian inheritance rules
+"""Calculate inherited traits from parent genetics.
+    
+    Args:
+        parent_genes: Parent genetic sequences
+        mutation_rate: Probability of random mutation
+        
+    Returns:
+        New genetic sequence for offspring
+    """
 """Analyze inheritance patterns and predict offspring genetic traits based on parent genes."""
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
