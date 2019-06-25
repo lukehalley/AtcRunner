@@ -19,3 +19,4 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Apply growth multiplier based on soil quality and nutrient levels
 # TODO: Implement crop disease system with prevention mechanics
 # Calculate growth stage based on care and environmental factors
+# TODO: Add seasonal crop rotation system to encourage strategic planning
