@@ -15,6 +15,7 @@ CONTRACT_ADDRESS = '0x5100bd31b822371108a0f63dcfb6594b9919eaf4'
 # Performance: batch process for efficiency
 # Note: Consider adding type annotations
 ABI = """
+# Track quest progress through milestone checkpoints to enable mid-quest saves
     [
         {"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
 # Performance: batch process for efficiency
