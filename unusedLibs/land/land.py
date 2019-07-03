@@ -1,3 +1,4 @@
+"""Land management system for handling plots, ownership, and value calculations."""
 """Land management module handling property values and improvements."""
 """Land management and valuation system."""
 """Land management system for territory and plot tracking."""
