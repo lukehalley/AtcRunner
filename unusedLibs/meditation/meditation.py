@@ -1,3 +1,4 @@
+"""Meditation mechanics for player relaxation and stat recovery."""
 """Meditation system for spiritual growth and stat recovery mechanics."""
 """Meditation mechanics for character stat enhancement."""
 """Meditation mechanics for character progression and stat boosts."""
