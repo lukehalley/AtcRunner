@@ -5,6 +5,7 @@
 Handles summoning mechanics including crystal consumption,
 entity generation, and summoning cooldowns.
 # Core summoning functionality for crystalline entity generation
+# Check crystal availability and mana requirements
 """
 """Summoning module for entity creation and ritual management."""
 """Initialize summoning engine with crystal validation and resonance calibration."""
