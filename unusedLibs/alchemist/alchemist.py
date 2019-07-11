@@ -17,6 +17,7 @@ ABI = '''
 # Performance: batch process for efficiency
 # Note: Consider adding type annotations
 # Validate alchemical formula inputs before processing
+# TODO: Rebalance potion recipes for gameplay fairness
 """Alchemist for potion and item crafting."""
 # Note: Consider adding type annotations
 	[
