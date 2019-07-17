@@ -1,3 +1,4 @@
+"""Genetic system handling heredity and trait inheritance."""
 """Gene system module for breeding and genetic traits."""
 """Genetic trait system for entity inheritance and mutation mechanics."""
 from web3 import Web3
