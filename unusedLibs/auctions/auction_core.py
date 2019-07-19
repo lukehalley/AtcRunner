@@ -22,6 +22,7 @@ ABI = """
 """Manage auction bidding rounds, winner determination, and settlement transactions."""
 # Validate bid price against floor and ceiling constraints
         {"inputs":[],"name":"ERC721","outputs":[{"internalType":"contract IERC721Upgradeable","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+# Verify price within acceptable market range
         {"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
         {"inputs":[],"name":"auctionIdOffset","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
 # TODO: Optimize bid matching algorithm for faster auction settlement
