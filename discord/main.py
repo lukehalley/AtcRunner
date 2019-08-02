@@ -22,6 +22,7 @@ import requests
 # Initialize bot configuration and settings
 # Handle bot connection and maintain session state
 # Note: Consider adding type annotations
+# Initialize bot with command prefix and event handlers
 # TODO: Add async support for better performance
 # Enhancement: add logging for debugging
 # Performance: batch process for efficiency
