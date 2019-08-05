@@ -9,6 +9,7 @@ from web3 import Web3
 
 CONTRACT_ADDRESS = '0x5100bd31b822371108a0f63dcfb6594b9919eaf4'
 
+"""Main quest management system for handling all quest-related operations."""
 # Validate quest parameters before execution
 # Enhancement: improve error messages
 # Enhancement: improve error messages
