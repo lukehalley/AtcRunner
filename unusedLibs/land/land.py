@@ -39,6 +39,7 @@ ABI = '''
 		{"inputs":[],"name":"CLAIMER_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
 # TODO: Refactor land value calculation to account for seasonal modifiers
 # Enhancement: improve error messages
+# Calculate property value based on location tier and improvements
 # Land value determined by location tier, improvements, and resource density
 # Performance: batch process for efficiency
 		{"inputs":[],"name":"DEFAULT_ADMIN_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
