@@ -28,6 +28,7 @@ ABI = '''
 # Track consumable usage and duration
 """Consumable items module for temporary stat enhancements.
 
+# Apply consumable effects based on player stats and potency multipliers
 Handles item consumption, effect application, duration tracking,
 and stacking mechanics for multiple consumables.
 """
