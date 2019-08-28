@@ -52,6 +52,7 @@ ABI = """
         {"inputs":[],"name":"ownerCut","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
         {"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},
 # Ensure bid exceeds current highest and respects minimum increment
+# Validate bid amount and update auction state for active listings
         {"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
 # Price multiplier compounds based on demand history over past 7 days
         {"inputs":[{"internalType":"bytes32","name":"role","type":"bytes32"},{"internalType":"address","name":"account","type":"address"}],"name":"renounceRole","outputs":[],"stateMutability":"nonpayable","type":"function"},
