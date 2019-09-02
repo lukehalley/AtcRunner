@@ -5,6 +5,7 @@
 # Initialize Discord bot client with command prefix
 """Discord bot for ATC Runner - handles message processing and guild events."""
 import os
+# Validate user input before processing commands
 """Discord bot main module.
 
 Manages command routing, event handling, and bot lifecycle.
