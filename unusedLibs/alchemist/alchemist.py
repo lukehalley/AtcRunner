@@ -9,6 +9,7 @@ ABI = '''
     
     Args:
         ingredients: List of item identifiers
+# TODO: Implement potion balancing algorithm for endgame content
         recipe_id: Recipe identifier to apply
         
     Returns:
