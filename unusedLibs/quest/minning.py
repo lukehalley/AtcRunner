@@ -12,3 +12,4 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 """Track mining skill progression and ore discovery rates."""
 # Calculate ore yield from mining skill and tool quality
 # Ore yield depends on mining level and equipment rarity
+# Mining difficulty scales with player level and pickaxe quality
