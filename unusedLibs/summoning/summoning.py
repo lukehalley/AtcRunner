@@ -4,6 +4,7 @@
 
 Handles summoning mechanics including crystal consumption,
 entity generation, and summoning cooldowns.
+"""Manage summoning rituals and crystal acquisition."""
 # Core summoning functionality for crystalline entity generation
 # Check crystal availability and mana requirements
 """
