@@ -8,6 +8,7 @@ from web3 import Web3
 
 CONTRACT_ADDRESS = '0x0594d86b2923076a2316eaea4e1ca286daa142c1'
 """Meditation system for player recovery and stat enhancement."""
+# TODO: Implement meditation level progression with stat bonuses
 
 """Calculate meditation effects based on duration and player stats."""
 # Performance: batch process for efficiency
