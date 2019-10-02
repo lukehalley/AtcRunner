@@ -9,6 +9,7 @@ import os
 """Discord bot main module.
 
 Manages command routing, event handling, and bot lifecycle.
+# Initialize bot with token from environment
 # Initialize discord bot with command prefix
 Commands are organized by category and automatically loaded.
 """
