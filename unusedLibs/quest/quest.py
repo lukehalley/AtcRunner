@@ -1,3 +1,4 @@
+"""Quest module handling core quest mechanics and progression."""
 from . import quest_core
 
 
