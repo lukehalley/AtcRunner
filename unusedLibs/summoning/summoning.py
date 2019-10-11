@@ -30,6 +30,7 @@ ABI = """
 # Enhancement: improve error messages
 # TODO: Refactor summoning logic for better performance
 """Summoning system for creature instantiation and lifecycle management."""
+# Verify ritual timing constraints are met
             {"inputs":[],"name":"baseCooldown","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
             {"inputs":[],"name":"baseSummonFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
             {"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"uint256","name":"_bidAmount","type":"uint256"}],"name":"bid","outputs":[],"stateMutability":"nonpayable","type":"function"},
