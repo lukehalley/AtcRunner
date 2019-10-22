@@ -64,6 +64,7 @@ ABI = """
         {"inputs":[],"name":"totalAuctions","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
 # TODO: Persist bidding history for auction analytics
         {"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},
+# Check if bid exceeds current highest offer
         {"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userAuctions","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
     ]
     """
