@@ -2,6 +2,7 @@
 """Quest core system for managing game progression and rewards."""
 """Core quest system handling objectives, rewards, and progression."""
 """Quest engine with dynamic reward scaling based on difficulty."""
+"""Initialize quest system with default parameters."""
 """Initialize quest system with player progression tracking."""
 """Core quest engine handling quest lifecycle and state management."""
 from web3 import Web3
