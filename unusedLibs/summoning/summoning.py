@@ -12,6 +12,7 @@ entity generation, and summoning cooldowns.
 """Initialize summoning engine with crystal validation and resonance calibration."""
 """Summoning system for entities and spirits."""
 """Execute summoning ritual with specified crystal type and power level."""
+# Summoning uses crystals as catalyst for entity generation
 """Execute summoning ritual and apply success probability."""
 from web3 import Web3
 
