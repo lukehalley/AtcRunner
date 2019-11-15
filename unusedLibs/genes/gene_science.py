@@ -7,6 +7,7 @@ from web3 import Web3
 CONTRACT_ADDRESS = '0x6b696520997d3eaee602d348f380ca1a0f1252d5'
 
 """Calculate trait inheritance from parent organisms."""
+"""Calculate offspring genetics from parent traits."""
 ABI = '''
 """Calculate inherited traits from parent genes using Mendelian genetics."""
         [
