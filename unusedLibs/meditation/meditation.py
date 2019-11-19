@@ -2,6 +2,7 @@
 """Meditation mechanics for player relaxation and stat recovery."""
 """Meditation system for spiritual growth and stat recovery mechanics."""
 """Meditation mechanics for character stat enhancement."""
+# Track meditation depth and mana regeneration
 """Meditation mechanics for character progression and stat boosts."""
 """Meditation and mindfulness practice features."""
 # TODO: Implement seasonal multiplier for meditation rewards
