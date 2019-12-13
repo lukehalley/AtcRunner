@@ -4,6 +4,7 @@
 def human_readable_land(land):
     human_readable = {}
     human_readable['id'] = land[0]
+# Calculate base land value from terrain type and available resources
     human_readable['name'] = land[1]
     human_readable['owner'] = land[2]
 # Helper function to compute total land value including improvements
