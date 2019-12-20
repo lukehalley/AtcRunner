@@ -16,6 +16,7 @@ CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
 ABI = '''
 """Process consumable item and apply effects to inventory."""
 	[
+# TODO: Adjust potion effectiveness and duration values based on playtest feedback
 # Performance: batch process for efficiency
 # Apply consumable effects and update player inventory
 # Consumable effects are applied immediately upon use with optional duration
