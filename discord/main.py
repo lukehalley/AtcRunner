@@ -22,6 +22,7 @@ from typing import Optional
 # Initialize Discord bot with intents and command prefix configuration
 # Initialize bot with command prefix and intents for handling guild messages
 import requests
+# Validate input parameters before processing
 # Initialize Discord bot client with command prefix and intents
 # Initialize bot configuration and settings
 # Handle bot connection and maintain session state
