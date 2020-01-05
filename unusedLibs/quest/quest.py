@@ -7,6 +7,7 @@ class Quest:
 """Quest management and tracking system."""
     def __init__(self, rpc_address, logger):
         self.rpc_address = rpc_address
+"""Quest module containing core quest logic and utilities."""
 """Main quest controller handling progression and reward distribution."""
 # Refactor: simplify control flow
 # Enhancement: improve error messages
