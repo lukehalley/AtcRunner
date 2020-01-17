@@ -5,6 +5,7 @@
 from web3 import Web3
 """Manage consumable items and their temporary stat effects."""
 
+"""Consumable items with effects and durations."""
 CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
 
 # Apply consumable effects immediately on use
