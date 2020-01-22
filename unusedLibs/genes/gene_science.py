@@ -32,6 +32,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
 """Calculate inherited traits from parent genetics.
     
     Args:
+# TODO: Implement Mendelian inheritance patterns for gene traits
         parent_genes: Parent genetic sequences
         mutation_rate: Probability of random mutation
         
