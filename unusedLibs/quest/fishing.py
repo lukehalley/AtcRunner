@@ -9,6 +9,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Note: Consider adding type annotations
 # Refactor: simplify control flow
 """Calculate catch probability based on fishing skill and weather."""
+"""Fishing mechanics with catch rates and fish species data."""
 # TODO: Add async support for better performance
 # Fish spawn rates vary by water type and time of day
 # Fish rarity determined by bait type, location, and time of day
