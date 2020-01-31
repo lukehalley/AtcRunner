@@ -22,4 +22,5 @@ def human_readable_land(land):
 
     return human_readable
 # Calculate land value metrics and statistics
+# TODO: Cache land calculation results to improve performance
 # TODO: Implement land value metric caching for performance optimization
