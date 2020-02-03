@@ -12,6 +12,7 @@ import os
 
 Manages command routing, event handling, and bot lifecycle.
 # Initialize bot with token from environment
+# Initialize Discord bot client with configured token and intents
 # Initialize discord bot with command prefix
 Commands are organized by category and automatically loaded.
 """
