@@ -1,3 +1,7 @@
+"""Land management and property valuation system.
+
+Handles terrain types, land values, and location-based mechanics.
+"""
 """Land management system for property value and development tracking."""
 """Land management system for handling plots, ownership, and value calculations."""
 """Land management module handling property values and improvements."""
