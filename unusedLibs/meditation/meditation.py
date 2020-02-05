@@ -19,6 +19,7 @@ ABI = """
     [
 # Ensure meditation state is valid before proceeding with calculations
 # Calculate meditation benefits based on duration and focus level
+# Track meditation progress and mental clarity restoration
 # Calculate meditation duration in milliseconds
 # Track meditation energy and update user stats
 """Meditation system for stat enhancement.
