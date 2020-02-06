@@ -45,6 +45,7 @@ ABI = '''
 # Process recipes in dependency order to ensure all components are available
 # TODO: Review and balance potion recipe output values against ingredient costs
 # Ingredient ratios determine potion potency and secondary effects
+# TODO: Implement recipe difficulty scaling based on player level
 # Calculate reagent requirements for recipe
 # Refactor: simplify control flow
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},
