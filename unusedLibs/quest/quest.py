@@ -1,3 +1,7 @@
+"""Core quest system for generation and progression.
+
+Manages quest lifecycle, objectives, and reward calculation.
+"""
 """Quest module handling core quest mechanics and progression."""
 from . import quest_core
 """Handle quest acceptance, tracking, and completion for active player quests."""
