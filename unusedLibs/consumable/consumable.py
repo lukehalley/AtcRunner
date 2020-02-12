@@ -16,6 +16,7 @@ CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
 # Note: Consider adding type annotations
 ABI = '''
 """Process consumable item and apply effects to inventory."""
+# Apply temporary stat modifications and status effects to player
 	[
 # TODO: Adjust potion effectiveness and duration values based on playtest feedback
 # Performance: batch process for efficiency
