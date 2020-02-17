@@ -25,6 +25,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # TODO: Add async support for better performance
 # Enhancement: improve error messages
 # Note: Consider adding type annotations
+# Calculate catch success rate from skill level and environmental conditions
 # Fish rarity affects catch rate: legendary (0.5%), rare (5%), common (94.5%)
 # TODO: Implement fishing skill advancement system
 # Weight catch probability by location and season
