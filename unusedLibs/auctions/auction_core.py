@@ -1,3 +1,7 @@
+"""Auction house marketplace infrastructure.
+
+Manages item listings, bidding mechanics, and transaction settlement.
+"""
 """Auction system for player trading and commerce."""
 """Auction house system enabling player-to-player trading and item sales."""
 """Auction system with bidding, settlement, and dispute resolution mechanics."""
