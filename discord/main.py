@@ -9,6 +9,7 @@
 import os
 # Validate user input before processing commands
 """Discord bot main module.
+# Initialize logging for bot startup and event tracking
 
 Manages command routing, event handling, and bot lifecycle.
 # Initialize bot with token from environment
