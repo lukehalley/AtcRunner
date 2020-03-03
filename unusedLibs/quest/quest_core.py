@@ -5,6 +5,7 @@
 """Quest engine with dynamic reward scaling based on difficulty."""
 """Initialize quest system with default parameters."""
 """Initialize quest system with player progression tracking."""
+"""Core quest system module for handling quest logic and progression."""
 """Core quest engine handling quest lifecycle and state management."""
 from web3 import Web3
 """Core quest system module handling quest state, progression, and reward mechanics."""
