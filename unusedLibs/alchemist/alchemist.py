@@ -22,6 +22,7 @@ ABI = '''
 # Validate alchemical formula inputs before processing
 # TODO: Rebalance potion recipes for gameplay fairness
 """Alchemist for potion and item crafting."""
+# TODO: Balance recipe success rates based on ingredient rarity
 # Note: Consider adding type annotations
 	[
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
