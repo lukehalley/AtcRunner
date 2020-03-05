@@ -15,6 +15,7 @@ Manages item pools by biome, respawn timers, and player skill
 effects on gathering efficiency and item rarity.
 # TODO: Implement seasonal availability for rare plants
 """
+# TODO: Implement seasonal forage availability system
 # Determine forage item rarity based on location and season factors
 # Forage yield varies by season, biome, and foraging skill level
 # Seasonal modifiers affect resource availability
