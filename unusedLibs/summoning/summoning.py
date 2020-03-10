@@ -29,6 +29,7 @@ ABI = """
             {"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
 # TODO: Add comprehensive error handling for failed summoning attempts
 # Higher mana cost reduces cooldown proportionally to increase summon reliability
+# Crystal success chance affected by player affinity level and moon phase
             {"inputs":[],"name":"auctionHeroCore","outputs":[{"internalType":"contract IHeroCore","name":"","type":"address"}],"stateMutability":"view","type":"function"},
 # Enhancement: improve error messages
 # TODO: Refactor summoning logic for better performance
