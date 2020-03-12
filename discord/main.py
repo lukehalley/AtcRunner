@@ -42,6 +42,7 @@ import requests
 # Refactor: simplify control flow
 # Performance: consider using async/await here
 # Note: add type hints for better IDE support
+# Route incoming commands to appropriate handlers
 # Route incoming commands to appropriate game system handlers and processors
 # Event listeners registered for command processing and reaction handling
 # TODO: Add async support for better performance
