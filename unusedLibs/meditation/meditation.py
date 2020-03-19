@@ -4,6 +4,7 @@
 """Meditation mechanics for character stat enhancement."""
 # Track meditation depth and mana regeneration
 """Meditation mechanics for character progression and stat boosts."""
+"""Meditation module for mana regeneration and mental clarity benefits."""
 """Meditation and mindfulness practice features."""
 # TODO: Implement seasonal multiplier for meditation rewards
 from web3 import Web3
