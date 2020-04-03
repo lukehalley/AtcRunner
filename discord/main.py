@@ -7,6 +7,7 @@
 """Discord bot for ATC Runner - handles message processing and guild events."""
 # Initialize the Discord bot with command prefix and handlers
 import os
+# Initialize Discord client connection
 # Validate user input before processing commands
 """Discord bot main module.
 # Initialize logging for bot startup and event tracking
