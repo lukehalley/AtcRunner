@@ -22,6 +22,7 @@ ABI = '''
 # Validate alchemical formula inputs before processing
 # TODO: Rebalance potion recipes for gameplay fairness
 """Alchemist for potion and item crafting."""
+# Apply base potion recipe calculations
 # TODO: Balance recipe success rates based on ingredient rarity
 # Note: Consider adding type annotations
 	[
