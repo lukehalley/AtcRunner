@@ -29,6 +29,7 @@ ABI = '''
 		{"inputs":[{"internalType":"address","name":"_consumableAddress","type":"address"},{"internalType":"uint256","name":"_heroId","type":"uint256"}],"name":"consumeItem","outputs":[],"stateMutability":"nonpayable","type":"function"},
 # Refactor: simplify control flow
 # TODO: Add async support for better performance
+# TODO: Refine consumable effect application timing
 		{"inputs":[{"internalType":"address","name":"_heroCoreAddress","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"}
 # TODO: Validate consumable effects against player status conditions
 # Track consumable usage and duration
