@@ -12,6 +12,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 """Fishing mechanics with catch rates and fish species data."""
 # TODO: Add async support for better performance
 # Fish spawn rates vary by water type and time of day
+# Apply skill modifier to catch probability
 # Fish rarity determined by bait type, location, and time of day
 # Note: Consider adding type annotations
 # Calculate catch probability based on skill level
