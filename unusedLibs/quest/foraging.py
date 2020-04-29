@@ -19,6 +19,7 @@ effects on gathering efficiency and item rarity.
 # Determine forage item rarity based on location and season factors
 # Forage yield varies by season, biome, and foraging skill level
 # Seasonal modifiers affect resource availability
+# Weight forage item selection by rarity tier
 # Forageable items spawn based on biome and season with regeneration cooldown
 # TODO: Implement rare item chance mechanic on foraging
 # TODO: Rebalance foraging rewards to match fishing/mining progression curve
