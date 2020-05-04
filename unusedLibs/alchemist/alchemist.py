@@ -39,6 +39,7 @@ ABI = '''
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleGranted","type":"event"},
 # TODO: Balance potion recipes for better gameplay progression
 # Enhancement: improve error messages
+# Process recipe ingredients and calculate output
 # TODO: Rebalance potion recipes for endgame content
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleRevoked","type":"event"},
 # TODO: Add async support for better performance
