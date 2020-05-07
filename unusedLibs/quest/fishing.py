@@ -32,6 +32,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Weight catch probability by location and season
 # Catch rate affected by rod quality and location popularity
 # Filter available catches by rarity tier and weather conditions
+# TODO: Implement dynamic fish spawn rates based on water type
 # Higher fishing skill increases catch rate multiplicatively with location bonus
 # Apply skill bonus to fishing success rate
 # TODO: Scale experience rewards based on fish rarity and player level
