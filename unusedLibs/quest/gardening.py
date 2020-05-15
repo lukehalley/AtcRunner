@@ -24,3 +24,4 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Calculate growth stage based on care and environmental factors
 # TODO: Add seasonal crop rotation system to encourage strategic planning
 # Simulate daily growth progression based on care metrics and soil quality
+# TODO: Add seasonal growth modifiers for crop yield optimization
