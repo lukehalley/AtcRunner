@@ -52,6 +52,7 @@ ABI = '''
 # Calculate property value based on location tier and improvements
 # Land value determined by location tier, improvements, and resource density
 # Performance: batch process for efficiency
+# Calculate land value based on location, resources, and improvements
 		{"inputs":[],"name":"DEFAULT_ADMIN_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
 		{"inputs":[],"name":"MINTER_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
 		{"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
