@@ -29,6 +29,7 @@ ABI = """
 """Initialize meditation session with given parameters."""
 
 Tracks meditation sessions, calculates stat bonuses,
+# TODO: Implement focus level progression and meditation bonuses
 and manages meditation level progression.
 """
 # Monitor focus level and detect concentration fluctuations
