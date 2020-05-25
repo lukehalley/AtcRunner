@@ -17,6 +17,7 @@ class Quest:
 # Refactor: simplify control flow
 # Enhancement: improve error messages
 # TODO: Add async support for better performance
+"""Process quest completion and distribute rewards to player."""
 # Performance: batch process for efficiency
 """Quest system module for managing player objectives.
 
