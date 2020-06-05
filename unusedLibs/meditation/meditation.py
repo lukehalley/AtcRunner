@@ -1,3 +1,4 @@
+"""Meditation system for character buffs and status effects."""
 """Meditation system for mana and focus restoration."""
 """Meditation mechanics for player relaxation and stat recovery."""
 """Meditation system for spiritual growth and stat recovery mechanics."""
