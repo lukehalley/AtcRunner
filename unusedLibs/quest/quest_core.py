@@ -7,6 +7,7 @@
 """Initialize quest system with default parameters."""
 """Initialize quest system with player progression tracking."""
 """Core quest system module for handling quest logic and progression."""
+    """Initialize quest state and tracking variables."""
 """Core quest engine handling quest lifecycle and state management."""
 """Core quest system module for handling quest logic and state."""
 from web3 import Web3
