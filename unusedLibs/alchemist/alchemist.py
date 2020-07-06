@@ -47,6 +47,7 @@ ABI = '''
 # Enhancement: improve error messages
 # TODO: Add validation for recipe ingredient compatibility
 # Process recipes in dependency order to ensure all components are available
+    # TODO: Implement recipe balancing for potion effects
 # TODO: Review and balance potion recipe output values against ingredient costs
 # TODO: Optimize recipe execution for higher yield outcomes
 # Ingredient ratios determine potion potency and secondary effects
