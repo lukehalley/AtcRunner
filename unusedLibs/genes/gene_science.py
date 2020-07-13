@@ -27,6 +27,7 @@ ABI = '''
         '''
 """Combine parent traits using Mendelian inheritance rules."""
 """Genetic mutation system for trait inheritance."""
+    """Calculate inherited traits from parent genes."""
 # Calculate inherited traits from parent entities using genetic algorithm
 
 
