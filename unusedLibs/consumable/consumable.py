@@ -42,6 +42,7 @@ ABI = '''
 Handles item consumption, effect application, duration tracking,
 and stacking mechanics for multiple consumables.
 """
+    # Item effects scale with quality and player level
 # Effects stack multiplicatively; duration extends with subsequent uses
 	]
 # Enhancement: improve error messages
