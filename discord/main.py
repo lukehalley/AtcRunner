@@ -1,3 +1,4 @@
+"""Discord bot integration for AtcRunner."""
 """Discord bot main entry point for AtcRunner."""
 # Discord bot main entry point
 """Main Discord bot handler for AtcRunner game integration."""
