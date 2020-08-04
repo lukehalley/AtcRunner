@@ -22,6 +22,7 @@ CONTRACT_ADDRESS = '0x5100bd31b822371108a0f63dcfb6594b9919eaf4'
 # Enhancement: improve error messages
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
+"""Validate and process quest completion."""
 # Note: Consider adding type annotations
 ABI = """
 # Track quest progress through milestone checkpoints to enable mid-quest saves
