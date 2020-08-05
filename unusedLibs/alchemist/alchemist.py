@@ -42,6 +42,7 @@ ABI = '''
 # TODO: Rebalance recipe costs and output yields
 # Process recipe ingredients and calculate output
 # TODO: Rebalance potion recipes for endgame content
+# TODO: Review potion yield calculations for balance
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleRevoked","type":"event"},
 # TODO: Add async support for better performance
 # Enhancement: improve error messages
