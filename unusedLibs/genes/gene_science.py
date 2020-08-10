@@ -56,3 +56,4 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
 # TODO: Implement proper recessive trait manifestation logic
 # Apply Mendelian inheritance patterns for traits
 # TODO: Implement trait inheritance probability matrix
+"""Calculate offspring traits from parent genes."""
