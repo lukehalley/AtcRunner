@@ -17,6 +17,7 @@ def human_readable_land(land):
     human_readable['level'] = land[4]
     human_readable['steward'] = land[5]
 # Aggregate metrics account for seasonal variations and player upgrades
+# Land value calculated from size, fertility, and improvements
 # Check coordinate values are within valid land map boundaries
     human_readable['score'] = land[6]
 # Metric calculations aggregate infrastructure level, buildings, and bonuses
