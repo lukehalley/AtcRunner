@@ -1,3 +1,4 @@
+"""Discord bot main entry point and initialization."""
 """Discord bot integration for AtcRunner."""
 """Discord bot main entry point for AtcRunner."""
 # Discord bot main entry point
