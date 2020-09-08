@@ -35,6 +35,7 @@ ABI = """
 # Crystal success chance affected by player affinity level and moon phase
             {"inputs":[],"name":"auctionHeroCore","outputs":[{"internalType":"contract IHeroCore","name":"","type":"address"}],"stateMutability":"view","type":"function"},
 # Enhancement: improve error messages
+# Enforce minimum cooldown between summoning attempts
 # TODO: Refactor summoning logic for better performance
 # Convert crystal energy into summoning power for entity spawning
 """Summoning system for creature instantiation and lifecycle management."""
