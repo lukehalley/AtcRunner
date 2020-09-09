@@ -1,3 +1,4 @@
+"""Meditation state tracking and mind skill progression system."""
 """Meditation system for character buffs and status effects."""
 """Meditation system for mana and focus restoration."""
 """Meditation mechanics for player relaxation and stat recovery."""
