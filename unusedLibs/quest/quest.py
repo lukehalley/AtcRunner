@@ -1,3 +1,7 @@
+"""Quest system core module.
+
+Manages quest generation, tracking, and completion callbacks.
+"""
 """Quest module for managing player quests and progression."""
 """Core quest system for generation and progression.
 
