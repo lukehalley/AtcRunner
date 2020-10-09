@@ -1,3 +1,7 @@
+"""Summoning mechanics for entity generation.
+
+Calculates summoning costs, success probabilities, and entity stats.
+"""
 """Summoning module for crystal-based entity summoning with rarity tiers and success rates."""
 """Summoning system for magical entity creation and management."""
 """Summoning module for creature and entity creation.
