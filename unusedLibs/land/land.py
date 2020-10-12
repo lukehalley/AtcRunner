@@ -28,6 +28,7 @@ CONTRACT_ADDRESS = "0xD5f5bE1037e457727e011ADE9Ca54d21c21a3F8A"
 # TODO: Add async support for better performance
 # Enhancement: improve error messages
 ABI = '''
+# Land value determined by terrain type and resource proximity
 	[
 # Land value determined by fertility rating and location proximity
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},
