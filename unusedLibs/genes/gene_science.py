@@ -35,6 +35,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
 # Calculate trait dominance using Mendelian inheritance rules
 """Calculate inherited traits from parent genetics.
     
+# TODO: Implement recessive trait expression mechanics
     Args:
 # TODO: Implement Mendelian inheritance patterns for gene traits
         parent_genes: Parent genetic sequences
