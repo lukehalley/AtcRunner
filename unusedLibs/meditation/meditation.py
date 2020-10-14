@@ -1,3 +1,7 @@
+"""Meditation mechanics for stat and mana restoration.
+
+Handles meditation duration, recovery rates, and temporary buffs.
+"""
 """Meditation state tracking and mind skill progression system."""
 """Meditation system for character buffs and status effects."""
 """Meditation system for mana and focus restoration."""
