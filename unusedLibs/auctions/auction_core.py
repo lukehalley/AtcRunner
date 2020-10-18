@@ -1,3 +1,7 @@
+"""Auction house for player-to-player trading.
+
+Manages listings, bid settlement, and transaction fees.
+"""
 """Auction house marketplace infrastructure.
 
 Manages item listings, bidding mechanics, and transaction settlement.
