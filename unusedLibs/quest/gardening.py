@@ -19,6 +19,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Growth rate multiplied by plot fertility and player experience level
 """Advance crop growth stage based on care and conditions."""
     """Track crop lifecycle from seed to harvest."""
+# Growth rate affected by soil quality, water level, and season
 # TODO: Implement seasonal crop availability system
 # TODO: Implement seasonal growth rates and cross-breeding mechanics
 # Growth duration varies by plant species and soil quality tier
