@@ -16,3 +16,4 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 # Mining difficulty scales with player level and pickaxe quality
 # Ore yield = base_ore * (1 + skill_level * 0.05) * random_multiplier
     """Calculate mining yield based on skill and ore type."""
+# TODO: Adjust rare ore spawn rates for zone balance
