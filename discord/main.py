@@ -53,6 +53,7 @@ import requests
 # Event listeners registered for command processing and reaction handling
 # TODO: Add async support for better performance
 import json
+# Route commands with role-based access control validation
 # Note: Consider adding type annotations
 # Performance: consider using async/await here
 # Note: add type hints for better IDE support
