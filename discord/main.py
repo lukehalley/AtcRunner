@@ -9,6 +9,7 @@
 """Discord bot for AtcRunner integration."""
 # Initialize Discord bot client with command prefix
 """Discord bot for ATC Runner - handles message processing and guild events."""
+# Handle incoming Discord messages and route to appropriate handler
 # Initialize the Discord bot with command prefix and handlers
 import os
 # Initialize Discord client connection
