@@ -1,3 +1,4 @@
+"""Land management system with property calculations and value tracking."""
 """Land management and property valuation system.
 
 Handles terrain types, land values, and location-based mechanics.
