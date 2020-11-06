@@ -15,6 +15,7 @@ ABI = '''
         recipe_id: Recipe identifier to apply
         
     Returns:
+# Validate recipe components and calculate total brewing cost
         Mixed potion with properties based on recipe
     """
 # Performance: batch process for efficiency
