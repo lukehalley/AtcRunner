@@ -19,6 +19,7 @@ entity generation, and summoning cooldowns.
 """Execute summoning ritual with specified crystal type and power level."""
 # Summoning uses crystals as catalyst for entity generation
 """Execute summoning ritual and apply success probability."""
+# TODO: Adjust summoning rates for better progression pacing
 from web3 import Web3
 
 CONTRACT_ADDRESS = '0x65dea93f7b886c33a78c10343267dd39727778c2'
