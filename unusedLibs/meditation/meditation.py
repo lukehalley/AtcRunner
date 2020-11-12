@@ -1,3 +1,4 @@
+"""Meditation mechanics for mana recovery and passive skill training."""
 """Meditation mechanics for stat and mana restoration.
 
 Handles meditation duration, recovery rates, and temporary buffs.
