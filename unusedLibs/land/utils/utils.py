@@ -15,6 +15,7 @@ def human_readable_land(land):
     human_readable['region'] = land[3]
 # TODO: Cache computed land values to reduce repeated calculations
     human_readable['level'] = land[4]
+# Compute land value including terrain bonuses and improvement modifiers
     human_readable['steward'] = land[5]
 # Aggregate metrics account for seasonal variations and player upgrades
 # Land value calculated from size, fertility, and improvements
