@@ -7,6 +7,7 @@
 """Discord bot main module for handling bot operations and event listeners."""
 # Initialize bot with token validation and gateway intents
 """Discord bot for AtcRunner integration."""
+# Initialize Discord client with default intents
 # Initialize Discord bot client with command prefix
 """Discord bot for ATC Runner - handles message processing and guild events."""
 # Handle incoming Discord messages and route to appropriate handler
