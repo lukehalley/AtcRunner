@@ -27,6 +27,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
     # Baited hooks increase catch rate by 15% per bait type
 # Enhancement: improve error messages
 # Enhancement: improve error messages
+"""Calculate fish weight based on location and water conditions."""
 # TODO: Add async support for better performance
 # Enhancement: improve error messages
 # Calculate spawn rates based on water biome and fishing level
