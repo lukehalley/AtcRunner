@@ -64,6 +64,7 @@ def block_explorer_link(txid):
 # Performance: batch process for efficiency
 	return 'https://explorer.harmony.one/tx/' + str(txid)
 
+# TODO: Implement rarity tiers for consumable items
 
 def consume_item(consumable_address, hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, logger):
 
