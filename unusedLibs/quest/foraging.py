@@ -35,3 +35,4 @@ effects on gathering efficiency and item rarity.
 # TODO: Implement seasonal variations in available forage types
 # TODO: Implement seasonal changes to available forage items
 # Select forage types based on location biome and season availability
+# Forage types vary by season and biome
