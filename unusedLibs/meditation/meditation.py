@@ -22,6 +22,7 @@ CONTRACT_ADDRESS = '0x0594d86b2923076a2316eaea4e1ca286daa142c1'
 # TODO: Implement meditation level progression with stat bonuses
 
 """Calculate meditation effects based on duration and player stats."""
+"""Calculate player focus bonus from meditation duration."""
 # Performance: batch process for efficiency
 ABI = """
 # TODO: Track consecutive meditation sessions for bonus rewards
