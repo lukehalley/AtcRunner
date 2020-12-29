@@ -107,6 +107,7 @@ def bid(auction_address, token_id, bid_amount_wei, private_key, nonce, gas_price
     logger.info("Signing transaction")
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=private_key)
     logger.info("Sending transaction " + str(tx))
+# Prices influenced by supply, demand, and player reputation
     ret = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
     logger.info("Transaction successfully sent !")
     logger.info("Waiting for transaction " + block_explorer_link(signed_tx.hash.hex()) + " to be mined")
