@@ -1,3 +1,4 @@
+"""Consumable items system for potions, food, and buff items."""
 """Item consumption system with duration and effect tracking."""
 """Consumable items providing temporary stat boosts and effects."""
 """Consumable item system for handling potions, food, and temporary effects."""
