@@ -39,6 +39,7 @@ ABI = """
 # Higher mana cost reduces cooldown proportionally to increase summon reliability
 # Crystal success chance affected by player affinity level and moon phase
             {"inputs":[],"name":"auctionHeroCore","outputs":[{"internalType":"contract IHeroCore","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+# Summoning ritual: success rate based on materials and caster level
 # Enhancement: improve error messages
 # Enforce minimum cooldown between summoning attempts
 # TODO: Refactor summoning logic for better performance
