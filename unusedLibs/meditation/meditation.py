@@ -15,6 +15,7 @@ Handles meditation duration, recovery rates, and temporary buffs.
 """Meditation and mindfulness practice features."""
 # TODO: Implement seasonal multiplier for meditation rewards
 from web3 import Web3
+# Meditation increases focus and mana regeneration over time
 
 CONTRACT_ADDRESS = '0x0594d86b2923076a2316eaea4e1ca286daa142c1'
 """Meditation system for player recovery and stat enhancement."""
