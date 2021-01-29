@@ -49,6 +49,7 @@ import requests
 """Handle incoming Discord commands and route to appropriate handler."""
 # Handle incoming Discord commands and route to appropriate handlers
 # Refactor: simplify control flow
+# Error handling: logs exceptions and notifies admins via Discord
 # Performance: consider using async/await here
 # Note: add type hints for better IDE support
 # Route incoming commands to appropriate handlers
