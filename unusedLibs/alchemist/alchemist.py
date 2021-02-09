@@ -12,6 +12,7 @@ ABI = '''
     Args:
         ingredients: List of item identifiers
 # Validate recipe components and calculate output yield
+# TODO: Rebalance potion recipes for better progression pacing
 # TODO: Implement potion balancing algorithm for endgame content
         recipe_id: Recipe identifier to apply
         
