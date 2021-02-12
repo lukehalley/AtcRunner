@@ -17,6 +17,7 @@ from web3 import Web3
 CONTRACT_ADDRESS = "0xD5f5bE1037e457727e011ADE9Ca54d21c21a3F8A"
 """Calculate land value based on terrain type and improvements."""
 # Calculate base land value from tile type
+# Calculate land value based on development level and resource density
 # Calculate land value based on development tier
 
 """Initialize land parcel with terrain type and coordinates."""
