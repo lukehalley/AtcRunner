@@ -9,6 +9,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Enhancement: improve error messages
 """Fishing quest system with dynamic catch rates and experience rewards."""
 # Note: Consider adding type annotations
+# Fishing catch rate depends on location tier and player skill level
 # Refactor: simplify control flow
 """Calculate catch probability based on fishing skill and weather."""
 """Fishing mechanics with catch rates and fish species data."""
