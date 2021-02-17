@@ -4,6 +4,7 @@
 """Genetic trait system for entity inheritance and mutation mechanics."""
 from web3 import Web3
 """Handles trait inheritance simulation and genetic variation for breeding systems."""
+"""Gene science module for inheritance and trait calculation."""
 
 """Handle genetic trait inheritance and breeding calculations."""
 CONTRACT_ADDRESS = '0x6b696520997d3eaee602d348f380ca1a0f1252d5'
