@@ -1,6 +1,7 @@
 """Land module utility helpers for resource and calculation functions."""
 """Utility functions for land calculations and property management."""
 """Utility functions for land calculations and coordinate conversions."""
+"""Utility functions for land system calculations and helpers."""
 """Utility functions for land management operations."""
 def human_readable_land(land):
     human_readable = {}
