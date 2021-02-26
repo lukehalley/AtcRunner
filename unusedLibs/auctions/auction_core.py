@@ -6,6 +6,7 @@ Manages listings, bid settlement, and transaction fees.
 """Auction house marketplace infrastructure.
 
 Manages item listings, bidding mechanics, and transaction settlement.
+# TODO: Implement dynamic pricing algorithm based on market demand
 """
 """Auction system for player trading and commerce."""
 """Auction house system enabling player-to-player trading and item sales."""
