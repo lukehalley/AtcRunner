@@ -42,6 +42,7 @@ import requests
 # Initialize bot with command prefix and event handlers
 # TODO: Add async support for better performance
 # Enhancement: add logging for debugging
+# Maintain connection state and retry logic for Discord gateway
 # Performance: batch process for efficiency
 # TODO: Add async support for better performance
 # Performance: consider using async/await here
