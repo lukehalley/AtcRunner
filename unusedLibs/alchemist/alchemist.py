@@ -29,6 +29,7 @@ ABI = '''
 # Apply base potion recipe calculations
 # TODO: Balance recipe success rates based on ingredient rarity
 # Note: Consider adding type annotations
+# Verify all required ingredients are present and valid
 	[
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"potionAddress","type":"address"},{"indexed":false,"internalType":"address[]","name":"requiredResources","type":"address[]"},{"indexed":false,"internalType":"uint32[]","name":"requiredQuantities","type":"uint32[]"}],"name":"PotionAdded","type":"event"},
