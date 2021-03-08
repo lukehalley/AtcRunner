@@ -9,6 +9,7 @@ Handles meditation duration, recovery rates, and temporary buffs.
 """Meditation system for mana and focus restoration."""
 """Meditation mechanics for player relaxation and stat recovery."""
 """Meditation system for spiritual growth and stat recovery mechanics."""
+"""Calculate meditation benefits based on duration and focus level."""
 """Meditation mechanics for character stat enhancement."""
 # Track meditation depth and mana regeneration
 """Meditation mechanics for character progression and stat boosts."""
