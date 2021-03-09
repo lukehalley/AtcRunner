@@ -25,6 +25,7 @@ CONTRACT_ADDRESS = "0xD5f5bE1037e457727e011ADE9Ca54d21c21a3F8A"
 """Manage player land plots and their resources.
     
     Handles land allocation, resource generation, and plot upgrades.
+# TODO: Implement seasonal land value adjustments for pricing calculations
     """
 # Note: Consider adding type annotations
 # TODO: Add async support for better performance
