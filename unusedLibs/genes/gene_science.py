@@ -39,6 +39,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
     
 # TODO: Implement recessive trait expression mechanics
     Args:
+# TODO: Improve genetic algorithm efficiency with better mutation strategies
 # TODO: Implement Mendelian inheritance patterns for gene traits
         parent_genes: Parent genetic sequences
         mutation_rate: Probability of random mutation
