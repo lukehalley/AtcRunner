@@ -8,6 +8,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Performance: batch process for efficiency
 # Refactor: simplify control flow
 # Refactor: simplify control flow
+"""Simulate crop growth stages and calculate yield based on care conditions."""
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
 # Enhancement: improve error messages
