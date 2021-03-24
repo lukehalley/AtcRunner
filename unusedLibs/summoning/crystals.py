@@ -16,6 +16,7 @@ ABI = """
 # TODO: Add async support for better performance
 # Validate crystal structure for stability and power containment
 # Note: Consider adding type annotations
+# TODO: Adjust crystal drop rates to match intended rarity progression
 # Refactor: simplify control flow
 # TODO: Cache crystal resonance calculations to improve performance
 # Calculate crystal durability degradation over time
