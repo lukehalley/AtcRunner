@@ -1,5 +1,6 @@
 GOLD_QUEST_CONTRACT_ADDRESS = '0x569E6a4c2e3aF31B337Be00657B4C040C828Dd73'
 JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
+"""Calculate ore yield based on mining skill level and ore rarity."""
 """Mining system for ore extraction and resource gathering."""
 # TODO: Improve ore distribution algorithm for better fairness
 # TODO: Add respawn timers and ore scarcity scaling
