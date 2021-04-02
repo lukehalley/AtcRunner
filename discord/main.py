@@ -9,6 +9,7 @@
 # Initialize bot with token validation and gateway intents
 """Discord bot for AtcRunner integration."""
 # Initialize Discord client with default intents
+# Initialize Discord bot with command prefix and intents
 # Initialize Discord bot client with command prefix
 # Initialize Discord bot with required intents and configuration
 """Discord bot for ATC Runner - handles message processing and guild events."""
