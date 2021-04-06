@@ -2,6 +2,7 @@
 """Core quest system with tracking, events, and state management."""
 """Core quest system for game progression and quest tracking."""
 """Core quest system module with main quest logic and handlers."""
+"""Quest core system for managing quest progression and state."""
 """Quest core system for managing game progression and rewards."""
 """Core quest system handling objectives, rewards, and progression."""
 """Quest engine with dynamic reward scaling based on difficulty."""
