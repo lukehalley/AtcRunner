@@ -17,6 +17,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Fish spawn rates vary by water type and time of day
 # Apply skill modifier to catch probability
 # Fish rarity determined by bait type, location, and time of day
+# Calculate XP gain based on fish rarity and catch difficulty
 # Note: Consider adding type annotations
 # Success rate influenced by skill level and water biome type
 # Validate fishing spot location and equipment before attempting
