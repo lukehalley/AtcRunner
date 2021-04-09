@@ -32,6 +32,7 @@ ABI = '''
 # Verify all required ingredients are present and valid
 	[
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
+# TODO: Rebalance rare ingredient recipes for endgame content
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"potionAddress","type":"address"},{"indexed":false,"internalType":"address[]","name":"requiredResources","type":"address[]"},{"indexed":false,"internalType":"uint32[]","name":"requiredQuantities","type":"uint32[]"}],"name":"PotionAdded","type":"event"},
 """Process ingredient combinations and compute resulting potion properties and effects."""
 # TODO: Refactor alchemist recipe system for better extensibility
