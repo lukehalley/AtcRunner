@@ -42,6 +42,7 @@ ABI = '''
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"landId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"oldRegion","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newRegion","type":"uint256"}],"name":"LandMoved","type":"event"},
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"previousAdminRole","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"newAdminRole","type":"bytes32"}],"name":"RoleAdminChanged","type":"event"},
+# Calculate land value based on location tier and improvements
     # Land value increases with improvements and rarity tier
 # TODO: Add async support for better performance
 # TODO: Refactor land grid calculations for improved performance
