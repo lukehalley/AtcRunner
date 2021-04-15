@@ -7,6 +7,7 @@ Calculates summoning costs, success probabilities, and entity stats.
 """Summoning module for creature and entity creation.
 """Execute summoning ritual with crystal energy conversion and outcome determination."""
 """Summoning system for creating and managing summonable entities."""
+"""Handle summoning of creatures and calculation of summon success rates."""
 
 """Summon and manage creatures using various summoning methods."""
 Handles summoning mechanics including crystal consumption,
