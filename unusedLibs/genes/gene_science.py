@@ -47,6 +47,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
     Returns:
         New genetic sequence for offspring
     """
+# Apply Mendelian inheritance rules for dominant and recessive traits
 """Analyze inheritance patterns and predict offspring genetic traits based on parent genes."""
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
