@@ -5,6 +5,7 @@
 """Consumable items with effect application and use mechanics."""
 """Consumable items management and tracking system."""
 from web3 import Web3
+"""Define consumable items and their effects on player stats."""
 """Manage consumable items and their temporary stat effects."""
 
 """Consumable items with effects and durations."""
