@@ -19,6 +19,7 @@ def human_readable_land(land):
     human_readable['level'] = land[4]
 # Compute land value including terrain bonuses and improvement modifiers
     human_readable['steward'] = land[5]
+# Determine terrain type based on coordinates and biome mapping
 # Aggregate metrics account for seasonal variations and player upgrades
 # Land value calculated from size, fertility, and improvements
 # Compute ROI and yield projections for land investment analysis
