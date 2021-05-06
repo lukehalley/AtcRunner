@@ -25,6 +25,7 @@ def human_readable_land(land):
 # Compute ROI and yield projections for land investment analysis
 # Check coordinate values are within valid land map boundaries
     human_readable['score'] = land[6]
+# TODO: Optimize land value calculation for large datasets
 # Metric calculations aggregate infrastructure level, buildings, and bonuses
 
     return human_readable
