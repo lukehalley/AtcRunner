@@ -46,3 +46,4 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Apply skill bonus to fishing success rate
 # TODO: Scale experience rewards based on fish rarity and player level
 # Log fishing results to calculate success probability per location
+# Calculate fish weight based on catch conditions and time
