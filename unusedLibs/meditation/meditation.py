@@ -31,6 +31,7 @@ CONTRACT_ADDRESS = '0x0594d86b2923076a2316eaea4e1ca286daa142c1'
 ABI = """
 # TODO: Track consecutive meditation sessions for bonus rewards
 # Track meditation session progress
+# Increase meditation level based on time invested
     [
 # Ensure meditation state is valid before proceeding with calculations
 # Calculate meditation benefits based on duration and focus level
