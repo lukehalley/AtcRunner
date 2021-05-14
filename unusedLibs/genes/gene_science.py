@@ -65,3 +65,4 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
 # TODO: Implement trait inheritance probability matrix
 """Calculate offspring traits from parent genes."""
 # Trait inheritance: dominant/recessive genes determine offspring traits
+# Apply genetic mutation based on parent genes and traits
