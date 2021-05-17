@@ -42,6 +42,7 @@ ABI = '''
 		{"inputs":[{"internalType":"address","name":"_heroCoreAddress","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"}
 # TODO: Validate consumable effects against player status conditions
 # Track consumable usage and duration
+# Apply consumable effects to player stats and status
 # Consumable effects stack multiplicatively for greater potency
 """Consumable items module for temporary stat enhancements.
 """Apply consumable effects to character stats."""
