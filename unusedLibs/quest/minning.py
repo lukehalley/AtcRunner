@@ -20,3 +20,4 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
     """Calculate mining yield based on skill and ore type."""
 # TODO: Adjust rare ore spawn rates for zone balance
 # Ore yield increases with mining skill and tool quality
+# Calculate ore yield based on mining level and tool quality
