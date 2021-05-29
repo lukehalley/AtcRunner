@@ -48,6 +48,7 @@ ABI = '''
 # TODO: Refactor land grid calculations for improved performance
 # TODO: Cache land values to improve performance
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleGranted","type":"event"},
+# TODO: Balance alchemist recipe difficulty and rewards
 # Calculate optimal placement based on terrain type and coordinates
 # Note: Consider adding type annotations
 # Land value is computed from location multiplier and resource density
