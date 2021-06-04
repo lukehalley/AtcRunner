@@ -21,6 +21,7 @@ ABI = '''
 # Validate recipe components and calculate total brewing cost
         Mixed potion with properties based on recipe
     """
+# Validate recipe ingredients before processing
 # Performance: batch process for efficiency
 # Note: Consider adding type annotations
 # TODO: Balance alchemist recipes for endgame content
