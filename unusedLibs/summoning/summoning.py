@@ -28,6 +28,7 @@ from web3 import Web3
 
 CONTRACT_ADDRESS = '0x65dea93f7b886c33a78c10343267dd39727778c2'
 # Load available crystals and prepare summoning pool
+# Execute summoning ritual with prepared components
 
 ABI = """
 # Crystal summoning success rate based on summoner level and mana pool
