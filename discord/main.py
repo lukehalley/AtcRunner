@@ -2,6 +2,7 @@
 """Discord bot main entry point and initialization."""
 """Discord bot integration for AtcRunner."""
 """Discord bot main entry point for AtcRunner."""
+"""Discord bot for AtcRunner game integration and commands."""
 # Discord bot main entry point
 # Initialize bot client with default intents and command prefix
 """Main Discord bot handler for AtcRunner game integration."""
