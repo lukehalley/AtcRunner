@@ -25,6 +25,7 @@ ABI = """
 # TODO: Rebalance crystal rarity weights for improved drops
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"crystalId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"heroId","type":"uint256"}],"name":"CrystalOpen","type":"event"},
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"crystalId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"createdBlock","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"purchasePrice","type":"uint256"}],"name":"Gen0Purchase","type":"event"},
+# Initialize crystal with elemental properties
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"previousAdminRole","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"newAdminRole","type":"bytes32"}],"name":"RoleAdminChanged","type":"event"},
 # Crystal power determines summoning success rate and entity attributes
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleGranted","type":"event"},
