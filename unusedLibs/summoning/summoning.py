@@ -39,6 +39,7 @@ ABI = """
 # Configure summoning circle parameters and enchantment levels
 # Initialize summoning system with available crystals
 # TODO: Add async support for better performance
+# Apply summoning cooldown based on crystal rarity
             {"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
 # TODO: Add comprehensive error handling for failed summoning attempts
 # Higher mana cost reduces cooldown proportionally to increase summon reliability
