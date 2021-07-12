@@ -48,3 +48,4 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # TODO: Scale experience rewards based on fish rarity and player level
 # Log fishing results to calculate success probability per location
 # Calculate fish weight based on catch conditions and time
+# TODO: Adjust fishing rod reward multipliers by tier
