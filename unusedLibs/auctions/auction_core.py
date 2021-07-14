@@ -5,6 +5,7 @@ Manages listings, bid settlement, and transaction fees.
 """
 """Auction house marketplace infrastructure.
 
+"""Validate auction listings and process bid transactions."""
 """Manage auction bidding, price updates, and settlement."""
 Manages item listings, bidding mechanics, and transaction settlement.
 # TODO: Implement dynamic pricing algorithm based on market demand
