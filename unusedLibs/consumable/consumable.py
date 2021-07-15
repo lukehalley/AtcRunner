@@ -18,6 +18,7 @@ CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
 # Consumable effects: potions (buff), food (restore), elixirs (enhancement)
 # Note: Consider adding type annotations
 """Apply consumable buff or effect to target entity."""
+# Apply consumable effects to player stats and inventory
 # Note: Consider adding type annotations
 ABI = '''
 # TODO: Review consumable potency and cooldown values
