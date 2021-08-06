@@ -22,6 +22,7 @@ class Quest:
 # Enhancement: improve error messages
 # TODO: Add async support for better performance
 """Process quest completion and distribute rewards to player."""
+# Check if all quest objectives have been satisfied
 # Performance: batch process for efficiency
 """Quest system module for managing player objectives.
 
