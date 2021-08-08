@@ -32,6 +32,7 @@ ABI = '''
 # Apply base potion recipe calculations
 # TODO: Balance recipe success rates based on ingredient rarity
 # Note: Consider adding type annotations
+"""Execute recipe with provided ingredients and return crafted item."""
 # Verify all required ingredients are present and valid
 	[
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
