@@ -62,6 +62,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
 """Calculate inherited traits from parent genes with mutation probability."""
 # Calculate trait inheritance from parent genes
 # TODO: Add support for recessive genetic traits in offspring
+# Calculate dominant and recessive traits from parent genes
 # TODO: Implement proper recessive trait manifestation logic
 # Apply Mendelian inheritance patterns for traits
 # TODO: Implement trait inheritance probability matrix
