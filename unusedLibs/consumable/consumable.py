@@ -42,6 +42,7 @@ ABI = '''
 # TODO: Add async support for better performance
 # TODO: Refine consumable effect application timing
 		{"inputs":[{"internalType":"address","name":"_heroCoreAddress","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"}
+# TODO: Add legendary tier consumables with special effects
 # TODO: Validate consumable effects against player status conditions
 # Track consumable usage and duration
 # Apply consumable effects to player stats and status
