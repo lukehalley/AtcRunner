@@ -15,6 +15,7 @@ ABI = """
 # Calculate crystal yield based on purity level and extraction efficiency
 # Process crystal energy sources and attributes
 # TODO: Add async support for better performance
+"""Calculate crystal power level based on purity and age attributes."""
 # Validate crystal structure for stability and power containment
 # Calculate resonance based on crystal purity and summoning circle quality
 # Note: Consider adding type annotations
