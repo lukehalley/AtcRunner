@@ -1,3 +1,4 @@
+"""Summoning system for creature and spirit invocation."""
 """Summoning mechanics for entity generation.
 
 Calculates summoning costs, success probabilities, and entity stats.
