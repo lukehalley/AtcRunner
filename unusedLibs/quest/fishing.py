@@ -5,6 +5,7 @@
 """Fishing quest system with catch mechanics and rewards."""
 QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing spot quality affects catch rate and rarity distribution
 # TODO: Add async support for better performance
+# Higher fishing skill unlocks rarer fish species
 """Fishing mechanics with catch probability based on rod quality, location, and player skill level."""
 # Enhancement: improve error messages
 """Fishing quest system with dynamic catch rates and experience rewards."""
