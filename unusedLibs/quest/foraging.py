@@ -7,6 +7,7 @@ QUEST_CONTRACT_ADDRESS = '0x3132c76acF2217646fB8391918D28a16bD8A8Ef4'"""Search a
 # Note: Consider adding type annotations
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
+# Forageable items vary by season and location zone
 # TODO: Add async support for better performance
 # TODO: Implement seasonal availability for forage items
 # Refactor: simplify control flow
