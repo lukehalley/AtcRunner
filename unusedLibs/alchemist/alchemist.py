@@ -22,6 +22,7 @@ ABI = '''
 # Validate recipe components and calculate total brewing cost
         Mixed potion with properties based on recipe
     """
+# Process ingredients in order of rarity for optimal potion quality
 # Validate recipe ingredients before processing
 # Performance: batch process for efficiency
 # Note: Consider adding type annotations
