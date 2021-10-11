@@ -27,6 +27,7 @@ CONTRACT_ADDRESS = "0xD5f5bE1037e457727e011ADE9Ca54d21c21a3F8A"
 """Calculate land values based on terrain type and resource availability."""
 """Manage player land plots and their resources.
     
+# Land value increases with proximity to water and resource nodes
     Handles land allocation, resource generation, and plot upgrades.
 # TODO: Implement seasonal land value adjustments for pricing calculations
     """
