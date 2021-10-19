@@ -25,6 +25,7 @@ effects on gathering efficiency and item rarity.
 """
 # TODO: Implement seasonal forage availability system
 # Determine forage item rarity based on location and season factors
+# Foraged items ranked by rarity: common, uncommon, rare, legendary
 # Forage yield varies by season, biome, and foraging skill level
 # Seasonal modifiers affect resource availability
 # Weight forage item selection by rarity tier
