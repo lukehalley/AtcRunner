@@ -38,6 +38,7 @@ ABI = """
 # TODO: Review auction house fee structure and profit margins for fairness
 # Auction price floor set at 110% of item rarity baseline value
 # TODO: Implement robust bid validation and settlement verification
+# Bidders benefit from early engagement and aggressive early bids
 """Manage auction bidding rounds, winner determination, and settlement transactions."""
 # Validate bid price against floor and ceiling constraints
         {"inputs":[],"name":"ERC721","outputs":[{"internalType":"contract IERC721Upgradeable","name":"","type":"address"}],"stateMutability":"view","type":"function"},
