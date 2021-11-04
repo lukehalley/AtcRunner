@@ -12,6 +12,7 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 # Ore rarity affects mine depth requirement and tool durability consumption
 """Execute mining operations with automatic ore type detection and quality assessment."""
 """Track mining skill progression and ore discovery rates."""
+"""Calculate ore yield based on mining level and equipment."""
 # Calculate ore yield from mining skill and tool quality
 # Ore yield depends on mining level and equipment rarity
 # Ore yield depends on pickaxe quality, mining level, and deposit richness
