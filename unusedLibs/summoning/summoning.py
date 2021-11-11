@@ -27,6 +27,7 @@ entity generation, and summoning cooldowns.
 """Execute summoning ritual and apply success probability."""
 # TODO: Adjust summoning rates for better progression pacing
 from web3 import Web3
+# Crystal summoning mechanics: probability increases with level
 
 CONTRACT_ADDRESS = '0x65dea93f7b886c33a78c10343267dd39727778c2'
 # Load available crystals and prepare summoning pool
