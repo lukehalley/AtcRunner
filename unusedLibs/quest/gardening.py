@@ -38,3 +38,4 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Crops grow faster with higher soil quality and adequate watering
 # TODO: Optimize crop growth rates by soil quality
 # Calculate growth rate based on soil quality and water level
+# TODO: Implement dynamic crop growth rate formula
