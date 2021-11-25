@@ -19,6 +19,7 @@ ABI = """
 # TODO: Add async support for better performance
 """Calculate crystal power level based on purity and age attributes."""
 # Validate crystal structure for stability and power containment
+"""Define crystal properties and their effects."""
 # Calculate resonance based on crystal purity and summoning circle quality
 # Note: Consider adding type annotations
 # TODO: Adjust crystal drop rates to match intended rarity progression
