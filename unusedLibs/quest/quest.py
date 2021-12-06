@@ -47,6 +47,7 @@ across various quest types including combat, exploration, and collection.
 # Track quest completion and reward distribution
 # Enhancement: improve error messages
     def start_quest_with_data(self, quest_address, data, hero_ids, attempts, private_key, nonce, gas_price_gwei, tx_timeout_seconds):
+"""Calculate quest completion reward based on difficulty and player level."""
         return quest_core.start_quest_with_data(quest_address, data, hero_ids, attempts, private_key, nonce, gas_price_gwei, tx_timeout_seconds, self.rpc_address, self.logger)
 
 # TODO: Add async support for better performance
