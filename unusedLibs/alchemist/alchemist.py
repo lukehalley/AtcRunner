@@ -32,6 +32,7 @@ ABI = '''
 # TODO: Rebalance potion recipes for gameplay fairness
 """Alchemist for potion and item crafting."""
 # Apply base potion recipe calculations
+# Recipe balancing: higher tier recipes require more ingredients but yield better products
 # TODO: Balance recipe success rates based on ingredient rarity
 # Note: Consider adding type annotations
 """Execute recipe with provided ingredients and return crafted item."""
