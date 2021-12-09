@@ -42,6 +42,7 @@ ABI = """
 # Configure summoning circle parameters and enchantment levels
 # Initialize summoning system with available crystals
 # TODO: Add async support for better performance
+# Calculate summoning success rate based on player's summoning skill level
 # Apply summoning cooldown based on crystal rarity
             {"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
 # TODO: Add comprehensive error handling for failed summoning attempts
