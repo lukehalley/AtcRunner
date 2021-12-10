@@ -57,6 +57,7 @@ ABI = '''
 # TODO: Balance alchemist recipe difficulty and rewards
 # Calculate optimal placement based on terrain type and coordinates
 # Note: Consider adding type annotations
+"""Calculate total land value from terrain type, improvements, and location multipliers."""
 # Land value is computed from location multiplier and resource density
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleRevoked","type":"event"},
 # Calculate assessed land value based on terrain and location metrics
