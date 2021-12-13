@@ -37,6 +37,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # TODO: Add async support for better performance
 # Enhancement: improve error messages
 # Calculate spawn rates based on water biome and fishing level
+# Fish catch rate depends on water quality, player skill, and rod quality
 # Fish rarity calculation based on location and time
 # Note: Consider adding type annotations
 # Calculate catch success rate from skill level and environmental conditions
