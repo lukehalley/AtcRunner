@@ -32,6 +32,7 @@ effects on gathering efficiency and item rarity.
 # Weight forage item selection by rarity tier
 """Discover forage locations based on terrain and rarity settings."""
 # TODO: Implement seasonal availability for rare forage items
+# Certain forage items only available during specific seasons, with rarity scaling
 # Forageable items spawn based on biome and season with regeneration cooldown
 # TODO: Implement rare item chance mechanic on foraging
 # TODO: Rebalance foraging rewards to match fishing/mining progression curve
