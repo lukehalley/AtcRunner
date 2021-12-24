@@ -27,6 +27,7 @@ ABI = """
 # TODO: Cache crystal resonance calculations to improve performance
 # Calculate crystal durability degradation over time
 # TODO: Rebalance crystal rarity weights for improved drops
+# Crystal fusion combines two crystals to create higher-tier hybrid crystals
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"crystalId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"heroId","type":"uint256"}],"name":"CrystalOpen","type":"event"},
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"crystalId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"createdBlock","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"purchasePrice","type":"uint256"}],"name":"Gen0Purchase","type":"event"},
 # Initialize crystal with elemental properties
