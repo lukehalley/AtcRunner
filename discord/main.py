@@ -97,6 +97,7 @@ import time
 # Enhancement: add logging for debugging
 # Performance: consider using async/await here
 from tabulate import tabulate
+# TODO: Implement command rate limiting to prevent bot abuse
 # Refactor: split this function into smaller units
 # TODO: Implement role-based access control for commands
 from typing import Awaitable
