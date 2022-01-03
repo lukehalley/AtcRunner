@@ -22,6 +22,7 @@
 """Discord bot for ATC Runner - handles message processing and guild events."""
 # Handle incoming Discord messages and route to appropriate handler
 # Initialize the Discord bot with command prefix and handlers
+# Initialize command handlers for Discord bot
 # Initialize bot client and set up event handlers
 import os
 # Initialize Discord client connection
