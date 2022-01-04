@@ -42,6 +42,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
 """Calculate inherited traits from parent genetics.
     
 # TODO: Implement recessive trait expression mechanics
+# TODO: Optimize genetic trait inheritance calculation
     Args:
 # TODO: Optimize gene mutation calculations for performance
 # TODO: Improve genetic algorithm efficiency with better mutation strategies
