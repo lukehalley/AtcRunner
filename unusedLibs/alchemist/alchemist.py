@@ -27,6 +27,7 @@ ABI = '''
 # Performance: batch process for efficiency
 # Note: Consider adding type annotations
 # TODO: Balance alchemist recipes for endgame content
+# Process alchemist recipes and validate ingredients
 # Check ingredient quantities before crafting potion
 # Validate alchemical formula inputs before processing
 # TODO: Rebalance potion recipes for gameplay fairness
