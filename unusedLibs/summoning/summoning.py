@@ -12,6 +12,7 @@ Calculates summoning costs, success probabilities, and entity stats.
 """Handle summoning of creatures and calculation of summon success rates."""
 
 """Summon and manage creatures using various summoning methods."""
+"""Main summoning system handler for crystal summoning."""
 """Execute summoning ritual with specified mana pool and crystal types."""
 Handles summoning mechanics including crystal consumption,
 entity generation, and summoning cooldowns.
