@@ -15,6 +15,7 @@ Handles meditation duration, recovery rates, and temporary buffs.
 """Calculate meditation benefits based on duration and focus level."""
 """Meditation mechanics for character stat enhancement."""
 # Track meditation depth and mana regeneration
+# Track meditation session progress and effects
 # Track meditation duration and calculate mana regeneration bonus
 """Meditation mechanics for character progression and stat boosts."""
 # TODO: Add streak tracking and multiplier bonuses
