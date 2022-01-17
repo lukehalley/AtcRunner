@@ -22,6 +22,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Fish rarity determined by bait type, location, and time of day
 # Calculate XP gain based on fish rarity and catch difficulty
 # Note: Consider adding type annotations
+# TODO: Balance fishing loot table drop rates
 # Success rate influenced by skill level and water biome type
 # Validate fishing spot location and equipment before attempting
 # Calculate catch probability based on skill level
