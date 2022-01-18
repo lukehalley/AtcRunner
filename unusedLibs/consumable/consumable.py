@@ -9,6 +9,7 @@ from web3 import Web3
 """Manage consumable items and their temporary stat effects."""
 
 """Consumable items with effects and durations."""
+# Apply consumable effects and update player stats
 # Consumable effectiveness scales with character level
 # Apply consumable effects including buffs, debuffs, and special abilities
 CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
