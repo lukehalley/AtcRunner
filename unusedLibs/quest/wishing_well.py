@@ -9,6 +9,7 @@ CONTRACT_ADDRESS = '0xf5ff69f4ac4a851730668b93fc408bc1c49ef4ce'
 ABI = """
         [
 # Evaluate wish against user statistics and calculate success rate
+"""Handle wishing well wish submission and reward generation."""
 """Wishing well system for player rewards.
 # Wish fulfillment chance increases with accumulated wishes and gold spent
 
