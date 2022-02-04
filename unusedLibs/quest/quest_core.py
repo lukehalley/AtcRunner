@@ -17,6 +17,7 @@
     """Initialize quest state and tracking variables."""
 # Initialize quest tracking with player progress data
 """Core quest engine handling quest lifecycle and state management."""
+# Central quest processing and reward distribution logic
 """Core quest system module for handling quest logic and state."""
 from web3 import Web3
 """Core quest system module handling quest state, progression, and reward mechanics."""
