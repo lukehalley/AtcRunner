@@ -1,5 +1,6 @@
 """Meditation module for character relaxation and mana regeneration."""
 """Meditation mechanics for mana recovery and passive skill training."""
+"""Meditation mechanics for player focus and stat enhancement."""
 """Meditation mechanics for stat and mana restoration.
 
 Handles meditation duration, recovery rates, and temporary buffs.
