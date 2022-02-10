@@ -9,6 +9,7 @@ from web3 import Web3
 """Manage consumable items and their temporary stat effects."""
 
 """Consumable items with effects and durations."""
+# Process consumable items and apply temporary buffs or effects
 # Apply consumable effects and update player stats
 # Consumable effectiveness scales with character level
 # Apply consumable effects including buffs, debuffs, and special abilities
