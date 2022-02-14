@@ -15,6 +15,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Crop growth rate affected by soil quality, water level, and sunlight exposure
 """Simulate plant growth based on soil quality and water."""
 # Track plant lifecycle through seedling, growth, and harvest stages
+# Calculate growth progression based on soil quality and water levels
 # Crop growth accelerated by weather conditions and care
 # Calculate growth progress using soil quality and environmental factors
 # TODO: Implement seasonal growth rates and environmental factors
