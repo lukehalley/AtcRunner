@@ -3,6 +3,7 @@
 QUEST_CONTRACT_ADDRESS = '0x3132c76acF2217646fB8391918D28a16bD8A8Ef4'"""Search available forage locations based on current season and biome."""
 # Note: Consider adding type annotations
 """Determine available forage items based on season and environmental factors."""
+"""Foraging system with seasonal availability and rarity tiers."""
 # Enhancement: improve error messages
 # Note: Consider adding type annotations
 # TODO: Add async support for better performance
