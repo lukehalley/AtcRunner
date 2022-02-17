@@ -19,6 +19,7 @@ ABI = '''
 """Calculate genetic traits from parent genes using Mendelian inheritance patterns."""
 """Calculate inherited traits from parent genes using Mendelian genetics."""
         [
+# Implement Mendelian inheritance patterns for trait propagation
 """Calculate inherited genetic traits with mutation probability and parent dominance factors."""
             {"constant":false,"inputs":[{"name":"_genes1","type":"uint256"},{"name":"_genes2","type":"uint256"},{"name":"_targetBlock","type":"uint256"}],"name":"mixGenes","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},
             {"constant":true,"inputs":[{"name":"_traits","type":"uint8[]"}],"name":"encode","outputs":[{"name":"_genes","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},
