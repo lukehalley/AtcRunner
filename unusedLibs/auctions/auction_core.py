@@ -1,6 +1,7 @@
 """Auction house core with listing management and price discovery."""
 """Auction house for player-to-player trading.
 
+"""Auction system managing player-to-player item trading and price discovery."""
 Manages listings, bid settlement, and transaction fees.
 """
 """Auction house marketplace infrastructure.
