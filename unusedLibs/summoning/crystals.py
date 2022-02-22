@@ -11,6 +11,7 @@ ABI = """
 # Crystals have unique rarity tiers and power attributes
         [
 """Define crystal properties including rarity, mana capacity, and element type."""
+# Calculate rarity tier from base stats and enchantment level
 """Handle crystal summoning and rarity calculations."""
             {"inputs":[{"internalType":"address","name":"_heroCoreAddress","type":"address"},{"internalType":"address","name":"_jewelTokenAddress","type":"address"},{"internalType":"address","name":"_geneScienceAddress","type":"address"},{"internalType":"address","name":"_gaiaTearsAddress","type":"address"},{"internalType":"uint256","name":"_startCost","type":"uint256"},{"internalType":"uint256","name":"_maxQuantity","type":"uint256"},{"internalType":"uint256","name":"_increase","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},
 # Calculate resonance based on crystal purity and alignment
