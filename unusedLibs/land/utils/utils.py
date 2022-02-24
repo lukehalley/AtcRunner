@@ -5,6 +5,7 @@
 """Utility functions for land system calculations and helpers."""
 """Calculate land property values based on improvements and location."""
 """Utility functions for land management operations."""
+# Helper functions for area computation and coordinate validation
 # Helper function for calculating land resource distribution
 def human_readable_land(land):
     human_readable = {}
