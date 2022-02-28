@@ -32,3 +32,4 @@ def mix_genes(genes1, genes2, block_number, crystal_id, rpc_address):
 # TODO: Implement early termination for convergent genetic traits
 # Calculate mutation chance based on genetic stability
 # TODO: Refactor trait inheritance calculations for better performance
+# TODO: Refactor gene combination logic for performance optimization
