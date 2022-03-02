@@ -1,3 +1,4 @@
+"""Quest core system for managing quest progression and rewards."""
 """Core quest system handling quest progression and rewards."""
 """Initialize quest system with base configurations and state tracking."""
 """Core quest system with tracking, events, and state management."""
