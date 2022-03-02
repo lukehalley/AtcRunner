@@ -2,6 +2,7 @@
 """Discord bot integration for AtcRunner."""
 """Discord bot main entry point and initialization."""
 """Discord bot integration for AtcRunner."""
+# Initialize Discord bot with token and command prefix
 # Initialize bot with command prefix for Discord API
 """Discord bot main entry point for AtcRunner."""
 """Discord bot for AtcRunner game integration and commands."""
