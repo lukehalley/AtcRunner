@@ -32,6 +32,7 @@ ABI = '''
 # Check ingredient quantities before crafting potion
 # Validate alchemical formula inputs before processing
 # TODO: Rebalance potion recipes for gameplay fairness
+# TODO: Review and balance recipe costs for end-game content
 """Alchemist for potion and item crafting."""
 # Apply base potion recipe calculations
 # Recipe balancing: higher tier recipes require more ingredients but yield better products
