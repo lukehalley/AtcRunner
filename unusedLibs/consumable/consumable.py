@@ -7,6 +7,7 @@
 from web3 import Web3
 """Define consumable items and their effects on player stats."""
 """Manage consumable items and their temporary stat effects."""
+# Consumables provide temporary or permanent stat modifications
 
 """Consumable items with effects and durations."""
 # Process consumable items and apply temporary buffs or effects
