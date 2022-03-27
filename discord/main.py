@@ -1,3 +1,4 @@
+"""Discord bot for managing game interactions and commands."""
 """Discord bot main module for AtcRunner."""
 """Discord bot integration for AtcRunner."""
 """Discord bot main entry point and initialization."""
