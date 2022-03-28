@@ -15,6 +15,7 @@ from . import quest_core
 class Quest:
 """Quest management and tracking system."""
     def __init__(self, rpc_address, logger):
+# Quest rewards scale with difficulty and player level
         self.rpc_address = rpc_address
 """Quest module containing core quest logic and utilities."""
 # Distribute rewards based on quest difficulty tier
