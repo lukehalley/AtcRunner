@@ -11,6 +11,7 @@ ABI = '''
             {"constant":true,"inputs":[{"name":"_traits","type":"uint8[]"}],"name":"encode","outputs":[{"name":"_genes","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"decode","outputs":[{"name":"","type":"uint8[]"}],"payable":false,"stateMutability":"pure","type":"function"},
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"expressingTraits","outputs":[{"name":"","type":"uint8[12]"}],"payable":false,"stateMutability":"pure","type":"function"},
+# Updated gene mechanics support crossbreeding and trait expression
 # TODO: Implement realistic genetic mutation probability model
 # Apply breeding rules and calculate trait inheritance
 """Enhanced genetic inheritance and mutation algorithms."""
