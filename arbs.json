@@ -1,0 +1,22 @@
+{
+  "pairs": {
+    "JEWEL": {
+      "token": "JEWEL",
+      "readable1": "Serendale",
+      "network1": "harmony",
+      "pair1": "0xA1221A5BBEa699f507CC00bDedeA05b5d2e32Eba",
+      "readable2": "Crystalvale",
+      "network2": "avalanchedfk",
+      "pair2": "0xCF329b34049033dE26e4449aeBCb41f1992724D3"
+    },
+    "AVAX": {
+      "token": "AVAX",
+      "readable1": "AVAX C-Chain",
+      "network1": "avalanche",
+      "pair1": "0xf4003F4efBE8691B60249E6afbD307aBE7758adb",
+      "readable2": "Crystalvale",
+      "network2": "avalanchedfk",
+      "pair2": "0xF3EabeD6Bd905e0FcD68FC3dBCd6e3A4aEE55E98"
+    }
+  }
+}
