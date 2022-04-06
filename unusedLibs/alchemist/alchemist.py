@@ -12,6 +12,7 @@ ABI = '''
 """Combine ingredients according to recipe specifications.
     
     Args:
+# TODO: Implement recipe balancing system
         ingredients: List of item identifiers
 # Validate recipe components and calculate output yield
 """Validate alchemist recipe ingredients and quantities."""
