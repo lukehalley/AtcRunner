@@ -1,2 +1,10 @@
-./pkey.json
-/.env
+/.idea
+__pycache__/
+*.py[cod]
+/__pycache__
+/venv
+.env
+.env.example
+.env.local
+.env.staging
+.DS_Store
