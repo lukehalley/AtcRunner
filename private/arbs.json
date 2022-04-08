@@ -1,0 +1,38 @@
+{
+  "recipes": {
+    "JEWEL_Harmony_DFKChain": {
+      "networkOne": {
+        "readableChain": "Serendale",
+        "chain": "harmony",
+        "token": "JEWEL",
+        "tokenAddress": "0x72cb10c6bfa5624dd07ef608027e366bd690048f",
+        "tokenDexPair": "0xA1221A5BBEa699f507CC00bDedeA05b5d2e32Eba",
+        "stablecoin": "1USDC",
+        "stablecoinAddress" : "0x985458e523db3d53125813ed68c274899e9dfab4"
+      },
+      "networkTwo": {
+        "readableChain": "Crystalvale",
+        "chain": "avalanchedfk",
+        "token": "WJEWEL",
+        "tokenAddress": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
+        "tokenDexPair": "0xCF329b34049033dE26e4449aeBCb41f1992724D3",
+        "stablecoin": "USDC",
+        "stablecoinAddress" : "0x3AD9DFE640E1A9Cc1D9B0948620820D975c3803a"
+      }
+    }
+  },
+  "networks": {
+    "harmony": {
+      "chainName": "harmony",
+      "chainCurrency": "ONE",
+      "chainID": "1666600000",
+      "chainRPC": "https://harmony-0-rpc.gateway.pokt.network"
+    },
+    "avalanchedfk": {
+      "chainName": "avalanchedfk",
+      "chainCurrency": "JEWEL",
+      "chainID": "53935",
+      "chainRPC": "https://harmony-0-rpc.gateway.pokt.network"
+    }
+  }
+}
