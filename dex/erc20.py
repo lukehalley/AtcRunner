@@ -10,8 +10,8 @@ ROOT_DIR = (pathlib.Path(os.path.abspath(os.curdir))).parent
 
 # Opening JSON file
 
-ITEMS = json.load(open(os.path.abspath(f'{ROOT_DIR}/dex/items.json')))
-ABI = json.load(open(os.path.abspath(f'{ROOT_DIR}/dex/abi.json')))
+ITEMS = json.load(open(os.path.abspath(f'dex/items.json')))
+ABI = json.load(open(os.path.abspath(f'dex/abi.json')))
 
 def wei2eth(w3, wei):
     return w3.fromWei(wei, 'ether')

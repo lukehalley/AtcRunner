@@ -21,8 +21,8 @@ from discord.ext import commands
 
 # Firebase Envs
 load_dotenv()
-pkeyPath: Optional[str] = os.environ.get("PRIVATE_KEY_PATH")
-databaseURL = os.environ.get("DATABASE_URL")
+# pkeyPath: Optional[str] = os.environ.get("PRIVATE_KEY_PATH")
+# databaseURL = os.environ.get("DATABASE_URL")
 
 # General Envs
 arbitrageThreshold = float(os.environ.get("ARBITRAGE_THRESHOLD"))
