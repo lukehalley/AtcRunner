@@ -1,11 +1,19 @@
 {
-  "name": "node",
+  "name": "dfk-arb",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc ./src/index.ts"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@synapseprotocol/sdk": "^0.94.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "typescript": "^4.6.3"
   }
 }
