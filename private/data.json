@@ -1,13 +1,13 @@
 {
   "recipes": {
     "JEWEL_Harmony_DFKChain": {
-      "networkOne": {
+      "chainOne": {
         "readableChain": "Serendale",
         "chain": "harmony",
         "token": "JEWEL",
         "stablecoin": "1USDC"
       },
-      "networkTwo": {
+      "chainTwo": {
         "readableChain": "Crystalvale",
         "chain": "avalanchedfk",
         "token": "WJEWEL",
@@ -26,7 +26,7 @@
       "chainName": "avalanchedfk",
       "chainCurrency": "JEWEL",
       "chainID": "53935",
-      "chainRPC": "https://avax-dfk.gateway.pokt.network/v1/lb/6244818c00b9f0003ad1b619//ext/bc/q2aTwKuyzgs8pynF7UXBZCU7DejbZbZ6EUyHr3JQzYgwNPUPi/rpc"
+      "chainRPC": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc"
     }
   },
   "tokens": {
@@ -71,7 +71,7 @@
       "WJEWEL": {
         "name": "Jewel",
         "address": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
-        "dexPair": "0xF3EabeD6Bd905e0FcD68FC3dBCd6e3A4aEE55E98"
+        "dexPair": "0xCF329b34049033dE26e4449aeBCb41f1992724D3"
       },
       "xJEWEL": {
         "name": "xJewel",

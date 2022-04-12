@@ -1,16 +1,19 @@
 import json
+import logging
 import sys
 import pathlib
-
+import helpers.Database as Database
 from web3 import Web3
 
 import os
 
 ROOT_DIR = (pathlib.Path(os.path.abspath(os.curdir))).parent
 
+# Set up our logging
+logger = logging.getLogger("DFK-DEX")
+
 # Opening JSON file
 
-ITEMS = json.load(open(os.path.abspath(f'dex/items.json')))
 ABI = json.load(open(os.path.abspath(f'dex/abi.json')))
 
 def wei2eth(w3, wei):
@@ -21,9 +24,12 @@ def eth2wei(w3, eth):
     return w3.toWei(eth, 'ether')
 
 
-def symbol2address(symbol):
+def symbol2address(symbol, chain):
+
+    tokens = Database.fetchFromDatabase("tokens")
+
     symbol = symbol.upper().strip()
-    address = ITEMS[symbol]["address"]
+    address = tokens[chain][symbol]["address"]
 
     if address:
         return address
@@ -31,11 +37,14 @@ def symbol2address(symbol):
         sys.exit(f"No item reference for {symbol}")
 
 
-def address2symbol(address):
+def address2symbol(address, chain):
+
+    tokens = Database.fetchFromDatabase("tokens")
+
     address = address.strip()
     result = None
 
-    for key, value in ITEMS.items():
+    for key, value in tokens.tokens():
         if address == value["address"]:
             result = key
             return result
@@ -44,8 +53,9 @@ def address2symbol(address):
         sys.exit(f"No address reference for {address}")
 
 
-def all_items():
-    return ITEMS.copy()
+def all_tokens():
+    tokens = Database.fetchFromDatabase("tokens")
+    return tokens.copy()
 
 
 def symbol(token_address, rpc_address):
