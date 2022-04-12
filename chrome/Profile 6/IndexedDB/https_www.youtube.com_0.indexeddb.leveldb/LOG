@@ -1,2 +1,3 @@
-2022/04/11-17:27:43.452 74107 Creating DB /Users/luke/Library/Application Support/Google/Chrome/Profile 6/IndexedDB/https_www.youtube.com_0.indexeddb.leveldb since it was missing.
-2022/04/11-17:27:43.552 74107 Reusing MANIFEST /Users/luke/Library/Application Support/Google/Chrome/Profile 6/IndexedDB/https_www.youtube.com_0.indexeddb.leveldb/MANIFEST-000001
+2022/04/12-17:24:03.687 25203 Reusing MANIFEST /Users/luke/Documents/chrome/Profile 6/IndexedDB/https_www.youtube.com_0.indexeddb.leveldb/MANIFEST-000001
+2022/04/12-17:24:03.688 25203 Recovering log #3
+2022/04/12-17:24:03.688 25203 Reusing old log /Users/luke/Documents/chrome/Profile 6/IndexedDB/https_www.youtube.com_0.indexeddb.leveldb/000003.log 

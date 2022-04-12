@@ -1,3 +1,3 @@
-2022/04/12-16:02:08.543 14003 Reusing MANIFEST /Users/luke/dev/dfk-arb/chrome/Profile 6/shared_proto_db/metadata/MANIFEST-000001
-2022/04/12-16:02:08.563 14003 Recovering log #3
-2022/04/12-16:02:08.563 14003 Reusing old log /Users/luke/dev/dfk-arb/chrome/Profile 6/shared_proto_db/metadata/000003.log 
+2022/04/12-18:18:07.455 6707 Reusing MANIFEST /Users/luke/Documents/chrome/Profile 6/shared_proto_db/metadata/MANIFEST-000001
+2022/04/12-18:18:07.473 6707 Recovering log #3
+2022/04/12-18:18:07.474 6707 Reusing old log /Users/luke/Documents/chrome/Profile 6/shared_proto_db/metadata/000003.log 
