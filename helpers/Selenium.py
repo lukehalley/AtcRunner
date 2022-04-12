@@ -1,6 +1,6 @@
 import os
 import time
-
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,60 +11,85 @@ from selenium.webdriver.chrome.options import Options
 import time
 from pyvirtualdisplay import Display
 
+
+
 def is_docker():
     path = '/proc/self/cgroup'
-    return (
-        os.path.exists('/.dockerenv') or
-        os.path.isfile(path) and any('docker' in line for line in open(path))
+    result = os.path.exists('/.dockerenv') or os.path.isfile(path) and any('docker' in line for line in open(path))
+    return (result)
+
+def initBrowser():
+
+    isDocker = is_docker()
+
+    if isDocker:
+        display = Display(visible=0, size=(1920, 1080))
+        display.start()
+
+    chrome_options = webdriver.ChromeOptions()
+
+    if isDocker:
+        chrome_options.add_argument(f"user-data-dir=/home/seluser/chrome/")
+    else:
+        chrome_options.add_argument(f"user-data-dir=/Users/luke/Documents/chrome")
+
+    chrome_options.add_argument("profile-directory=Profile 6")
+
+    if isDocker:
+        driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver', options=chrome_options)
+    else:
+        driver = webdriver.Chrome(executable_path='/Users/luke/bin/chromedriver', options=chrome_options)
+
+    return driver
+
+def loginIntoMetamask(driver):
+
+    load_dotenv()
+
+    print("Opening Metamask tab...")
+    mmExtString = os.environ.get("MM_EXT_STR")
+    driver.get(f'chrome-extension://{mmExtString}/home.html')
+    print("Metamask opened!", "\n")
+
+    print("Waiting for Metamask password input...")
+    passwordInput = WebDriverWait(driver, 30).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#password"))
     )
+    print("Password input located!", "\n")
 
-isDocker = is_docker()
+    print("Filling in password...")
+    mmPassword = os.environ.get("KNOCKKNOCK")
+    passwordInput.send_keys(mmPassword)
+    print("Password inputted!", "\n")
 
-print (f"Running In Docker {isDocker}", "\n")
+    print("Pressing enter...")
+    passwordInput.send_keys(Keys.RETURN)
+    print("Enter key pressed!", "\n")
 
-if isDocker:
-    display = Display(visible=0, size=(1920, 1080))
-    display.start()
+    print("Checking if logged in...")
+    WebDriverWait(driver, 30).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#app-content > div > div.main-container-wrapper > div > div > div > div.tabs"))
+    )
+    print("Metamask logged in!", "\n")
 
-chrome_options = webdriver.ChromeOptions()
-userdatadir = "/Users/luke/Documents/chrome"
+def buildBridgeURL(inputToken, outputToken, chainId):
 
-if isDocker:
-    chrome_options.add_argument(f"user-data-dir=/home/seluser/chrome/")
-else:
-    chrome_options.add_argument(f"user-data-dir=/Users/luke/Documents/chrome")
+    synapseBridgeURL = os.environ.get("SYNAPSE_BRIDGE_URL")
 
-chrome_options.add_argument("profile-directory=Profile 6")
+    synapseBridgeURL = synapseBridgeURL.replace("<INPUT_TOKEN>", inputToken)
+    synapseBridgeURL = synapseBridgeURL.replace("<OUTPUT_TOKEN>", outputToken)
+    synapseBridgeURL = synapseBridgeURL.replace("<OUTPUT_CHAIN_ID>", chainId)
 
-if isDocker:
-    driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver', chrome_options=chrome_options)
-else:
-    driver = webdriver.Chrome(executable_path='/Users/luke/bin/chromedriver', chrome_options=chrome_options)
+    return synapseBridgeURL
 
-print("Going to chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html")
-driver.get('chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html')
+def synapseBridge(driver):
 
-driver.save_screenshot('screen.png')
+    print("Opening Synapse Bridge...")
+    synapseBridgeBridgeURL = os.environ.get("SYNAPSE_BRIDGE_URL")
+    driver.get(f'chrome-extension://{mmExtString}/home.html')
+    print("Metamask opened!", "\n")
 
-print("Title:")
-print(driver.title)
-
-print("Waiting password")
-element = WebDriverWait(driver, 30).until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, "#password"))
-)
-
-print("Filling in password")
-element.send_keys('7r3M6Y6pSW7&Lq23W$jW')
-
-print("Pressing enter")
-element.send_keys(Keys.RETURN)
-
-print("Title:")
-print(driver.title)
-
-print("DONE!")
-driver.close()
-
-if isDocker:
-    display.stop()
+driver = initBrowser()
+loginIntoMetamask(driver)
+bridgeURL = buildBridgeURL("JEWEL", "JEWEL", "53935")
+x = 1

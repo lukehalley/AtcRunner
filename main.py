@@ -10,53 +10,57 @@ import helpers.Wallet as Wallet
 logger = Log.setupLogging()
 
 # Create connection to Firebase
-Database.createDatabaseConnection(logger)
+Database.createDatabaseConnection()
 
 # Get the arb recipes
-recipes = Database.fetchFromDatabase(logger, "recipes")
+recipes = Database.fetchFromDatabase("recipes")
 
 # Get network information
-networks = Database.fetchFromDatabase(logger, "networks")
+networks = Database.fetchFromDatabase("networks")
+
+# Get token information
+tokens = Database.fetchFromDatabase("tokens")
 
 # Calculate how often we can query dex tools
 minimumInterval = Arbitrage.calculateQueryInterval(len(recipes))
 
+print("------------------------------------------------------------------------------------------------------------------")
+
 for recipesTitle, recipeDetails in recipes.items():
 
-    networkOneDetails = recipeDetails["networkOne"]
-    networkTwoDetails = recipeDetails["networkTwo"]
+    chainOne = recipeDetails["chainOne"]
+    chainTwo = recipeDetails["chainTwo"]
 
     while True:
 
-        reportString, priceDifference, arbitrageOrigin, arbitrageDestination, networkOnePrice, networkTwoPrice = Arbitrage.calculateArbitrage(
+        chainOne["tokenDexPair"] = tokens[recipeDetails["chainOne"]["chain"]][recipeDetails["chainOne"]["token"]]["dexPair"]
+        chainOne["networkDetails"] = networks[recipeDetails["chainOne"]["chain"]]
+
+        chainTwo["tokenDexPair"] = tokens[recipeDetails["chainTwo"]["chain"]][recipeDetails["chainTwo"]["token"]]["dexPair"]
+        chainTwo["networkDetails"] = networks[recipeDetails["chainTwo"]["chain"]]
+
+        reportString, priceDifference, arbitrageOrigin, arbitrageDestination = Arbitrage.calculateArbitrage(
             arbTitle=recipesTitle,
-            networkOne=networkOneDetails,
-            networkTwo=networkTwoDetails,
+            chainOne=chainOne,
+            chainTwo=chainTwo,
             )
 
         if (Arbitrage.checkArbitragIsWorthIt(priceDifference) and arbitrageOrigin and arbitrageDestination):
-            print("Worth it!")
 
-            print(reportString)
+            logger.info(f"Arbitrage Opportunity Identified!")
+            logger.info(reportString)
 
-            originNetwork = networks[arbitrageOrigin]
-            destinationNetwork = networks[arbitrageDestination]
+            originWalletAddress = Wallet.getWalletAddressFromPrivateKey(arbitrageOrigin["networkDetails"]["chainRPC"])
+            destinationWalletAddress = Wallet.getWalletAddressFromPrivateKey(arbitrageDestination["networkDetails"]["chainRPC"])
 
-            originWalletAddress = Wallet.getWalletAddressFromPrivateKey(originNetwork['chainRPC'])
-            destinationWalletAddress = Wallet.getWalletAddressFromPrivateKey(destinationNetwork['chainRPC'])
-
-            if not originWalletAddress == destinationWalletAddress:
-                sys.exit(f"Network wallets do not match!\nNW1: {originWalletAddress}\nNW2: {destinationWalletAddress}")
-
-            originDetails = [v for v in recipeDetails.values() if arbitrageOrigin in v.values()]
-            originToken = originDetails[0]["token"]
-
-            originWalletTokenBalance = Wallet.getTokenBalance(originNetwork["chainRPC"], originWalletAddress, originToken)
+            originWalletTokenBalance = Wallet.getTokenBalance(arbitrageOrigin["networkDetails"]["chainRPC"], originWalletAddress, arbitrageOrigin['token'], arbitrageOrigin['chain'])
+            destinationWalletTokenBalance = Wallet.getTokenBalance(arbitrageDestination["networkDetails"]["chainRPC"], destinationWalletAddress, arbitrageDestination['token'], arbitrageDestination['chain'])
 
             time.sleep(10)
         else:
-            print("Not worth it!")
             time.sleep(minimumInterval)
+
+        print("------------------------------------------------------------------------------------------------------------------")
 
 # Iterate through the recipes
 
