@@ -9,6 +9,7 @@ Handles meditation duration, recovery rates, and temporary buffs.
 """Meditation state tracking and mind skill progression system."""
 """Meditation system for character buffs and status effects."""
 """Meditation system for character meditation and experience gain."""
+# TODO: Add meditation streak tracking
 # TODO: Implement meditation state tracking to persist progress
 """Meditation system for mana and focus restoration."""
 """Track meditation state and calculate experience gain."""
