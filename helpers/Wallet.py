@@ -16,10 +16,7 @@ transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 
 # Set up our logging
-log_format = '%(asctime)s|%(name)s|%(levelname)s: %(message)s'
 logger = logging.getLogger("DFK-DEX")
-logger.setLevel(logging.DEBUG)
-logging.basicConfig(level=logging.INFO, format=log_format, stream=sys.stdout)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, privateKey, timeout=180, gwei=30):
@@ -80,19 +77,19 @@ def getWalletAddressFromPrivateKey(rpcURL):
     return w3.eth.account.privateKeyToAccount(privateKey).address
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getTokenBalance(rpcURL, walletAddress, token):
+def getTokenBalance(rpcURL, walletAddress, token, chain):
 
     rpc_server = rpcURL
-    logger.info("Using RPC server " + rpc_server)
+    logger.debug("Using RPC Server " + rpc_server)
 
     w3 = Web3(Web3.HTTPProvider(rpc_server))
 
-    token_address = erc20.symbol2address(token)
+    token_address = erc20.symbol2address(token, chain)
 
     name = erc20.name(token_address, rpc_server)
     symbol = erc20.symbol(token_address, rpc_server)
     balance = erc20.wei2eth(w3, erc20.balance_of(walletAddress, token_address, rpc_server))
-    logger.info(name + " -> " + str(balance) + " " + symbol)
+    logger.debug(f"Wallet {walletAddress} has {balance} {symbol} on {chain}")
 
     return balance
 

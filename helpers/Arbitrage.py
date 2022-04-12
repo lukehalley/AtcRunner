@@ -1,32 +1,48 @@
 import logging
 import os
 import requests
+import helpers.Database as Database
 
-def calculateArbitrage(arbTitle, networkOne, networkTwo):
+logger = logging.getLogger("DFK-DEX")
+
+def calculateArbitrage(arbTitle, chainOne, chainTwo):
 
     # Dex Screen Envs
     pairsEndpoint = os.environ.get("DEXSCREENER_API_ENDPOINT")
 
     # Network One
-    networkOneEndpoint = f"{pairsEndpoint}/{networkOne['chain']}/{networkOne['tokenDexPair']}"
-    networkOneResult = requests.get(networkOneEndpoint)
-    networkOneResultJSON = networkOneResult.json()["pair"]
-    networkOnePrice = float(networkOneResultJSON["priceUsd"])
+    chainOneEndpoint = f"{pairsEndpoint}/{chainOne['chain']}/{chainOne['tokenDexPair']}"
+    chainOneResult = requests.get(chainOneEndpoint)
+    chainOneResultJSON = chainOneResult.json()["pair"]
+    chainOnePrice = float(chainOneResultJSON["priceUsd"])
 
     # Network Two
-    networkTwoEndpoint = f"{pairsEndpoint}/{networkTwo['chain']}/{networkTwo['tokenDexPair']}"
-    networkTwoResult = requests.get(networkTwoEndpoint)
-    networkTwoResultJSON = networkTwoResult.json()["pair"]
-    networkTwoPrice = float(networkTwoResultJSON["priceUsd"])
+    chainTwoEndpoint = f"{pairsEndpoint}/{chainTwo['chain']}/{chainTwo['tokenDexPair']}"
+    chainTwoResult = requests.get(chainTwoEndpoint)
+    chainTwoResultJSON = chainTwoResult.json()["pair"]
+    chainTwoPrice = float(chainTwoResultJSON["priceUsd"])
 
     # Calculate
-    priceDifference = calculateDifference(networkOnePrice, networkTwoPrice)
+    priceDifference = calculateDifference(chainOnePrice, chainTwoPrice)
 
-    arbitrageOrigin, arbitrageDestination = calculateArbitrageStrategy(networkOnePrice, networkOne['chain'], networkTwoPrice, networkTwo['chain'])
+    arbitrageOrigin, arbitrageDestination = calculateArbitrageStrategy(chainOnePrice, chainOne['chain'], chainTwoPrice, chainTwo['chain'])
 
-    reportString = f"{arbTitle} - [{networkOne['readableChain']} @ ${networkOnePrice} vs {networkTwo['readableChain']} @ ${networkTwoPrice}] = [{priceDifference}% Arb]"
+    if arbitrageOrigin == chainOne["chain"]:
+        arbitrageOriginDetails = chainOne
+        arbitrageOriginDetails["price"] = chainOnePrice
 
-    return reportString, priceDifference, arbitrageOrigin, arbitrageDestination, networkOnePrice, networkTwoPrice
+        destinationDetails = chainTwo
+        destinationDetails["price"] = chainTwoPrice
+    else:
+        arbitrageOriginDetails = chainTwo
+        arbitrageOriginDetails["price"] = chainTwoPrice
+
+        destinationDetails = chainOne
+        destinationDetails["price"] = chainOnePrice
+
+    reportString = f"Buying {arbitrageOriginDetails['token']} on {arbitrageOriginDetails['readableChain']} @ {arbitrageOriginDetails['price']} {arbitrageOriginDetails['stablecoin']} and selling {destinationDetails['token']} on {destinationDetails['readableChain']} @ {destinationDetails['price']} {arbitrageOriginDetails['stablecoin']} for a {priceDifference}% arbitrage"
+
+    return reportString, priceDifference, arbitrageOriginDetails, destinationDetails
 
 def calculateDifference(pairOne, pairTwo):
     return abs(round(((pairTwo - pairOne) * 100) / pairOne, 2))

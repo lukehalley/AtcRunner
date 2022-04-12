@@ -1,3 +1,4 @@
+import logging
 import sys
 
 import firebase_admin
@@ -7,14 +8,16 @@ from typing import Optional
 from dotenv import load_dotenv
 import os
 
-def createDatabaseConnection(logger):
+logger = logging.getLogger("DFK-DEX")
+
+def createDatabaseConnection():
 
     # Firebase Envs
     load_dotenv()
     pkeyPath: Optional[str] = os.environ.get("PRIVATE_KEY_PATH")
     databaseURL = os.environ.get("DATABASE_URL")
 
-    logger.info(f"DB: Creating connection to Firebase @ {databaseURL}")
+    logger.debug(f"DB: Creating connection to Firebase @ {databaseURL}")
 
     # Firebase Init
     cred = credentials.Certificate(pkeyPath)
@@ -22,16 +25,16 @@ def createDatabaseConnection(logger):
         'databaseURL': databaseURL
     })
 
-    logger.info(f"DB: Connection established to Firebase")
+    logger.debug(f"DB: Connection established to Firebase")
 
-def fetchFromDatabase(logger, reference):
+def fetchFromDatabase(reference):
 
-    logger.info(f"DB: Getting '{reference}' from Firebase")
+    logger.debug(f"DB: Getting '{reference}' from Firebase")
 
     db.reference()
 
     queryResult = (db.reference(f"/{reference}/")).get()
 
-    logger.info(f"DB: Firebase query returned dictionary of {len(queryResult)} rows")
+    logger.debug(f"DB: Firebase query returned dictionary of {len(queryResult)} rows")
 
     return queryResult
