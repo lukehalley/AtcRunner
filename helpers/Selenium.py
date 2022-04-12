@@ -11,8 +11,6 @@ from selenium.webdriver.chrome.options import Options
 import time
 from pyvirtualdisplay import Display
 
-
-
 def is_docker():
     path = '/proc/self/cgroup'
     result = os.path.exists('/.dockerenv') or os.path.isfile(path) and any('docker' in line for line in open(path))
@@ -42,7 +40,7 @@ def initBrowser():
 
     return driver
 
-def loginIntoMetamask(driver):
+def openMetamaskTab(driver):
 
     load_dotenv()
 
@@ -50,6 +48,12 @@ def loginIntoMetamask(driver):
     mmExtString = os.environ.get("MM_EXT_STR")
     driver.get(f'chrome-extension://{mmExtString}/home.html')
     print("Metamask opened!", "\n")
+
+def loginIntoMetamask(driver):
+
+    load_dotenv()
+
+    openMetamaskTab(driver)
 
     print("Waiting for Metamask password input...")
     passwordInput = WebDriverWait(driver, 30).until(
@@ -89,7 +93,51 @@ def synapseBridge(driver):
     driver.get(f'chrome-extension://{mmExtString}/home.html')
     print("Metamask opened!", "\n")
 
+def switchMetamaskNetwork(driver, networkToSwitchTo):
+
+    openMetamaskTab(driver)
+
+    print("Locating Metamask switch dropdown...")
+    switchDropdown = WebDriverWait(driver, 30).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#app-content > div > div.app-header.app-header--back-drop > div > div.app-header__account-menu-container > div.app-header__network-component-wrapper > div"))
+    )
+    print("Metamask switch dropdown located!", "\n")
+
+    print("Getting current network...")
+    switchDropdown = WebDriverWait(driver, 30).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "#app-content > div > div.app-header.app-header--back-drop > div > div.app-header__account-menu-container > div.app-header__network-component-wrapper > div > span"))
+    )
+    currentNetwork = switchDropdown.text
+    print(f"Got current network: {currentNetwork}", "\n")
+
+    if (currentNetwork == networkToSwitchTo):
+        print(f"We are already on {networkToSwitchTo} - no need to switch!", "\n")
+        return
+    else:
+        print("Clicking Metamask switch dropdown...")
+        switchDropdown.click()
+        print("Metamask switch dropdown Clicked!", "\n")
+
+        print("Checking dropdown is open...")
+        switchDropdown = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, "#app-content > div > div.menu-droppo-container.network-droppo > div > button"))
+        )
+        print("Metamask switch dropdown is open!", "\n")
+
+        print("Getting network list element...")
+        switchDropdown = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, "#app-content > div > div.menu-droppo-container.network-droppo > div > div.network-dropdown-list"))
+        )
+        print("Got network list element!", "\n")
+
+        print(f"Switching to {networkToSwitchTo}...")
+        networkListItem = driver.find_element_by_xpath("//span[text()='DFK Chain']")
+        networkListItem.click()
+        print(f"Switched to {networkToSwitchTo}!", "\n")
+
+
 driver = initBrowser()
 loginIntoMetamask(driver)
 bridgeURL = buildBridgeURL("JEWEL", "JEWEL", "53935")
+switchMetamaskNetwork(driver, "DFK Chain")
 x = 1

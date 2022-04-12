@@ -9,7 +9,8 @@ RUN python3 -m pip install selenium
 RUN mkdir -p /home/seluser/dfk-arb
 COPY dex/ /home/seluser/dfk-arb/dex/
 COPY helpers /home/seluser/dfk-arb/helpers/
-COPY chrome/ /home/seluser/chrome/
+# COPY chrome/ /home/seluser/chrome/
+COPY /Users/luke/Documents/chrome/ /home/seluser/chrome/
 COPY private /home/seluser/dfk-arb/private/
 COPY web /home/seluser/dfk-arb/web/
 COPY [".env", "main.py", "requirements.txt", "/home/seluser/dfk-arb/"]
