@@ -1,1 +1,2 @@
 pyvirtualdisplay
+python-dotenv

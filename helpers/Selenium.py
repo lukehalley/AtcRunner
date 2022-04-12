@@ -135,7 +135,6 @@ def switchMetamaskNetwork(driver, networkToSwitchTo):
         networkListItem.click()
         print(f"Switched to {networkToSwitchTo}!", "\n")
 
-
 driver = initBrowser()
 loginIntoMetamask(driver)
 bridgeURL = buildBridgeURL("JEWEL", "JEWEL", "53935")
