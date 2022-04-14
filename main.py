@@ -5,26 +5,36 @@ import helpers.Database as Database
 import helpers.Logger as Log
 import helpers.Arbitrage as Arbitrage
 import helpers.Wallet as Wallet
+import helpers.Selenium as Selenium
+import helpers.Utils as Utils
 
 # Init logger
 logger = Log.setupLogging()
 
+print("\n")
+
+roundTripCount = 1
+
+Utils.printSeperator()
+logger.info(f"Getting Data From Firebase")
+Utils.printSeperator()
+
 # Create connection to Firebase
 Database.createDatabaseConnection()
 
-# Get the arb recipes
+# Get the arb data
 recipes = Database.fetchFromDatabase("recipes")
-
-# Get network information
 networks = Database.fetchFromDatabase("networks")
-
-# Get token information
 tokens = Database.fetchFromDatabase("tokens")
+
+Utils.printSeperator(True)
 
 # Calculate how often we can query dex tools
 minimumInterval = Arbitrage.calculateQueryInterval(len(recipes))
 
-print("------------------------------------------------------------------------------------------------------------------")
+Utils.printSeperator()
+logger.info(f"Waiting For Arbitrage Opportunity...")
+Utils.printSeperator(True)
 
 for recipesTitle, recipeDetails in recipes.items():
 
@@ -39,28 +49,64 @@ for recipesTitle, recipeDetails in recipes.items():
         chainTwo["tokenDexPair"] = tokens[recipeDetails["chainTwo"]["chain"]][recipeDetails["chainTwo"]["token"]]["dexPair"]
         chainTwo["networkDetails"] = networks[recipeDetails["chainTwo"]["chain"]]
 
+        logger.debug(f"Checking If Theres An Arbitrage Between The Pair")
+
         reportString, priceDifference, arbitrageOrigin, arbitrageDestination = Arbitrage.calculateArbitrage(
             arbTitle=recipesTitle,
             chainOne=chainOne,
             chainTwo=chainTwo,
             )
 
-        if (Arbitrage.checkArbitragIsWorthIt(priceDifference) and arbitrageOrigin and arbitrageDestination):
+        arbIsWorthIt = Arbitrage.checkArbitrageIsWorthIt(priceDifference) and arbitrageOrigin and arbitrageDestination
 
-            logger.info(f"Arbitrage Opportunity Identified!")
+        if (arbIsWorthIt):
+
+            Utils.printRoundtrip(roundTripCount)
+
+            Utils.printSeperator()
+            logger.info(f"Arbitrage Opportunity Identified")
+            Utils.printSeperator()
             logger.info(reportString)
+            Utils.printSeperator(True)
+
+            Utils.printSeperator()
+            logger.info(f"Getting Wallet Details & Balance")
+            Utils.printSeperator()
 
             originWalletAddress = Wallet.getWalletAddressFromPrivateKey(arbitrageOrigin["networkDetails"]["chainRPC"])
             destinationWalletAddress = Wallet.getWalletAddressFromPrivateKey(arbitrageDestination["networkDetails"]["chainRPC"])
-
             originWalletTokenBalance = Wallet.getTokenBalance(arbitrageOrigin["networkDetails"]["chainRPC"], originWalletAddress, arbitrageOrigin['token'], arbitrageOrigin['chain'])
             destinationWalletTokenBalance = Wallet.getTokenBalance(arbitrageDestination["networkDetails"]["chainRPC"], destinationWalletAddress, arbitrageDestination['token'], arbitrageDestination['chain'])
 
+            Utils.printSeperator(True)
+
+            Utils.printSeperator()
+            logger.info(f"Launching Chrome & Metamask")
+            Utils.printSeperator()
+
+            driver, display = Selenium.initBrowser()
+            Selenium.loginIntoMetamask(driver)
+            Selenium.switchMetamaskNetwork(driver, arbitrageOrigin['chain'])
+            Utils.printSeperator(True)
+
+            Utils.printSeperator()
+            logger.info(f'Bridging To Destination Network: {(arbitrageDestination["networkDetails"]["chainName"].title())}')
+            Utils.printSeperator()
+            Selenium.executeSynapseBridge(driver, arbitrageOrigin['bridgeToken'], arbitrageDestination['bridgeToken'], arbitrageDestination["networkDetails"]["chainID"], "10")
+            Utils.printSeperator(True)
+
+            Utils.printSeperator()
+            logger.info(f"Running Cleanup Chrome & Display")
+            Utils.printSeperator()
+            Selenium.closeBrowser(driver, display)
+            Utils.printSeperator(True)
+
+            roundTripCount = roundTripCount + 1
+
             time.sleep(10)
         else:
-            time.sleep(minimumInterval)
 
-        print("------------------------------------------------------------------------------------------------------------------")
+            time.sleep(minimumInterval)
 
 # Iterate through the recipes
 

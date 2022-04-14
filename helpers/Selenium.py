@@ -10,31 +10,28 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
 from pyvirtualdisplay import Display
-import json
+import logging
 
-#  Load Web Element Selectors
-with open('./helpers/webElements.json') as json_file:
-    webElements = json.load(json_file)
+logger = logging.getLogger("DFK-DEX")
 
-x = 1
-
-def findWebElement(selector, timeout=30):
-    return WebDriverWait(driver, timeout).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, selector))
-    )
-
-def is_docker():
+def checkIsDocker():
     path = '/proc/self/cgroup'
     result = os.path.exists('/.dockerenv') or os.path.isfile(path) and any('docker' in line for line in open(path))
     return (result)
 
 def initBrowser():
 
-    isDocker = is_docker()
+    logger.info("Initialising Selenium")
+
+    isDocker = checkIsDocker()
 
     if isDocker:
+        logger.info("Starting Virtual Display since we are running in Docker")
         display = Display(visible=0, size=(1920, 1080))
         display.start()
+        logger.info("Virtual Display started")
+    else:
+        display = None
 
     chrome_options = webdriver.ChromeOptions()
 
@@ -51,16 +48,36 @@ def initBrowser():
     else:
         driver = webdriver.Chrome(executable_path='/Users/luke/bin/chromedriver', options=chrome_options)
 
-    return driver
+    logger.info("Selenium initialised & ready")
+
+    return driver, display
+
+def closeBrowser(driver, display):
+
+    logger.info("Shutting down Selenium")
+
+    if display:
+        logger.info("Shutting down display since were running in Docker")
+        display.stop()
+        logger.info("Display shut down")
+
+    driver.quit()
+
+    logger.info("Selenium shutdown")
+
+def findWebElement(driver, selector, timeout=30):
+    return WebDriverWait(driver, timeout).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, selector))
+    )
 
 def openMetamaskTab(driver):
 
     load_dotenv()
 
-    print("Opening Metamask tab...")
+    logger.info("Opening Metamask tab...")
     mmExtString = os.environ.get("MM_EXT_STR")
     driver.get(f'chrome-extension://{mmExtString}/home.html')
-    print("Metamask opened!", "\n")
+    logger.info("Metamask opened!")
 
 def loginIntoMetamask(driver):
 
@@ -68,22 +85,22 @@ def loginIntoMetamask(driver):
 
     openMetamaskTab(driver)
 
-    print("Waiting for Metamask password input...")
-    passwordInput = findWebElement(os.environ.get("METAMASK_PASSWORDINPUT"))
-    print("Password input located!", "\n")
+    logger.info("Waiting for Metamask password input...")
+    passwordInput = findWebElement(driver, os.environ.get("METAMASK_PASSWORDINPUT"))
+    logger.info("Password input located!")
 
-    print("Filling in password...")
+    logger.info("Filling in password...")
     mmPassword = os.environ.get("KNOCKKNOCK")
     passwordInput.send_keys(mmPassword)
-    print("Password inputted!", "\n")
+    logger.info("Password inputted!")
 
-    print("Pressing enter...")
+    logger.info("Pressing enter...")
     passwordInput.send_keys(Keys.RETURN)
-    print("Enter key pressed!", "\n")
+    logger.info("Enter key pressed!")
 
-    print("Checking if logged in...")
-    findWebElement(os.environ.get("METAMASK_TABS"))
-    print("Metamask logged in!", "\n")
+    logger.info("Checking if logged in...")
+    findWebElement(driver, os.environ.get("METAMASK_TABS"))
+    logger.info("Metamask logged in!")
 
 def buildBridgeURL(inputToken, outputToken, chainId):
 
@@ -97,98 +114,92 @@ def buildBridgeURL(inputToken, outputToken, chainId):
 
 def executeSynapseBridge(driver, inputToken, outputToken, chainId, amount):
 
-    print("Building Synapse Bridge URL...")
+    logger.info("Building Synapse Bridge URL...")
     synapseBridgeBridgeURL = buildBridgeURL(inputToken, outputToken, chainId)
-    print(f"Synapse Bridge URL built: {synapseBridgeBridgeURL}", "\n")
+    logger.info(f"Synapse Bridge URL built: {synapseBridgeBridgeURL}")
 
-    print("Opening Synapse Bridge...")
+    logger.info("Opening Synapse Bridge...")
     driver.get(synapseBridgeBridgeURL)
-    print("Synapse Bridge opened!", "\n")
+    logger.info("Synapse Bridge opened!")
 
-    print(f"Checking current {inputToken} GUI balance...")
-    synapseCurrentTokenBalance = findWebElement(os.environ.get("SYNAPSE_GUIBALANCE"))
+    logger.info(f"Checking current {inputToken} GUI balance...")
+    synapseCurrentTokenBalance = findWebElement(driver, os.environ.get("SYNAPSE_GUIBALANCE"))
     synapseGUIBalance = synapseCurrentTokenBalance.text
-    print(f"{inputToken} GUI balance is currently {synapseGUIBalance}", "\n")
+    logger.info(f"{inputToken} GUI balance is currently {synapseGUIBalance}")
 
-    print("Waiting for Synapse input and output token field...")
-    inputTokenField = findWebElement(os.environ.get("SYNAPSE_INPUTFIELD"))
-    outputTokenField = findWebElement(os.environ.get("SYNAPSE_OUTPUTFIELD"))
-    print("Synapse input and output token fields located!", "\n")
+    logger.info("Waiting for Synapse input and output token field...")
+    inputTokenField = findWebElement(driver, os.environ.get("SYNAPSE_INPUTFIELD"))
+    outputTokenField = findWebElement(driver, os.environ.get("SYNAPSE_OUTPUTFIELD"))
+    logger.info("Synapse input and output token fields located!")
 
-    print(f"Entering {amount} {inputToken} as the input token...")
+    logger.info(f"Entering {amount} {inputToken} as the input token...")
     inputTokenField.send_keys(amount)
-    print("Entered input tokens!", "\n")
+    logger.info("Entered input tokens!")
 
     time.sleep(5)
 
-    print(f"Checking how many {inputToken} we will get after bridging...")
+    logger.info(f"Checking how many {inputToken} we will get after bridging...")
     synapseTokenOut = outputTokenField.get_attribute('value')
-    print(f"We will get {synapseTokenOut} {inputToken} after we bridge.", "\n")
+    logger.info(f"We will get {synapseTokenOut} {inputToken} after we bridge.")
 
-    print(f"Checking {inputToken} bridge fee...")
-    synapseFee = findWebElement(os.environ.get("SYNAPSE_FEE"))
+    logger.info(f"Checking {inputToken} bridge fee...")
+    synapseFee = findWebElement(driver, os.environ.get("SYNAPSE_FEE"))
     synapseFeeAmount = synapseFee.text
-    print(f"Bridge fee is {synapseFeeAmount} {inputToken}", "\n")
+    logger.info(f"Bridge fee is {synapseFeeAmount} {inputToken}")
 
-    print(f"Checking bridge slippage fee...")
-    synapseSlippage = findWebElement(os.environ.get("SYNAPSE_SLIPPAGE"))
+    logger.info(f"Checking bridge slippage fee...")
+    synapseSlippage = findWebElement(driver, os.environ.get("SYNAPSE_SLIPPAGE"))
     synapseSlippageAmount = synapseSlippage.text
 
     if "-" in synapseSlippageAmount:
-        print(f"Bridge has a negative slippage of {synapseSlippageAmount}", "\n")
+        logger.info(f"Bridge has a negative slippage of {synapseSlippageAmount}")
     else:
-        print(f"Bridge has a positive slippage of {synapseSlippageAmount}", "\n")
+        logger.info(f"Bridge has a positive slippage of {synapseSlippageAmount}")
 
     time.sleep(5)
 
-    print(f"Checking bridge button status")
-    synapseBridgeBtnText = findWebElement(os.environ.get("SYNAPSE_BRIDGE_BTN_TXT"))
+    logger.info(f"Checking bridge button status")
+    synapseBridgeBtnText = findWebElement(driver, os.environ.get("SYNAPSE_BRIDGE_BTN_TXT"))
     synapseBridgeStatusText = synapseBridgeBtnText.text
-    print(f"Current bridge button status is '{synapseBridgeStatusText}'", "\n")
+    logger.info(f"Current bridge button status is '{synapseBridgeStatusText}'")
 
     if synapseBridgeBtnText == "Bridge Token":
         readyToBridge = True
     else:
         readyToBridge = False
 
-    print(f"Ready to bridge: {readyToBridge}")
+    logger.info(f"Ready to bridge: {readyToBridge}")
 
 def switchMetamaskNetwork(driver, networkToSwitchTo):
 
     openMetamaskTab(driver)
 
-    print("Locating Metamask switch dropdown...")
-    switchDropdown = findWebElement(os.environ.get("METAMASK_SWITCHDROPDOWN"))
-    print("Metamask switch dropdown located!", "\n")
+    logger.info("Locating Metamask switch dropdown...")
+    switchDropdown = findWebElement(driver, os.environ.get("METAMASK_SWITCHDROPDOWN"))
+    logger.info("Metamask switch dropdown located!")
 
-    print("Getting current network...")
-    mmCurrentNetwork = findWebElement(os.environ.get("METAMASK_CURRENTNETWORK"))
+    logger.info("Getting current network...")
+    mmCurrentNetwork = findWebElement(driver, os.environ.get("METAMASK_CURRENTNETWORK"))
     currentNetwork = mmCurrentNetwork.text
-    print(f"Got current network: {currentNetwork}", "\n")
+    logger.info(f"Got current network: {currentNetwork}")
 
     if (currentNetwork == networkToSwitchTo):
-        print(f"We are already on {networkToSwitchTo} - no need to switch!", "\n")
+        logger.info(f"We are already on {networkToSwitchTo} - no need to switch!")
         return
     else:
-        print("Clicking Metamask switch dropdown...")
+        logger.info("Clicking Metamask switch dropdown...")
         switchDropdown.click()
-        print("Metamask switch dropdown Clicked!", "\n")
+        logger.info("Metamask switch dropdown Clicked!")
 
-        print("Checking dropdown is open...")
-        findWebElement(os.environ.get("METAMASK_ADDNETWORKBUTTON"))
-        print("Metamask switch dropdown is open!", "\n")
+        logger.info("Checking dropdown is open...")
+        findWebElement(driver, os.environ.get("METAMASK_ADDNETWORKBUTTON"))
+        logger.info("Metamask switch dropdown is open!")
 
-        print("Getting network list element...")
-        findWebElement(os.environ.get("METAMASK_NETWORKLIST"))
-        print("Got network list element!", "\n")
+        logger.info("Getting network list element...")
+        findWebElement(driver, os.environ.get("METAMASK_NETWORKLIST"))
+        logger.info("Got network list element!")
 
-        print(f"Switching to {networkToSwitchTo}...")
+        logger.info(f"Switching to {networkToSwitchTo}...")
         networkListItem = driver.find_element_by_xpath(f"//span[text()='{networkToSwitchTo}']")
         networkListItem.click()
-        print(f"Switched to {networkToSwitchTo}!", "\n")
-
-driver = initBrowser()
-loginIntoMetamask(driver)
-switchMetamaskNetwork(driver, "avalanchedfk")
-executeSynapseBridge(driver, "JEWEL", "JEWEL", "1666600000", "10")
-x = 1
+        logger.info(f"Switched to {networkToSwitchTo}!")
