@@ -5,12 +5,14 @@
         "readableChain": "Serendale",
         "chain": "harmony",
         "token": "JEWEL",
+        "bridgeToken": "JEWEL",
         "stablecoin": "1USDC"
       },
       "chainTwo": {
         "readableChain": "Crystalvale",
         "chain": "avalanchedfk",
         "token": "WJEWEL",
+        "bridgeToken": "JEWEL",
         "stablecoin": "USDC"
       }
     }

@@ -17,7 +17,7 @@ def createDatabaseConnection():
     pkeyPath: Optional[str] = os.environ.get("PRIVATE_KEY_PATH")
     databaseURL = os.environ.get("DATABASE_URL")
 
-    logger.debug(f"DB: Creating connection to Firebase @ {databaseURL}")
+    logger.info(f"DB: Creating connection to Firebase @ {databaseURL}")
 
     # Firebase Init
     cred = credentials.Certificate(pkeyPath)
@@ -25,11 +25,11 @@ def createDatabaseConnection():
         'databaseURL': databaseURL
     })
 
-    logger.debug(f"DB: Connection established to Firebase")
+    logger.info(f"DB: Connection established to Firebase")
 
 def fetchFromDatabase(reference):
 
-    logger.debug(f"DB: Getting '{reference}' from Firebase")
+    logger.info(f"DB: Getting '{reference}' from Firebase")
 
     db.reference()
 

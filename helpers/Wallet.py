@@ -80,7 +80,7 @@ def getWalletAddressFromPrivateKey(rpcURL):
 def getTokenBalance(rpcURL, walletAddress, token, chain):
 
     rpc_server = rpcURL
-    logger.debug("Using RPC Server " + rpc_server)
+    logger.info("Using RPC Server " + rpc_server)
 
     w3 = Web3(Web3.HTTPProvider(rpc_server))
 
@@ -89,7 +89,7 @@ def getTokenBalance(rpcURL, walletAddress, token, chain):
     name = erc20.name(token_address, rpc_server)
     symbol = erc20.symbol(token_address, rpc_server)
     balance = erc20.wei2eth(w3, erc20.balance_of(walletAddress, token_address, rpc_server))
-    logger.debug(f"Wallet {walletAddress} has {balance} {symbol} on {chain}")
+    logger.info(f"Wallet {walletAddress} has {balance} {symbol} on {chain}")
 
     return balance
 

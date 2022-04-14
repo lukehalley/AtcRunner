@@ -7,6 +7,8 @@ logger = logging.getLogger("DFK-DEX")
 
 def calculateArbitrage(arbTitle, chainOne, chainTwo):
 
+    logger.debug(f"Calling Dexscreener API to find current price of pair")
+
     # Dex Screen Envs
     pairsEndpoint = os.environ.get("DEXSCREENER_API_ENDPOINT")
 
@@ -27,24 +29,27 @@ def calculateArbitrage(arbTitle, chainOne, chainTwo):
 
     arbitrageOrigin, arbitrageDestination = calculateArbitrageStrategy(chainOnePrice, chainOne['chain'], chainTwoPrice, chainTwo['chain'])
 
+    logger.debug(f"Calculating arbitrage origin and destination")
+
     if arbitrageOrigin == chainOne["chain"]:
         arbitrageOriginDetails = chainOne
         arbitrageOriginDetails["price"] = chainOnePrice
 
-        destinationDetails = chainTwo
-        destinationDetails["price"] = chainTwoPrice
+        arbitrageDestinationDetails = chainTwo
+        arbitrageDestinationDetails["price"] = chainTwoPrice
     else:
         arbitrageOriginDetails = chainTwo
         arbitrageOriginDetails["price"] = chainTwoPrice
 
-        destinationDetails = chainOne
-        destinationDetails["price"] = chainOnePrice
+        arbitrageDestinationDetails = chainOne
+        arbitrageDestinationDetails["price"] = chainOnePrice
 
-    reportString = f"Buying {arbitrageOriginDetails['token']} on {arbitrageOriginDetails['readableChain']} @ {arbitrageOriginDetails['price']} {arbitrageOriginDetails['stablecoin']} and selling {destinationDetails['token']} on {destinationDetails['readableChain']} @ {destinationDetails['price']} {arbitrageOriginDetails['stablecoin']} for a {priceDifference}% arbitrage"
+    reportString = f"Buying {arbitrageOriginDetails['token']} on {arbitrageOriginDetails['readableChain']} @ {arbitrageOriginDetails['price']} {arbitrageOriginDetails['stablecoin']} and selling {arbitrageDestinationDetails['token']} on {arbitrageDestinationDetails['readableChain']} @ {arbitrageDestinationDetails['price']} {arbitrageDestinationDetails['stablecoin']} for a {priceDifference}% arbitrage"
 
-    return reportString, priceDifference, arbitrageOriginDetails, destinationDetails
+    return reportString, priceDifference, arbitrageOriginDetails, arbitrageDestinationDetails
 
 def calculateDifference(pairOne, pairTwo):
+    logger.debug(f"Calculating pair difference")
     return abs(round(((pairTwo - pairOne) * 100) / pairOne, 2))
 
 def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
@@ -59,7 +64,7 @@ def calculateQueryInterval(recipeCount):
     requestLimit = float(os.environ.get("REQUEST_LIMIT"))
     return 60 / (requestLimit / recipeCount)
 
-def checkArbitragIsWorthIt(difference):
+def checkArbitrageIsWorthIt(difference):
     # Dex Screen Envs
     threshold = float(os.environ.get("ARBITRAGE_THRESHOLD"))
     if difference >= threshold and difference > 0:
