@@ -2,14 +2,14 @@
   "recipes": {
     "JEWEL_Harmony_DFKChain": {
       "chainOne": {
-        "readableChain": "Serendale",
+        "readableChain": "DFK Harmony",
         "chain": "harmony",
         "token": "JEWEL",
         "bridgeToken": "JEWEL",
         "stablecoin": "1USDC"
       },
       "chainTwo": {
-        "readableChain": "Crystalvale",
+        "readableChain": "DFK Avalanche",
         "chain": "avalanchedfk",
         "token": "WJEWEL",
         "bridgeToken": "JEWEL",

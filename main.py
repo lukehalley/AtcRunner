@@ -49,7 +49,7 @@ for recipesTitle, recipeDetails in recipes.items():
         chainTwo["tokenDexPair"] = tokens[recipeDetails["chainTwo"]["chain"]][recipeDetails["chainTwo"]["token"]]["dexPair"]
         chainTwo["networkDetails"] = networks[recipeDetails["chainTwo"]["chain"]]
 
-        logger.debug(f"Checking If Theres An Arbitrage Between The Pair")
+        logger.debug(f"[ARB #{roundTripCount}] Checking If Theres An Arbitrage Between The Pair")
 
         reportString, priceDifference, arbitrageOrigin, arbitrageDestination = Arbitrage.calculateArbitrage(
             arbTitle=recipesTitle,
@@ -64,13 +64,13 @@ for recipesTitle, recipeDetails in recipes.items():
             Utils.printRoundtrip(roundTripCount)
 
             Utils.printSeperator()
-            logger.info(f"Arbitrage Opportunity Identified")
+            logger.info(f"[ARB #{roundTripCount}] Arbitrage Opportunity Identified")
             Utils.printSeperator()
             logger.info(reportString)
             Utils.printSeperator(True)
 
             Utils.printSeperator()
-            logger.info(f"Getting Wallet Details & Balance")
+            logger.info(f"[ARB #{roundTripCount}] Getting Wallet Details & Balance")
             Utils.printSeperator()
 
             originWalletAddress = Wallet.getWalletAddressFromPrivateKey(arbitrageOrigin["networkDetails"]["chainRPC"])
@@ -81,7 +81,7 @@ for recipesTitle, recipeDetails in recipes.items():
             Utils.printSeperator(True)
 
             Utils.printSeperator()
-            logger.info(f"Launching Chrome & Metamask")
+            logger.info(f"[ARB #{roundTripCount}] Launching Chrome & Metamask")
             Utils.printSeperator()
 
             driver, display = Selenium.initBrowser()
@@ -90,13 +90,13 @@ for recipesTitle, recipeDetails in recipes.items():
             Utils.printSeperator(True)
 
             Utils.printSeperator()
-            logger.info(f'Bridging To Destination Network: {(arbitrageDestination["networkDetails"]["chainName"].title())}')
+            logger.info(f'[ARB #{roundTripCount}] Bridging: {(arbitrageOrigin["readableChain"].title())} -> {(arbitrageDestination["readableChain"].title())}')
             Utils.printSeperator()
             Selenium.executeSynapseBridge(driver, arbitrageOrigin['bridgeToken'], arbitrageDestination['bridgeToken'], arbitrageDestination["networkDetails"]["chainID"], "10")
             Utils.printSeperator(True)
 
             Utils.printSeperator()
-            logger.info(f"Running Cleanup Chrome & Display")
+            logger.info(f"[ARB #{roundTripCount}] Finished - Running Cleanup")
             Utils.printSeperator()
             Selenium.closeBrowser(driver, display)
             Utils.printSeperator(True)
