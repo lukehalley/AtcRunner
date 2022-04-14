@@ -1,18 +1,24 @@
 import logging
+import os
 
 logger = logging.getLogger("DFK-DEX")
 
+def checkIsDocker():
+    path = '/proc/self/cgroup'
+    result = os.path.exists('/.dockerenv') or os.path.isfile(path) and any('docker' in line for line in open(path))
+    return (result)
+
 def printSeperator(newLine=False):
-    line = ("------------------------------------------------------------------------------------------------------------------")
+
+    if newLine:
+        line = ("------------------------------------------------------------------------------------------------------------------\n")
+    else:
+        line = ("------------------------------------------------------------------------------------------------------------------")
 
     logger.info(line)
 
-    if newLine:
-        print("\n")
 
 def printRoundtrip(count):
     logger.info("##################################################################################################################")
     logger.info(f"STARTING ARBITRAGE #{count}")
-    logger.info("##################################################################################################################")
-
-    print("\n")
+    logger.info("##################################################################################################################\n")

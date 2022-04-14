@@ -12,18 +12,15 @@ import time
 from pyvirtualdisplay import Display
 import logging
 
-logger = logging.getLogger("DFK-DEX")
+import helpers.Utils as Utils
 
-def checkIsDocker():
-    path = '/proc/self/cgroup'
-    result = os.path.exists('/.dockerenv') or os.path.isfile(path) and any('docker' in line for line in open(path))
-    return (result)
+logger = logging.getLogger("DFK-DEX")
 
 def initBrowser():
 
     logger.info("Initialising Selenium")
 
-    isDocker = checkIsDocker()
+    isDocker = Utils.checkIsDocker()
 
     if isDocker:
         logger.info("Starting Virtual Display since we are running in Docker")
