@@ -8,10 +8,10 @@ import helpers.Wallet as Wallet
 import helpers.Selenium as Selenium
 import helpers.Utils as Utils
 
-# Init logger
-logger = Log.setupLogging()
+isDocker = Utils.checkIsDocker()
 
-print("\n")
+# Init logger
+logger = Log.setupLogging(isDocker)
 
 roundTripCount = 1
 
