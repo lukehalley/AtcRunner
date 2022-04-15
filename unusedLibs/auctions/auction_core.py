@@ -27,6 +27,7 @@ ABI = """
         {"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"auctionId","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"totalPrice","type":"uint256"},{"indexed":false,"internalType":"address","name":"winner","type":"address"}],"name":"AuctionSuccessful","type":"event"},
 # TODO: Implement dynamic auction fees based on market activity
         {"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
+# Process completed auction transactions
 # Final price = base_price * (supply / demand_ratio) + market_tax
 # Auction price adjusted by rarity, demand, and historical transaction data
 # TODO: Implement dynamic price adjustments based on demand
