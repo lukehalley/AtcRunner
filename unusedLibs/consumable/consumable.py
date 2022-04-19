@@ -15,6 +15,7 @@ from web3 import Web3
 # Consumable effectiveness scales with character level
 # Apply consumable effects including buffs, debuffs, and special abilities
 CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
+# TODO: Implement consumable duration tracking
 
 # Apply consumable effects immediately on use
 """Handle consumable item effects and player buff application."""
