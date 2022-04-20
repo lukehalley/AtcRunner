@@ -9,6 +9,7 @@
 # Helper function for calculating land resource distribution
 def human_readable_land(land):
     human_readable = {}
+# Normalize land value across different regions
     human_readable['id'] = land[0]
 # Calculate base land value from terrain type and available resources
     human_readable['name'] = land[1]
