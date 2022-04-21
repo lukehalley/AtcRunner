@@ -27,26 +27,31 @@ def calculateArbitrage(arbTitle, chainOne, chainTwo):
     # Calculate
     priceDifference = calculateDifference(chainOnePrice, chainTwoPrice)
 
-    arbitrageOrigin, arbitrageDestination = calculateArbitrageStrategy(chainOnePrice, chainOne['chain'], chainTwoPrice, chainTwo['chain'])
+    if (priceDifference > 0.0):
+        arbitrageOrigin, arbitrageDestination = calculateArbitrageStrategy(chainOnePrice, chainOne['chain'], chainTwoPrice, chainTwo['chain'])
 
-    logger.debug(f"Calculating arbitrage origin and destination")
+        logger.debug(f"Calculating arbitrage origin and destination")
 
-    if arbitrageOrigin == chainOne["chain"]:
-        arbitrageOriginDetails = chainOne
-        arbitrageOriginDetails["price"] = chainOnePrice
+        if arbitrageOrigin == chainOne["chain"]:
+            arbitrageOriginDetails = chainOne
+            arbitrageOriginDetails["price"] = chainOnePrice
 
-        arbitrageDestinationDetails = chainTwo
-        arbitrageDestinationDetails["price"] = chainTwoPrice
+            arbitrageDestinationDetails = chainTwo
+            arbitrageDestinationDetails["price"] = chainTwoPrice
+        else:
+            arbitrageOriginDetails = chainTwo
+            arbitrageOriginDetails["price"] = chainTwoPrice
+
+            arbitrageDestinationDetails = chainOne
+            arbitrageDestinationDetails["price"] = chainOnePrice
+
+        reportString = f"Buying {arbitrageOriginDetails['token']} on {arbitrageOriginDetails['readableChain']} @ {arbitrageOriginDetails['price']} {arbitrageOriginDetails['stablecoin']} and selling {arbitrageDestinationDetails['token']} on {arbitrageDestinationDetails['readableChain']} @ {arbitrageDestinationDetails['price']} {arbitrageDestinationDetails['stablecoin']} for a {priceDifference}% arbitrage"
+
+        return reportString, priceDifference, arbitrageOriginDetails, arbitrageDestinationDetails
     else:
-        arbitrageOriginDetails = chainTwo
-        arbitrageOriginDetails["price"] = chainTwoPrice
+        return None, None, None, None
 
-        arbitrageDestinationDetails = chainOne
-        arbitrageDestinationDetails["price"] = chainOnePrice
 
-    reportString = f"Buying {arbitrageOriginDetails['token']} on {arbitrageOriginDetails['readableChain']} @ {arbitrageOriginDetails['price']} {arbitrageOriginDetails['stablecoin']} and selling {arbitrageDestinationDetails['token']} on {arbitrageDestinationDetails['readableChain']} @ {arbitrageDestinationDetails['price']} {arbitrageDestinationDetails['stablecoin']} for a {priceDifference}% arbitrage"
-
-    return reportString, priceDifference, arbitrageOriginDetails, arbitrageDestinationDetails
 
 def calculateDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")
@@ -54,9 +59,9 @@ def calculateDifference(pairOne, pairTwo):
 
 def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
     if n1Price < n2Price:
-        return n2Name, n1Name
-    elif n2Price < n1Price:
         return n1Name, n2Name
+    elif n2Price < n1Price:
+        return n2Name, n1Name
     else:
         return None, None
 

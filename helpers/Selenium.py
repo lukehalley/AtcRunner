@@ -124,10 +124,13 @@ def executeSynapseBridge(driver, inputToken, outputToken, chainId, amount):
     synapseGUIBalance = synapseCurrentTokenBalance.text
     logger.info(f"{inputToken} GUI balance is currently {synapseGUIBalance}")
 
-    logger.info("Waiting for Synapse input and output token field...")
+    logger.info("Waiting for Synapse input field...")
     inputTokenField = findWebElement(driver, os.environ.get("SYNAPSE_INPUTFIELD"))
-    outputTokenField = findWebElement(driver, os.environ.get("SYNAPSE_OUTPUTFIELD"))
-    logger.info("Synapse input and output token fields located!")
+    logger.info("Synapse input field located!")
+
+    # logger.info("Waiting for Synapse output field...")
+    # outputTokenField = findWebElement(driver, os.environ.get("SYNAPSE_OUTPUTFIELD"))
+    # logger.info("Synapse output field located!")
 
     logger.info(f"Entering {amount} {inputToken} as the input token...")
     inputTokenField.send_keys(amount)
@@ -135,13 +138,13 @@ def executeSynapseBridge(driver, inputToken, outputToken, chainId, amount):
 
     time.sleep(5)
 
-    logger.info(f"Checking how many {inputToken} we will get after bridging...")
-    synapseTokenOut = outputTokenField.get_attribute('value')
-    logger.info(f"We will get {synapseTokenOut} {inputToken} after we bridge.")
+    # logger.info(f"Checking how many {inputToken} we will get after bridging...")
+    # synapseTokenOut = outputTokenField.get_attribute('value')
+    # logger.info(f"We will get {synapseTokenOut} {inputToken} after we bridge.")
 
     logger.info(f"Checking {inputToken} bridge fee...")
     synapseFee = findWebElement(driver, os.environ.get("SYNAPSE_FEE"))
-    synapseFeeAmount = synapseFee.text
+    synapseFeeAmount = float(synapseFee.text)
     logger.info(f"Bridge fee is {synapseFeeAmount} {inputToken}")
 
     logger.info(f"Checking bridge slippage fee...")
@@ -152,6 +155,9 @@ def executeSynapseBridge(driver, inputToken, outputToken, chainId, amount):
         logger.info(f"Bridge has a negative slippage of {synapseSlippageAmount}")
     else:
         logger.info(f"Bridge has a positive slippage of {synapseSlippageAmount}")
+
+    totalReceiveAmount = float(amount) - synapseFeeAmount
+    logger.info(f"After bridge we will receive {totalReceiveAmount} {outputToken}")
 
     time.sleep(5)
 
