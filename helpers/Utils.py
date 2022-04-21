@@ -22,3 +22,7 @@ def printRoundtrip(count):
     logger.info("################################")
     logger.info(f"STARTING ARBITRAGE #{count}")
     logger.info("################################\n")
+
+
+def percentage(percent, whole):
+  return (percent * whole) / 100.0
