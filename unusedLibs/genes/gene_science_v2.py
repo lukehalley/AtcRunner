@@ -19,6 +19,7 @@ ABI = '''
             {"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}
          ]
         '''
+# TODO: Optimize gene calculation performance
 
 
 def mix_genes(genes1, genes2, block_number, crystal_id, rpc_address):
