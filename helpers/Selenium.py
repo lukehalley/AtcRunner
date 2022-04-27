@@ -16,8 +16,8 @@ import helpers.Utils as Utils
 
 logger = logging.getLogger("DFK-DEX")
 
-def initBrowser():
 
+def initBrowser():
     logger.info("Initialising Selenium")
 
     isDocker = Utils.checkIsDocker()
@@ -50,7 +50,6 @@ def initBrowser():
     return driver, display
 
 def closeBrowser(driver, display):
-
     logger.info("Shutting down Selenium")
 
     if display:
@@ -68,7 +67,6 @@ def findWebElement(driver, selector, timeout=30):
     )
 
 def openMetamaskTab(driver):
-
     load_dotenv()
 
     logger.info("Opening Metamask tab...")
@@ -77,7 +75,6 @@ def openMetamaskTab(driver):
     logger.info("Metamask opened!")
 
 def loginIntoMetamask(driver):
-
     load_dotenv()
 
     openMetamaskTab(driver)
@@ -99,8 +96,24 @@ def loginIntoMetamask(driver):
     findWebElement(driver, os.environ.get("METAMASK_TABS"))
     logger.info("Metamask logged in!")
 
-def buildBridgeURL(inputToken, outputToken, chainId):
+def approveToken(driver):
+    print("I am aproooving!")
 
+def checkBridgeStatus(driver, text):
+
+    bridgeAvailable = False
+
+    if text == "Insufficient JEWEL Balance":
+        bridgeAvailable = False
+    elif "Approve" in text:
+        approveToken(driver)
+        bridgeAvailable = True
+    elif text == "Bridge Token":
+        bridgeAvailable = True
+
+    return bridgeAvailable
+
+def buildBridgeURL(inputToken, outputToken, chainId):
     synapseBridgeURL = os.environ.get("SYNAPSE_BRIDGE_URL")
 
     synapseBridgeURL = synapseBridgeURL.replace("<INPUT_TOKEN>", inputToken)
@@ -109,72 +122,138 @@ def buildBridgeURL(inputToken, outputToken, chainId):
 
     return synapseBridgeURL
 
-def executeSynapseBridge(driver, inputToken, outputToken, chainId, amount):
+def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, amountToBridge):
+    i = 0
 
-    logger.info("Building Synapse Bridge URL...")
-    synapseBridgeBridgeURL = buildBridgeURL(inputToken, outputToken, chainId)
-    logger.info(f"Synapse Bridge URL built: {synapseBridgeBridgeURL}")
+    bridgePlan = {}
+
+    networks = [arbitrageOrigin, arbitrageDestination]
+
+    while i < 2:
+
+        switchMetamaskNetwork(driver, networks[i]["chain"])
+
+        if i <= 0:
+            outputChainID = networks[1]["networkDetails"]["chainID"]
+        else:
+            outputChainID = networks[0]["networkDetails"]["chainID"]
+
+        logger.info("Building Synapse Bridge URL...")
+        synapseBridgeBridgeURL = buildBridgeURL(networks[i]["bridgeToken"], networks[1]["bridgeToken"],
+                                                outputChainID)
+        logger.info(f"Synapse Bridge URL built: {synapseBridgeBridgeURL}")
+
+        logger.info("Opening Synapse Bridge...")
+        driver.get(synapseBridgeBridgeURL)
+        logger.info("Synapse Bridge opened!")
+
+        logger.info(f"Checking current {networks[i]['bridgeToken']} GUI balance...")
+        synapseCurrentTokenBalance = findWebElement(driver, os.environ.get("SYNAPSE_GUIBALANCE"))
+        synapseGUIBalance = synapseCurrentTokenBalance.text
+        logger.info(f"{networks[i]['bridgeToken']} GUI balance is currently {synapseGUIBalance}")
+
+        logger.info("Waiting for Synapse input field...")
+        inputTokenField = findWebElement(driver, os.environ.get("SYNAPSE_INPUTFIELD"))
+        logger.info("Synapse input field located!")
+
+        logger.info(f"Entering {amountToBridge} {networks[i]['bridgeToken']} as the input token...")
+        inputTokenField.send_keys(amountToBridge)
+        logger.info("Entered input tokens!")
+
+        time.sleep(5)
+
+        logger.info(f"Checking {networks[i]['bridgeToken']} bridge fee...")
+        synapseFee = findWebElement(driver, os.environ.get("SYNAPSE_FEE"))
+        bridgeFee = float(synapseFee.text)
+        bridgeFeePercentage = Utils.percentageOf(bridgeFee, amountToBridge)
+        logger.info(f"Bridge fee is {bridgeFee} {networks[i]['bridgeToken']} ({bridgeFeePercentage}%)")
+
+        logger.info(f"Checking bridge slippage fee...")
+        synapseSlippage = findWebElement(driver, os.environ.get("SYNAPSE_SLIPPAGE"))
+        synapseSlippageText = synapseSlippage.text
+        bridgeSlippage = float((synapseSlippageText).replace("%", ""))
+
+        if "-" in synapseSlippageText:
+            logger.info(f"Bridge has a negative slippage of {bridgeSlippage}%")
+        else:
+            logger.info(f"Bridge has a positive slippage of {bridgeSlippage}%")
+
+        totalReceiveAmount = float(amountToBridge) - bridgeFee
+        logger.info(f"After bridge we will receive {totalReceiveAmount} {networks[1]['bridgeToken']}")
+
+        time.sleep(5)
+
+        if i <= 0:
+            objectTitle = "arbitrageOrigin"
+            bridgePlan[objectTitle] = \
+                {
+                    "network": arbitrageOrigin,
+                    "bridgeFee": round(bridgeFee, 6),
+                    "bridgeToken": networks[i]['bridgeToken'],
+                    "bridgeFeePercentage": bridgeFeePercentage,
+                    "bridgeSlippage": bridgeSlippage,
+                    "bridgeURL": synapseBridgeBridgeURL
+                }
+        else:
+            objectTitle = "arbitrageDestination"
+            bridgePlan[objectTitle] = \
+                {
+                    "network": arbitrageDestination,
+                    "bridgeFee": round(bridgeFee, 6),
+                    "bridgeToken": networks[i]['bridgeToken'],
+                    "bridgeFeePercentage": bridgeFeePercentage,
+                    "bridgeSlippage": bridgeSlippage,
+                    "bridgeURL": synapseBridgeBridgeURL
+                }
+
+        i = i + 1
+
+    feeAmount = bridgePlan["arbitrageOrigin"]["bridgeFee"] + bridgePlan["arbitrageDestination"]["bridgeFee"]
+
+    bridgePlan["totals"] = {
+        "bridgeToken": bridgePlan['arbitrageOrigin']['bridgeToken'],
+        "bridgeTotalFee": round(feeAmount, 6),
+        "bridgeTotalFeePercentage": bridgePlan["arbitrageOrigin"]["bridgeFeePercentage"] + bridgePlan["arbitrageDestination"]["bridgeFeePercentage"],
+        "bridgeTotalSlippage": bridgePlan["arbitrageOrigin"]["bridgeSlippage"] + bridgePlan["arbitrageDestination"]["bridgeSlippage"]
+    }
+
+    Utils.printSeperator(True)
+
+    logger.info(f"Bridge Total Fee: {bridgePlan['totals']['bridgeTotalFee']} {bridgePlan['totals']['bridgeToken']}")
+    logger.info(f"Bridge Total % Fee: {bridgePlan['totals']['bridgeTotalFeePercentage']}%")
+    logger.info(f"Bridge Total % Slippage: {bridgePlan['totals']['bridgeTotalSlippage']}%")
+
+    switchMetamaskNetwork(driver, networks[0]["chain"])
+
+    return bridgePlan
+
+def executeBridge(driver, direction, bridgePlan, amountToBridge):
+
+    bridgeObject = bridgePlan[direction]
 
     logger.info("Opening Synapse Bridge...")
-    driver.get(synapseBridgeBridgeURL)
+    driver.get(bridgeObject["bridgeURL"])
     logger.info("Synapse Bridge opened!")
-
-    logger.info(f"Checking current {inputToken} GUI balance...")
-    synapseCurrentTokenBalance = findWebElement(driver, os.environ.get("SYNAPSE_GUIBALANCE"))
-    synapseGUIBalance = synapseCurrentTokenBalance.text
-    logger.info(f"{inputToken} GUI balance is currently {synapseGUIBalance}")
 
     logger.info("Waiting for Synapse input field...")
     inputTokenField = findWebElement(driver, os.environ.get("SYNAPSE_INPUTFIELD"))
     logger.info("Synapse input field located!")
 
-    # logger.info("Waiting for Synapse output field...")
-    # outputTokenField = findWebElement(driver, os.environ.get("SYNAPSE_OUTPUTFIELD"))
-    # logger.info("Synapse output field located!")
-
-    logger.info(f"Entering {amount} {inputToken} as the input token...")
-    inputTokenField.send_keys(amount)
+    logger.info(f"Entering {amountToBridge} {bridgeObject['bridgeToken']} as the input token...")
+    inputTokenField.send_keys(amountToBridge)
     logger.info("Entered input tokens!")
 
     time.sleep(5)
 
-    # logger.info(f"Checking how many {inputToken} we will get after bridging...")
-    # synapseTokenOut = outputTokenField.get_attribute('value')
-    # logger.info(f"We will get {synapseTokenOut} {inputToken} after we bridge.")
+    bridgeBtn = findWebElement(driver, os.environ.get("SYNAPSE_BRIDGE_BTN_TXT"))
+    bridgeStatus = bridgeBtn.text
 
-    logger.info(f"Checking {inputToken} bridge fee...")
-    synapseFee = findWebElement(driver, os.environ.get("SYNAPSE_FEE"))
-    synapseFeeAmount = float(synapseFee.text)
-    logger.info(f"Bridge fee is {synapseFeeAmount} {inputToken}")
+    bridgeStatus = checkBridgeStatus(driver, bridgeStatus)
 
-    logger.info(f"Checking bridge slippage fee...")
-    synapseSlippage = findWebElement(driver, os.environ.get("SYNAPSE_SLIPPAGE"))
-    synapseSlippageAmount = synapseSlippage.text
-
-    if "-" in synapseSlippageAmount:
-        logger.info(f"Bridge has a negative slippage of {synapseSlippageAmount}")
-    else:
-        logger.info(f"Bridge has a positive slippage of {synapseSlippageAmount}")
-
-    totalReceiveAmount = float(amount) - synapseFeeAmount
-    logger.info(f"After bridge we will receive {totalReceiveAmount} {outputToken}")
-
-    time.sleep(5)
-
-    logger.info(f"Checking bridge button status")
-    synapseBridgeBtnText = findWebElement(driver, os.environ.get("SYNAPSE_BRIDGE_BTN_TXT"))
-    synapseBridgeStatusText = synapseBridgeBtnText.text
-    logger.info(f"Current bridge button status is '{synapseBridgeStatusText}'")
-
-    if synapseBridgeBtnText == "Bridge Token":
-        readyToBridge = True
-    else:
-        readyToBridge = False
-
-    logger.info(f"Ready to bridge: {readyToBridge}")
+    return 0
+    
 
 def switchMetamaskNetwork(driver, networkToSwitchTo):
-
     openMetamaskTab(driver)
 
     logger.info("Locating Metamask switch dropdown...")

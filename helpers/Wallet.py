@@ -19,6 +19,17 @@ transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 logger = logging.getLogger("DFK-DEX")
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def getGasPrice(rpcURL):
+
+    # Connect to our RPC.
+    w3 = Web3(Web3.HTTPProvider(rpcURL))
+    logger.info("Using RPC server " + rpcURL)
+
+    gasPrice = float(w3.fromWei(w3.eth.gas_price, 'gwei'))
+
+    return gasPrice
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, privateKey, timeout=180, gwei=30):
 
     # Connect to our RPC.
@@ -66,6 +77,7 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, privateKey, 
             rpc_address=rpcURL,
             logger=logger
         )
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcURL):
 

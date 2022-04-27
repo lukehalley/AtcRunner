@@ -26,3 +26,6 @@ def printRoundtrip(count):
 
 def percentage(percent, whole):
   return (percent * whole) / 100.0
+
+def percentageOf(part, whole):
+  return 100 * float(part)/float(whole)
