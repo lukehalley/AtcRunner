@@ -1,11 +1,12 @@
 import logging
 import os
 import requests
+from itertools import repeat
 import helpers.Database as Database
 
 logger = logging.getLogger("DFK-DEX")
 
-def calculateArbitrage(arbTitle, chainOne, chainTwo):
+def calculateArbitrage(chainOne, chainTwo):
 
     logger.debug(f"Calling Dexscreener API to find current price of pair")
 
@@ -27,31 +28,61 @@ def calculateArbitrage(arbTitle, chainOne, chainTwo):
     # Calculate
     priceDifference = calculateDifference(chainOnePrice, chainTwoPrice)
 
-    if (priceDifference > 0.0):
-        arbitrageOrigin, arbitrageDestination = calculateArbitrageStrategy(chainOnePrice, chainOne['chain'], chainTwoPrice, chainTwo['chain'])
+    arbitrageOrigin, arbitrageDestination = calculateArbitrageStrategy(chainOnePrice, chainOne['chain'], chainTwoPrice,
+                                                                       chainTwo['chain'])
+    logger.debug(f"Calculating arbitrage origin and destination")
 
-        logger.debug(f"Calculating arbitrage origin and destination")
+    if arbitrageOrigin == chainOne["chain"]:
+        arbitrageOriginDetails = chainOne
+        arbitrageOriginDetails["price"] = chainOnePrice
 
-        if arbitrageOrigin == chainOne["chain"]:
-            arbitrageOriginDetails = chainOne
-            arbitrageOriginDetails["price"] = chainOnePrice
-
-            arbitrageDestinationDetails = chainTwo
-            arbitrageDestinationDetails["price"] = chainTwoPrice
-        else:
-            arbitrageOriginDetails = chainTwo
-            arbitrageOriginDetails["price"] = chainTwoPrice
-
-            arbitrageDestinationDetails = chainOne
-            arbitrageDestinationDetails["price"] = chainOnePrice
-
-        reportString = f"Buying {arbitrageOriginDetails['token']} on {arbitrageOriginDetails['readableChain']} @ {arbitrageOriginDetails['price']} {arbitrageOriginDetails['stablecoin']} and selling {arbitrageDestinationDetails['token']} on {arbitrageDestinationDetails['readableChain']} @ {arbitrageDestinationDetails['price']} {arbitrageDestinationDetails['stablecoin']} for a {priceDifference}% arbitrage"
-
-        return reportString, priceDifference, arbitrageOriginDetails, arbitrageDestinationDetails
+        arbitrageDestinationDetails = chainTwo
+        arbitrageDestinationDetails["price"] = chainTwoPrice
     else:
-        return None, None, None, None
+        arbitrageOriginDetails = chainTwo
+        arbitrageOriginDetails["price"] = chainTwoPrice
 
+        arbitrageDestinationDetails = chainOne
+        arbitrageDestinationDetails["price"] = chainOnePrice
 
+    reportString = f"Buying {arbitrageOriginDetails['token']} on {arbitrageOriginDetails['readableChain']} @ {arbitrageOriginDetails['price']} {arbitrageOriginDetails['stablecoin']} and selling {arbitrageDestinationDetails['token']} on {arbitrageDestinationDetails['readableChain']} @ {arbitrageDestinationDetails['price']} {arbitrageDestinationDetails['stablecoin']} for a {priceDifference}% arbitrage"
+
+    return reportString, priceDifference, arbitrageOriginDetails, arbitrageDestinationDetails
+
+def calculatePotentialProfit(initialCapital, arbitrageOrigin, arbitrageDestination, bridgePlan):
+    logger.debug(f"Calculating potential profit")
+
+    tripPredictions = {}
+    trips = [1, 2, 5, 10, 20, 100, 250, 500, 1000]
+
+    tripIsProfitible = False
+
+    for tripAmount in trips:
+
+        startingCapital = initialCapital
+        currentCapital = startingCapital
+        profitLoss = 0
+
+        tripIsProfitible = False
+
+        for _ in repeat(None, tripAmount):
+
+            # Calculate Profit/Loss of a single round trip.
+            initialBuy = currentCapital / arbitrageOrigin["price"]
+            initialBuyAfterBridgeFees = initialBuy - bridgePlan["arbitrageOrigin"]["bridgeFee"]
+            arbSell = initialBuyAfterBridgeFees * arbitrageDestination["price"]
+            currentCapital = arbSell - (bridgePlan["arbitrageDestination"]["bridgeFee"] * arbitrageOrigin["price"])
+            profitLoss = currentCapital - startingCapital
+            tripIsProfitible = currentCapital > startingCapital
+
+        if tripIsProfitible:
+            logger.info(f"{tripAmount} Round trips would in a PROFIT [ Total: {currentCapital} | P/L ${profitLoss} ]")
+        else:
+            logger.info(f"{tripAmount} Round trips would in a LOSS [ Total: {currentCapital} | P/L ${profitLoss} ]")
+
+        tripPredictions[f"{tripAmount}"] = {"Total": currentCapital, "P/L": profitLoss, "Profitable": tripIsProfitible}
+
+    return tripIsProfitible, tripPredictions
 
 def calculateDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")
@@ -72,7 +103,7 @@ def calculateQueryInterval(recipeCount):
 def checkArbitrageIsWorthIt(difference):
     # Dex Screen Envs
     threshold = float(os.environ.get("ARBITRAGE_THRESHOLD"))
-    if difference >= threshold and difference > 0:
+    if difference >= threshold:
         return True
     else:
         return False

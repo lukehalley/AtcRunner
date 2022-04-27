@@ -36,6 +36,8 @@ Utils.printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 Utils.printSeperator(True)
 
+startingCapital = 1000
+
 for recipesTitle, recipeDetails in recipes.items():
 
     chainOne = recipeDetails["chainOne"]
@@ -52,14 +54,13 @@ for recipesTitle, recipeDetails in recipes.items():
         logger.debug(f"[ARB #{roundTripCount}] Checking If Theres An Arbitrage Between The Pair")
 
         reportString, priceDifference, arbitrageOrigin, arbitrageDestination = Arbitrage.calculateArbitrage(
-            arbTitle=recipesTitle,
             chainOne=chainOne,
             chainTwo=chainTwo,
             )
 
-        arbIsWorthIt = Arbitrage.checkArbitrageIsWorthIt(priceDifference) and arbitrageOrigin and arbitrageDestination
+        if reportString:
 
-        if (arbIsWorthIt):
+            # arbIsWorthIt = Arbitrage.checkArbitrageIsWorthIt(priceDifference) and arbitrageOrigin and arbitrageDestination
 
             Utils.printRoundtrip(roundTripCount)
 
@@ -74,9 +75,15 @@ for recipesTitle, recipeDetails in recipes.items():
             Utils.printSeperator()
 
             originWalletAddress = Wallet.getWalletAddressFromPrivateKey(arbitrageOrigin["networkDetails"]["chainRPC"])
-            destinationWalletAddress = Wallet.getWalletAddressFromPrivateKey(arbitrageDestination["networkDetails"]["chainRPC"])
-            originWalletTokenBalance = Wallet.getTokenBalance(arbitrageOrigin["networkDetails"]["chainRPC"], originWalletAddress, arbitrageOrigin['token'], arbitrageOrigin['chain'])
-            destinationWalletTokenBalance = Wallet.getTokenBalance(arbitrageDestination["networkDetails"]["chainRPC"], destinationWalletAddress, arbitrageDestination['token'], arbitrageDestination['chain'])
+            destinationWalletAddress = Wallet.getWalletAddressFromPrivateKey(
+                arbitrageDestination["networkDetails"]["chainRPC"])
+            originWalletTokenBalance = Wallet.getTokenBalance(arbitrageOrigin["networkDetails"]["chainRPC"],
+                                                              originWalletAddress, arbitrageOrigin['token'],
+                                                              arbitrageOrigin['chain'])
+            destinationWalletTokenBalance = Wallet.getTokenBalance(arbitrageDestination["networkDetails"]["chainRPC"],
+                                                                   destinationWalletAddress,
+                                                                   arbitrageDestination['token'],
+                                                                   arbitrageDestination['chain'])
 
             Utils.printSeperator(True)
 
@@ -86,26 +93,48 @@ for recipesTitle, recipeDetails in recipes.items():
 
             driver, display = Selenium.initBrowser()
             Selenium.loginIntoMetamask(driver)
-            Selenium.switchMetamaskNetwork(driver, arbitrageOrigin['chain'])
             Utils.printSeperator(True)
 
-            Utils.printSeperator()
-            logger.info(f'[ARB #{roundTripCount}] Bridging: {(arbitrageOrigin["readableChain"].title())} -> {(arbitrageDestination["readableChain"].title())}')
-            Utils.printSeperator()
-            Selenium.executeSynapseBridge(driver, arbitrageOrigin['bridgeToken'], arbitrageDestination['bridgeToken'], arbitrageDestination["networkDetails"]["chainID"], "10")
-            Utils.printSeperator(True)
+            amountToBridge = startingCapital
 
             Utils.printSeperator()
-            logger.info(f"[ARB #{roundTripCount}] Finished - Running Cleanup")
+            logger.info(
+                f'[ARB #{roundTripCount}] Bridging: {(arbitrageOrigin["readableChain"].title())} -> {(arbitrageDestination["readableChain"].title())}')
             Utils.printSeperator()
-            Selenium.closeBrowser(driver, display)
+            bridgePlan = Selenium.calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, amountToBridge)
             Utils.printSeperator(True)
+
+            tripIsProfitible, tripPredictions = Arbitrage.calculatePotentialProfit(startingCapital, arbitrageOrigin,
+                                                                                   arbitrageDestination,
+                                                                                   bridgePlan)
+
+            x = 1
+
+            bridgeResult = Selenium.executeBridge(driver, "arbitrageOrigin", bridgePlan, amountToBridge)
+
+            # if tripIsProfitible:
+            #     logger.info(f"[ARB #{roundTripCount}] Confirmed Profitable - Im Arbiiing!")
+            #
+            #     Utils.printSeperator()
+            #     logger.info(f"[ARB #{roundTripCount}] Finished - Running Cleanup")
+            #     Utils.printSeperator()
+            #     Selenium.closeBrowser(driver, display)
+            #     Utils.printSeperator(True)
+            #
+            # else:
+            #     logger.info(f"[ARB #{roundTripCount}] Not Profitable - Im Skipiiing!")
+            #
+            #     Utils.printSeperator()
+            #     logger.info(f"[ARB #{roundTripCount}] Finished - Running Cleanup")
+            #     Utils.printSeperator()
+            #     Selenium.closeBrowser(driver, display)
+            #     Utils.printSeperator(True)
 
             roundTripCount = roundTripCount + 1
 
             time.sleep(10)
-        else:
 
+        else:
             time.sleep(minimumInterval)
 
 # Iterate through the recipes
