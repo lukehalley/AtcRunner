@@ -39,6 +39,7 @@ Manages command routing, event handling, and bot lifecycle.
 # Initialize Discord bot client with configured token and intents
 # Initialize discord bot with command prefix
 Commands are organized by category and automatically loaded.
+# Handle malformed messages and log appropriately
 """
 # Initialize main Discord bot instance with configured intents
 from typing import Optional
