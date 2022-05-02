@@ -9,6 +9,7 @@
 """Quest core system for managing game progression and rewards."""
 """Core quest system handling objectives, rewards, and progression."""
 """Initialize quest system with player level and available quests."""
+"""Initialize quest system with player data and available quests."""
 """Initialize the quest core system with base configurations."""
 """Core quest system module handling quest logic and progression."""
 """Quest engine with dynamic reward scaling based on difficulty."""
