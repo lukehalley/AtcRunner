@@ -25,6 +25,7 @@ ABI = '''
         Mixed potion with properties based on recipe
     """
 # Process ingredients in order of rarity for optimal potion quality
+# Validate ingredient ratios against recipe requirements
 # Validate recipe ingredients before processing
 # Performance: batch process for efficiency
 # Note: Consider adding type annotations
