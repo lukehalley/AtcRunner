@@ -1,8 +1,10 @@
 import os
+import sys
 import time
 import re
 from dotenv import load_dotenv
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -12,6 +14,7 @@ from selenium.webdriver.chrome.options import Options
 import time
 from pyvirtualdisplay import Display
 import logging
+from itertools import repeat
 
 import helpers.Utils as Utils
 
@@ -110,9 +113,11 @@ def openBridgeTab(driver, url):
 
     logger.info("Bridge opened!")
 
-def metamaskApproveToken(driver):
-    openMetamaskTab(driver)
-    print("I am aproooving!")
+def metamaskApproveTransaction(driver, approveBtn):
+    approveBtn.click()
+    switchToTab(driver, "metamask")
+    currentTransactionQueue = int(findWebElement(driver, os.environ.get("METAMASK_TRANSACTIONS_QUEUE")).text.split("(")[1].replace(")", ""))
+    x = 1
 
 def getCurrentOpenTabs(driver):
     tabs = {}
@@ -123,15 +128,22 @@ def getCurrentOpenTabs(driver):
         tabURL = driver.current_url
 
         if "chrome-extension://" in tabURL:
-            tabs[f"metamask"] = {"tabNumber": x, "tabURL": tabURL}
+            title = "metamask"
         elif "https://synapseprotocol.com/" in tabURL:
-            tabs[f"bridge"] = {"tabNumber": x, "tabURL": tabURL}
+            title = "bridge"
         else:
-            tabs[f"unknown"] = {"tabNumber": x, "tabURL": tabURL}
+            title = "unknown"
+
+        if title not in tabs:
+            tabs[title] = {"tabNumber": x, "tabURL": tabURL}
 
         x = x + 1
 
     return tabs
+
+def closeMetamaskPopup(driver):
+    driver.switch_to_window(driver.window_handles[-1])
+    driver.close()
 
 def closeAllTabsExceptFirst(driver):
     currentTabs = getCurrentOpenTabs(driver)
@@ -143,13 +155,28 @@ def closeAllTabsExceptFirst(driver):
             driver.close()
 
 def switchToTab(driver, tab):
-    print("I am switchingggg!")
     currentTabs = getCurrentOpenTabs(driver)
     if len(currentTabs) > 1:
         desiredTab = currentTabs[tab]
         driver.switch_to_window(driver.window_handles[desiredTab["tabNumber"]])
 
+def clearTransactions(driver):
+    switchToTab(driver, "metamask")
 
+    try:
+        pendingTransactions = findWebElement(driver, os.environ.get("METAMASK_PENDING_TRANSACTIONS"), timeout=5)
+        totalPendingTransactions = int(pendingTransactions.text.split("of ")[1])
+    except:
+        totalPendingTransactions = 1
+        pass
+
+    logger.info(f"Clearing Metamask stale transactions...")
+
+    for _ in repeat(None, totalPendingTransactions):
+        rejectButton = findWebElement(driver, os.environ.get("METAMASK_REJECT_BUTTON"))
+        rejectButton.click()
+
+    logger.info(f"Cleared {totalPendingTransactions} Metamask stale transactions!")
 
 def loginIntoMetamask(driver):
     load_dotenv()
@@ -157,7 +184,19 @@ def loginIntoMetamask(driver):
     openMetamaskTab(driver)
 
     logger.info("Waiting for Metamask password input...")
-    passwordInput = findWebElement(driver, os.environ.get("METAMASK_PASSWORD_INPUT"))
+    passwordInput = None
+    fails = 0
+    while not passwordInput and fails < 6:
+        try:
+            passwordInput = findWebElement(driver, os.environ.get("METAMASK_PASSWORD_INPUT"))
+        except NoSuchElementException:
+            fails = fails + 1
+            time.sleep(2)
+            openMetamaskTab(driver)
+
+    if fails >= 6:
+        sys.exit("Couldn't log into Metamask!")
+
     logger.info("Password input located!")
 
     logger.info("Filling in password...")
@@ -169,26 +208,28 @@ def loginIntoMetamask(driver):
     passwordInput.send_keys(Keys.RETURN)
     logger.info("Enter key pressed!")
 
-    currentURL = driver.current_url
-
-    isStaleTransactions = "#confirm-transaction" in currentURL
-    if isStaleTransactions:
-        x = 1
+    try:
+        findWebElement(driver, os.environ.get("METAMASK_REJECT_BUTTON"), timeout=5)
+        clearTransactions(driver)
+    except:
+        pass
 
     logger.info("Checking if logged in...")
     findWebElement(driver, os.environ.get("METAMASK_TABS"))
     logger.info("Metamask logged in!")
 
-def checkBridgeStatus(driver, text):
+def checkBridgeStatus(driver, bridgeBtn, bridgeBtnText):
 
     bridgeAvailable = False
 
-    if text == "Insufficient JEWEL Balance":
+    bridgeBtnText = "Approve"
+
+    if bridgeBtnText == "Insufficient JEWEL Balance":
         bridgeAvailable = False
-    elif "Approve" in text:
-        metamaskApproveToken(driver)
+    elif "Approve" in bridgeBtnText:
+        metamaskApproveTransaction(driver, bridgeBtn)
         bridgeAvailable = True
-    elif text == "Bridge Token":
+    elif bridgeBtnText == "Bridge Token":
         bridgeAvailable = True
 
     return bridgeAvailable
@@ -334,15 +375,11 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
     logger.info(f"Bridge Total % Fee: {bridgePlan['totals']['bridgeTotalFeePercentage']}%")
     logger.info(f"Bridge Total % Slippage: {bridgePlan['totals']['bridgeTotalSlippage']}%")
 
-    Utils.printSeperator(True)
-
     Utils.printSeperator()
     logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Switching Back To Origin Network To Execute Bridge")
     Utils.printSeperator()
 
     switchMetamaskNetwork(driver, networks[0]["chain"])
-
-    Utils.printSeperator(True)
 
     return bridgePlan
 
@@ -351,7 +388,7 @@ def executeBridge(driver, direction, bridgePlan, amountToBridge):
     bridgeObject = bridgePlan[direction]
 
     logger.info("Opening Synapse Bridge...")
-    driver.get(bridgeObject["bridgeURL"])
+    openBridgeTab(driver, bridgeObject["bridgeURL"])
     logger.info("Synapse Bridge opened!")
 
     logger.info("Waiting for Synapse input field...")
@@ -381,7 +418,7 @@ def executeBridge(driver, direction, bridgePlan, amountToBridge):
     bridgeBtn = findWebElement(driver, os.environ.get("SYNAPSE_BRIDGE_BTN_TXT"))
     bridgeStatus = bridgeBtn.text
 
-    bridgeStatus = checkBridgeStatus(driver, bridgeStatus)
+    bridgeStatus = checkBridgeStatus(driver, bridgeBtn, bridgeStatus)
 
     return 0
     

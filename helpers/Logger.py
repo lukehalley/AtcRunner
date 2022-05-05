@@ -7,13 +7,16 @@ def setupLogging(isDocker):
 
     log_format = '%(asctime)s | %(message)s'
     logger = logging.getLogger("DFK-ARB")
+    dateFormat = "%d/%m/%Y %H:%M:%S"
 
     if isDocker:
         load_dotenv()
         logFile = os.environ.get("LOG_FILE")
         logFileMode = os.environ.get("LOG_FILE_MODE")
-        logging.basicConfig(filename=logFile, filemode=logFileMode, level=logging.INFO, format=log_format)
+        logging.basicConfig(filename=logFile, filemode=logFileMode, level=logging.INFO,
+                            format=log_format, datefmt=dateFormat)
     else:
-        logging.basicConfig(level=logging.INFO, format=log_format, stream=sys.stdout)
+        logging.basicConfig(level=logging.INFO, format=log_format,
+                            stream=sys.stdout, datefmt=dateFormat)
 
     return logger
