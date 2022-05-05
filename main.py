@@ -98,12 +98,16 @@ for recipesTitle, recipeDetails in recipes.items():
             amountToBridge = startingCapital / arbitrageOrigin["price"]
 
             bridgePlan = Selenium.calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, amountToBridge)
-            Utils.printSeperator(True)
+
+            Utils.printSeperator()
+            logger.info(f'[ARB #{roundTripCount}] Potential Profit Would Be')
+            Utils.printSeperator()
 
             tripIsProfitible, tripPredictions = Arbitrage.calculatePotentialProfit(startingCapital, arbitrageOrigin,
                                                                                    arbitrageDestination,
                                                                                    bridgePlan)
-            x = 1
+
+            Utils.printSeperator(True)
 
             Utils.printSeperator()
             logger.info(f'[ARB #{roundTripCount}] Executing Bridge: {(arbitrageOrigin["readableChain"].title())} -> {(arbitrageDestination["readableChain"].title())}')
