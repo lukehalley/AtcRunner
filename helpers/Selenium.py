@@ -1,5 +1,6 @@
 import os
 import time
+import re
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -15,7 +16,6 @@ import logging
 import helpers.Utils as Utils
 
 logger = logging.getLogger("DFK-DEX")
-
 
 def initBrowser():
     logger.info("Initialising Selenium")
@@ -61,18 +61,95 @@ def closeBrowser(driver, display):
 
     logger.info("Selenium shutdown")
 
-def findWebElement(driver, selector, timeout=30):
-    return WebDriverWait(driver, timeout).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, selector))
-    )
+def findWebElement(driver, elementString, timeout=30, selectorMode=True):
+    if selectorMode:
+        return WebDriverWait(driver, timeout).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, elementString))
+        )
+    else:
+        return WebDriverWait(driver, timeout).until(
+            EC.visibility_of_element_located((By.XPATH, elementString))
+        )
 
 def openMetamaskTab(driver):
     load_dotenv()
 
-    logger.info("Opening Metamask tab...")
-    mmExtString = os.environ.get("MM_EXT_STR")
-    driver.get(f'chrome-extension://{mmExtString}/home.html')
+    tabs = getCurrentOpenTabs(driver)
+
+    metamaskAlreadyOpen = "metamask" in tabs.keys()
+
+    if metamaskAlreadyOpen:
+        logger.info("Switching to Metamask tab...")
+        switchToTab(driver, "metamask")
+    else:
+        logger.info("Opening Metamask tab...")
+        mmExtString = os.environ.get("MM_EXT_STR")
+        mmURL = f'chrome-extension://{mmExtString}/home.html'
+
+        driver.get(mmURL)
+
     logger.info("Metamask opened!")
+
+def openURLInNewTab(driver, url):
+    driver.execute_script(f'''window.open("{url}","_blank");''')
+
+def openBridgeTab(driver, url):
+
+    tabs = getCurrentOpenTabs(driver)
+
+    bridgeAlreadyOpen = "bridge" in tabs.keys()
+
+    if bridgeAlreadyOpen:
+        logger.info("Switching to Bridge tab...")
+        switchToTab(driver, "bridge")
+        driver.get(url)
+    else:
+        logger.info("Opening Bridge tab...")
+        openURLInNewTab(driver, url)
+        switchToTab(driver, "bridge")
+
+    logger.info("Bridge opened!")
+
+def metamaskApproveToken(driver):
+    openMetamaskTab(driver)
+    print("I am aproooving!")
+
+def getCurrentOpenTabs(driver):
+    tabs = {}
+    x = 0
+    for handle in driver.window_handles:
+        driver.switch_to.window(handle)
+
+        tabURL = driver.current_url
+
+        if "chrome-extension://" in tabURL:
+            tabs[f"metamask"] = {"tabNumber": x, "tabURL": tabURL}
+        elif "https://synapseprotocol.com/" in tabURL:
+            tabs[f"bridge"] = {"tabNumber": x, "tabURL": tabURL}
+        else:
+            tabs[f"unknown"] = {"tabNumber": x, "tabURL": tabURL}
+
+        x = x + 1
+
+    return tabs
+
+def closeAllTabsExceptFirst(driver):
+    currentTabs = getCurrentOpenTabs(driver)
+    if len(currentTabs) > 1:
+        keys = list(currentTabs.keys())
+        keys.pop(0)
+        for key in keys:
+            driver.switch_to_window(driver.window_handles[currentTabs[key]["tabNumber"]])
+            driver.close()
+
+def switchToTab(driver, tab):
+    print("I am switchingggg!")
+    currentTabs = getCurrentOpenTabs(driver)
+    if len(currentTabs) > 1:
+        desiredTab = currentTabs[tab]
+        driver.switch_to_window(driver.window_handles[desiredTab["tabNumber"]])
+
+
 
 def loginIntoMetamask(driver):
     load_dotenv()
@@ -80,7 +157,7 @@ def loginIntoMetamask(driver):
     openMetamaskTab(driver)
 
     logger.info("Waiting for Metamask password input...")
-    passwordInput = findWebElement(driver, os.environ.get("METAMASK_PASSWORDINPUT"))
+    passwordInput = findWebElement(driver, os.environ.get("METAMASK_PASSWORD_INPUT"))
     logger.info("Password input located!")
 
     logger.info("Filling in password...")
@@ -92,12 +169,15 @@ def loginIntoMetamask(driver):
     passwordInput.send_keys(Keys.RETURN)
     logger.info("Enter key pressed!")
 
+    currentURL = driver.current_url
+
+    isStaleTransactions = "#confirm-transaction" in currentURL
+    if isStaleTransactions:
+        x = 1
+
     logger.info("Checking if logged in...")
     findWebElement(driver, os.environ.get("METAMASK_TABS"))
     logger.info("Metamask logged in!")
-
-def approveToken(driver):
-    print("I am aproooving!")
 
 def checkBridgeStatus(driver, text):
 
@@ -106,7 +186,7 @@ def checkBridgeStatus(driver, text):
     if text == "Insufficient JEWEL Balance":
         bridgeAvailable = False
     elif "Approve" in text:
-        approveToken(driver)
+        metamaskApproveToken(driver)
         bridgeAvailable = True
     elif text == "Bridge Token":
         bridgeAvailable = True
@@ -123,6 +203,7 @@ def buildBridgeURL(inputToken, outputToken, chainId):
     return synapseBridgeURL
 
 def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, amountToBridge):
+
     i = 0
 
     bridgePlan = {}
@@ -131,12 +212,24 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
 
     while i < 2:
 
+        Utils.printSeperator()
+        logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Switching Network For Bridge")
+        Utils.printSeperator()
+
         switchMetamaskNetwork(driver, networks[i]["chain"])
 
         if i <= 0:
             outputChainID = networks[1]["networkDetails"]["chainID"]
+
+            Utils.printSeperator()
+            logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Calculating Bridge Fees For Arbitrage Origin to Arbitrage Destination")
+            Utils.printSeperator()
         else:
             outputChainID = networks[0]["networkDetails"]["chainID"]
+
+            Utils.printSeperator()
+            logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Calculating Bridge Fees For Arbitrage Destination to Arbitrage Origin")
+            Utils.printSeperator()
 
         logger.info("Building Synapse Bridge URL...")
         synapseBridgeBridgeURL = buildBridgeURL(networks[i]["bridgeToken"], networks[1]["bridgeToken"],
@@ -144,7 +237,7 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
         logger.info(f"Synapse Bridge URL built: {synapseBridgeBridgeURL}")
 
         logger.info("Opening Synapse Bridge...")
-        driver.get(synapseBridgeBridgeURL)
+        openBridgeTab(driver, synapseBridgeBridgeURL)
         logger.info("Synapse Bridge opened!")
 
         logger.info(f"Checking current {networks[i]['bridgeToken']} GUI balance...")
@@ -157,10 +250,23 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
         logger.info("Synapse input field located!")
 
         logger.info(f"Entering {amountToBridge} {networks[i]['bridgeToken']} as the input token...")
-        inputTokenField.send_keys(amountToBridge)
+        inputTokenField.send_keys(str(amountToBridge))
         logger.info("Entered input tokens!")
 
-        time.sleep(5)
+        outputFieldClass = findWebElement(driver, os.environ.get("SYNAPSE_OUTPUTFIELD_COLOR_XPATH"), selectorMode=False).get_attribute("class")
+        outputFieldColor = "bg-" + re.search('bg-(.*)\n', outputFieldClass).group(1)
+        outputField = os.environ.get("SYNAPSE_OUTPUTFIELD").replace("<OUTPUT-COLOR>", outputFieldColor)
+
+        logger.info("Waiting for Synapse output field...")
+        outputTokenField = findWebElement(driver, outputField)
+        logger.info("Synapse output field located!")
+
+        totalReceiveAmount = outputTokenField.get_attribute('value')
+
+        while totalReceiveAmount == '':
+            totalReceiveAmount = outputTokenField.get_attribute('value')
+
+        totalReceiveAmount = float(totalReceiveAmount)
 
         logger.info(f"Checking {networks[i]['bridgeToken']} bridge fee...")
         synapseFee = findWebElement(driver, os.environ.get("SYNAPSE_FEE"))
@@ -178,16 +284,14 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
         else:
             logger.info(f"Bridge has a positive slippage of {bridgeSlippage}%")
 
-        totalReceiveAmount = float(amountToBridge) - bridgeFee
         logger.info(f"After bridge we will receive {totalReceiveAmount} {networks[1]['bridgeToken']}")
-
-        time.sleep(5)
 
         if i <= 0:
             objectTitle = "arbitrageOrigin"
             bridgePlan[objectTitle] = \
                 {
                     "network": arbitrageOrigin,
+                    "amountSent": amountToBridge,
                     "bridgeFee": round(bridgeFee, 6),
                     "bridgeToken": networks[i]['bridgeToken'],
                     "bridgeFeePercentage": bridgeFeePercentage,
@@ -199,6 +303,7 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
             bridgePlan[objectTitle] = \
                 {
                     "network": arbitrageDestination,
+                    "amountExpectedToReceive": totalReceiveAmount,
                     "bridgeFee": round(bridgeFee, 6),
                     "bridgeToken": networks[i]['bridgeToken'],
                     "bridgeFeePercentage": bridgeFeePercentage,
@@ -208,22 +313,36 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
 
         i = i + 1
 
+        Utils.printSeperator(True)
+
+    Utils.printSeperator()
+    logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Bridge Fees Calculated")
+    Utils.printSeperator()
+
     feeAmount = bridgePlan["arbitrageOrigin"]["bridgeFee"] + bridgePlan["arbitrageDestination"]["bridgeFee"]
+    tokenLoss = abs(bridgePlan["arbitrageDestination"]["amountExpectedToReceive"] - bridgePlan["arbitrageOrigin"]["amountSent"])
 
     bridgePlan["totals"] = {
         "bridgeToken": bridgePlan['arbitrageOrigin']['bridgeToken'],
+        "bridgeTotalTokenLoss": tokenLoss,
         "bridgeTotalFee": round(feeAmount, 6),
         "bridgeTotalFeePercentage": bridgePlan["arbitrageOrigin"]["bridgeFeePercentage"] + bridgePlan["arbitrageDestination"]["bridgeFeePercentage"],
         "bridgeTotalSlippage": bridgePlan["arbitrageOrigin"]["bridgeSlippage"] + bridgePlan["arbitrageDestination"]["bridgeSlippage"]
     }
 
-    Utils.printSeperator(True)
-
     logger.info(f"Bridge Total Fee: {bridgePlan['totals']['bridgeTotalFee']} {bridgePlan['totals']['bridgeToken']}")
     logger.info(f"Bridge Total % Fee: {bridgePlan['totals']['bridgeTotalFeePercentage']}%")
     logger.info(f"Bridge Total % Slippage: {bridgePlan['totals']['bridgeTotalSlippage']}%")
 
+    Utils.printSeperator(True)
+
+    Utils.printSeperator()
+    logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Switching Back To Origin Network To Execute Bridge")
+    Utils.printSeperator()
+
     switchMetamaskNetwork(driver, networks[0]["chain"])
+
+    Utils.printSeperator(True)
 
     return bridgePlan
 
@@ -240,10 +359,24 @@ def executeBridge(driver, direction, bridgePlan, amountToBridge):
     logger.info("Synapse input field located!")
 
     logger.info(f"Entering {amountToBridge} {bridgeObject['bridgeToken']} as the input token...")
-    inputTokenField.send_keys(amountToBridge)
+    inputTokenField.send_keys(str(amountToBridge))
     logger.info("Entered input tokens!")
 
-    time.sleep(5)
+    outputFieldClass = findWebElement(driver, os.environ.get("SYNAPSE_OUTPUTFIELD_COLOR_XPATH"),
+                                      selectorMode=False).get_attribute("class")
+    outputFieldColor = "bg-" + re.search('bg-(.*)\n', outputFieldClass).group(1)
+    outputField = os.environ.get("SYNAPSE_OUTPUTFIELD").replace("<OUTPUT-COLOR>", outputFieldColor)
+
+    logger.info("Waiting for Synapse output field...")
+    outputTokenField = findWebElement(driver, outputField)
+    logger.info("Synapse output field located!")
+
+    totalReceiveAmount = outputTokenField.get_attribute('value')
+
+    while totalReceiveAmount == '':
+        totalReceiveAmount = outputTokenField.get_attribute('value')
+
+    totalReceiveAmount = float(totalReceiveAmount)
 
     bridgeBtn = findWebElement(driver, os.environ.get("SYNAPSE_BRIDGE_BTN_TXT"))
     bridgeStatus = bridgeBtn.text
@@ -257,16 +390,17 @@ def switchMetamaskNetwork(driver, networkToSwitchTo):
     openMetamaskTab(driver)
 
     logger.info("Locating Metamask switch dropdown...")
-    switchDropdown = findWebElement(driver, os.environ.get("METAMASK_SWITCHDROPDOWN"))
+    switchDropdown = findWebElement(driver, os.environ.get("METAMASK_SWITCH_DROPDOWN"))
     logger.info("Metamask switch dropdown located!")
 
     logger.info("Getting current network...")
-    mmCurrentNetwork = findWebElement(driver, os.environ.get("METAMASK_CURRENTNETWORK"))
+    mmCurrentNetwork = findWebElement(driver, os.environ.get("METAMASK_CURRENT_NETWORK"))
     currentNetwork = mmCurrentNetwork.text
     logger.info(f"Got current network: {currentNetwork}")
 
     if (currentNetwork == networkToSwitchTo):
         logger.info(f"We are already on {networkToSwitchTo} - no need to switch!")
+        Utils.printSeperator(True)
         return
     else:
         logger.info("Clicking Metamask switch dropdown...")
@@ -274,14 +408,16 @@ def switchMetamaskNetwork(driver, networkToSwitchTo):
         logger.info("Metamask switch dropdown Clicked!")
 
         logger.info("Checking dropdown is open...")
-        findWebElement(driver, os.environ.get("METAMASK_ADDNETWORKBUTTON"))
+        findWebElement(driver, os.environ.get("METAMASK_ADD_NETWORK_BUTTON"))
         logger.info("Metamask switch dropdown is open!")
 
         logger.info("Getting network list element...")
-        findWebElement(driver, os.environ.get("METAMASK_NETWORKLIST"))
+        findWebElement(driver, os.environ.get("METAMASK_NETWORK_LIST"))
         logger.info("Got network list element!")
 
         logger.info(f"Switching to {networkToSwitchTo}...")
         networkListItem = driver.find_element_by_xpath(f"//span[text()='{networkToSwitchTo}']")
         networkListItem.click()
         logger.info(f"Switched to {networkToSwitchTo}!")
+
+        Utils.printSeperator(True)

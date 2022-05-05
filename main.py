@@ -58,9 +58,9 @@ for recipesTitle, recipeDetails in recipes.items():
             chainTwo=chainTwo,
             )
 
-        if reportString:
+        arbitrageOrigin["roundTripCount"], arbitrageDestination["roundTripCount"] = roundTripCount, roundTripCount
 
-            # arbIsWorthIt = Arbitrage.checkArbitrageIsWorthIt(priceDifference) and arbitrageOrigin and arbitrageDestination
+        if reportString:
 
             Utils.printRoundtrip(roundTripCount)
 
@@ -95,20 +95,19 @@ for recipesTitle, recipeDetails in recipes.items():
             Selenium.loginIntoMetamask(driver)
             Utils.printSeperator(True)
 
-            amountToBridge = startingCapital
+            amountToBridge = startingCapital / arbitrageOrigin["price"]
 
-            Utils.printSeperator()
-            logger.info(
-                f'[ARB #{roundTripCount}] Bridging: {(arbitrageOrigin["readableChain"].title())} -> {(arbitrageDestination["readableChain"].title())}')
-            Utils.printSeperator()
             bridgePlan = Selenium.calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, amountToBridge)
             Utils.printSeperator(True)
 
             tripIsProfitible, tripPredictions = Arbitrage.calculatePotentialProfit(startingCapital, arbitrageOrigin,
                                                                                    arbitrageDestination,
                                                                                    bridgePlan)
-
             x = 1
+
+            Utils.printSeperator()
+            logger.info(f'[ARB #{roundTripCount}] Executing Bridge: {(arbitrageOrigin["readableChain"].title())} -> {(arbitrageDestination["readableChain"].title())}')
+            Utils.printSeperator()
 
             bridgeResult = Selenium.executeBridge(driver, "arbitrageOrigin", bridgePlan, amountToBridge)
 
@@ -132,7 +131,11 @@ for recipesTitle, recipeDetails in recipes.items():
 
             roundTripCount = roundTripCount + 1
 
-            time.sleep(10)
+            # time.sleep(10)
+
+            driver.quit()
+
+            Utils.printSeperator(True)
 
         else:
             time.sleep(minimumInterval)
