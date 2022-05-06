@@ -53,6 +53,7 @@ ABI = '''
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"previousAdminRole","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"newAdminRole","type":"bytes32"}],"name":"RoleAdminChanged","type":"event"},
 # Calculate land value based on location tier and improvements
+# TODO: Add seasonal modifier to land value calculation
     # Land value increases with improvements and rarity tier
 # TODO: Add async support for better performance
 # TODO: Refactor land grid calculations for improved performance
