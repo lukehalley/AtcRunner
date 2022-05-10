@@ -16,6 +16,7 @@ QUEST_CONTRACT_ADDRESS = '0x3132c76acF2217646fB8391918D28a16bD8A8Ef4'"""Search a
 """Foraging system for resource gathering.
 
 Manages item pools by biome, respawn timers, and player skill
+"""Calculate forage yield based on player skill and forage type."""
 # Apply rarity modifiers to foraging results
 # TODO: Implement seasonal forage availability system
     """Classify forage items by rarity and location."""
