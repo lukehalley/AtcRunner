@@ -49,7 +49,7 @@ def calculateArbitrage(chainOne, chainTwo):
 
     return reportString, priceDifference, arbitrageOriginDetails, arbitrageDestinationDetails
 
-def calculatePotentialProfit(initialCapital, arbitrageOrigin, arbitrageDestination, bridgePlan):
+def calculatePotentialProfit(initialCapital, arbitrageOrigin, arbitrageDestination, arbitragePlan):
     logger.debug(f"Calculating potential profit")
 
     tripPredictions = {}
@@ -69,9 +69,9 @@ def calculatePotentialProfit(initialCapital, arbitrageOrigin, arbitrageDestinati
 
             # Calculate Profit/Loss of a single round trip.
             initialBuy = currentCapital / arbitrageOrigin["price"]
-            initialBuyAfterBridgeFees = initialBuy - bridgePlan["arbitrageOrigin"]["bridgeFee"]
+            initialBuyAfterBridgeFees = initialBuy - arbitragePlan["arbitrageOrigin"]["bridgeFee"]
             arbSell = initialBuyAfterBridgeFees * arbitrageDestination["price"]
-            currentCapital = arbSell - (bridgePlan["arbitrageDestination"]["bridgeFee"] * arbitrageOrigin["price"])
+            currentCapital = arbSell - (arbitragePlan["arbitrageDestination"]["bridgeFee"] * arbitrageOrigin["price"])
             profitLoss = currentCapital - startingCapital
             tripIsProfitible = currentCapital > startingCapital
 

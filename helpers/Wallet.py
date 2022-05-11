@@ -1,7 +1,4 @@
 import logging
-import sys
-import time
-
 from web3 import Web3
 import dex.uniswap_v2_router as market_place_router
 import dex.erc20 as erc20
@@ -10,6 +7,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 import os
+import signal
+import time
+
+import helpers.Utils as Utils
 
 # Retry Envs
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
@@ -89,21 +90,119 @@ def getWalletAddressFromPrivateKey(rpcURL):
     return w3.eth.account.privateKeyToAccount(privateKey).address
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getTokenBalance(rpcURL, walletAddress, token, chain):
+def getTokenBalance(rpcURL, walletAddress, token, chain, printBalance=True):
 
     rpc_server = rpcURL
-    logger.info("Using RPC Server " + rpc_server)
+    if printBalance:
+        logger.info("Using RPC Server " + rpc_server)
 
     w3 = Web3(Web3.HTTPProvider(rpc_server))
 
-    token_address = erc20.symbol2address(token, chain)
+    token_address = erc20.symbol2address(token, chain, info=printBalance)
 
     name = erc20.name(token_address, rpc_server)
     symbol = erc20.symbol(token_address, rpc_server)
     balance = erc20.wei2eth(w3, erc20.balance_of(walletAddress, token_address, rpc_server))
-    logger.info(f"Wallet {walletAddress} has {balance} {symbol} on {chain}")
 
-    return balance
+    if printBalance:
+        logger.info(f"Wallet {walletAddress} has {balance} {symbol} on {chain}")
+
+    return float(balance)
+
+def compareBalance(expected, actual, feeAllowancePercentage=10):
+
+    feeAllowance = Utils.percentage(feeAllowancePercentage, expected)
+
+    expectedLower = expected - feeAllowance
+    expectedUpper = expected + feeAllowance
+    isInRange = Utils.isBetween(expectedLower, actual, expectedUpper)
+
+    if actual == expected or isInRange:
+        return True
+    else:
+        return False
+
+def getWalletBalances(arbitragePlan):
+
+    originWalletTokenBalance = getTokenBalance(
+        arbitragePlan["arbitrageOrigin"]["network"]["networkDetails"]["chainRPC"],
+        arbitragePlan["arbitrageOrigin"]["walletAddress"],
+        arbitragePlan["arbitrageOrigin"]["network"]['token'],
+        arbitragePlan["arbitrageOrigin"]["network"]["networkDetails"]['chainName'],
+        printBalance=False
+    )
+
+    destinationWalletTokenBalance = getTokenBalance(
+        arbitragePlan["arbitrageDestination"]["network"]["networkDetails"]["chainRPC"],
+        arbitragePlan["arbitrageDestination"]["walletAddress"],
+        arbitragePlan["arbitrageDestination"]["network"]['token'],
+        arbitragePlan["arbitrageDestination"]["network"]["networkDetails"]['chainName'],
+        printBalance=False
+    )
+
+    return originWalletTokenBalance, destinationWalletTokenBalance
+
+def waitForBridgeToComplete(arbitragePlan, timeout=600):
+
+    timeoutMins = int(timeout / 60)
+
+    directionMsg = Utils.camelCaseSplit(arbitragePlan["currentBridgeDirection"])[0].title() + " " + Utils.camelCaseSplit(arbitragePlan["currentBridgeDirection"])[1]
+
+    if (arbitragePlan["currentBridgeDirection"] == "arbitrageOrigin"):
+        toDirection = "arbitrageOrigin"
+        returnDirection = "arbitrageDestination"
+    else:
+        toDirection = "arbitrageDestination"
+        returnDirection = "arbitrageOrigin"
+
+    amountSent = arbitragePlan[toDirection]["bridgeResult"]["AmountSent"]
+    amountExpectedToReceive = arbitragePlan[returnDirection]["amountExpectedToReceive"]
+    bridgeToken = arbitragePlan[returnDirection]["bridgeToken"]
+
+    logger.info(f"Waiting for bridge to complete with a timeout of {timeoutMins} minutes")
+    logger.info(f'Expecting {amountExpectedToReceive} {bridgeToken}')
+
+    fundsBridged = False
+
+    initOriginWalletTokenBalance, initDestinationWalletTokenBalance = getWalletBalances(arbitragePlan)
+
+    expectedDestinationWalletTokenBalance = amountExpectedToReceive + initDestinationWalletTokenBalance
+
+    minutesWaiting = 0
+    secondSegment = 60
+
+    startingTime = time.time()
+    segmentTime = startingTime
+    timeout = startingTime + timeout
+    while True:
+        test = 0
+
+        if fundsBridged:
+            bridgeTimedOut = False
+            break
+
+        if time.time() > timeout:
+            bridgeTimedOut = True
+            break
+
+        test = test + 1
+
+        originWalletTokenBalance, destinationWalletTokenBalance = getWalletBalances(arbitragePlan)
+
+        fundsBridged = compareBalance(expectedDestinationWalletTokenBalance, destinationWalletTokenBalance)
+
+        if time.time() - segmentTime > secondSegment:
+            minutesWaiting = minutesWaiting + 1
+            logger.info(f"{minutesWaiting} Mins Have Elapsed...")
+            segmentTime = time.time()
+
+        time.sleep(1)
+
+    if fundsBridged:
+        logger.info(f'Bridging {amountExpectedToReceive} {bridgeToken} was sucessfull!')
+    elif bridgeTimedOut:
+        logger.warning(f'Waiting for funds to bridge timed out - Bridging was unsucessfull!')
+    x = 1
 
 # testWallet = "0x919d17174Fb22CC1Cfc8748C208104EC62341791"
 # balance = getTokenBalance(os.environ.get("HARMONY_MAIN_RPC"), testWallet, "JEWEL")

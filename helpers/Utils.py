@@ -1,5 +1,7 @@
 import logging
 import os
+from datetime import datetime
+import re
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -29,3 +31,13 @@ def percentage(percent, whole):
 
 def percentageOf(part, whole):
   return 100 * float(part)/float(whole)
+
+def getCurrentDateTime():
+    return datetime.now().strftime(os.environ.get("DATE_FORMAT"))
+
+def camelCaseSplit(identifier):
+    matches = re.finditer('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', identifier)
+    return [m.group(0) for m in matches]
+
+def isBetween(a, x, b):
+    return min(a, b) < x < max(a, b)

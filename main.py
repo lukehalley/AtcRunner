@@ -1,3 +1,4 @@
+import json
 import sys
 import time
 
@@ -7,6 +8,7 @@ import helpers.Arbitrage as Arbitrage
 import helpers.Wallet as Wallet
 import helpers.Selenium as Selenium
 import helpers.Utils as Utils
+from datetime import datetime
 
 isDocker = Utils.checkIsDocker()
 
@@ -36,7 +38,7 @@ Utils.printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 Utils.printSeperator(True)
 
-startingCapital = 1000
+startingCapital = 100
 
 for recipesTitle, recipeDetails in recipes.items():
 
@@ -97,7 +99,7 @@ for recipesTitle, recipeDetails in recipes.items():
 
             amountToBridge = startingCapital / arbitrageOrigin["price"]
 
-            bridgePlan = Selenium.calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, amountToBridge)
+            arbitragePlan = Selenium.calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, amountToBridge)
 
             Utils.printSeperator()
             logger.info(f'[ARB #{roundTripCount}] Potential Profit Would Be')
@@ -105,15 +107,41 @@ for recipesTitle, recipeDetails in recipes.items():
 
             tripIsProfitible, tripPredictions = Arbitrage.calculatePotentialProfit(startingCapital, arbitrageOrigin,
                                                                                    arbitrageDestination,
-                                                                                   bridgePlan)
+                                                                                   arbitragePlan)
+
+            arbitragePlan["arbitrageOrigin"]["walletAddress"] = originWalletAddress
+            arbitragePlan["arbitrageDestination"]["walletAddress"] = destinationWalletAddress
+
+            arbitragePlan["currentPotentialPL"] = int(tripPredictions["1"]["P/L"])
+            arbitragePlan["tripPredictions"] = json.dumps(tripPredictions)
 
             Utils.printSeperator(True)
 
             Utils.printSeperator()
-            logger.info(f'[ARB #{roundTripCount}] Executing Bridge: {(arbitrageOrigin["readableChain"].title())} -> {(arbitrageDestination["readableChain"].title())}')
+            logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Executing] Origin -> Destination: {(arbitrageOrigin["readableChain"].title())} -> {(arbitrageDestination["readableChain"].title())}')
             Utils.printSeperator()
 
-            bridgeResult = Selenium.executeBridge(driver, "arbitrageOrigin", bridgePlan, amountToBridge)
+            arbitragePlan["currentBridgeDirection"] = "arbitrageOrigin"
+
+            arbitragePlan = Selenium.executeBridge(driver, arbitragePlan, amountToBridge)
+
+            arbitragePlan["arbitrageOrigin"]["result"] = {
+                "AmountSent": arbitragePlan["arbitrageOrigin"]["amountSent"],
+                "Successful": True,
+                "TransactionType": "Send",
+                "ID": "12345678910",
+                "Fee": 0.01,
+                "Message": "Test",
+                "Timestamp": Utils.getCurrentDateTime()
+            }
+
+            Utils.printSeperator(True)
+
+            Utils.printSeperator()
+            logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Waiting] Origin -> Destination: {(arbitrageOrigin["readableChain"].title())} -> {(arbitrageDestination["readableChain"].title())}')
+            Utils.printSeperator()
+
+            Wallet.waitForBridgeToComplete(arbitragePlan)
 
             # if tripIsProfitible:
             #     logger.info(f"[ARB #{roundTripCount}] Confirmed Profitable - Im Arbiiing!")
