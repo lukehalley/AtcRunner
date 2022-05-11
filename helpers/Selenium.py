@@ -15,6 +15,7 @@ import time
 from pyvirtualdisplay import Display
 import logging
 from itertools import repeat
+from datetime import datetime
 
 import helpers.Utils as Utils
 
@@ -113,11 +114,61 @@ def openBridgeTab(driver, url):
 
     logger.info("Bridge opened!")
 
-def metamaskApproveTransaction(driver, approveBtn):
-    approveBtn.click()
+def metamaskExecuteTransaction(driver, arbitragePlan, triggerButton, transactionType):
+    clearTransactions(driver)
+    switchToTab(driver, "bridge")
+    triggerButton.click()
     switchToTab(driver, "metamask")
     currentTransactionQueue = int(findWebElement(driver, os.environ.get("METAMASK_TRANSACTIONS_QUEUE")).text.split("(")[1].replace(")", ""))
-    x = 1
+
+    transactionNumber = str(currentTransactionQueue + 1)
+    transactionSelector = os.environ.get("METAMASK_PENDING_TRANSACTION").replace("<TRANSACTION_NUMBER>",
+                                                                                 transactionNumber)
+    transactionElement = findWebElement(driver, transactionSelector)
+    transactionElement.click()
+
+    transactionError = None
+    try:
+        transactionError = findWebElement(driver, os.getenv("METAMASK_TRANSACTION_ERROR_MSG"), 5)
+        isTransactionError = True
+    except:
+        isTransactionError = False
+        pass
+
+    transactionAmount = float(findWebElement(driver, os.getenv("METAMASK_TRANSACTION_FEE")).text.split(" ")[0])
+    gasPrice = arbitragePlan["arbitrageOrigin"]["network"]["price"]
+
+    transactionFee = transactionAmount * gasPrice
+
+    arbitragePlan["currentPotentialPL"] = arbitragePlan["currentPotentialPL"] - transactionFee
+
+    arbitragePlan["stillProfitable"] = arbitragePlan["currentPotentialPL"] > 0
+
+    transactionId = "1234"
+
+    if not isTransactionError:
+        transactionResult = {
+            "AmountSent": arbitragePlan["arbitrageOrigin"]["amountSent"],
+            "Successful": not isTransactionError,
+            "TransactionType": transactionType,
+            "ID": transactionId,
+            "Fee": transactionFee,
+            "Message": None,
+            "Timestamp": Utils.getCurrentDateTime()
+        }
+    else:
+        transactionErrorMessage = transactionError.text
+        transactionResult = {
+            "AmountSent": arbitragePlan["arbitrageOrigin"]["amountSent"],
+            "Successful": not isTransactionError,
+            "TransactionType": transactionType,
+            "ID": None,
+            "Fee": None,
+            "Message": transactionErrorMessage,
+            "Timestamp": Utils.getCurrentDateTime()
+        }
+
+    return transactionResult, arbitragePlan
 
 def getCurrentOpenTabs(driver):
     tabs = {}
@@ -167,8 +218,13 @@ def clearTransactions(driver):
         pendingTransactions = findWebElement(driver, os.environ.get("METAMASK_PENDING_TRANSACTIONS"), timeout=5)
         totalPendingTransactions = int(pendingTransactions.text.split("of ")[1])
     except:
-        totalPendingTransactions = 1
-        pass
+        try:
+            findWebElement(driver, os.environ.get("METAMASK_REJECT_BUTTON"), 5)
+            totalPendingTransactions = 1
+            pass
+        except:
+            totalPendingTransactions = 0
+            pass
 
     logger.info(f"Clearing Metamask stale transactions...")
 
@@ -218,21 +274,29 @@ def loginIntoMetamask(driver):
     findWebElement(driver, os.environ.get("METAMASK_TABS"))
     logger.info("Metamask logged in!")
 
-def checkBridgeStatus(driver, bridgeBtn, bridgeBtnText):
-
-    bridgeAvailable = False
-
-    bridgeBtnText = "Approve"
+def executeBridgeStatus(driver, arbitragePlan, bridgeBtn, bridgeBtnText):
 
     if bridgeBtnText == "Insufficient JEWEL Balance":
-        bridgeAvailable = False
+        stillProfitable = False
+        transactionResult = {
+            "AmountSent": arbitragePlan["arbitrageOrigin"]["amountSent"],
+            "Successful": False,
+            "TransactionType": None,
+            "ID": None,
+            "Fee": None,
+            "Message": bridgeBtnText,
+            "StillProfitable": stillProfitable
+        }
     elif "Approve" in bridgeBtnText:
-        metamaskApproveTransaction(driver, bridgeBtn)
-        bridgeAvailable = True
+        transactionResult, arbitragePlan = metamaskExecuteTransaction(driver, arbitragePlan, bridgeBtn, "Approve")
     elif bridgeBtnText == "Bridge Token":
-        bridgeAvailable = True
+         transactionResult, arbitragePlan = metamaskExecuteTransaction(driver, arbitragePlan, bridgeBtn, "Send")
+    else:
+        sys.exit("Unknown Bridge Status")
 
-    return bridgeAvailable
+    arbitragePlan[arbitragePlan["currentBridgeDirection"]]["bridgeResult"] = transactionResult
+
+    return arbitragePlan
 
 def buildBridgeURL(inputToken, outputToken, chainId):
     synapseBridgeURL = os.environ.get("SYNAPSE_BRIDGE_URL")
@@ -247,7 +311,7 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
 
     i = 0
 
-    bridgePlan = {}
+    arbitragePlan = {}
 
     networks = [arbitrageOrigin, arbitrageDestination]
 
@@ -329,7 +393,7 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
 
         if i <= 0:
             objectTitle = "arbitrageOrigin"
-            bridgePlan[objectTitle] = \
+            arbitragePlan[objectTitle] = \
                 {
                     "network": arbitrageOrigin,
                     "amountSent": amountToBridge,
@@ -341,7 +405,7 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
                 }
         else:
             objectTitle = "arbitrageDestination"
-            bridgePlan[objectTitle] = \
+            arbitragePlan[objectTitle] = \
                 {
                     "network": arbitrageDestination,
                     "amountExpectedToReceive": totalReceiveAmount,
@@ -360,20 +424,20 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
     logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Bridge Fees Calculated")
     Utils.printSeperator()
 
-    feeAmount = bridgePlan["arbitrageOrigin"]["bridgeFee"] + bridgePlan["arbitrageDestination"]["bridgeFee"]
-    tokenLoss = abs(bridgePlan["arbitrageDestination"]["amountExpectedToReceive"] - bridgePlan["arbitrageOrigin"]["amountSent"])
+    feeAmount = arbitragePlan["arbitrageOrigin"]["bridgeFee"] + arbitragePlan["arbitrageDestination"]["bridgeFee"]
+    tokenLoss = abs(arbitragePlan["arbitrageDestination"]["amountExpectedToReceive"] - arbitragePlan["arbitrageOrigin"]["amountSent"])
 
-    bridgePlan["totals"] = {
-        "bridgeToken": bridgePlan['arbitrageOrigin']['bridgeToken'],
+    arbitragePlan["bridgeTotals"] = {
+        "bridgeToken": arbitragePlan['arbitrageOrigin']['bridgeToken'],
         "bridgeTotalTokenLoss": tokenLoss,
         "bridgeTotalFee": round(feeAmount, 6),
-        "bridgeTotalFeePercentage": bridgePlan["arbitrageOrigin"]["bridgeFeePercentage"] + bridgePlan["arbitrageDestination"]["bridgeFeePercentage"],
-        "bridgeTotalSlippage": bridgePlan["arbitrageOrigin"]["bridgeSlippage"] + bridgePlan["arbitrageDestination"]["bridgeSlippage"]
+        "bridgeTotalFeePercentage": arbitragePlan["arbitrageOrigin"]["bridgeFeePercentage"] + arbitragePlan["arbitrageDestination"]["bridgeFeePercentage"],
+        "bridgeTotalSlippage": arbitragePlan["arbitrageOrigin"]["bridgeSlippage"] + arbitragePlan["arbitrageDestination"]["bridgeSlippage"]
     }
 
-    logger.info(f"Bridge Total Fee: {bridgePlan['totals']['bridgeTotalFee']} {bridgePlan['totals']['bridgeToken']}")
-    logger.info(f"Bridge Total % Fee: {bridgePlan['totals']['bridgeTotalFeePercentage']}%")
-    logger.info(f"Bridge Total % Slippage: {bridgePlan['totals']['bridgeTotalSlippage']}%")
+    logger.info(f"Bridge Total Fee: {arbitragePlan['bridgeTotals']['bridgeTotalFee']} {arbitragePlan['bridgeTotals']['bridgeToken']}")
+    logger.info(f"Bridge Total % Fee: {arbitragePlan['bridgeTotals']['bridgeTotalFeePercentage']}%")
+    logger.info(f"Bridge Total % Slippage: {arbitragePlan['bridgeTotals']['bridgeTotalSlippage']}%")
 
     Utils.printSeperator()
     logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Switching Back To Origin Network To Execute Bridge")
@@ -381,11 +445,11 @@ def calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, am
 
     switchMetamaskNetwork(driver, networks[0]["chain"])
 
-    return bridgePlan
+    return arbitragePlan
 
-def executeBridge(driver, direction, bridgePlan, amountToBridge):
+def executeBridge(driver, arbitragePlan, amountToBridge):
 
-    bridgeObject = bridgePlan[direction]
+    bridgeObject = arbitragePlan[arbitragePlan["currentBridgeDirection"]]
 
     logger.info("Opening Synapse Bridge...")
     openBridgeTab(driver, bridgeObject["bridgeURL"])
@@ -418,9 +482,9 @@ def executeBridge(driver, direction, bridgePlan, amountToBridge):
     bridgeBtn = findWebElement(driver, os.environ.get("SYNAPSE_BRIDGE_BTN_TXT"))
     bridgeStatus = bridgeBtn.text
 
-    bridgeStatus = checkBridgeStatus(driver, bridgeBtn, bridgeStatus)
+    arbitragePlan = executeBridgeStatus(driver, arbitragePlan, bridgeBtn, bridgeStatus)
 
-    return 0
+    return arbitragePlan
     
 
 def switchMetamaskNetwork(driver, networkToSwitchTo):

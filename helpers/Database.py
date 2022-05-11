@@ -2,6 +2,7 @@ import logging
 import sys
 
 import firebase_admin
+import requests
 from firebase_admin import credentials
 from firebase_admin import db
 from typing import Optional
@@ -27,14 +28,31 @@ def createDatabaseConnection():
 
     logger.info(f"DB: Connection established to Firebase")
 
-def fetchFromDatabase(reference):
+def fetchFromDatabase(reference, info=True):
 
-    logger.info(f"DB: Getting '{reference}' from Firebase")
+    if info:
+        logger.info(f"DB: Getting '{reference}' from Firebase")
 
     db.reference()
 
     queryResult = (db.reference(f"/{reference}/")).get()
 
-    logger.debug(f"DB: Firebase query returned dictionary of {len(queryResult)} rows")
+    if info:
+        logger.debug(f"DB: Firebase query returned dictionary of {len(queryResult)} rows")
 
     return queryResult
+
+def getTokenPrice(chain, tokenDexPair):
+
+    # Dex Screen Envs
+    pairsEndpoint = os.environ.get("DEXSCREENER_API_ENDPOINT")
+
+    recipes = fetchFromDatabase("recipes")
+    networks = fetchFromDatabase("networks")
+    tokens = fetchFromDatabase("tokens")
+
+    # Network One
+    chainOneEndpoint = f"{pairsEndpoint}/{chain}/{tokenDexPair}"
+    chainOneResult = requests.get(chainOneEndpoint)
+    chainOneResultJSON = chainOneResult.json()["pair"]
+    chainOnePrice = float(chainOneResultJSON["priceUsd"])

@@ -24,9 +24,9 @@ def eth2wei(w3, eth):
     return w3.toWei(eth, 'ether')
 
 
-def symbol2address(symbol, chain):
+def symbol2address(symbol, chain, info=True):
 
-    tokens = Database.fetchFromDatabase("tokens")
+    tokens = Database.fetchFromDatabase("tokens", info)
 
     symbol = symbol.upper().strip()
     address = tokens[chain][symbol]["address"]
