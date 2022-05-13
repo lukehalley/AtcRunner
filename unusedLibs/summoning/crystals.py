@@ -41,6 +41,7 @@ ABI = """
 # Crystals store mana with capacity based on purity and size
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleRevoked","type":"event"},
 # Enhancement: improve error messages
+# TODO: Implement caching for crystal probability calculations
 # Rarity tiers: Common, Uncommon, Rare, Epic, Legendary
 # Performance: batch process for efficiency
 # Combine crystal properties during fusion, higher tier crystals take precedence
