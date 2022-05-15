@@ -20,6 +20,13 @@ transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 logger = logging.getLogger("DFK-DEX")
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def approveRawTransaction(rpcURL, privateKey):
+
+    # Connect to our RPC.
+    w3 = Web3(Web3.HTTPProvider(rpcURL))
+    logger.info("Using RPC server " + rpcURL)
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getGasPrice(rpcURL):
 
     # Connect to our RPC.
@@ -31,7 +38,7 @@ def getGasPrice(rpcURL):
     return gasPrice
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, privateKey, timeout=180, gwei=30):
+def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, privateKey, chain, timeout=180, gwei=30):
 
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -42,7 +49,7 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, privateKey, 
     account_address = w3.eth.account.privateKeyToAccount(privateKey).address
 
     # Get the address of the token we to swap from.
-    originTokenAddress = erc20.symbol2address(tokenToSwapFrom)
+    originTokenAddress = erc20.symbol2address(tokenToSwapFrom, chain)
 
     # If we declare "GAS" as the token we want to swap to, will we the native gas token of
     # the chain eg. if were on Harmony, it would be ONE.
@@ -64,7 +71,7 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, privateKey, 
 
     # Otherwise we will swap the source token for the same amount of the destination token.
     else:
-        destinationTokenAddress = erc20.symbol2address(tokenToSwapTo)
+        destinationTokenAddress = erc20.symbol2address(tokenToSwapTo, chain)
         market_place_router.swap_exact_tokens_for_tokens(
             amount_in=erc20.eth2wei(w3, amountToSwap),
             amount_out_min=60,
@@ -105,7 +112,7 @@ def getTokenBalance(rpcURL, walletAddress, token, chain, printBalance=True):
     balance = erc20.wei2eth(w3, erc20.balance_of(walletAddress, token_address, rpc_server))
 
     if printBalance:
-        logger.info(f"Wallet {walletAddress} has {balance} {symbol} on {chain}")
+        logger.info(f"Wallet {walletAddress} has {balance} {symbol}")
 
     return float(balance)
 
