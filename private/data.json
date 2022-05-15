@@ -26,7 +26,7 @@
     },
     "avalanchedfk": {
       "chainName": "avalanchedfk",
-      "chainCurrency": "JEWEL",
+      "chainCurrency": "WJEWEL",
       "chainID": "53935",
       "chainRPC": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc"
     }

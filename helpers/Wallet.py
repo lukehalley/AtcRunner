@@ -1,4 +1,6 @@
 import logging
+import sys
+
 from web3 import Web3
 import dex.uniswap_v2_router as market_place_router
 import dex.erc20 as erc20
@@ -12,6 +14,8 @@ import time
 
 import helpers.Utils as Utils
 
+privateKey = os.environ.get("NOHACKERSALLOWED")
+
 # Retry Envs
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
@@ -19,12 +23,20 @@ transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def approveRawTransaction(rpcURL, privateKey):
+# @retry(tries=0, delay=transactionRetryDelay, logger=logger)
+def sendRawTransaction(rpcURL, bridgeTransaction):
 
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
     logger.info("Using RPC server " + rpcURL)
+
+    try:
+        signedTransaction = w3.eth.account.sign_transaction(bridgeTransaction, private_key=privateKey)
+        sentTransaction = w3.eth.sendRawTransaction(signedTransaction.rawTransaction)
+        return sentTransaction.hex()
+    except ValueError as transactionError:
+        logger.error(f"An error occured when sending bridge transaction: {transactionError}")
+        raise
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getGasPrice(rpcURL):
@@ -38,7 +50,7 @@ def getGasPrice(rpcURL):
     return gasPrice
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, privateKey, chain, timeout=180, gwei=30):
+def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeout=180, gwei=30):
 
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -90,7 +102,7 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, privateKey, 
 def getWalletAddressFromPrivateKey(rpcURL):
 
     load_dotenv()
-    privateKey = os.environ.get("NOHACKERSALLOWED")
+
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
@@ -105,7 +117,7 @@ def getTokenBalance(rpcURL, walletAddress, token, chain, printBalance=True):
 
     w3 = Web3(Web3.HTTPProvider(rpc_server))
 
-    token_address = erc20.symbol2address(token, chain, info=printBalance)
+    token_address = token["address"]
 
     name = erc20.name(token_address, rpc_server)
     symbol = erc20.symbol(token_address, rpc_server)

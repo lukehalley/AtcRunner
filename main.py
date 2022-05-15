@@ -38,7 +38,8 @@ Utils.printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 Utils.printSeperator(True)
 
-startingCapital = 100
+startingCapital = 1000
+tokensToLeave = 5
 
 for recipesTitle, recipeDetails in recipes.items():
 
@@ -59,6 +60,14 @@ for recipesTitle, recipeDetails in recipes.items():
             chainOne=chainOne,
             chainTwo=chainTwo,
             )
+
+        # Check if networks use their gas token for the Arb
+        arbitrageOrigin["usesGasTokenInArbitrage"] = arbitrageOrigin["token"] == arbitrageOrigin["networkDetails"]["chainCurrency"]
+        arbitrageDestination["usesGasTokenInArbitrage"] = arbitrageDestination["token"] == arbitrageDestination["networkDetails"]["chainCurrency"]
+
+        gasTokenInArbitrage = arbitrageOrigin["usesGasTokenInArbitrage"] or arbitrageDestination["usesGasTokenInArbitrage"]
+
+        arbitrageOrigin["token"], arbitrageDestination["token"] = tokens[arbitrageOrigin["networkDetails"]["chainName"]][arbitrageOrigin["token"]], tokens[arbitrageDestination["networkDetails"]["chainName"]][arbitrageDestination["token"]]
 
         arbitrageOrigin["roundTripCount"], arbitrageDestination["roundTripCount"] = roundTripCount, roundTripCount
 
@@ -89,17 +98,23 @@ for recipesTitle, recipeDetails in recipes.items():
 
             Utils.printSeperator(True)
 
-            Utils.printSeperator()
-            logger.info(f"[ARB #{roundTripCount}] Launching Chrome & Metamask")
-            Utils.printSeperator()
+            # Utils.printSeperator()
+            # logger.info(f"[ARB #{roundTripCount}] Launching Chrome & Metamask")
+            # Utils.printSeperator()
 
-            driver, display = Selenium.initBrowser()
-            Selenium.loginIntoMetamask(driver)
+            # driver, display = Selenium.initBrowser()
+            # Selenium.loginIntoMetamask(driver)
+            # Utils.printSeperator(True)
+
+            if gasTokenInArbitrage:
+                amountToBridge = round((startingCapital / arbitrageOrigin["price"]) - tokensToLeave)
+            else:
+                amountToBridge = round((startingCapital / arbitrageOrigin["price"]) - 1)
+
+
+            arbitragePlan = Selenium.calculateSynapseBridgeFees(arbitrageOrigin, arbitrageDestination, amountToBridge)
+
             Utils.printSeperator(True)
-
-            amountToBridge = startingCapital / arbitrageOrigin["price"]
-
-            arbitragePlan = Selenium.calculateSynapseBridgeFees(driver, arbitrageOrigin, arbitrageDestination, amountToBridge)
 
             Utils.printSeperator()
             logger.info(f'[ARB #{roundTripCount}] Potential Profit Would Be')
@@ -122,8 +137,9 @@ for recipesTitle, recipeDetails in recipes.items():
             Utils.printSeperator()
 
             arbitragePlan["currentBridgeDirection"] = "arbitrageOrigin"
+            arbitragePlan["oppositeBridgeDirection"] = "arbitrageDestination"
 
-            arbitragePlan = Selenium.executeBridge(driver, arbitragePlan, amountToBridge)
+            arbitragePlan = Selenium.executeBridge(arbitragePlan, amountToBridge)
 
             arbitragePlan["arbitrageOrigin"]["result"] = {
                 "AmountSent": arbitragePlan["arbitrageOrigin"]["amountSent"],

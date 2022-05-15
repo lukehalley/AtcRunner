@@ -37,8 +37,8 @@ def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountFrom, dec
     params = {"fromChain": fromChain, "toChain": toChain, "fromToken": fromToken, "toToken": toToken, "amountFrom": amountFrom}
     endpoint = buildApiURL(os.getenv("SYNAPSE_ESTIMATE_BRIDGE_OUTPUT_ENDPOINT"))
     result = (requests.get(endpoint, params=params)).json()
-    amountToReceive = getTokenNormalValue(result["amountToReceive"])
-    bridgeFee = getTokenNormalValue(result["bridgeFee"])
+    amountToReceive = float(getTokenNormalValue(result["amountToReceive"]))
+    bridgeFee = float(getTokenNormalValue(result["bridgeFee"]))
     bridgeQuote = {'amountToReceive': amountToReceive, 'bridgeFee': bridgeFee}
     return bridgeQuote
 
@@ -55,8 +55,8 @@ def generateSwapTransaction(chain, fromToken, toToken, amountIn):
 
     return (requests.get(endpoint, params=params)).json()
 
-def generateUnsignedBridgeApprovalTransaction(fromChainm, fromToken):
-    params = {"fromChainm": fromChainm, "fromToken": fromToken}
+def generateUnsignedBridgeApprovalTransaction(fromChain, fromToken):
+    params = {"fromChain": fromChain, "fromToken": fromToken}
     endpoint = buildApiURL(os.getenv("SYNAPSE_GENERATE_UNSIGNED_BRIDGE_APPROVAL_TRANSACTION_ENDPOINT"))
 
     return (requests.get(endpoint, params=params)).json()
