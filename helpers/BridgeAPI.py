@@ -8,6 +8,14 @@ synapseAPIEndpoint = os.getenv("SYNAPSE_API_ENDPOINT")
 synapseAPIVersion = os.getenv("SYNAPSE_API_VERSION")
 synapseAPIBaseURL = synapseAPIEndpoint + "/" + synapseAPIVersion
 
+def getTokenDecimalValue(amount, decimalPlaces=18):
+    initValue = float(amount) * (10**decimalPlaces)
+    readable = str(format(initValue, '.0f'))
+    return readable
+
+def getTokenNormalValue(amount, decimalPlaces=18):
+    initValue = float(amount) / (10 ** decimalPlaces)
+    return str(initValue)
 
 def buildApiURL(endpoint):
     return f"{synapseAPIBaseURL}/{endpoint}"
@@ -24,13 +32,18 @@ def checkSwapSupported(fromChain, toChain, fromToken, toToken):
 
     return (requests.get(endpoint, params=params)).json()
 
-def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountFrom):
+def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountFrom, decimalPlaces=18):
+    amountFrom = getTokenDecimalValue(amountFrom)
     params = {"fromChain": fromChain, "toChain": toChain, "fromToken": fromToken, "toToken": toToken, "amountFrom": amountFrom}
     endpoint = buildApiURL(os.getenv("SYNAPSE_ESTIMATE_BRIDGE_OUTPUT_ENDPOINT"))
+    result = (requests.get(endpoint, params=params)).json()
+    amountToReceive = getTokenNormalValue(result["amountToReceive"])
+    bridgeFee = getTokenNormalValue(result["bridgeFee"])
+    bridgeQuote = {'amountToReceive': amountToReceive, 'bridgeFee': bridgeFee}
+    return bridgeQuote
 
-    return (requests.get(endpoint, params=params)).json()
-
-def estimateSwapOutput(chain, fromToken, toToken, amountIn):
+def estimateSwapOutput(chain, fromToken, toToken, amountIn, decimalPlaces=18):
+    amountIn = getTokenDecimalValue(amountIn)
     params = {"chain": chain, "fromToken": fromToken, "toToken": toToken, "amountIn": amountIn}
     endpoint = buildApiURL(os.getenv("SYNAPSE_ESTIMATE_SWAP_OUTPUT_ENDPOINT"))
 
@@ -78,6 +91,8 @@ def getSwappableTokensForNetwork(chainFrom, toChain):
 
     return (requests.get(endpoint, params=params)).json()
 
-# result = checkBridgeStatus(toChain="43114", fromChainTxnHash="0x97a0132993a148ed7b2c3a8e8d651f28e41cf7245c6fd728158b1262a376cb1b")
+result = checkBridgeStatus(toChain="43114", fromChainTxnHash="0x97a0132993a148ed7b2c3a8e8d651f28e41cf7245c6fd728158b1262a376cb1b")
+
+out = estimateBridgeOutput("53935", "1666600000", "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260", "0x72Cb10C6bfA5624dD07Ef608027E366bd690048F", 100)
 
 x = 1
