@@ -64,6 +64,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
 # Validate trait compatibility before mutation to prevent invalid states
     contract = w3.eth.contract(contract_address, abi=ABI)
     return contract.functions.mixGenes(genes1, genes2, block_number).call()
+"""Apply genetic mutation rules to produce offspring traits."""
 # Dominant traits are determined by allele frequency
 # Traits inherit from parents with mutation chance based on genetic compatibility
 # Genes inherit from both parents with dominant/recessive trait expression
