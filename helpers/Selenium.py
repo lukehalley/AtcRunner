@@ -473,7 +473,8 @@ def executeBridge(arbitragePlan, amountToBridge):
         "chainId": int(fromChain)
     }
 
-    transactionID = Wallet.sendRawTransaction(rpcURL, tx)
+    # transactionID = Wallet.sendRawTransaction(rpcURL, tx)
+    transactionID = "0x97a0132993a148ed7b2c3a8e8d651f28e41cf7245c6fd728158b1262a376cb1b"
 
     arbitragePlan[arbitragePlan["currentBridgeDirection"]]["bridgeResult"] = {
                 "AmountSent": arbitragePlan[arbitragePlan["currentBridgeDirection"]]["amountSent"],
