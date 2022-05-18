@@ -13,6 +13,7 @@ import signal
 import time
 
 import helpers.Utils as Utils
+import helpers.BridgeAPI as BridgeAPI
 
 privateKey = os.environ.get("NOHACKERSALLOWED")
 
@@ -161,7 +162,7 @@ def getWalletBalances(arbitragePlan):
 
     return originWalletTokenBalance, destinationWalletTokenBalance
 
-def waitForBridgeToComplete(arbitragePlan, timeout=600):
+def waitForBridgeToComplete(arbitragePlan, timeout=1):
 
     timeoutMins = int(timeout / 60)
 
@@ -174,11 +175,14 @@ def waitForBridgeToComplete(arbitragePlan, timeout=600):
         toDirection = "arbitrageDestination"
         returnDirection = "arbitrageOrigin"
 
+    originChainID = arbitragePlan[toDirection]["bridgeResult"]["TransactionObject"]["chainId"]
+    transactionID = arbitragePlan[toDirection]["bridgeResult"]["ID"]
+
     amountSent = arbitragePlan[toDirection]["bridgeResult"]["AmountSent"]
     amountExpectedToReceive = arbitragePlan[returnDirection]["amountExpectedToReceive"]
     bridgeToken = arbitragePlan[returnDirection]["bridgeToken"]
 
-    logger.info(f"Waiting for bridge to complete with a timeout of {timeoutMins} minutes")
+    logger.info(f"Waiting for bridge to complete with a timeout of {timeoutMins} minute(s)...")
     logger.info(f'Expecting {amountExpectedToReceive} {bridgeToken}')
 
     fundsBridged = False
@@ -194,7 +198,8 @@ def waitForBridgeToComplete(arbitragePlan, timeout=600):
     segmentTime = startingTime
     timeout = startingTime + timeout
     while True:
-        test = 0
+
+        fundsBridged = bool(BridgeAPI.checkBridgeStatus(originChainID, transactionID)["isComplete"])
 
         if fundsBridged:
             bridgeTimedOut = False
@@ -203,12 +208,6 @@ def waitForBridgeToComplete(arbitragePlan, timeout=600):
         if time.time() > timeout:
             bridgeTimedOut = True
             break
-
-        test = test + 1
-
-        originWalletTokenBalance, destinationWalletTokenBalance = getWalletBalances(arbitragePlan)
-
-        fundsBridged = compareBalance(expectedDestinationWalletTokenBalance, destinationWalletTokenBalance)
 
         if time.time() - segmentTime > secondSegment:
             minutesWaiting = minutesWaiting + 1

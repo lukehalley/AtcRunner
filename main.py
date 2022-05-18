@@ -29,6 +29,11 @@ recipes = Database.fetchFromDatabase("recipes")
 networks = Database.fetchFromDatabase("networks")
 tokens = Database.fetchFromDatabase("tokens")
 
+for recipesTitle, recipeDetails in recipes.items():
+
+    recipeDetails["chainOne"]["baseToken"] = recipeDetails["chainOne"]["token"]
+    recipeDetails["chainTwo"]["baseToken"] = recipeDetails["chainTwo"]["token"]
+
 Utils.printSeperator(True)
 
 # Calculate how often we can query dex tools
@@ -43,16 +48,24 @@ tokensToLeave = 5
 
 for recipesTitle, recipeDetails in recipes.items():
 
-    chainOne = recipeDetails["chainOne"]
-    chainTwo = recipeDetails["chainTwo"]
-
     while True:
 
-        chainOne["tokenDexPair"] = tokens[recipeDetails["chainOne"]["chain"]][recipeDetails["chainOne"]["token"]]["dexPair"]
-        chainOne["networkDetails"] = networks[recipeDetails["chainOne"]["chain"]]
+        chainOne = recipeDetails["chainOne"]
+        chainTwo = recipeDetails["chainTwo"]
 
-        chainTwo["tokenDexPair"] = tokens[recipeDetails["chainTwo"]["chain"]][recipeDetails["chainTwo"]["token"]]["dexPair"]
-        chainTwo["networkDetails"] = networks[recipeDetails["chainTwo"]["chain"]]
+        firstPass = isinstance([recipeDetails["chainOne"]["token"]][0], str)
+
+        chainOneNetwork = recipeDetails["chainOne"]["chain"]
+        chainTwoNetwork = recipeDetails["chainTwo"]["chain"]
+
+        chainOneToken = recipeDetails["chainOne"]["baseToken"]
+        chainTwoToken = recipeDetails["chainTwo"]["baseToken"]
+
+        chainOne["tokenDexPair"] = tokens[chainOneNetwork][chainOneToken]["dexPair"]
+        chainOne["networkDetails"] = networks[chainOneNetwork]
+
+        chainTwo["tokenDexPair"] = tokens[chainTwoNetwork][chainTwoToken]["dexPair"]
+        chainTwo["networkDetails"] = networks[chainTwoNetwork]
 
         logger.debug(f"[ARB #{roundTripCount}] Checking If Theres An Arbitrage Between The Pair")
 
@@ -67,7 +80,13 @@ for recipesTitle, recipeDetails in recipes.items():
 
         gasTokenInArbitrage = arbitrageOrigin["usesGasTokenInArbitrage"] or arbitrageDestination["usesGasTokenInArbitrage"]
 
-        arbitrageOrigin["token"], arbitrageDestination["token"] = tokens[arbitrageOrigin["networkDetails"]["chainName"]][arbitrageOrigin["token"]], tokens[arbitrageDestination["networkDetails"]["chainName"]][arbitrageDestination["token"]]
+        originNetwork = arbitrageOrigin["networkDetails"]["chainName"]
+        originToken = arbitrageOrigin["baseToken"]
+
+        destinationNetwork = arbitrageDestination["networkDetails"]["chainName"]
+        destinationToken = arbitrageDestination["baseToken"]
+
+        arbitrageOrigin["token"], arbitrageDestination["token"] = tokens[originNetwork][originToken], tokens[destinationNetwork][destinationToken]
 
         arbitrageOrigin["roundTripCount"], arbitrageDestination["roundTripCount"] = roundTripCount, roundTripCount
 
@@ -141,16 +160,6 @@ for recipesTitle, recipeDetails in recipes.items():
 
             arbitragePlan = Selenium.executeBridge(arbitragePlan, amountToBridge)
 
-            arbitragePlan["arbitrageOrigin"]["result"] = {
-                "AmountSent": arbitragePlan["arbitrageOrigin"]["amountSent"],
-                "Successful": True,
-                "TransactionType": "Send",
-                "ID": "12345678910",
-                "Fee": 0.01,
-                "Message": "Test",
-                "Timestamp": Utils.getCurrentDateTime()
-            }
-
             Utils.printSeperator(True)
 
             Utils.printSeperator()
@@ -181,7 +190,7 @@ for recipesTitle, recipeDetails in recipes.items():
 
             # time.sleep(10)
 
-            driver.quit()
+            # driver.quit()
 
             Utils.printSeperator(True)
 
