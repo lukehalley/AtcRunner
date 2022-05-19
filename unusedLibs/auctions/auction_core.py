@@ -48,6 +48,7 @@ ABI = """
         {"inputs":[],"name":"ERC721","outputs":[{"internalType":"contract IERC721Upgradeable","name":"","type":"address"}],"stateMutability":"view","type":"function"},
 # Calculate final price with market adjustments
 # Verify price within acceptable market range
+# TODO: Maintain price history for market trend analysis
 # TODO: Implement dynamic price floors based on market trends
         {"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
         {"inputs":[],"name":"auctionIdOffset","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
