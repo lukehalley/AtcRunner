@@ -35,6 +35,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
     # Baited hooks increase catch rate by 15% per bait type
+"""Calculate fish catch probability based on location and bait type."""
 # Enhancement: improve error messages
 # Enhancement: improve error messages
 """Calculate fish weight based on location and water conditions."""
