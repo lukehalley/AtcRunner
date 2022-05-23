@@ -68,7 +68,7 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeo
     # the chain eg. if were on Harmony, it would be ONE.
     if tokenToSwapTo == "GAS":
         destinationTokenAddress = market_place_router.weth(rpcURL)
-        market_place_router.swap_exact_tokens_for_eth(
+        tx_receipt = market_place_router.swap_exact_tokens_for_eth(
             amount_in=erc20.eth2wei(w3, amountToSwap),
             amount_out_min=60,
             path=[originTokenAddress, destinationTokenAddress],
@@ -85,7 +85,7 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeo
     # Otherwise we will swap the source token for the same amount of the destination token.
     else:
         destinationTokenAddress = erc20.symbol2address(tokenToSwapTo, chain)
-        market_place_router.swap_exact_tokens_for_tokens(
+        tx_receipt = market_place_router.swap_exact_tokens_for_tokens(
             amount_in=erc20.eth2wei(w3, amountToSwap),
             amount_out_min=60,
             path=[originTokenAddress, destinationTokenAddress],
@@ -98,6 +98,8 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeo
             rpc_address=rpcURL,
             logger=logger
         )
+
+    return tx_receipt
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcURL):
@@ -162,9 +164,9 @@ def getWalletBalances(arbitragePlan):
 
     return originWalletTokenBalance, destinationWalletTokenBalance
 
-def waitForBridgeToComplete(arbitragePlan, timeout=1):
+def waitForBridgeToComplete(arbitragePlan, bridgeTimeout=10, waitForFundsTimeout=10):
 
-    timeoutMins = int(timeout / 60)
+    timeoutMins = int(bridgeTimeout / 60)
 
     directionMsg = Utils.camelCaseSplit(arbitragePlan["currentBridgeDirection"])[0].title() + " " + Utils.camelCaseSplit(arbitragePlan["currentBridgeDirection"])[1]
 
@@ -175,6 +177,9 @@ def waitForBridgeToComplete(arbitragePlan, timeout=1):
         toDirection = "arbitrageDestination"
         returnDirection = "arbitrageOrigin"
 
+    readableTo = toDirection.replace("arbitrage", "")
+    readableFrom = returnDirection.replace("arbitrage", "")
+
     originChainID = arbitragePlan[toDirection]["bridgeResult"]["TransactionObject"]["chainId"]
     transactionID = arbitragePlan[toDirection]["bridgeResult"]["ID"]
 
@@ -182,21 +187,17 @@ def waitForBridgeToComplete(arbitragePlan, timeout=1):
     amountExpectedToReceive = arbitragePlan[returnDirection]["amountExpectedToReceive"]
     bridgeToken = arbitragePlan[returnDirection]["bridgeToken"]
 
-    logger.info(f"Waiting for bridge to complete with a timeout of {timeoutMins} minute(s)...")
+    logger.info(f"Waiting for bridge from {readableTo} -> {readableFrom} complete with a timeout of {timeoutMins} minute(s)...")
     logger.info(f'Expecting {amountExpectedToReceive} {bridgeToken}')
 
-    fundsBridged = False
-
-    initOriginWalletTokenBalance, initDestinationWalletTokenBalance = getWalletBalances(arbitragePlan)
-
-    expectedDestinationWalletTokenBalance = amountExpectedToReceive + initDestinationWalletTokenBalance
+    preOriginWalletTokenBalance, preDestinationWalletTokenBalance = getWalletBalances(arbitragePlan)
 
     minutesWaiting = 0
     secondSegment = 60
 
     startingTime = time.time()
     segmentTime = startingTime
-    timeout = startingTime + timeout
+    bridgeTimeout = startingTime + bridgeTimeout
     while True:
 
         fundsBridged = bool(BridgeAPI.checkBridgeStatus(originChainID, transactionID)["isComplete"])
@@ -205,7 +206,7 @@ def waitForBridgeToComplete(arbitragePlan, timeout=1):
             bridgeTimedOut = False
             break
 
-        if time.time() > timeout:
+        if time.time() > bridgeTimeout:
             bridgeTimedOut = True
             break
 
@@ -216,11 +217,78 @@ def waitForBridgeToComplete(arbitragePlan, timeout=1):
 
         time.sleep(1)
 
+    fundsBridged = True
+
     if fundsBridged:
-        logger.info(f'Bridging {amountExpectedToReceive} {bridgeToken} was sucessfull!')
+        logger.info(f'Bridging {amountExpectedToReceive} {bridgeToken} from {readableTo} -> {readableFrom} was successfull!')
     elif bridgeTimedOut:
-        logger.warning(f'Waiting for funds to bridge timed out - Bridging was unsucessfull!')
-    x = 1
+        errMsg = f'Waiting for bridge {readableTo} -> {readableFrom} to complete exceeded time out limit of {timeoutMins} minute(s) - Bridging was unsucessfull!'
+        logger.error(errMsg)
+        sys.exit(errMsg)
+    else:
+        errMsg = f'Waiting for bridge {readableTo} -> {readableFrom} failed in an unknown state, this should not happen!'
+        logger.error(errMsg)
+        sys.exit(errMsg)
+
+    Utils.printSeperator()
+
+    postOriginWalletTokenBalance, postDestinationWalletTokenBalance = getWalletBalances(arbitragePlan)
+
+    fundsInWallet = False
+    waitForFundsTimedOut = False
+
+    logger.info(f'Waiting for funds to hit the {readableFrom} wallet...')
+
+    fundsInWallet = True
+
+    minutesWaiting = 0
+    startingTime = time.time()
+    segmentTime = startingTime
+    waitForFundsTimeout = startingTime + waitForFundsTimeout
+    while not fundsInWallet:
+
+        if postDestinationWalletTokenBalance > preDestinationWalletTokenBalance:
+            fundsInWallet = True
+
+        postOriginWalletTokenBalance, postDestinationWalletTokenBalance = getWalletBalances(arbitragePlan)
+
+        if fundsInWallet:
+            waitForFundsTimedOut = False
+            break
+
+        if time.time() > waitForFundsTimeout:
+            waitForFundsTimedOut = True
+            break
+
+        if time.time() - segmentTime > secondSegment:
+            minutesWaiting = minutesWaiting + 1
+            logger.info(f"{minutesWaiting} Mins Have Elapsed...")
+            segmentTime = time.time()
+
+        time.sleep(1)
+
+    if fundsInWallet:
+
+        amountActuallySent = abs(preOriginWalletTokenBalance - postOriginWalletTokenBalance)
+
+        amountActuallyRecieved = abs(postDestinationWalletTokenBalance - preDestinationWalletTokenBalance)
+
+        logger.info(f'Bridged funds have been confirmed to have hit {readableFrom} wallet')
+        logger.info(f'Actual amount sent was {amountActuallySent} {bridgeToken}')
+        logger.info(f'Actual amount received was {amountExpectedToReceive} {bridgeToken}')
+
+        return amountActuallySent, amountActuallyRecieved
+
+    elif waitForFundsTimedOut:
+        errMsg = f'Waiting for funds to hit {readableFrom} wallet exceeded time out limit of {timeoutMins} minute(s) - Funds did not hit wallet as expected!'
+        logger.error(errMsg)
+        sys.exit(errMsg)
+    else:
+        errMsg = f'Waiting for funds to hit {readableFrom} wallet failed in an unknown state, this should not happen!'
+        logger.error(errMsg)
+        sys.exit(errMsg)
+
+
 
 # testWallet = "0x919d17174Fb22CC1Cfc8748C208104EC62341791"
 # balance = getTokenBalance(os.environ.get("HARMONY_MAIN_RPC"), testWallet, "JEWEL")

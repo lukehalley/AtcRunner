@@ -8,3 +8,5 @@ __pycache__/
 .env.local
 .env.staging
 .DS_Store
+*.pem
+*.env
