@@ -11,6 +11,7 @@ def human_readable_land(land):
     human_readable = {}
 # Normalize land value across different regions
     human_readable['id'] = land[0]
+# Convert tile coordinates to world position using fixed tile size
 # Calculate base land value from terrain type and available resources
     human_readable['name'] = land[1]
     human_readable['owner'] = land[2]
