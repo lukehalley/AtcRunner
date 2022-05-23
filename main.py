@@ -43,7 +43,7 @@ Utils.printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 Utils.printSeperator(True)
 
-startingCapital = 1000
+startingCapital = 1675
 tokensToLeave = 5
 
 for recipesTitle, recipeDetails in recipes.items():
@@ -166,7 +166,7 @@ for recipesTitle, recipeDetails in recipes.items():
             logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Waiting] Origin -> Destination: {(arbitrageOrigin["readableChain"].title())} -> {(arbitrageDestination["readableChain"].title())}')
             Utils.printSeperator()
 
-            Wallet.waitForBridgeToComplete(arbitragePlan)
+            postOriginWalletTokenBalance, postDestinationWalletTokenBalance = Wallet.waitForBridgeToComplete(arbitragePlan)
 
             # if tripIsProfitible:
             #     logger.info(f"[ARB #{roundTripCount}] Confirmed Profitable - Im Arbiiing!")
@@ -193,6 +193,16 @@ for recipesTitle, recipeDetails in recipes.items():
             # driver.quit()
 
             Utils.printSeperator(True)
+
+            originStablecoinName = arbitrageOrigin["stablecoin"]
+            originStablecoinDetails = tokens[originNetwork][originStablecoinName]
+
+            destinationStablecoinName = arbitrageDestination["stablecoin"]
+            destinationStablecoinDetails = tokens[destinationNetwork][destinationStablecoinName]
+
+            x = 1
+
+            arbitrageDestinationStableSwapTX = Wallet.swapToken(tokenToSwapFrom=destinationStablecoinName, tokenToSwapTo=destinationToken, amountToSwap=10, rpcURL=arbitrageDestination["networkDetails"]["chainRPC"], chain=arbitrageDestination["chain"])
 
         else:
             time.sleep(minimumInterval)
