@@ -2,54 +2,51 @@ import logging
 import os
 import requests
 from itertools import repeat
-import helpers.Database as Database
+import helpers.Dex as Dex
 
 logger = logging.getLogger("DFK-DEX")
 
-def calculateArbitrage(chainOne, chainTwo):
+def setUpArbitrage(recipe):
 
     logger.debug(f"Calling Dexscreener API to find current price of pair")
 
-    # Dex Screen Envs
-    pairsEndpoint = os.environ.get("DEXSCREENER_API_ENDPOINT")
-
-    # Network One
-    chainOneEndpoint = f"{pairsEndpoint}/{chainOne['chain']}/{chainOne['tokenDexPair']}"
-    chainOneResult = requests.get(chainOneEndpoint)
-    chainOneResultJSON = chainOneResult.json()["pair"]
-    chainOnePrice = float(chainOneResultJSON["priceUsd"])
-
-    # Network Two
-    chainTwoEndpoint = f"{pairsEndpoint}/{chainTwo['chain']}/{chainTwo['tokenDexPair']}"
-    chainTwoResult = requests.get(chainTwoEndpoint)
-    chainTwoResultJSON = chainTwoResult.json()["pair"]
-    chainTwoPrice = float(chainTwoResultJSON["priceUsd"])
+    chainOnePrice = Dex.getTokenPrice(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["tokenAddress"])
+    chainTwoPrice = Dex.getTokenPrice(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["tokenAddress"])
 
     # Calculate
     priceDifference = calculateDifference(chainOnePrice, chainTwoPrice)
 
-    arbitrageOrigin, arbitrageDestination = calculateArbitrageStrategy(chainOnePrice, chainOne['chain'], chainTwoPrice,
-                                                                       chainTwo['chain'])
+    origin, destination = calculateArbitrageStrategy(chainOnePrice, recipe["chainOne"]["chain"]["name"], chainTwoPrice, recipe["chainOne"]["chain"]["name"])
     logger.debug(f"Calculating arbitrage origin and destination")
 
-    if arbitrageOrigin == chainOne["chain"]:
-        arbitrageOriginDetails = chainOne
-        arbitrageOriginDetails["price"] = chainOnePrice
+    if origin == recipe["chainOne"]["chain"]["name"]:
 
-        arbitrageDestinationDetails = chainTwo
-        arbitrageDestinationDetails["price"] = chainTwoPrice
+        recipe["origin"] = recipe["chainOne"]
+        recipe["origin"]["token"]["price"] = chainOnePrice
+
+        recipe["destination"] = recipe["chainTwo"]
+        recipe["destination"]["token"]["price"] = chainTwoPrice
     else:
-        arbitrageOriginDetails = chainTwo
-        arbitrageOriginDetails["price"] = chainTwoPrice
+        recipe["origin"] = recipe["chainTwo"]
+        recipe["origin"]["token"]["price"] = chainTwoPrice
 
-        arbitrageDestinationDetails = chainOne
-        arbitrageDestinationDetails["price"] = chainOnePrice
+        recipe["destination"] = recipe["chainOne"]
+        recipe["destination"]["token"]["price"] = chainOnePrice
 
-    reportString = f"Buying {arbitrageOriginDetails['token']} on {arbitrageOriginDetails['readableChain']} @ {arbitrageOriginDetails['price']} {arbitrageOriginDetails['stablecoin']} and selling {arbitrageDestinationDetails['token']} on {arbitrageDestinationDetails['readableChain']} @ {arbitrageDestinationDetails['price']} {arbitrageDestinationDetails['stablecoin']} for a {priceDifference}% arbitrage"
+    del recipe['chainOne'], recipe['chainTwo']
 
-    return reportString, priceDifference, arbitrageOriginDetails, arbitrageDestinationDetails
+    recipe["arbitrage"]["reportString"] = \
+        f'Buying {recipe["origin"]["token"]["name"]} on ' \
+        f'{recipe["origin"]["chain"]["name"]} @ ' \
+        f'{recipe["origin"]["token"]["price"]} {recipe["origin"]["stablecoin"]["symbol"]} ' \
+        f'and selling {recipe["destination"]["token"]["name"]} on ' \
+        f'{recipe["destination"]["chain"]["name"]} ' \
+        f'@ {recipe["destination"]["token"]["price"]} ' \
+        f'{recipe["origin"]["stablecoin"]["symbol"]} for a {priceDifference}% arbitrage'
 
-def calculatePotentialProfit(initialCapital, arbitrageOrigin, arbitrageDestination, arbitragePlan):
+    return recipe
+
+def calculatePotentialProfit(initialCapital, origin, destination, arbitragePlan):
     logger.debug(f"Calculating potential profit")
 
     tripPredictions = {}
@@ -68,17 +65,17 @@ def calculatePotentialProfit(initialCapital, arbitrageOrigin, arbitrageDestinati
         for _ in repeat(None, tripAmount):
 
             # Calculate Profit/Loss of a single round trip.
-            initialBuy = currentCapital / arbitrageOrigin["price"]
-            initialBuyAfterBridgeFees = initialBuy - arbitragePlan["arbitrageOrigin"]["bridgeFee"]
-            arbSell = initialBuyAfterBridgeFees * arbitrageDestination["price"]
-            currentCapital = arbSell - (arbitragePlan["arbitrageDestination"]["bridgeFee"] * arbitrageOrigin["price"])
+            initialBuy = currentCapital / origin["price"]
+            initialBuyAfterBridgeFees = initialBuy - arbitragePlan["origin"]["bridgeFee"]
+            arbSell = initialBuyAfterBridgeFees * destination["price"]
+            currentCapital = arbSell - (arbitragePlan["destination"]["bridgeFee"] * origin["price"])
             profitLoss = currentCapital - startingCapital
             tripIsProfitible = currentCapital > startingCapital
 
         if tripIsProfitible:
-            logger.info(f"{tripAmount} Round trips would in a PROFIT [ Total: {currentCapital} | P/L ${profitLoss} ]")
+            logger.info(f"{tripAmount} Round trips would result in a PROFIT [ Total: {currentCapital} | P/L ${profitLoss} ]")
         else:
-            logger.info(f"{tripAmount} Round trips would in a LOSS [ Total: {currentCapital} | P/L ${profitLoss} ]")
+            logger.info(f"{tripAmount} Round trips would result in a LOSS [ Total: {currentCapital} | P/L ${profitLoss} ]")
 
         tripPredictions[f"{tripAmount}"] = {"Total": currentCapital, "P/L": profitLoss, "Profitable": tripIsProfitible}
 

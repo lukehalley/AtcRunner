@@ -8,6 +8,7 @@ from firebase_admin import db
 from typing import Optional
 from dotenv import load_dotenv
 import os
+import helpers.Dex as Dex
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -41,18 +42,3 @@ def fetchFromDatabase(reference, info=True):
         logger.debug(f"DB: Firebase query returned dictionary of {len(queryResult)} rows")
 
     return queryResult
-
-def getTokenPrice(chain, tokenDexPair):
-
-    # Dex Screen Envs
-    pairsEndpoint = os.environ.get("DEXSCREENER_API_ENDPOINT")
-
-    recipes = fetchFromDatabase("recipes")
-    networks = fetchFromDatabase("networks")
-    tokens = fetchFromDatabase("tokens")
-
-    # Network One
-    chainOneEndpoint = f"{pairsEndpoint}/{chain}/{tokenDexPair}"
-    chainOneResult = requests.get(chainOneEndpoint)
-    chainOneResultJSON = chainOneResult.json()["pair"]
-    chainOnePrice = float(chainOneResultJSON["priceUsd"])

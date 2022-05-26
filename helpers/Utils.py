@@ -1,3 +1,4 @@
+import functools
 import logging
 import os
 from datetime import datetime
@@ -41,3 +42,6 @@ def camelCaseSplit(identifier):
 
 def isBetween(a, x, b):
     return min(a, b) < x < max(a, b)
+
+def replace_all(text, dictionary):
+    return functools.reduce(lambda a, kv: a.replace(*kv), dictionary.items(), text)
