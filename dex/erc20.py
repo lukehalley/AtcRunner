@@ -85,10 +85,15 @@ def decimals(token_address, rpc_address):
     return contract.functions.decimals().call()
 
 
-def balance_of(address, token_address, rpc_address):
+def balance_of(address, rpc_address, token_address="", getGasTokenBalance=False):
+
     w3 = Web3(Web3.HTTPProvider(rpc_address))
-    contract_address = Web3.toChecksumAddress(token_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
-    result = contract.functions.balanceOf(address).call()
+
+    if getGasTokenBalance:
+        result = w3.eth.get_balance(address)
+    else:
+        contract_address = Web3.toChecksumAddress(token_address)
+        contract = w3.eth.contract(contract_address, abi=ABI)
+        result = contract.functions.balanceOf(address).call()
 
     return result

@@ -6,9 +6,10 @@ import helpers.Database as Database
 import helpers.Logger as Log
 import helpers.Arbitrage as Arbitrage
 import helpers.Wallet as Wallet
-import helpers.Selenium as Selenium
 import helpers.Utils as Utils
-from datetime import datetime
+import helpers.Bridge as Bridge
+
+from helpers import Data
 
 isDocker = Utils.checkIsDocker()
 
@@ -24,15 +25,7 @@ Utils.printSeperator()
 # Create connection to Firebase
 Database.createDatabaseConnection()
 
-# Get the arb data
-recipes = Database.fetchFromDatabase("recipes")
-networks = Database.fetchFromDatabase("networks")
-tokens = Database.fetchFromDatabase("tokens")
-
-for recipesTitle, recipeDetails in recipes.items():
-
-    recipeDetails["chainOne"]["baseToken"] = recipeDetails["chainOne"]["token"]
-    recipeDetails["chainTwo"]["baseToken"] = recipeDetails["chainTwo"]["token"]
+recipes = Data.getRecipeDetails()
 
 Utils.printSeperator(True)
 
@@ -43,95 +36,64 @@ Utils.printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 Utils.printSeperator(True)
 
-startingCapital = 1675
+startingCapitalTestAmount = 1675
 tokensToLeave = 5
+minimumGasBalance = 1
 
-for recipesTitle, recipeDetails in recipes.items():
+for recipesTitle, recipe in recipes.items():
 
     while True:
 
-        chainOne = recipeDetails["chainOne"]
-        chainTwo = recipeDetails["chainTwo"]
-
-        firstPass = isinstance([recipeDetails["chainOne"]["token"]][0], str)
-
-        chainOneNetwork = recipeDetails["chainOne"]["chain"]
-        chainTwoNetwork = recipeDetails["chainTwo"]["chain"]
-
-        chainOneToken = recipeDetails["chainOne"]["baseToken"]
-        chainTwoToken = recipeDetails["chainTwo"]["baseToken"]
-
-        chainOne["tokenDexPair"] = tokens[chainOneNetwork][chainOneToken]["dexPair"]
-        chainOne["networkDetails"] = networks[chainOneNetwork]
-
-        chainTwo["tokenDexPair"] = tokens[chainTwoNetwork][chainTwoToken]["dexPair"]
-        chainTwo["networkDetails"] = networks[chainTwoNetwork]
-
         logger.debug(f"[ARB #{roundTripCount}] Checking If Theres An Arbitrage Between The Pair")
 
-        reportString, priceDifference, arbitrageOrigin, arbitrageDestination = Arbitrage.calculateArbitrage(
-            chainOne=chainOne,
-            chainTwo=chainTwo,
-            )
+        recipe = Arbitrage.setUpArbitrage(recipe)
 
-        # Check if networks use their gas token for the Arb
-        arbitrageOrigin["usesGasTokenInArbitrage"] = arbitrageOrigin["token"] == arbitrageOrigin["networkDetails"]["chainCurrency"]
-        arbitrageDestination["usesGasTokenInArbitrage"] = arbitrageDestination["token"] == arbitrageDestination["networkDetails"]["chainCurrency"]
+        recipe["arbitrage"]["currentRoundTripCount"] = roundTripCount
 
-        gasTokenInArbitrage = arbitrageOrigin["usesGasTokenInArbitrage"] or arbitrageDestination["usesGasTokenInArbitrage"]
-
-        originNetwork = arbitrageOrigin["networkDetails"]["chainName"]
-        originToken = arbitrageOrigin["baseToken"]
-
-        destinationNetwork = arbitrageDestination["networkDetails"]["chainName"]
-        destinationToken = arbitrageDestination["baseToken"]
-
-        arbitrageOrigin["token"], arbitrageDestination["token"] = tokens[originNetwork][originToken], tokens[destinationNetwork][destinationToken]
-
-        arbitrageOrigin["roundTripCount"], arbitrageDestination["roundTripCount"] = roundTripCount, roundTripCount
-
-        if reportString:
+        if True:
 
             Utils.printRoundtrip(roundTripCount)
 
             Utils.printSeperator()
             logger.info(f"[ARB #{roundTripCount}] Arbitrage Opportunity Identified")
             Utils.printSeperator()
-            logger.info(reportString)
+            logger.info(recipe["arbitrage"]["reportString"])
             Utils.printSeperator(True)
 
             Utils.printSeperator()
             logger.info(f"[ARB #{roundTripCount}] Getting Wallet Details & Balance")
             Utils.printSeperator()
 
-            originWalletAddress = Wallet.getWalletAddressFromPrivateKey(arbitrageOrigin["networkDetails"]["chainRPC"])
-            destinationWalletAddress = Wallet.getWalletAddressFromPrivateKey(
-                arbitrageDestination["networkDetails"]["chainRPC"])
-            originWalletTokenBalance = Wallet.getTokenBalance(arbitrageOrigin["networkDetails"]["chainRPC"],
-                                                              originWalletAddress, arbitrageOrigin['token'],
-                                                              arbitrageOrigin['chain'])
-            destinationWalletTokenBalance = Wallet.getTokenBalance(arbitrageDestination["networkDetails"]["chainRPC"],
-                                                                   destinationWalletAddress,
-                                                                   arbitrageDestination['token'],
-                                                                   arbitrageDestination['chain'])
+            recipe = Wallet.getWalletsInformation(recipe)
+
+            stablesAreOnOrigin = originWalletStablecoinBalance > destinationWalletStablecoinBalance
+
+            initialStablecoinMoveQuote = Bridge.estimateBridgeOutput(
+                arbitrageDestination["networkDetails"]["chainID"],
+                arbitrageOrigin["networkDetails"]["chainID"],
+                arbitrageDestination["stablecoin"],
+                arbitrageOrigin["stablecoin"],
+                originWalletStablecoinBalance
+            )
 
             Utils.printSeperator(True)
 
-            # Utils.printSeperator()
-            # logger.info(f"[ARB #{roundTripCount}] Launching Chrome & Metamask")
-            # Utils.printSeperator()
-
-            # driver, display = Selenium.initBrowser()
-            # Selenium.loginIntoMetamask(driver)
-            # Utils.printSeperator(True)
-
-            if gasTokenInArbitrage:
-                amountToBridge = round((startingCapital / arbitrageOrigin["price"]) - tokensToLeave)
+            if originWalletStablecoinBalance > 0:
+                startingCapital = originWalletStablecoinBalance
             else:
-                amountToBridge = round((startingCapital / arbitrageOrigin["price"]) - 1)
+                logger.info(f"[TEST] Origin wallet stablecoin balance is {originWalletStablecoinBalance} - setting to {startingCapitalTestAmount}")
+                startingCapital = startingCapitalTestAmount
+
+            Utils.printSeperator()
+            logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas Both Wallets")
+            Utils.printSeperator()
+
+            Wallet.checkWalletsGas(arbitrageOrigin, originWalletGasBalance, arbitrageDestination, destinationWalletGasBalance)
 
 
-            arbitragePlan = Selenium.calculateSynapseBridgeFees(arbitrageOrigin, arbitrageDestination, amountToBridge)
+            Utils.printSeperator(True)
+
+            arbitragePlan = Bridge.calculateSynapseBridgeFees(arbitrageOrigin, arbitrageDestination, amountToBridge)
 
             Utils.printSeperator(True)
 
@@ -158,7 +120,7 @@ for recipesTitle, recipeDetails in recipes.items():
             arbitragePlan["currentBridgeDirection"] = "arbitrageOrigin"
             arbitragePlan["oppositeBridgeDirection"] = "arbitrageDestination"
 
-            arbitragePlan = Selenium.executeBridge(arbitragePlan, amountToBridge)
+            arbitragePlan = Bridge.executeBridge(arbitragePlan, amountToBridge)
 
             Utils.printSeperator(True)
 
@@ -168,74 +130,11 @@ for recipesTitle, recipeDetails in recipes.items():
 
             postOriginWalletTokenBalance, postDestinationWalletTokenBalance = Wallet.waitForBridgeToComplete(arbitragePlan)
 
-            # if tripIsProfitible:
-            #     logger.info(f"[ARB #{roundTripCount}] Confirmed Profitable - Im Arbiiing!")
-            #
-            #     Utils.printSeperator()
-            #     logger.info(f"[ARB #{roundTripCount}] Finished - Running Cleanup")
-            #     Utils.printSeperator()
-            #     Selenium.closeBrowser(driver, display)
-            #     Utils.printSeperator(True)
-            #
-            # else:
-            #     logger.info(f"[ARB #{roundTripCount}] Not Profitable - Im Skipiiing!")
-            #
-            #     Utils.printSeperator()
-            #     logger.info(f"[ARB #{roundTripCount}] Finished - Running Cleanup")
-            #     Utils.printSeperator()
-            #     Selenium.closeBrowser(driver, display)
-            #     Utils.printSeperator(True)
-
             roundTripCount = roundTripCount + 1
-
-            # time.sleep(10)
-
-            # driver.quit()
 
             Utils.printSeperator(True)
 
-            originStablecoinName = arbitrageOrigin["stablecoin"]
-            originStablecoinDetails = tokens[originNetwork][originStablecoinName]
-
-            destinationStablecoinName = arbitrageDestination["stablecoin"]
-            destinationStablecoinDetails = tokens[destinationNetwork][destinationStablecoinName]
-
-            x = 1
-
-            arbitrageDestinationStableSwapTX = Wallet.swapToken(tokenToSwapFrom=destinationStablecoinName, tokenToSwapTo=destinationToken, amountToSwap=10, rpcURL=arbitrageDestination["networkDetails"]["chainRPC"], chain=arbitrageDestination["chain"])
+            arbitrageDestinationStableSwapTX = Wallet.swapToken(tokenToSwapFrom=destinationStablecoinName, tokenToSwapTo=destinationToken, amountToSwap=10, rpcURL=destinationRPCUrl, chain=arbitrageDestination["chain"])
 
         else:
             time.sleep(minimumInterval)
-
-# Iterate through the recipes
-
-# Check if the current recipe has an arb.
-
-# If it does have an arb check what the profit would be
-# accounting for all fees.
-
-# If its worth it check if we have have enough tokens in our wallet
-# to make it worth it.
-
-# Record the trade.
-
-# If we need to swap to the starting token - do it.
-
-# Before we bridge, make an arb checkpoint.
-
-# Bridge over from the origin chain to the destination chain.
-
-# Once we make it over, make an arb checkpoint.
-
-# If the arb is still worth it and it will make a profit - make the swap.
-
-# Record the trade.
-
-# Bridge back to the origin chain from the destination chain.
-
-# Swap it back to origin token and take note of profits.
-
-# Check if arbitrage exists, if does go back for more.
-
-
-

@@ -1,6 +1,6 @@
 import logging
 import sys
-
+from distutils import util
 from web3 import Web3
 import dex.uniswap_v2_router as market_place_router
 import dex.erc20 as erc20
@@ -13,7 +13,7 @@ import signal
 import time
 
 import helpers.Utils as Utils
-import helpers.BridgeAPI as BridgeAPI
+import helpers.Bridge as BridgeAPI
 
 privateKey = os.environ.get("NOHACKERSALLOWED")
 
@@ -29,7 +29,6 @@ def sendRawTransaction(rpcURL, bridgeTransaction):
 
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
-    logger.info("Using RPC server " + rpcURL)
 
     try:
         signedTransaction = w3.eth.account.sign_transaction(bridgeTransaction, private_key=privateKey)
@@ -44,25 +43,23 @@ def getGasPrice(rpcURL):
 
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
-    logger.info("Using RPC server " + rpcURL)
 
     gasPrice = float(w3.fromWei(w3.eth.gas_price, 'gwei'))
 
     return gasPrice
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeout=180, gwei=30):
 
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
-    logger.info("Using RPC server " + rpcURL)
     transactionTimeout = int(time.time() + timeout)
 
     # Get wallet address from private key.
     account_address = w3.eth.account.privateKeyToAccount(privateKey).address
 
     # Get the address of the token we to swap from.
-    originTokenAddress = erc20.symbol2address(tokenToSwapFrom, chain)
+    originTokenAddress = w3.toChecksumAddress(erc20.symbol2address(tokenToSwapFrom, chain, False))
 
     # If we declare "GAS" as the token we want to swap to, will we the native gas token of
     # the chain eg. if were on Harmony, it would be ONE.
@@ -106,28 +103,86 @@ def getWalletAddressFromPrivateKey(rpcURL):
 
     load_dotenv()
 
-
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
     return w3.eth.account.privateKeyToAccount(privateKey).address
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getTokenBalance(rpcURL, walletAddress, token, chain, printBalance=True):
+def getTokenBalance(rpcURL, walletAddress, tokenAddress, printBalance=True):
 
-    rpc_server = rpcURL
-    if printBalance:
-        logger.info("Using RPC Server " + rpc_server)
+    w3 = Web3(Web3.HTTPProvider(rpcURL))
 
-    w3 = Web3(Web3.HTTPProvider(rpc_server))
-
-    token_address = token["address"]
-
-    name = erc20.name(token_address, rpc_server)
-    symbol = erc20.symbol(token_address, rpc_server)
-    balance = erc20.wei2eth(w3, erc20.balance_of(walletAddress, token_address, rpc_server))
+    symbol = erc20.symbol(tokenAddress, rpcURL)
+    balance = erc20.wei2eth(w3, erc20.balance_of(address=walletAddress, token_address=tokenAddress, rpc_address=rpcURL))
 
     if printBalance:
         logger.info(f"Wallet {walletAddress} has {balance} {symbol}")
+
+    return float(balance)
+
+def getWalletsInformation(recipe):
+
+    directionList = ("origin", "destination")
+
+    for direction in directionList:
+
+        recipe[direction]["wallet"] = {}
+
+        recipe[direction]["wallet"]["address"] = getWalletAddressFromPrivateKey(recipe[direction]["chain"]["rpc"])
+
+        recipe[direction]["wallet"]["balances"] = {}
+
+        recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
+            recipe[direction]["chain"]["rpc"],
+            recipe[direction]["wallet"]["address"],
+            recipe[direction]["chain"]["token"],
+            False
+        )
+
+        recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
+            recipe[direction]["chain"]["rpc"],
+            recipe[direction]["wallet"]["address"],
+            recipe[direction]["stablecoin"]["tokenAddress"],
+            False
+        )
+
+        if recipe[direction]["token"]["isGas"]:
+            recipe[direction]["wallet"]["balances"]["token"] = recipe[direction]["wallet"]["balances"]["gas"]
+        else:
+            recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
+                recipe[direction]["chain"]["rpc"],
+                recipe[direction]["wallet"]["address"],
+                recipe[direction]["token"]["tokenAddress"],
+                False
+            )
+
+        logger.info(
+            f'{direction.title()} ({recipe[direction]["chain"]["name"]}) ->'
+            f' Token {recipe[direction]["wallet"]["balances"]["token"]}'
+            f' {recipe[direction]["token"]["name"]} | '
+            f'Gas {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["chain"]["token"]} | '
+            f'Stables {recipe[direction]["wallet"]["balances"]["stablecoin"]} {recipe[direction]["stablecoin"]["symbol"]}')
+
+    if recipe["origin"]["wallet"]["address"] != recipe["destination"]["wallet"]["address"]:
+        errMsg = f'originWalletAddress [{recipe["origin"]["wallet"]["address"]}] did not match destinationWalletAddress [{recipe["destination"]["wallet"]["address"]}] this should never happen!'
+        logger.error(errMsg)
+        sys.exit(errMsg)
+
+    Utils.printSeperator()
+    logger.info(
+        f'Destination ({destination["origin"]["chain"]["name"]}) -> Token {destinationWalletTokenBalance} {destinationArbTokenName} | Gas {destinationWalletGasBalance} {destinationGasToken} | Stables {destinationWalletStablecoinBalance} {destinationStablecoinName}')
+
+    return recipe
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def getWalletGasBalance(rpcURL, walletAddress, gasSymbol, printBalance=False):
+
+    w3 = Web3(Web3.HTTPProvider(rpcURL))
+
+    balance = erc20.wei2eth(w3, erc20.balance_of(address=walletAddress, rpc_address=rpcURL, getGasTokenBalance=True))
+
+    if printBalance:
+        logger.info(f"Wallet {walletAddress} has {balance} {gasSymbol}")
 
     return float(balance)
 
@@ -163,6 +218,70 @@ def getWalletBalances(arbitragePlan):
     )
 
     return originWalletTokenBalance, destinationWalletTokenBalance
+
+def checkWalletsGas(arbitrageOrigin, originWalletGasBalance, arbitrageDestination, destinationWalletGasBalance):
+    minimumGasBalance = float(os.environ.get("MIN_GAS_BALANCE"))
+    maximumGasBalance = float(os.environ.get("MAX_GAS_BALANCE"))
+
+    originWalletNeedsGas = originWalletGasBalance < minimumGasBalance
+    destinationWalletNeedsGas = destinationWalletGasBalance < minimumGasBalance
+
+    originNetworkName = arbitrageOrigin["chain"].title()
+    destinationNetworkName = arbitrageDestination["chain"].title()
+
+    if originWalletNeedsGas:
+        gasTokensNeeded = maximumGasBalance - originWalletGasBalance
+        topUpAmount = gasTokensNeeded * arbitrageOrigin["price"]
+
+        logger.info(f'Origin wallet ({originNetworkName}) needs gas - adding {gasTokensNeeded} {arbitrageOrigin["networkDetails"]["chainGasToken"]} for {topUpAmount} {arbitrageOrigin["stablecoin"]}')
+
+        try:
+            originTopUpReceipt = swapToken(
+                arbitrageOrigin["stablecoin"],
+                "GAS",
+                topUpAmount,
+                arbitrageOrigin["networkDetails"]["chainRPC"],
+                arbitrageOrigin["networkDetails"]["chainName"]
+            )
+        except Exception as err:
+            errMsg = f"Error topping up origin ({originNetworkName}) wallet with gas: {err}"
+            logger.error(errMsg)
+            sys.exit(errMsg)
+
+        newBalance = getGasBalance(arbitrageOrigin["networkDetails"]["chainRPC"], arbitrageOrigin["networkDetails"]["chainGasToken"], False)
+
+        logger.info(f'Origin wallet ({originNetworkName}) topped up - new balance is {newBalance} {arbitrageOrigin["stablecoin"]}')
+
+    else:
+        logger.info(f'Origin wallet ({originNetworkName}) already has a sufficient gas balance of {originWalletGasBalance} {arbitrageOrigin["networkDetails"]["chainGasToken"]}')
+
+    Utils.printSeperator()
+
+    if destinationWalletNeedsGas:
+        gasTokensNeeded = maximumGasBalance - destinationWalletGasBalance
+        topUpAmount = gasTokensNeeded * arbitrageDestination["price"]
+
+        logger.info(f'Destination wallet ({destinationNetworkName}) needs gas - adding {gasTokensNeeded} {arbitrageDestination["networkDetails"]["chainGasToken"]} for {topUpAmount} {arbitrageDestination["stablecoin"]}')
+
+        try:
+            destinationTopUpReceipt = swapToken(
+                arbitrageDestination["stablecoin"],
+                "GAS",
+                topUpAmount,
+                arbitrageDestination["networkDetails"]["chainRPC"],
+                arbitrageDestination["networkDetails"]["chainName"]
+            )
+        except Exception as err:
+            errMsg = f"Error topping up destination wallet's ({destinationNetworkName}) gas: {err}"
+            logger.error(errMsg)
+            sys.exit(errMsg)
+
+        newBalance = getGasBalance(arbitrageDestination["networkDetails"]["chainRPC"], arbitrageDestination["networkDetails"]["chainGasToken"], False)
+
+        logger.info(f'Destination wallet ({destinationNetworkName}) topped up - new balance is {newBalance} {arbitrageDestination["stablecoin"]}')
+
+    else:
+        logger.info(f'Destination wallet ({destinationNetworkName}) already has a sufficient gas balance of {originWalletGasBalance} {arbitrageDestination["networkDetails"]["chainGasToken"]}')
 
 def waitForBridgeToComplete(arbitragePlan, bridgeTimeout=10, waitForFundsTimeout=10):
 
@@ -287,28 +406,3 @@ def waitForBridgeToComplete(arbitragePlan, bridgeTimeout=10, waitForFundsTimeout
         errMsg = f'Waiting for funds to hit {readableFrom} wallet failed in an unknown state, this should not happen!'
         logger.error(errMsg)
         sys.exit(errMsg)
-
-
-
-# testWallet = "0x919d17174Fb22CC1Cfc8748C208104EC62341791"
-# balance = getTokenBalance(os.environ.get("HARMONY_MAIN_RPC"), testWallet, "JEWEL")
-# x = 1
-# swapToken(
-#     tokenToSwapFrom="JEWEL",
-#     tokenToSwapTo="GAS",
-#     amountToSwap=23423423.00002502783,
-#     rpcURL=os.environ.get("HARMONY_MAIN_RPC"),
-#     privateKey=os.environ.get("NOHACKERSALLOWED"),
-#     timeout=180,
-#     gwei=30
-# )
-
-# swapToken(
-#     tokenToSwapFrom="JEWEL",
-#     tokenToSwapTo="GAS",
-#     amountToSwap=23423423.00002502783,
-#     rpcURL=os.environ.get("HARMONY_MAIN_RPC"),
-#     privateKey=os.environ.get("NOHACKERSALLOWED"),
-#     timeout=180,
-#     gwei=30
-# )

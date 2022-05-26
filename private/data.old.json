@@ -1,0 +1,128 @@
+{
+  "recipes": {
+    "JEWEL_Harmony_DFKChain": {
+      "chainOne": {
+        "readableChain": "DFK Harmony",
+        "chain": "harmony",
+        "token": "JEWEL",
+        "bridgeToken": "JEWEL",
+        "stablecoin": "1USDC"
+      },
+      "chainTwo": {
+        "readableChain": "DFK Avalanche",
+        "chain": "avalanchedfk",
+        "token": "WJEWEL",
+        "bridgeToken": "JEWEL",
+        "stablecoin": "USDC"
+      }
+    }
+  },
+  "networks": {
+    "harmony": {
+      "chainName": "harmony",
+      "chainGasToken": "ONE",
+      "chainGasTokenAddress": "0x03ff0ff224f904be3118461335064bb48df47938",
+      "chainID": "1666600000",
+      "chainRPC": "https://harmony-0-rpc.gateway.pokt.network"
+    },
+    "avalanchedfk": {
+      "chainName": "avalanchedfk",
+      "chainGasToken": "WJEWEL",
+      "chainGasTokenAddress": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
+      "chainID": "53935",
+      "chainRPC": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc"
+    }
+  },
+  "tokens": {
+    "harmony": {
+      "JEWEL": {
+        "name": "Jewel",
+        "address": "0x72Cb10C6bfA5624dD07Ef608027E366bd690048F",
+        "dexPair": "0xA1221A5BBEa699f507CC00bDedeA05b5d2e32Eba",
+        "isGasToken": "False"
+      },
+      "xJEWEL": {
+        "name": "xJewel",
+        "address": "0xA9cE83507D872C5e1273E745aBcfDa849DAA654F",
+        "dexPair": "0xFdAB6B23053E22b74f21ed42834D7048491F8F32",
+        "isGasToken": "False"
+      },
+      "AVAX": {
+        "name": "Avalanche",
+        "address": "0xb12c13e66ade1f72f71834f2fc5082db8c091358",
+        "dexPair": "0xF3EabeD6Bd905e0FcD68FC3dBCd6e3A4aEE55E98",
+        "isGasToken": "False"
+      },
+      "1ETH": {
+        "name": "Ethereum",
+        "address": "0x6983d1e6def3690c4d616b13597a09e6193ea013",
+        "dexPair": "0xEaB84868f6c8569E14263a5326ECd62F5328a70f",
+        "isGasToken": "False"
+      },
+      "FTM": {
+        "name": "Fantom",
+        "address": "0x735abe48e8782948a37c7765ecb76b98cde97b0f",
+        "dexPair": "0xcb08C6F10D78527564C180F670B2F4A054650214",
+        "isGasToken": "False"
+      },
+      "LUNA": {
+        "name": "Luna",
+        "address": "0x95ce547d730519a90def30d647f37d9e5359b6ae",
+        "dexPair": "0x430D746F4bBeCA5399c3DEcB0BCD83bc0a5615f2",
+        "isGasToken": "False"
+      },
+      "1USDC": {
+        "name": "USDC",
+        "address": "0x985458e523db3d53125813ed68c274899e9dfab4",
+        "dexPair": "0x29FC6e830cA8586a68DFF325f6D2349fB58be951",
+        "isGasToken": "False"
+      }
+    },
+    "avalanchedfk": {
+      "WJEWEL": {
+        "name": "Jewel",
+        "address": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
+        "dexPair": "0xCF329b34049033dE26e4449aeBCb41f1992724D3",
+        "isGasToken": "True"
+      },
+      "xJEWEL": {
+        "name": "xJewel",
+        "address": "0x77f2656d04E158f915bC22f07B779D94c1DC47Ff",
+        "dexPair": "0x6AC38A4C112F125eac0eBDbaDBed0BC8F4575d0d",
+        "isGasToken": "False"
+      },
+      "CRYSTAL": {
+        "name": "Crystal",
+        "address": "0x04b9dA42306B023f3572e106B11D82aAd9D32EBb",
+        "dexPair": "0x04Dec678825b8DfD2D0d9bD83B538bE3fbDA2926",
+        "isGasToken": "False"
+      },
+      "xCRYSTAL": {
+        "name": "xCrystal",
+        "address": "0x6e7185872bcdf3f7a6cbbe81356e50daffb002d2",
+        "dexPair": "",
+        "isGasToken": "False"
+      },
+      "AVAX": {
+        "name": "Avax",
+        "address": "0xB57B60DeBDB0b8172bb6316a9164bd3C695F133a",
+        "dexPair": "0xF3EabeD6Bd905e0FcD68FC3dBCd6e3A4aEE55E98",
+        "isGasToken": "False"
+      },
+      "USDC": {
+        "name": "USDC",
+        "address": "0x3AD9DFE640E1A9Cc1D9B0948620820D975c3803a",
+        "dexPair": "",
+        "isGasToken": "False"
+      }
+    },
+    "avalanche": {
+      "JEWEL": {
+        "name": "Jewel",
+        "address": "0x4f60a160D8C2DDdaAfe16FCC57566dB84D674BD6",
+        "dexPair": "0x9AA76aE9f804E7a70bA3Fb8395D0042079238E9C",
+        "isGasToken": "False"
+      }
+    }
+  }
+}
