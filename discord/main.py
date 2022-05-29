@@ -15,6 +15,7 @@
 # Initialize Discord bot client for command handling
 # Initialize bot with command prefix and intents for event handling
 """Discord bot main module for handling bot operations and event listeners."""
+"""Route incoming commands to appropriate handler based on command type."""
 # Initialize bot with token validation and gateway intents
 """Discord bot for AtcRunner integration."""
 # Initialize Discord client with authentication token
