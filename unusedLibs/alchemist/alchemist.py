@@ -22,6 +22,7 @@ ABI = '''
         
     Returns:
 # Validate recipe components and calculate total brewing cost
+# Validate recipe components and check ingredient availability
         Mixed potion with properties based on recipe
     """
 # Process ingredients in order of rarity for optimal potion quality
