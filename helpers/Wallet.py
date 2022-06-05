@@ -59,7 +59,8 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeo
     account_address = w3.eth.account.privateKeyToAccount(privateKey).address
 
     # Get the address of the token we to swap from.
-    originTokenAddress = w3.toChecksumAddress(erc20.symbol2address(tokenToSwapFrom, chain, False))
+    originTokenAddress = w3.toChecksumAddress(tokenToSwapFrom)
+    destinationTokenAddress = w3.toChecksumAddress(tokenToSwapTo)
 
     # If we declare "GAS" as the token we want to swap to, will we the native gas token of
     # the chain eg. if were on Harmony, it would be ONE.
@@ -81,7 +82,6 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeo
 
     # Otherwise we will swap the source token for the same amount of the destination token.
     else:
-        destinationTokenAddress = erc20.symbol2address(tokenToSwapTo, chain)
         tx_receipt = market_place_router.swap_exact_tokens_for_tokens(
             amount_in=erc20.eth2wei(w3, amountToSwap),
             amount_out_min=60,
@@ -108,6 +108,10 @@ def getWalletAddressFromPrivateKey(rpcURL):
     return w3.eth.account.privateKeyToAccount(privateKey).address
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def getPrivateKey():
+    return privateKey
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getTokenBalance(rpcURL, walletAddress, tokenAddress, printBalance=True):
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -120,9 +124,20 @@ def getTokenBalance(rpcURL, walletAddress, tokenAddress, printBalance=True):
 
     return float(balance)
 
+def checkWalletsMatch(recipe):
+    if recipe["origin"]["wallet"]["address"] != recipe["destination"]["wallet"]["address"]:
+        errMsg = f'originWalletAddress [{recipe["origin"]["wallet"]["address"]}] did not match destinationWalletAddress [{recipe["destination"]["wallet"]["address"]}] this should never happen!'
+        logger.error(errMsg)
+        sys.exit(errMsg)
+
+def checkIfStablesAreOnOrigin(recipe):
+    return recipe["origin"]["wallet"]["balances"]["stablecoin"] > recipe["destination"]["wallet"]["balances"]["stablecoin"]
+
 def getWalletsInformation(recipe):
 
     directionList = ("origin", "destination")
+
+    recipe["status"] = {}
 
     for direction in directionList:
 
@@ -157,20 +172,15 @@ def getWalletsInformation(recipe):
             )
 
         logger.info(
-            f'{direction.title()} ({recipe[direction]["chain"]["name"]}) ->'
+            f'{direction} ({recipe[direction]["chain"]["name"]}) ->'
             f' Token {recipe[direction]["wallet"]["balances"]["token"]}'
             f' {recipe[direction]["token"]["name"]} | '
             f'Gas {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["chain"]["token"]} | '
             f'Stables {recipe[direction]["wallet"]["balances"]["stablecoin"]} {recipe[direction]["stablecoin"]["symbol"]}')
 
-    if recipe["origin"]["wallet"]["address"] != recipe["destination"]["wallet"]["address"]:
-        errMsg = f'originWalletAddress [{recipe["origin"]["wallet"]["address"]}] did not match destinationWalletAddress [{recipe["destination"]["wallet"]["address"]}] this should never happen!'
-        logger.error(errMsg)
-        sys.exit(errMsg)
+    checkWalletsMatch(recipe)
 
-    Utils.printSeperator()
-    logger.info(
-        f'Destination ({destination["origin"]["chain"]["name"]}) -> Token {destinationWalletTokenBalance} {destinationArbTokenName} | Gas {destinationWalletGasBalance} {destinationGasToken} | Stables {destinationWalletStablecoinBalance} {destinationStablecoinName}')
+    recipe["status"]["stablesAreOnOrigin"] = checkIfStablesAreOnOrigin(recipe)
 
     return recipe
 
@@ -219,69 +229,50 @@ def getWalletBalances(arbitragePlan):
 
     return originWalletTokenBalance, destinationWalletTokenBalance
 
-def checkWalletsGas(arbitrageOrigin, originWalletGasBalance, arbitrageDestination, destinationWalletGasBalance):
+def checkWalletsGas(recipe):
     minimumGasBalance = float(os.environ.get("MIN_GAS_BALANCE"))
     maximumGasBalance = float(os.environ.get("MAX_GAS_BALANCE"))
 
-    originWalletNeedsGas = originWalletGasBalance < minimumGasBalance
-    destinationWalletNeedsGas = destinationWalletGasBalance < minimumGasBalance
+    directions = ("origin", "destination")
 
-    originNetworkName = arbitrageOrigin["chain"].title()
-    destinationNetworkName = arbitrageDestination["chain"].title()
+    for direction in directions:
 
-    if originWalletNeedsGas:
-        gasTokensNeeded = maximumGasBalance - originWalletGasBalance
-        topUpAmount = gasTokensNeeded * arbitrageOrigin["price"]
+        gasBalance = recipe[direction]["wallet"]["balances"]["gas"]
+        stableBalance = recipe[direction]["wallet"]["balances"]["stablecoin"]
+        needsGas = gasBalance < minimumGasBalance
 
-        logger.info(f'Origin wallet ({originNetworkName}) needs gas - adding {gasTokensNeeded} {arbitrageOrigin["networkDetails"]["chainGasToken"]} for {topUpAmount} {arbitrageOrigin["stablecoin"]}')
+        if needsGas:
+            gasTokensNeeded = maximumGasBalance - gasBalance
+            topUpCost = gasTokensNeeded * recipe[direction]["token"]["price"]
 
-        try:
-            originTopUpReceipt = swapToken(
-                arbitrageOrigin["stablecoin"],
-                "GAS",
-                topUpAmount,
-                arbitrageOrigin["networkDetails"]["chainRPC"],
-                arbitrageOrigin["networkDetails"]["chainName"]
-            )
-        except Exception as err:
-            errMsg = f"Error topping up origin ({originNetworkName}) wallet with gas: {err}"
-            logger.error(errMsg)
-            sys.exit(errMsg)
+            if topUpCost > stableBalance:
+                errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: Not enough stables (balance: {stableBalance}) to purchase {gasTokensNeeded} {recipe[direction]["chain"]["token"]} for {topUpCost} {recipe[direction]["stablecoin"]["symbol"]}'
+                logger.error(errMsg)
+                sys.exit(errMsg)
 
-        newBalance = getGasBalance(arbitrageOrigin["networkDetails"]["chainRPC"], arbitrageOrigin["networkDetails"]["chainGasToken"], False)
+            logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[direction]["chain"]["token"]} for {topUpCost} {recipe[direction]["stablecoin"]["symbol"]}')
 
-        logger.info(f'Origin wallet ({originNetworkName}) topped up - new balance is {newBalance} {arbitrageOrigin["stablecoin"]}')
+            try:
+                topUpReceipt = swapToken(
+                    recipe[direction]["stablecoin"]["tokenAddress"],
+                    "GAS",
+                    topUpCost,
+                    recipe[direction]["chain"]["rpc"],
+                    recipe[direction]["chain"]["name"]
+                )
+            except Exception as err:
+                errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
+                logger.error(errMsg)
+                sys.exit(errMsg)
 
-    else:
-        logger.info(f'Origin wallet ({originNetworkName}) already has a sufficient gas balance of {originWalletGasBalance} {arbitrageOrigin["networkDetails"]["chainGasToken"]}')
+            newBalance = getWalletGasBalance(recipe[direction]["chain"]["rpc"], recipe[direction]["chain"]["token"], False)
+
+            logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up - new balance is {newBalance} {recipe[direction]["stablecoin"]["symbol"]}')
+
+        else:
+            logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) already has a sufficient gas balance of {gasBalance} {recipe[direction]["chain"]["token"]}')
 
     Utils.printSeperator()
-
-    if destinationWalletNeedsGas:
-        gasTokensNeeded = maximumGasBalance - destinationWalletGasBalance
-        topUpAmount = gasTokensNeeded * arbitrageDestination["price"]
-
-        logger.info(f'Destination wallet ({destinationNetworkName}) needs gas - adding {gasTokensNeeded} {arbitrageDestination["networkDetails"]["chainGasToken"]} for {topUpAmount} {arbitrageDestination["stablecoin"]}')
-
-        try:
-            destinationTopUpReceipt = swapToken(
-                arbitrageDestination["stablecoin"],
-                "GAS",
-                topUpAmount,
-                arbitrageDestination["networkDetails"]["chainRPC"],
-                arbitrageDestination["networkDetails"]["chainName"]
-            )
-        except Exception as err:
-            errMsg = f"Error topping up destination wallet's ({destinationNetworkName}) gas: {err}"
-            logger.error(errMsg)
-            sys.exit(errMsg)
-
-        newBalance = getGasBalance(arbitrageDestination["networkDetails"]["chainRPC"], arbitrageDestination["networkDetails"]["chainGasToken"], False)
-
-        logger.info(f'Destination wallet ({destinationNetworkName}) topped up - new balance is {newBalance} {arbitrageDestination["stablecoin"]}')
-
-    else:
-        logger.info(f'Destination wallet ({destinationNetworkName}) already has a sufficient gas balance of {originWalletGasBalance} {arbitrageDestination["networkDetails"]["chainGasToken"]}')
 
 def waitForBridgeToComplete(arbitragePlan, bridgeTimeout=10, waitForFundsTimeout=10):
 

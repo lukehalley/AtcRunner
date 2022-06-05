@@ -3,6 +3,7 @@ import logging
 import os
 from datetime import datetime
 import re
+from math import log10, floor
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -26,7 +27,6 @@ def printRoundtrip(count):
     logger.info(f"STARTING ARBITRAGE #{count}")
     logger.info("################################\n")
 
-
 def percentage(percent, whole):
   return (percent * whole) / 100.0
 
@@ -45,3 +45,19 @@ def isBetween(a, x, b):
 
 def replace_all(text, dictionary):
     return functools.reduce(lambda a, kv: a.replace(*kv), dictionary.items(), text)
+
+def find_exp(number) -> int:
+    base10 = log10(abs(number))
+    return abs(floor(base10))
+
+def moveDecimalPoint(num, decimal_places):
+    num = float(num)
+
+    for _ in range(abs(decimal_places)):
+
+        if decimal_places > 0:
+            num *= 10
+        else:
+            num /= 10.
+
+    return float(num)
