@@ -24,33 +24,33 @@ def eth2wei(w3, eth):
     return w3.toWei(eth, 'ether')
 
 
-def symbol2address(symbol, chain, info=True):
-
-    tokens = Database.fetchFromDatabase("tokens", info)
-
-    symbol = symbol.upper().strip()
-    address = tokens[chain][symbol]["address"]
-
-    if address:
-        return address
-    else:
-        sys.exit(f"No item reference for {symbol}")
-
-
-def address2symbol(address, chain):
-
-    tokens = Database.fetchFromDatabase("tokens")
-
-    address = address.strip()
-    result = None
-
-    for key, value in tokens.tokens():
-        if address == value["address"]:
-            result = key
-            return result
-
-    if not result:
-        sys.exit(f"No address reference for {address}")
+# def symbol2address(symbol, chain, info=True):
+#
+#     tokens = Database.fetchFromDatabase("tokens", info)
+#
+#     symbol = symbol.upper().strip()
+#     address = tokens[chain][symbol]["address"]
+#
+#     if address:
+#         return address
+#     else:
+#         sys.exit(f"No item reference for {symbol}")
+#
+#
+# def address2symbol(address, chain):
+#
+#     tokens = Database.fetchFromDatabase("tokens")
+#
+#     address = address.strip()
+#     result = None
+#
+#     for key, value in tokens.tokens():
+#         if address == value["address"]:
+#             result = key
+#             return result
+#
+#     if not result:
+#         sys.exit(f"No address reference for {address}")
 
 
 def all_tokens():

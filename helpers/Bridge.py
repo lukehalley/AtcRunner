@@ -1,10 +1,11 @@
 import os
-
+from retry import retry
 import requests
 from dotenv import load_dotenv
-from helpers import Utils
+from helpers import Utils, Wallet
 import logging
 from web3 import Web3
+
 logger = logging.getLogger("DFK-DEX")
 
 load_dotenv()
@@ -13,14 +14,17 @@ synapseAPIEndpoint = os.getenv("SYNAPSE_API_ENDPOINT")
 synapseAPIVersion = os.getenv("SYNAPSE_API_VERSION")
 synapseAPIBaseURL = synapseAPIEndpoint + "/" + synapseAPIVersion
 
+# Retry Envs
+transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
+transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
+
+from helpers import Data
+
 def getTokenDecimalValue(amount, decimalPlaces=18):
-    initValue = float(amount) * (10**decimalPlaces)
-    readable = str(format(initValue, '.0f'))
-    return readable
+    return str(format(float(amount) * (10**decimalPlaces), f'.0f'))
 
 def getTokenNormalValue(amount, decimalPlaces=18):
-    initValue = float(amount) / (10 ** decimalPlaces)
-    return str(initValue)
+    return str(format(float(amount) / (10**decimalPlaces), f'.{decimalPlaces}f'))
 
 def buildApiURL(endpoint):
     return f"{synapseAPIBaseURL}/{endpoint}"
@@ -37,13 +41,21 @@ def checkSwapSupported(fromChain, toChain, fromToken, toToken):
 
     return (requests.get(endpoint, params=params)).json()
 
-def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountFrom, decimalPlaces=18):
-    amountFrom = getTokenDecimalValue(amountFrom)
-    params = {"fromChain": fromChain, "toChain": toChain, "fromToken": fromToken, "toToken": toToken, "amountFrom": amountFrom}
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountToBridge, decimalPlacesFrom, decimalPlacesTo, returning=False):
+
+    if returning:
+        x = decimalPlacesFrom
+        decimalPlacesFrom = decimalPlacesTo
+        decimalPlacesTo = x
+
+    amountFromDecimal = getTokenDecimalValue(amountToBridge, decimalPlacesTo)
+    params = {"fromChain": fromChain, "toChain": toChain, "fromToken": fromToken, "toToken": toToken, "amountFrom": amountFromDecimal}
     endpoint = buildApiURL(os.getenv("SYNAPSE_ESTIMATE_BRIDGE_OUTPUT_ENDPOINT"))
     result = (requests.get(endpoint, params=params)).json()
-    amountToReceive = float(getTokenNormalValue(result["amountToReceive"]))
-    bridgeFee = float(getTokenNormalValue(result["bridgeFee"]))
+    amountToReceive = float(getTokenNormalValue(result["amountToReceive"], decimalPlacesFrom))
+    bridgeFeeManual = amountToBridge - amountToReceive
+    bridgeFee = float(getTokenNormalValue(result["bridgeFee"], 18))
     bridgeQuote = {'amountToReceive': amountToReceive, 'bridgeFee': bridgeFee}
     return bridgeQuote
 
@@ -96,118 +108,116 @@ def getSwappableTokensForNetwork(chainFrom, toChain):
 
     return (requests.get(endpoint, params=params)).json()
 
-def calculateSynapseBridgeFees(arbitrageOrigin, arbitrageDestination, amountToBridge):
+def calculateSynapseBridgeFees(recipe):
 
     i = 0
 
-    arbitragePlan = {}
+    directionList = ("origin", "destination")
 
-    networks = [arbitrageOrigin, arbitrageDestination]
+    for direction in directionList:
 
-    while i < 2:
-
-        if i <= 0:
-            currentArbitrageOrigin = networks[0]
-            currentArbitrageDestination = networks[1]
-            Utils.printSeperator()
-            logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Calculating Bridge Fees For Arbitrage Origin to Arbitrage Destination")
-            Utils.printSeperator()
+        if direction == "origin":
+            tokenType = "token"
+            index = 1
         else:
-            currentArbitrageOrigin = networks[1]
-            currentArbitrageDestination = networks[0]
-            Utils.printSeperator()
-            logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Calculating Bridge Fees For Arbitrage Destination to Arbitrage Origin")
-            Utils.printSeperator()
+            tokenType = "stablecoin"
+            index = 0
 
-        bridgeQuote = estimateBridgeOutput(currentArbitrageOrigin["networkDetails"]["chainID"], currentArbitrageDestination["networkDetails"]["chainID"], currentArbitrageOrigin["token"]["address"], currentArbitrageDestination["token"]["address"], amountToBridge)
+        currentOrigin = recipe[direction]
+        oppositeDirection = directionList[index]
+        currentDestination = recipe[oppositeDirection]
+
+        Utils.printSeperator()
+        logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] "
+                    f"Calculating Bridge Fees For Arbitrage {direction.title()} to "
+                    f"Arbitrage {oppositeDirection.title()}")
+        Utils.printSeperator()
+
+        bridgeQuote = estimateBridgeOutput(
+            fromChain=currentOrigin["chain"]["id"],
+            toChain=currentDestination["chain"]["id"],
+            fromToken=currentOrigin[tokenType]['symbol'],
+            toToken=currentDestination[tokenType]['symbol'],
+            amountToBridge=10,
+            decimalPlacesFrom=currentOrigin[tokenType]["tokenDecimals"],
+            decimalPlacesTo=currentDestination[tokenType]["tokenDecimals"],
+            returning=(not direction == "origin"))
+
         amountToReceive = bridgeQuote["amountToReceive"]
-        bridgeFee = bridgeQuote["bridgeFee"]
-        bridgeToken = networks[1]['bridgeToken']
-
-        logger.info(f"After bridge we will receive {amountToReceive} {bridgeToken}")
-
-        if i <= 0:
-            objectTitle = "arbitrageOrigin"
-            arbitragePlan[objectTitle] = \
-                {
-                    "network": arbitrageOrigin,
-                    "amountSent": amountToBridge,
-                    "bridgeFee": bridgeFee,
-                    "bridgeToken": bridgeToken
-                }
+        if tokenType == "token":
+            bridgeFee = bridgeQuote["bridgeFee"] * currentOrigin[tokenType]["price"]
         else:
-            objectTitle = "arbitrageDestination"
-            arbitragePlan[objectTitle] = \
-                {
-                    "network": arbitrageDestination,
-                    "amountExpectedToReceive": amountToReceive,
-                    "bridgeFee": bridgeFee,
-                    "bridgeToken": bridgeToken
-                }
+            bridgeFee = bridgeQuote["bridgeFee"]
+        recipe = Data.addFee(recipe, bridgeFee, direction)
 
-        i = i + 1
+        bridgeToken = currentOrigin[tokenType]["symbol"]
+        logger.info(f"After bridge we will receive {amountToReceive} {bridgeToken} with a fee of {bridgeFee} {bridgeToken}")
 
         Utils.printSeperator(True)
 
     Utils.printSeperator()
-    logger.info(f"[ARB #{arbitrageOrigin['roundTripCount']}] Bridge Fees Calculated")
+    logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] Bridge Fees Calculated")
     Utils.printSeperator()
 
-    feeAmount = arbitragePlan["arbitrageOrigin"]["bridgeFee"] + arbitragePlan["arbitrageDestination"]["bridgeFee"]
-    tokenLoss = abs(arbitragePlan["arbitrageDestination"]["amountExpectedToReceive"] - arbitragePlan["arbitrageOrigin"]["amountSent"])
+    logger.info(f"Bridge Total Fee: ${recipe['status']['fees']['total']}")
 
-    arbitragePlan["bridgeTotals"] = {
-        "bridgeToken": arbitragePlan['arbitrageOrigin']['bridgeToken'],
-        "bridgeTotalTokenLoss": tokenLoss,
-        "bridgeTotalFee": round(feeAmount, 6)
-    }
+    return recipe
 
-    logger.info(f"Bridge Total Fee: {arbitragePlan['bridgeTotals']['bridgeTotalFee']} {arbitragePlan['bridgeTotals']['bridgeToken']}")
+def executeBridge(amountToBridge, tokenDecimals, fromChain, toChain, fromToken, toToken, rpcURL):
 
-    return arbitragePlan
+    walletAddress = Wallet.getWalletAddressFromPrivateKey(rpcURL)
 
-def executeBridge(arbitragePlan, amountToBridge):
+    amountToBridgeWei = getTokenDecimalValue(amountToBridge, tokenDecimals)
 
-    origin = arbitragePlan[arbitragePlan["currentBridgeDirection"]]
-    destination = arbitragePlan[arbitragePlan["oppositeBridgeDirection"]]
-
-    rpcURL = origin["network"]["networkDetails"]["chainRPC"]
-
-    fromChain = origin["network"]["networkDetails"]["chainID"]
-    toChain = destination["network"]["networkDetails"]["chainID"]
-
-    fromToken = origin["bridgeToken"]
-    toToken = destination["bridgeToken"]
-
-    amountFrom = amountToBridge
-
-    addressFrom = destination["walletAddress"]
-    addressTo = destination["walletAddress"]
-
-    bridgeTransaction = generateUnsignedBridgeTransaction(fromChain, toChain, fromToken, toToken, amountFrom, addressTo)
+    bridgeTransaction = \
+        generateUnsignedBridgeTransaction(
+            fromChain=fromChain,
+            toChain=toChain,
+            fromToken=fromToken,
+            toToken=toToken,
+            amountFrom=amountToBridgeWei,
+            addressTo=walletAddress
+        )
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
-    tx = {
-        'nonce': w3.eth.getTransactionCount(addressFrom),
-        'from': addressFrom,
-        'to': addressTo,
-        'value': w3.toWei(amountFrom, 'ether'),
-        'gas': 21000,
+    transaction = {
+        'nonce': w3.eth.getTransactionCount(walletAddress),
+        "chainId": bridgeTransaction["chainId"],
+        'to': bridgeTransaction["to"],
+        'gas': 100206,
         'gasPrice': w3.eth.gas_price,
         'data': bridgeTransaction["unsigned_data"],
-        "chainId": int(fromChain)
+        'value': int(bridgeTransaction["value"])
     }
 
-    transactionID = "0x97a0132993a148ed7b2c3a8e8d651f28e41cf7245c6fd728158b1262a376cb1b"
+    privateKey = Wallet.getPrivateKey()
 
-    arbitragePlan[arbitragePlan["currentBridgeDirection"]]["bridgeResult"] = {
-                "AmountSent": arbitragePlan[arbitragePlan["currentBridgeDirection"]]["amountSent"],
-                "Successful": True,
-                "TransactionType": "Bridge",
-                "ID": transactionID,
-                "TransactionObject": tx,
-                "Timestamp": Utils.getCurrentDateTime()
-            }
+    signedTransaction = w3.eth.account.sign_transaction(transaction, privateKey)
 
-    return arbitragePlan
+    sentTransaction = w3.eth.send_raw_transaction(signedTransaction.rawTransaction)
+
+    transactionDetails = w3.eth.waitForTransactionReceipt(sentTransaction)
+
+    transactionID = transactionDetails["transactionHash"].hex()
+
+    logger.info(f"Sent bridge transaction: {transactionID}")
+
+    status = checkBridgeStatus(toChain=toChain, fromChainTxnHash=sentTransaction)
+
+    transactionSuccessful = bool(transactionDetails["status"])
+
+    x = 1
+
+    # transactionID = "0x97a0132993a148ed7b2c3a8e8d651f28e41cf7245c6fd728158b1262a376cb1b"
+    #
+    # arbitragePlan[arbitragePlan["currentBridgeDirection"]]["bridgeResult"] = {
+    #             "AmountSent": arbitragePlan[arbitragePlan["currentBridgeDirection"]]["amountSent"],
+    #             "Successful": True,
+    #             "TransactionType": "Bridge",
+    #             "ID": transactionID,
+    #             "TransactionObject": tx,
+    #             "Timestamp": Utils.getCurrentDateTime()
+    #         }
+
+    return True

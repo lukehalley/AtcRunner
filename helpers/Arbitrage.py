@@ -1,6 +1,5 @@
 import logging
 import os
-import requests
 from itertools import repeat
 import helpers.Dex as Dex
 
@@ -16,7 +15,7 @@ def setUpArbitrage(recipe):
     # Calculate
     priceDifference = calculateDifference(chainOnePrice, chainTwoPrice)
 
-    origin, destination = calculateArbitrageStrategy(chainOnePrice, recipe["chainOne"]["chain"]["name"], chainTwoPrice, recipe["chainOne"]["chain"]["name"])
+    origin, destination = calculateArbitrageStrategy(chainOnePrice, recipe["chainOne"]["chain"]["name"], chainTwoPrice, recipe["chainTwo"]["chain"]["name"])
     logger.debug(f"Calculating arbitrage origin and destination")
 
     if origin == recipe["chainOne"]["chain"]["name"]:
@@ -35,7 +34,9 @@ def setUpArbitrage(recipe):
 
     del recipe['chainOne'], recipe['chainTwo']
 
-    recipe["arbitrage"]["reportString"] = \
+    recipe["info"] = {}
+
+    recipe["info"]["reportString"] = \
         f'Buying {recipe["origin"]["token"]["name"]} on ' \
         f'{recipe["origin"]["chain"]["name"]} @ ' \
         f'{recipe["origin"]["token"]["price"]} {recipe["origin"]["stablecoin"]["symbol"]} ' \
@@ -46,7 +47,7 @@ def setUpArbitrage(recipe):
 
     return recipe
 
-def calculatePotentialProfit(initialCapital, origin, destination, arbitragePlan):
+def calculatePotentialProfit(recipe):
     logger.debug(f"Calculating potential profit")
 
     tripPredictions = {}
@@ -56,7 +57,7 @@ def calculatePotentialProfit(initialCapital, origin, destination, arbitragePlan)
 
     for tripAmount in trips:
 
-        startingCapital = initialCapital
+        startingCapital = recipe["status"]["capital"]
         currentCapital = startingCapital
         profitLoss = 0
 
@@ -64,12 +65,16 @@ def calculatePotentialProfit(initialCapital, origin, destination, arbitragePlan)
 
         for _ in repeat(None, tripAmount):
 
-            # Calculate Profit/Loss of a single round trip.
-            initialBuy = currentCapital / origin["price"]
-            initialBuyAfterBridgeFees = initialBuy - arbitragePlan["origin"]["bridgeFee"]
-            arbSell = initialBuyAfterBridgeFees * destination["price"]
-            currentCapital = arbSell - (arbitragePlan["destination"]["bridgeFee"] * origin["price"])
-            profitLoss = currentCapital - startingCapital
+            capitalAfterFees = currentCapital - recipe["status"]["fees"]["total"]
+
+            tokensBought = capitalAfterFees / recipe["origin"]["token"]["price"]
+
+            arbSell = tokensBought * recipe["destination"]["token"]["price"]
+
+            profitLoss = arbSell - startingCapital
+
+            currentCapital = startingCapital + profitLoss
+
             tripIsProfitible = currentCapital > startingCapital
 
         if tripIsProfitible:
