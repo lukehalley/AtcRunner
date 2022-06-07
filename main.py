@@ -94,18 +94,17 @@ for recipesTitle, recipe in recipes.items():
             logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas Both Wallets")
             Utils.printSeperator()
 
+            recipe, originTopUpSummary = Wallet.topUpWalletGas(
+                recipe=recipe,
+                direction="origin",
+                toSwapFrom="stablecoin"
+            )
+
             # Wallet.topUpWalletGas(
             #     recipe=recipe,
-            #     direction="origin",
-            #     toSwapFrom="stablecoin",
-            #     toSwapTo="token"
+            #     direction="destination",
+            #     toSwapFrom="token"
             # )
-
-            Wallet.topUpWalletGas(
-                recipe=recipe,
-                direction="destination",
-                toSwapFrom="token"
-            )
 
             Utils.printSeperator(True)
 

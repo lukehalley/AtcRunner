@@ -31,7 +31,7 @@
       "uniswapContract": "0x24ad62502d1C652Cc7684081169D04896aC20f30",
       "blockExplorer": "https://explorer.harmony.one/tx",
       "symbol": "ONE",
-      "gas": "0x03ff0ff224f904be3118461335064bb48df47938",
+      "gas": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a",
       "pair": "0x27f0Bcb74822dF54f36151434999CBc8db07D4d9"
     },
     "avalanchedfk": {
@@ -40,7 +40,7 @@
       "uniswapContract": "0x3C351E1afdd1b1BC44e931E12D4E05D6125eaeCa",
       "blockExplorer": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx",
       "symbol": "JEWEL",
-      "gas": "0x4f60a160D8C2DDdaAfe16FCC57566dB84D674BD6",
+      "gas": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
       "pair": "0xCF329b34049033dE26e4449aeBCb41f1992724D3"
     }
   }
