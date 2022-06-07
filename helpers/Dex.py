@@ -29,6 +29,7 @@ def getTokens(tokenAddress):
     initEndpoint = buildApiURL(os.getenv("DEXSCREENER_GET_TOKENS"))
     params = {":tokenAddress": tokenAddress}
     endpoint = Utils.replace_all(initEndpoint, params)
+
     return (requests.get(endpoint, params=params)).json()
 
 def doSearch(query):
@@ -37,8 +38,27 @@ def doSearch(query):
     endpoint = Utils.replace_all(initEndpoint, params)
     return (requests.get(endpoint, params=params)).json()
 
+def searchReturnedResults(result):
+    toSearch = result["pairs"]
+
+    return toSearch
+
+def getTokenPriceByDexId(chainName, tokenAddress, dexId):
+    tokens = getTokens(tokenAddress)["pairs"]
+
+    for token in tokens:
+        if token["chainId"] == chainName and token["dexId"] == dexId:
+            return float(token["priceUsd"])
+
 def getTokenPrice(chainName, tokenAddress):
     tokens = getTokens(tokenAddress)["pairs"]
+
+    for token in tokens:
+        if token["chainId"] == chainName:
+            return float(token["priceUsd"])
+
+def getGasPrice(chainName, tokenAddress):
+    tokens = getPairs(chain=chainName, tokenAddress=tokenAddress)["pairs"]
 
     for token in tokens:
         if token["chainId"] == chainName:

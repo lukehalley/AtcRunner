@@ -5,8 +5,9 @@ from dotenv import load_dotenv
 
 def setupLogging(isDocker):
 
-    log_format = '%(asctime)s | %(levelname)s | %(message)s'
     logger = logging.getLogger("DFK-ARB")
+
+    log_format = '%(asctime)s | %(levelname)s | %(message)s'
     dateFormat = os.environ.get("DATE_FORMAT")
 
     if isDocker:

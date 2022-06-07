@@ -9,8 +9,8 @@ def setUpArbitrage(recipe):
 
     logger.debug(f"Calling Dexscreener API to find current price of pair")
 
-    chainOnePrice = Dex.getTokenPrice(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["tokenAddress"])
-    chainTwoPrice = Dex.getTokenPrice(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["tokenAddress"])
+    chainOnePrice = Dex.getTokenPrice(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["address"])
+    chainTwoPrice = Dex.getTokenPrice(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["address"])
 
     # Calculate
     priceDifference = calculateDifference(chainOnePrice, chainTwoPrice)
@@ -84,7 +84,7 @@ def calculatePotentialProfit(recipe):
 
         tripPredictions[f"{tripAmount}"] = {"Total": currentCapital, "P/L": profitLoss, "Profitable": tripIsProfitible}
 
-    return tripIsProfitible, tripPredictions
+    return tripIsProfitible
 
 def calculateDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")

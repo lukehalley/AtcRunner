@@ -1,11 +1,12 @@
 from num2words import num2words
 from distutils import util
 
-from helpers import Database, Bridge
+from helpers import Database, Bridge, Dex
 
 
 def getRecipeDetails():
 
+    chains = Database.fetchFromDatabase("chains")
     recipes = Database.fetchFromDatabase("recipes")
 
     for recipesTitle, recipeDetails in recipes.items():
@@ -16,43 +17,54 @@ def getRecipeDetails():
         for i in range(1, 3):
 
             num = num2words(i).title()
+            chain = chains[recipeDetails[f"chain{num}"]["chain"]["name"]]
+            recipeDetails[f"chain{num}"]["chain"].update(chain)
+
             chainId = recipeDetails[f"chain{num}"]["chain"]["id"]
 
             chainTokens = Bridge.getBridgeableTokens(chainId)
 
-            for token in chainTokens:
-                if token["symbol"] == recipeToken:
-                    tokenDetails = token
-                    recipeDetails[f"chain{num}"]["token"]["isGas"] = bool(util.strtobool(recipeDetails[f"chain{num}"]["token"]["isGas"]))
-                    recipeDetails[f"chain{num}"]["token"]["name"] = tokenDetails["name"]
-                    recipeDetails[f"chain{num}"]["token"]["symbol"] = tokenDetails["symbol"]
+            toFill = {
+                "token": recipeToken,
+                "stablecoin": recipeStablecoin
+            }
 
-                    if "decimals" in tokenDetails:
-                        recipeDetails[f"chain{num}"]["token"]["tokenDecimals"] = tokenDetails["decimals"][chainId]
-                    else:
-                        recipeDetails[f"chain{num}"]["token"]["tokenDecimals"] = None
+            for key, value in toFill.items():
 
-                    recipeDetails[f"chain{num}"]["token"]["tokenAddress"] = tokenDetails["addresses"][chainId]
-                    recipeDetails[f"chain{num}"]["token"]["swapType"] = tokenDetails["swapType"]
-                    recipeDetails[f"chain{num}"]["token"]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
-                    break
+                for token in chainTokens:
 
-            for token in chainTokens:
-                if token["name"] == recipeStablecoin:
-                    tokenDetails = token
-                    recipeDetails[f"chain{num}"]["stablecoin"] = {}
-                    recipeDetails[f"chain{num}"]["stablecoin"]["name"] = tokenDetails["name"]
-                    recipeDetails[f"chain{num}"]["stablecoin"]["symbol"] = tokenDetails["symbol"]
+                    if token["symbol"] == value or token["name"] == value:
 
-                    if "decimals" in tokenDetails:
-                        recipeDetails[f"chain{num}"]["stablecoin"]["tokenDecimals"] = tokenDetails["decimals"][chainId]
-                    else:
-                        recipeDetails[f"chain{num}"]["stablecoin"]["tokenDecimals"] = 6
+                        tokenDetails = token
 
-                    recipeDetails[f"chain{num}"]["stablecoin"]["tokenAddress"] = tokenDetails["addresses"][chainId]
-                    recipeDetails[f"chain{num}"]["stablecoin"]["swapType"] = tokenDetails["swapType"]
-                    recipeDetails[f"chain{num}"]["stablecoin"]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
-                    break
+                        if key == "chain":
+                            recipeDetails[f"chain{num}"][key]["isGas"] = True
+                        elif key in recipeDetails[f"chain{num}"]:
+                            recipeDetails[f"chain{num}"][key]["isGas"] = recipeDetails[f"chain{num}"][key]["isGas"]
+                        else:
+                            recipeDetails[f"chain{num}"][key] = {}
+                            recipeDetails[f"chain{num}"][key]["isGas"] = tokenDetails["isETH"]
+
+                        recipeDetails[f"chain{num}"][key]["name"] = tokenDetails["name"]
+                        recipeDetails[f"chain{num}"][key]["symbol"] = tokenDetails["symbol"]
+
+                        if "decimals" in tokenDetails:
+                            recipeDetails[f"chain{num}"][key]["decimals"] = tokenDetails["decimals"][chainId]
+                        else:
+                            recipeDetails[f"chain{num}"][key]["decimals"] = None
+
+                        recipeDetails[f"chain{num}"][key]["address"] = tokenDetails["addresses"][chainId]
+                        recipeDetails[f"chain{num}"][key]["swapType"] = tokenDetails["swapType"]
+                        recipeDetails[f"chain{num}"][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
+
+            recipeDetails[f"chain{num}"]["gas"] = {}
+            recipeDetails[f"chain{num}"]["gas"]["address"] = recipeDetails[f"chain{num}"]["chain"]["gas"]
+            recipeDetails[f"chain{num}"]["gas"]["symbol"] = recipeDetails[f"chain{num}"]["chain"]["symbol"]
+            recipeDetails[f"chain{num}"]["gas"]["price"] = Dex.getGasPrice(recipeDetails[f"chain{num}"]["chain"]["name"], recipeDetails[f"chain{num}"]["chain"]["pair"])
+
+            recipeDetails[f"chain{num}"]["stablecoin"]["price"] = Dex.getTokenPriceByDexId(chainName=recipeDetails[f"chain{num}"]["chain"]["name"], tokenAddress=recipeDetails[f"chain{num}"]["stablecoin"]["address"], dexId="defikingdoms")
+
+            del recipeDetails[f"chain{num}"]["chain"]["symbol"], recipeDetails[f"chain{num}"]["chain"]["gas"], recipeDetails[f"chain{num}"]["chain"]["pair"]
 
     return recipes
 
