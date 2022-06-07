@@ -3,21 +3,15 @@
     "JEWEL_Harmony_DFKChain": {
       "chainOne": {
         "chain": {
-          "name": "harmony",
-          "rpc": "https://harmony-0-rpc.gateway.pokt.network",
-          "id": "1666600000",
-          "token": "ONE"
+          "name": "harmony"
         },
         "token": {
-          "isGas": "True"
+          "isGas": "False"
         }
       },
       "chainTwo": {
         "chain": {
-          "name": "avalanchedfk",
-          "rpc": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc",
-          "id": "53935",
-          "token": "JEWEL"
+          "name": "avalanchedfk"
         },
         "token": {
           "isGas": "True"
@@ -25,8 +19,29 @@
       },
       "arbitrage" : {
         "token": "JEWEL",
-        "stablecoin": "USD Circle"
+        "stablecoin": "USD Circle",
+        "dexId": "defikingdoms"
       }
+    }
+  },
+  "chains": {
+    "harmony": {
+      "rpc": "https://harmony-0-rpc.gateway.pokt.network",
+      "id": "1666600000",
+      "uniswapContract": "0x24ad62502d1C652Cc7684081169D04896aC20f30",
+      "blockExplorer": "https://explorer.harmony.one/tx",
+      "symbol": "ONE",
+      "gas": "0x03ff0ff224f904be3118461335064bb48df47938",
+      "pair": "0x27f0Bcb74822dF54f36151434999CBc8db07D4d9"
+    },
+    "avalanchedfk": {
+      "rpc": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc",
+      "id": "53935",
+      "uniswapContract": "0x3C351E1afdd1b1BC44e931E12D4E05D6125eaeCa",
+      "blockExplorer": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx",
+      "symbol": "JEWEL",
+      "gas": "0x4f60a160D8C2DDdaAfe16FCC57566dB84D674BD6",
+      "pair": "0xCF329b34049033dE26e4449aeBCb41f1992724D3"
     }
   }
 }

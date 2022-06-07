@@ -48,6 +48,12 @@ for recipesTitle, recipe in recipes.items():
 
         recipe = Arbitrage.setUpArbitrage(recipe)
 
+        # TEST SWAP
+        if recipe["origin"]["chain"]["name"] == "harmony":
+            x = recipe["origin"]
+            recipe["origin"] = recipe["destination"]
+            recipe["destination"] = x
+
         recipe["info"]["currentRoundTripCount"] = roundTripCount
 
         if True:
@@ -66,12 +72,6 @@ for recipesTitle, recipe in recipes.items():
 
             recipe = Wallet.getWalletsInformation(recipe)
 
-            # if recipe["origin"]["wallet"]["balances"]["stablecoin"] > 0:
-            #     recipe["status"]["startingCapital"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
-            # else:
-            #     logger.info(f'[TEST] Origin wallet stablecoin balance is {recipe["origin"]["wallet"]["balances"]["stablecoin"]} - setting to {startingCapitalTestAmount}')
-            #     recipe["status"]["startingCapital"] = recipe["destination"]["wallet"]["balances"]["stablecoin"]
-
             recipe["status"]["capital"] = startingCapitalTestAmount
 
             if not recipe["status"]["stablesAreOnOrigin"]:
@@ -81,13 +81,12 @@ for recipesTitle, recipe in recipes.items():
                     fromToken=recipe["destination"]["stablecoin"]["symbol"],
                     toToken=recipe["origin"]["stablecoin"]["symbol"],
                     amountToBridge=recipe["status"]["capital"],
-                    decimalPlacesFrom=recipe["origin"]["stablecoin"]["tokenDecimals"],
-                    decimalPlacesTo=recipe["destination"]["stablecoin"]["tokenDecimals"]
+                    decimalPlacesFrom=recipe["origin"]["stablecoin"]["decimals"],
+                    decimalPlacesTo=recipe["destination"]["stablecoin"]["decimals"]
                 )
                 recipe = Data.addFee(recipe, initialStablecoinMoveQuote["bridgeFee"], "setup")
             else:
                 recipe = Data.addFee(recipe, 0, "setup")
-
 
             Utils.printSeperator(True)
 
@@ -95,7 +94,18 @@ for recipesTitle, recipe in recipes.items():
             logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas Both Wallets")
             Utils.printSeperator()
 
-            # Wallet.checkWalletsGas(recipe)
+            # Wallet.topUpWalletGas(
+            #     recipe=recipe,
+            #     direction="origin",
+            #     toSwapFrom="stablecoin",
+            #     toSwapTo="token"
+            # )
+
+            Wallet.topUpWalletGas(
+                recipe=recipe,
+                direction="destination",
+                toSwapFrom="token"
+            )
 
             Utils.printSeperator(True)
 
@@ -107,7 +117,7 @@ for recipesTitle, recipe in recipes.items():
             logger.info(f'[ARB #{roundTripCount}] Potential Profit Would Be')
             Utils.printSeperator()
 
-            Arbitrage.calculatePotentialProfit(recipe)
+            tripIsProfitible = Arbitrage.calculatePotentialProfit(recipe)
 
             Utils.printSeperator(True)
 
@@ -115,9 +125,9 @@ for recipesTitle, recipe in recipes.items():
             logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Executing] Origin -> Destination: {recipe["origin"]["chain"]["name"].title()} -> {recipe["destination"]["chain"]["name"].title()}')
             Utils.printSeperator()
 
-            recipe = Bridge.executeBridge(
+            Bridge.executeBridge(
                 amountToBridge=1,
-                tokenDecimals=18,
+                decimals=18,
                 fromChain=53935,
                 toChain=1666600000,
                 fromToken='JEWEL',
@@ -125,9 +135,11 @@ for recipesTitle, recipe in recipes.items():
                 rpcURL='https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc'
             )
 
+            x = 1
+
             # recipe = Bridge.executeBridge(
             #     amountToBridge=2,
-            #     tokenDecimals=18,
+            #     decimals=18,
             #     fromChain=53935,
             #     toChain=1666600000,
             #     fromToken='DFK_USDC',

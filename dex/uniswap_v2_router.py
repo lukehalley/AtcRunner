@@ -37,8 +37,8 @@ ABI = """
     """
 
 
-def block_explorer_link(txid):
-    return 'https://explorer.harmony.one/tx/' + str(txid)
+def block_explorer_link(url, txid):
+    return url + "/" + str(txid)
 
 
 def weth(rpc_address):
@@ -92,7 +92,7 @@ def get_amount_out(amount_in, reserve_in, reserve_out, rpc_address):
     return contract.functions.getAmountOut(amount_in, reserve_in, reserve_out).call()
 
 
-def swap_exact_tokens_for_tokens(amount_in, amount_out_min, path, to, deadline, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, logger):
+def swap_exact_tokens_for_tokens(amount_in, amount_out_min, path, to, deadline, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, contractAddress, logger):
     '''
     Swaps an exact amount of input tokens for as many output tokens as possible, along the route determined by the
     path. The first element of path is the input token, the last is the output token, and any intermediate elements
@@ -115,28 +115,28 @@ def swap_exact_tokens_for_tokens(amount_in, amount_out_min, path, to, deadline, 
     account = w3.eth.account.privateKeyToAccount(private_key)
     w3.eth.default_account = account.address
 
-    contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = w3.eth.contract(contractAddress, abi=ABI)
 
     tx = contract.functions.swapExactTokensForTokens(amount_in, amount_out_min, path, to, deadline).buildTransaction(
         {'gasPrice': w3.toWei(gas_price_gwei, 'gwei'), 'nonce': nonce})
+
+    tx["value"] = amount_in
 
     logger.debug("Signing transaction")
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=private_key)
     logger.debug("Sending transaction " + str(tx))
     ret = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
-    logger.debug("Transaction successfully sent !")
+    logger.debug("Transaction successfully sent!")
     logger.info(
         "Waiting for transaction " + block_explorer_link(signed_tx.hash.hex()) + " to be mined")
 
     tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=tx_timeout_seconds,
                                                      poll_latency=2)
-    logger.info("Transaction mined !")
+    logger.info("Transaction mined!")
 
     return tx_receipt
 
-
-def swap_exact_tokens_for_eth(amount_in, amount_out_min, path, to, deadline, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, logger):
+def swap_exact_tokens_for_eth(amount_in, amount_out_min, path, to, deadline, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, contractAddress, logger):
     '''
     Swaps an exact amount of tokens for as much ETH as possible, along the route determined by the path.
     The first element of path is the input token, the last must be WETH, and any intermediate elements represent
@@ -158,11 +158,25 @@ def swap_exact_tokens_for_eth(amount_in, amount_out_min, path, to, deadline, pri
     account = w3.eth.account.privateKeyToAccount(private_key)
     w3.eth.default_account = account.address
 
-    contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = w3.eth.contract(contractAddress, abi=ABI)
 
     tx = contract.functions.swapExactTokensForETH(amount_in, amount_out_min, path, to, deadline).buildTransaction(
-        {'gasPrice': w3.toWei(gas_price_gwei, 'gwei'), 'nonce': nonce})
+        {'gasPrice': w3.toWei(gas_price_gwei, 'gwei'), 'nonce': nonce, 'gas': 150000})
+
+    # transaction = {
+    #     'nonce': w3.eth.getTransactionCount(account.address),
+    #     "chainId": bridgeTransaction["chainId"],
+    #     'to': bridgeTransaction["to"],
+    #     'gas': 100206,
+    #     'gasPrice': w3.eth.gas_price,
+    #     'data': bridgeTransaction["unsigned_data"],
+    #     'value': int(bridgeTransaction["value"])
+    # }
+
+    # NEED TO
+    # UPDATE THE CONTRACT
+    # UP THE GAS TO 150,000+
+    # 0x3C351E1afdd1b1BC44e931E12D4E05D6125eaeCa
 
     logger.debug("Signing transaction")
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=private_key)
@@ -171,6 +185,70 @@ def swap_exact_tokens_for_eth(amount_in, amount_out_min, path, to, deadline, pri
     logger.debug("Transaction successfully sent !")
     logger.info(
         "Waiting for transaction " + block_explorer_link(signed_tx.hash.hex()) + " to be mined")
+
+    tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=tx_timeout_seconds,
+                                                     poll_latency=2)
+    logger.info("Transaction mined !")
+
+    return tx_receipt
+
+def swapTokensGeneric(swappingToGas, amount_in, amount_out_min, path, to, deadline, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, contractAddress, explorerUrl, logger):
+    '''
+    Swaps an exact amount of tokens for as much ETH as possible, along the route determined by the path.
+    The first element of path is the input token, the last must be WETH, and any intermediate elements represent
+     intermediate pairs to trade through (if, for example, a direct pair does not exist).
+    :param amount_in:
+    :param amount_out_min:
+    :param path:
+    :param to:
+    :param deadline:
+    :param private_key:
+    :param nonce:
+    :param gas_price_gwei:
+    :param tx_timeout_seconds:
+    :param rpc_address:
+    :param logger:
+    :return:
+    '''
+    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    account = w3.eth.account.privateKeyToAccount(private_key)
+    w3.eth.default_account = account.address
+
+    contract = w3.eth.contract(contractAddress, abi=ABI)
+
+    txParams = {
+        'gasPrice': w3.toWei(gas_price_gwei, 'gwei'),
+        'nonce': nonce,
+        'gas': 150000
+    }
+
+    if swappingToGas:
+        tx = contract.functions.swapExactTokensForETH(amount_in, amount_out_min, path, to, deadline).buildTransaction(txParams)
+    else:
+        tx = contract.functions.swapExactTokensForTokens(amount_in, amount_out_min, path, to, deadline).buildTransaction(txParams)
+
+    # transaction = {
+    #     'nonce': w3.eth.getTransactionCount(account.address),
+    #     "chainId": bridgeTransaction["chainId"],
+    #     'to': bridgeTransaction["to"],
+    #     'gas': 100206,
+    #     'gasPrice': w3.eth.gas_price,
+    #     'data': bridgeTransaction["unsigned_data"],
+    #     'value': int(bridgeTransaction["value"])
+    # }
+
+    # NEED TO
+    # UPDATE THE CONTRACT
+    # UP THE GAS TO 150,000+
+    # 0x3C351E1afdd1b1BC44e931E12D4E05D6125eaeCa
+
+    logger.debug("Signing transaction")
+    signed_tx = w3.eth.account.sign_transaction(tx, private_key=private_key)
+    logger.debug("Sending transaction " + str(tx))
+    ret = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    logger.debug("Transaction successfully sent !")
+    logger.info(
+        "Waiting for transaction " + block_explorer_link(explorerUrl, signed_tx.hash.hex()) + " to be mined")
 
     tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=tx_timeout_seconds,
                                                      poll_latency=2)

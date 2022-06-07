@@ -4,8 +4,21 @@ import os
 from datetime import datetime
 import re
 from math import log10, floor
+from time import strftime
+from time import gmtime
+from distutils import util
 
 logger = logging.getLogger("DFK-DEX")
+
+def strToBool(str):
+    return util.strtobool(str)
+
+def getOppositeDirection(direction):
+
+    if direction == "origin":
+        return "destination"
+    else:
+        return "origin"
 
 def checkIsDocker():
     path = '/proc/self/cgroup'
@@ -28,13 +41,17 @@ def printRoundtrip(count):
     logger.info("################################\n")
 
 def percentage(percent, whole):
-  return (percent * whole) / 100.0
+  return (percent * float(whole)) / 100.0
 
 def percentageOf(part, whole):
   return 100 * float(part)/float(whole)
 
 def getCurrentDateTime():
     return datetime.now().strftime(os.environ.get("DATE_FORMAT"))
+
+def getMinSecString(time):
+    format = os.getenv("TIMER_STR_FORMAT")
+    return strftime(format, gmtime(time))
 
 def camelCaseSplit(identifier):
     matches = re.finditer('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', identifier)

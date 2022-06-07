@@ -24,6 +24,15 @@ transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
+def getWeiValue(amount, rpcURL):
+    # Connect to our RPC.
+    w3 = Web3(Web3.HTTPProvider(rpcURL))
+
+    return erc20.eth2wei(w3, amount)
+
+def getValueWithSlippage(amount, slippage=0.5):
+    return int(format(amount - Utils.percentage(slippage, amount), f'.0f'))
+
 # @retry(tries=0, delay=transactionRetryDelay, logger=logger)
 def sendRawTransaction(rpcURL, bridgeTransaction):
 
@@ -49,7 +58,7 @@ def getGasPrice(rpcURL):
     return gasPrice
 
 # @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeout=180, gwei=30):
+def swapToken(tokenToSwapFrom, tokenToSwapTo, amountIn, amountOutMin, swappingToGas, rpcURL, explorerUrl, contractAddress, timeout=180, gwei=30):
 
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -60,15 +69,16 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeo
 
     # Get the address of the token we to swap from.
     originTokenAddress = w3.toChecksumAddress(tokenToSwapFrom)
+
+    amountOutWithSlippage = getValueWithSlippage(amountOutMin, 0.5)
+
     destinationTokenAddress = w3.toChecksumAddress(tokenToSwapTo)
 
-    # If we declare "GAS" as the token we want to swap to, will we the native gas token of
-    # the chain eg. if were on Harmony, it would be ONE.
-    if tokenToSwapTo == "GAS":
-        destinationTokenAddress = market_place_router.weth(rpcURL)
-        tx_receipt = market_place_router.swap_exact_tokens_for_eth(
-            amount_in=erc20.eth2wei(w3, amountToSwap),
-            amount_out_min=60,
+    if swappingToGas:
+        transactionID = market_place_router.swapTokensGeneric(
+            swappingToGas=swappingToGas,
+            amount_in=amountIn,
+            amount_out_min=amountOutWithSlippage,
             path=[originTokenAddress, destinationTokenAddress],
             to=account_address,
             deadline=transactionTimeout,
@@ -77,14 +87,17 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeo
             gas_price_gwei=w3.fromWei(w3.eth.gas_price, 'gwei'),
             tx_timeout_seconds=transactionTimeout,
             rpc_address=rpcURL,
+            contractAddress=contractAddress,
+            explorerUrl=explorerUrl,
             logger=logger
         )
 
     # Otherwise we will swap the source token for the same amount of the destination token.
     else:
-        tx_receipt = market_place_router.swap_exact_tokens_for_tokens(
-            amount_in=erc20.eth2wei(w3, amountToSwap),
-            amount_out_min=60,
+
+        transactionID = market_place_router.swap_exact_tokens_for_tokens(
+            amount_in=amountIn,
+            amount_out_min=amountOutWithSlippage,
             path=[originTokenAddress, destinationTokenAddress],
             to=account_address,
             deadline=transactionTimeout,
@@ -93,10 +106,14 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountToSwap, rpcURL, chain, timeo
             gas_price_gwei=w3.fromWei(w3.eth.gas_price, 'gwei'),
             tx_timeout_seconds=transactionTimeout,
             rpc_address=rpcURL,
+            contractAddress=contractAddress,
             logger=logger
         )
 
-    return tx_receipt
+
+
+
+    return transactionID
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcURL):
@@ -112,12 +129,12 @@ def getPrivateKey():
     return privateKey
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getTokenBalance(rpcURL, walletAddress, tokenAddress, printBalance=True):
+def getTokenBalance(rpcURL, walletAddress, address, printBalance=True):
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
-    symbol = erc20.symbol(tokenAddress, rpcURL)
-    balance = erc20.wei2eth(w3, erc20.balance_of(address=walletAddress, token_address=tokenAddress, rpc_address=rpcURL))
+    symbol = erc20.symbol(address, rpcURL)
+    balance = erc20.wei2eth(w3, erc20.balance_of(address=walletAddress, token_address=address, rpc_address=rpcURL))
 
     if printBalance:
         logger.info(f"Wallet {walletAddress} has {balance} {symbol}")
@@ -150,14 +167,14 @@ def getWalletsInformation(recipe):
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
             recipe[direction]["chain"]["rpc"],
             recipe[direction]["wallet"]["address"],
-            recipe[direction]["chain"]["token"],
+            recipe[direction]["gas"]["symbol"],
             False
         )
 
         recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
             recipe[direction]["chain"]["rpc"],
             recipe[direction]["wallet"]["address"],
-            recipe[direction]["stablecoin"]["tokenAddress"],
+            recipe[direction]["stablecoin"]["address"],
             False
         )
 
@@ -167,7 +184,7 @@ def getWalletsInformation(recipe):
             recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
                 recipe[direction]["chain"]["rpc"],
                 recipe[direction]["wallet"]["address"],
-                recipe[direction]["token"]["tokenAddress"],
+                recipe[direction]["token"]["address"],
                 False
             )
 
@@ -175,7 +192,7 @@ def getWalletsInformation(recipe):
             f'{direction} ({recipe[direction]["chain"]["name"]}) ->'
             f' Token {recipe[direction]["wallet"]["balances"]["token"]}'
             f' {recipe[direction]["token"]["name"]} | '
-            f'Gas {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["chain"]["token"]} | '
+            f'Gas {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]} | '
             f'Stables {recipe[direction]["wallet"]["balances"]["stablecoin"]} {recipe[direction]["stablecoin"]["symbol"]}')
 
     checkWalletsMatch(recipe)
@@ -229,48 +246,70 @@ def getWalletBalances(arbitragePlan):
 
     return originWalletTokenBalance, destinationWalletTokenBalance
 
-def checkWalletsGas(recipe):
+def topUpWalletGas(recipe, direction, toSwapFrom):
+
+    oppositeDirection = Utils.getOppositeDirection(direction)
+
     minimumGasBalance = float(os.environ.get("MIN_GAS_BALANCE"))
     maximumGasBalance = float(os.environ.get("MAX_GAS_BALANCE"))
 
-    directions = ("origin", "destination")
+    fromAddress = recipe[direction][toSwapFrom]["address"]
+    toAddress = recipe[direction]["gas"]["address"]
 
-    for direction in directions:
+    gasBalance = recipe[direction]["wallet"]["balances"]["gas"]
 
-        gasBalance = recipe[direction]["wallet"]["balances"]["gas"]
-        stableBalance = recipe[direction]["wallet"]["balances"]["stablecoin"]
-        needsGas = gasBalance < minimumGasBalance
+    fromPrice = recipe[direction][toSwapFrom]["price"]
+    toPrice = recipe[direction]["gas"]["price"]
 
-        if needsGas:
-            gasTokensNeeded = maximumGasBalance - gasBalance
-            topUpCost = gasTokensNeeded * recipe[direction]["token"]["price"]
+    if toSwapFrom == "stablecoin":
+        toSwapFromBalance = recipe[direction]["wallet"]["balances"][toSwapFrom]
+    else:
+        toSwapFromBalance = recipe[direction]["wallet"]["balances"][toSwapFrom] * recipe["origin"][toSwapFrom]["price"]
 
-            if topUpCost > stableBalance:
-                errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: Not enough stables (balance: {stableBalance}) to purchase {gasTokensNeeded} {recipe[direction]["chain"]["token"]} for {topUpCost} {recipe[direction]["stablecoin"]["symbol"]}'
-                logger.error(errMsg)
-                sys.exit(errMsg)
+    needsGas = gasBalance < minimumGasBalance
 
-            logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[direction]["chain"]["token"]} for {topUpCost} {recipe[direction]["stablecoin"]["symbol"]}')
+    if True:
+        gasTokensNeeded = maximumGasBalance - gasBalance
+        topUpCost = gasTokensNeeded * recipe[direction]["token"]["price"]
 
-            try:
-                topUpReceipt = swapToken(
-                    recipe[direction]["stablecoin"]["tokenAddress"],
-                    "GAS",
-                    topUpCost,
-                    recipe[direction]["chain"]["rpc"],
-                    recipe[direction]["chain"]["name"]
-                )
-            except Exception as err:
-                errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
-                logger.error(errMsg)
-                sys.exit(errMsg)
+        # if topUpCost > toSwapFromBalance:
+        #     errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: Not enough stables (balance: {toSwapFromBalance}) to purchase {gasTokensNeeded} {recipe[direction]["chain"]["symbol"]} for {topUpCost} {recipe[direction]["stablecoin"]["symbol"]}'
+        #     logger.error(errMsg)
+        #     sys.exit(errMsg)
 
-            newBalance = getWalletGasBalance(recipe[direction]["chain"]["rpc"], recipe[direction]["chain"]["token"], False)
+        logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[direction]["chain"]["symbol"]} for {topUpCost} {recipe[direction]["stablecoin"]["symbol"]}')
 
-            logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up - new balance is {newBalance} {recipe[direction]["stablecoin"]["symbol"]}')
+        try:
 
-        else:
-            logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) already has a sufficient gas balance of {gasBalance} {recipe[direction]["chain"]["token"]}')
+            amountInWei = int(BridgeAPI.getTokenDecimalValue(topUpCost, recipe[direction][toSwapFrom]["decimals"]))
+            amountOutWei = int(BridgeAPI.getTokenDecimalValue(gasTokensNeeded, 18))
+
+            # minAmountOut = BridgeAPI.estimateSwapOutput(
+            #     chain=recipe[direction]["chain"]["id"],
+            #     fromAddress=recipe[direction][toSwapFrom]["symbol"],
+            #     toAddress=recipe[oppositeDirection][toSwapTo]["symbol"],
+            #     amountIn=amountToBridgeWei
+            # )
+
+            topUpReceipt = swapToken(
+                tokenToSwapFrom=fromAddress,
+                tokenToSwapTo=toAddress,
+                amountIn=amountInWei,
+                amountOutMin=amountOutWei,
+                swappingToGas=True,
+                rpcURL=recipe[direction]["chain"]["rpc"],
+                explorerUrl=recipe[direction]["chain"]["blockExplorer"],
+                contractAddress=recipe[direction]["chain"]["uniswapContract"]
+            )
+
+        except Exception as err:
+            errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
+            logger.error(errMsg)
+            sys.exit(errMsg)
+
+        # newBalance = getWalletGasBalance(recipe[direction]["chain"]["rpc"], recipe[direction]["chain"]["symbol"], False)
+        #
+        # logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up - new balance is {newBalance} {recipe[direction]["stablecoin"]["symbol"]}')
 
     Utils.printSeperator()
 
