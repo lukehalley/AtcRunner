@@ -62,7 +62,15 @@ def getRecipeDetails():
             recipeDetails[f"chain{num}"]["gas"]["symbol"] = recipeDetails[f"chain{num}"]["chain"]["symbol"]
             recipeDetails[f"chain{num}"]["gas"]["price"] = Dex.getGasPrice(recipeDetails[f"chain{num}"]["chain"]["name"], recipeDetails[f"chain{num}"]["chain"]["pair"])
 
-            recipeDetails[f"chain{num}"]["stablecoin"]["price"] = Dex.getTokenPriceByDexId(chainName=recipeDetails[f"chain{num}"]["chain"]["name"], tokenAddress=recipeDetails[f"chain{num}"]["stablecoin"]["address"], dexId="defikingdoms")
+            recipeDetails[f"chain{num}"]["stablecoin"]["price"] = \
+                Dex.getTokenPriceByDexId(
+                    chainName=recipeDetails[f"chain{num}"]["chain"]["name"],
+                    tokenAddress=recipeDetails[f"chain{num}"]["stablecoin"]["address"],
+                    dexId=recipeDetails["arbitrage"]["dexId"]
+                )
+
+            if recipeDetails[f"chain{num}"]["stablecoin"]["price"] is None:
+                recipeDetails[f"chain{num}"]["stablecoin"]["price"] = 1.0
 
             del recipeDetails[f"chain{num}"]["chain"]["symbol"], recipeDetails[f"chain{num}"]["chain"]["gas"], recipeDetails[f"chain{num}"]["chain"]["pair"]
 

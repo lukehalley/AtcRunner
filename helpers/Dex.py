@@ -38,11 +38,6 @@ def doSearch(query):
     endpoint = Utils.replace_all(initEndpoint, params)
     return (requests.get(endpoint, params=params)).json()
 
-def searchReturnedResults(result):
-    toSearch = result["pairs"]
-
-    return toSearch
-
 def getTokenPriceByDexId(chainName, tokenAddress, dexId):
     tokens = getTokens(tokenAddress)["pairs"]
 
