@@ -421,8 +421,18 @@ def waitForBridgeToComplete(arbitragePlan, bridgeTimeout=10, waitForFundsTimeout
 def getSwapQuotes(recipe):
 
     swapDict = {
-        "origin": "stablecoin",
-        "destination": "token"
+        "tripOne": {
+            "toSwapFrom": "stablecoin",
+            "position": "origin"
+        },
+        "tripTwo": {
+            "toSwapFrom": "token",
+            "position": "destination"
+        },
+        "tripThree": {
+            "toSwapFrom": "stablecoin",
+            "position": "origin"
+        },
     }
 
     Utils.printSeperator()
@@ -430,19 +440,22 @@ def getSwapQuotes(recipe):
                 f"Calculating Swap Fees For Arbitrage")
     Utils.printSeperator()
 
+    swapFees = {}
 
+    for tripNumber, settings in swapDict.items():
 
-    for direction, toSwapFrom in swapDict.items():
+        position = settings["position"]
+        toSwapFrom = settings["toSwapFrom"]
 
-        oppositeDirection = Utils.getOppositeDirection(direction)
+        oppositeDirection = Utils.getOppositeDirection(position)
 
         amountIn = 1
         amountOutNeeded = 1
 
-        amountOfStables = recipe[direction]["wallet"]["balances"]["stablecoin"]
-        amountOfTokens = amountOfStables / recipe[direction]["token"]["price"]
+        amountOfStables = recipe[position]["wallet"]["balances"]["stablecoin"]
+        amountOfTokens = amountOfStables / recipe[position]["token"]["price"]
 
-        if direction == "origin":
+        if position == "origin":
             toSwapTo = "token"
             amountToSwapFrom = amountOfStables
             amountToSwapTo = amountOfTokens
@@ -451,11 +464,11 @@ def getSwapQuotes(recipe):
             amountToSwapFrom = amountOfTokens
             amountToSwapTo = amountOfStables
 
-        fromAddress = recipe[direction][toSwapFrom]["address"]
-        toAddress = recipe[direction][toSwapTo]["address"]
+        fromAddress = recipe[position][toSwapFrom]["address"]
+        toAddress = recipe[position][toSwapTo]["address"]
 
-        amountInWei = int(BridgeAPI.getTokenDecimalValue(amountToSwapFrom, recipe[direction][toSwapFrom]["decimals"]))
-        amountOutWei = int(BridgeAPI.getTokenDecimalValue(amountToSwapTo, recipe[direction][toSwapTo]["decimals"]))
+        amountInWei = int(BridgeAPI.getTokenDecimalValue(amountToSwapFrom, recipe[position][toSwapFrom]["decimals"]))
+        amountOutWei = int(BridgeAPI.getTokenDecimalValue(amountToSwapTo, recipe[position][toSwapTo]["decimals"]))
 
         quote = swapToken(
             tokenToSwapFrom=fromAddress,
@@ -463,9 +476,37 @@ def getSwapQuotes(recipe):
             amountIn=amountInWei,
             amountOutMin=amountOutWei,
             swappingToGas=False,
-            rpcURL=recipe[direction]["chain"]["rpc"],
-            explorerUrl=recipe[direction]["chain"]["blockExplorer"],
-            routerAddress=recipe[direction]["chain"]["uniswapRouter"],
-            factoryAddress=recipe[direction]["chain"]["uniswapFactory"],
+            rpcURL=recipe[position]["chain"]["rpc"],
+            explorerUrl=recipe[position]["chain"]["blockExplorer"],
+            routerAddress=recipe[position]["chain"]["uniswapRouter"],
+            factoryAddress=recipe[position]["chain"]["uniswapFactory"],
             justGetQuote=True
         )
+
+        quoteRealValue = float(BridgeAPI.getTokenNormalValue(quote, recipe[position][toSwapTo]["decimals"]))
+        # amountToSwapFrom - (quoteRealValue * recipe[position][toSwapTo]["price"])
+
+        swapFees[tripNumber] = {}
+
+        if position == "origin":
+            swapFees[tripNumber]["swapFee"] = amountToSwapFrom - (quoteRealValue * recipe[position][toSwapTo]["price"])
+        else:
+            swapFees[tripNumber]["swapFee"] = amountToSwapFrom - (quoteRealValue / recipe[position][toSwapFrom]["price"])
+
+        swapFees[tripNumber]["actualTokenLoss"] = amountToSwapTo - quoteRealValue
+        swapFees[tripNumber]["estimatedOutput"] = quoteRealValue
+
+    swapFees["totals"] = {}
+    swapFees["totals"]["totalSwapFee"] = 0.0
+    swapFees["totals"]["totalActualTokenLoss"] = 0.0
+    swapFees["totals"]["totalEstimatedOutput"] = 0.0
+
+    for key, value in swapFees.items():
+        if key != "totals":
+            swapFees["totals"]["totalSwapFee"] = swapFees["totals"]["totalSwapFee"] + swapFees[key]["swapFee"]
+            swapFees["totals"]["totalActualTokenLoss"] = swapFees["totals"]["totalActualTokenLoss"] + swapFees[key]["actualTokenLoss"]
+            swapFees["totals"]["totalEstimatedOutput"] = swapFees["totals"]["totalEstimatedOutput"] + swapFees[key]["estimatedOutput"]
+
+    recipe = Data.addFee(recipe=recipe, amount=swapFees["totals"]["totalSwapFee"], section="swap")
+
+    return recipe
