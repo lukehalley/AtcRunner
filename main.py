@@ -11,7 +11,8 @@ logger = Logger.setupLogging(isDocker)
 roundTripCount = 1
 
 # Test Settings
-startingCapitalTestAmount = 100
+useTestCapital = True
+startingCapitalTestAmount = 150
 
 # Firebase Setup
 Utils.printSeperator()
@@ -57,8 +58,14 @@ for recipesTitle, recipe in recipes.items():
 
         recipe["status"]["capital"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
 
-        if recipe["status"]["capital"] == 0:
+        # TEST STUFF ####################################
+
+        if useTestCapital:
             recipe["status"]["capital"] = startingCapitalTestAmount
+            recipe["destination"]["wallet"]["balances"]["stablecoin"] = startingCapitalTestAmount
+            recipe["origin"]["wallet"]["balances"]["stablecoin"] = startingCapitalTestAmount
+
+        # TEST STUFF ####################################
 
         if not recipe["status"]["stablesAreOnOrigin"]:
             initialStablecoinMoveQuote = Bridge.estimateBridgeOutput(
