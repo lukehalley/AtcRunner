@@ -11,7 +11,6 @@ def setupLogging(isDocker):
     dateFormat = os.environ.get("DATE_FORMAT")
 
     if isDocker:
-        load_dotenv()
         logFile = os.environ.get("LOG_FILE")
         logFileMode = os.environ.get("LOG_FILE_MODE")
         logging.basicConfig(filename=logFile, filemode=logFileMode, level=logging.INFO,
