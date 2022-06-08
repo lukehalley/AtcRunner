@@ -1,6 +1,6 @@
 import functools
 import logging
-import os
+import os, json
 from datetime import datetime
 import re
 from math import log10, floor
@@ -9,6 +9,18 @@ from time import gmtime
 from distutils import util
 
 logger = logging.getLogger("DFK-DEX")
+
+from pathlib import Path
+
+def get_project_root() -> Path:
+    return Path(__file__).parent.parent
+
+def getABI(file):
+    jsonPath = os.path.join(get_project_root(), "abi", file)
+
+    jsonFile = open(jsonPath)
+
+    return json.dumps(((json.load(jsonFile))["abi"]))
 
 def strToBool(str):
     return util.strtobool(str)

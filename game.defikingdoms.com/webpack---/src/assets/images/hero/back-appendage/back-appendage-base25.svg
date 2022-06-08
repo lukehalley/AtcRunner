@@ -1,0 +1,34 @@
+var _path;
+
+var _excluded = ["title", "titleId"];
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+import * as React from "react";
+
+function SvgBackAppendageBase25(_ref, svgRef) {
+  var title = _ref.title,
+      titleId = _ref.titleId,
+      props = _objectWithoutProperties(_ref, _excluded);
+
+  return /*#__PURE__*/React.createElement("svg", _extends({
+    xmlns: "http://www.w3.org/2000/svg",
+    viewBox: "0 -0.5 59 45",
+    shapeRendering: "crispEdges",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /*#__PURE__*/React.createElement("title", {
+    id: titleId
+  }, title) : null, _path || (_path = /*#__PURE__*/React.createElement("path", {
+    stroke: "current",
+    d: "M19 3h3M17 4h7M16 5h9M15 6h11M14 7h13M14 8h13M13 9h15M13 10h15M13 11h15M14 12h13M14 13h13M15 14h11M16 15h9M17 16h7M19 17h3M34 17h4M33 18h6M9 19h4M32 19h8M8 20h6M31 20h10M7 21h8M31 21h10M6 22h10M31 22h10M5 23h12M31 23h10M5 24h12M32 24h8M5 25h12M33 25h6M5 26h12M34 26h4M6 27h10M7 28h8M28 28h3M8 29h6M26 29h7M9 30h4M25 30h9M24 31h11M23 32h13M12 33h4M23 33h13M11 34h6M22 34h15M10 35h8M22 35h15M9 36h10M22 36h15M9 37h10M23 37h13M9 38h10M23 38h13M9 39h10M24 39h11M10 40h8M25 40h9M11 41h6M26 41h7M12 42h4M28 42h3"
+  })));
+}
+
+var ForwardRef = /*#__PURE__*/React.forwardRef(SvgBackAppendageBase25);
+export default __webpack_public_path__ + "static/media/back-appendage-base25.2bbf10d5.svg";
+export { ForwardRef as ReactComponent };

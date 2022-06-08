@@ -57,6 +57,9 @@ for recipesTitle, recipe in recipes.items():
 
         recipe["status"]["capital"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
 
+        if recipe["status"]["capital"] == 0:
+            recipe["status"]["capital"] = startingCapitalTestAmount
+
         if not recipe["status"]["stablesAreOnOrigin"]:
             initialStablecoinMoveQuote = Bridge.estimateBridgeOutput(
                 fromChain=recipe["destination"]["chain"]["id"],
@@ -158,10 +161,10 @@ for recipesTitle, recipe in recipes.items():
 
             Utils.printSeperator(True)
 
-            arbitrageDestinationStableSwapTX = Wallet.swapToken(tokenToSwapFrom=destinationStablecoinName,
-                                                                tokenToSwapTo=destinationToken, amountToSwap=10,
-                                                                rpcURL=destinationRPCUrl,
-                                                                chain=arbitrageDestination["chain"])
+            # arbitrageDestinationStableSwapTX = Wallet.swapToken(tokenToSwapFrom=destinationStablecoinName,
+            #                                                     tokenToSwapTo=destinationToken, amountToSwap=10,
+            #                                                     rpcURL=destinationRPCUrl,
+            #                                                     chain=arbitrageDestination["chain"])
 
         else:
             time.sleep(minimumInterval)

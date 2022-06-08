@@ -1,0 +1,370 @@
+@import 'styles/base-refs';
+
+$lightGreen: #14c25a;
+$forestGreen: #009c44;
+
+.buttonWrapper {
+  position: relative;
+  display: inline-block;
+  margin: 6px 0;
+  max-width: 100%;
+
+  > * {
+    user-select: none;
+  }
+
+  button {
+    display: inline-block;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 5px;
+    border: 0;
+    transition: all 0.2s ease-in-out;
+
+    span {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  &.fullWidth {
+    width: 100%;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  &.disabled {
+    button {
+      opacity: 0.4;
+
+      &.new {
+        opacity: 1;
+        background-image: url('../../assets/images/gui/btn_middle_inactive.png');
+
+        &:before {
+          background-image: url('../../assets/images/gui/btn_left_inactive.png'),
+            url('../../assets/images/gui/btn_right_inactive.png');
+        }
+      }
+    }
+  }
+
+  &.customCursor {
+    cursor: url('../../assets/images/gui/click-cursor-2x.png'), auto !important;
+
+    a,
+    button {
+      cursor: url('../../assets/images/gui/click-cursor-2x.png'), auto !important;
+
+      &:disabled {
+        cursor: url('../../assets/images/gui/default-cursor-2x.png'), auto !important;
+      }
+    }
+  }
+
+  &.error {
+    button {
+      background: #fd4040;
+    }
+  }
+
+  &.active,
+  &:hover,
+  &:enabled {
+    &:not(.disabled) {
+      button {
+        background: $gold-light;
+        color: $deep-blue;
+        transform: translateY(-3px);
+
+        &.ghostWhite {
+          color: white;
+          background: transparent;
+          border-color: white;
+          box-shadow: 0px 3px 0px white;
+          opacity: 1;
+        }
+
+        &.new {
+          background: url('../../assets/images/gui/btn_middle.png');
+          background-position: bottom center;
+          background-repeat: repeat-x;
+          transform: none;
+          color: #faf3e9;
+
+          &:before {
+            background-position: bottom left, bottom right;
+          }
+        }
+
+        &.newblue {
+          background: url('./images/cv-btn-center-hover.png');
+          background-position: bottom center;
+          background-repeat: repeat-x;
+          transform: none;
+          color: #faf3e9;
+
+          &:before {
+            background: url('./images/cv-btn-left-hover.png'), url('./images/cv-btn-right-hover.png');
+            background-repeat: no-repeat;
+            background-position: top left, top right;
+          }
+        }
+
+        &.ghostDark {
+          transform: none;
+          background: $parchment-dark;
+        }
+
+        &.red {
+          transform: none;
+          color: #faf3e9;
+          background-color: #a75943;
+
+          &:before {
+            background-image: url('../../assets/images/gui/btn_red_top_left_hover.png'),
+              url('../../assets/images/gui/btn_red_top_right_hover.png'),
+              url('../../assets/images/gui/btn_red_bottom_left_hover.png'),
+              url('../../assets/images/gui/btn_red_bottom_right_hover.png');
+            background-position: top left, top right, bottom left, bottom right;
+          }
+        }
+      }
+    }
+  }
+
+  &:active {
+    &:not(.disabled) {
+      button {
+        &.red {
+          &:active {
+            background-color: #62362f;
+
+            &:before {
+              background-image: url('../../assets/images/gui/btn_red_top_left_down.png'),
+                url('../../assets/images/gui/btn_red_top_right_down.png'),
+                url('../../assets/images/gui/btn_red_bottom_left_down.png'),
+                url('../../assets/images/gui/btn_red_bottom_right_down.png');
+              background-position: top left, top right, bottom left, bottom right;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* --- Primary Button Type --- */
+  .primary {
+    position: relative;
+    color: white;
+    background: $forestGreen;
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 10px 30px;
+  }
+
+  /* --- Small Button Type --- */
+  .small {
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(112, 112, 112, 0.3);
+    color: rgba(255, 255, 255, 0.6);
+    background: $deep-blue;
+    font-size: 11px;
+    background: $deep-blue;
+    letter-spacing: 1px;
+  }
+
+  /* --- Ghost Button Type --- */
+  .ghost {
+    border: 1px solid $gold;
+    color: $gold;
+    border-radius: 8px;
+    background-color: transparent;
+    padding: 5px 20px;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    opacity: 1;
+  }
+
+  /* --- Ghost White Button Type --- */
+  .ghostWhite {
+    border: 1px solid #fff;
+    color: #fff;
+    border-radius: 8px;
+    background-color: transparent;
+    padding: 5px 20px;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    opacity: 0.8;
+  }
+
+  /* --- Dark Ghost Button Type --- */
+  .ghostDark {
+    border: 1px solid #daad82;
+    color: #744e45;
+    border-radius: 8px;
+    background-color: transparent;
+    padding: 5px 20px;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    opacity: 1;
+
+    a,
+    a:focus {
+      text-decoration: none;
+    }
+  }
+
+  /* --- Light Button Type --- */
+  .light {
+    position: relative;
+    color: $lightGreen;
+    background: $forestGreen;
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 10px 30px;
+  }
+
+  /* --- Newest Primary Button Type --- */
+  .new {
+    background: url('../../assets/images/gui/btn_middle.png');
+    background-repeat: repeat-x;
+    background-position: top center;
+    height: 68px;
+    padding: 0 40px;
+    transition: none;
+    border-radius: 20px;
+    text-transform: none;
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    font-size: 24px;
+    color: $beige-fill;
+    @include text-stroke(3.5px, $brown-stroke);
+    white-space: nowrap;
+
+    .buttonLoader {
+      width: 24px !important;
+      height: 24px !important;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 1024px) {
+      font-size: 22px;
+    }
+
+    @include mobile {
+      font-size: 16px;
+      white-space: normal;
+      line-height: 1;
+      padding: 0 30px;
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      width: calc(100% + 40px);
+      top: 0;
+      left: -20px;
+      background: url('../../assets/images/gui/btn_left.png'), url('../../assets/images/gui/btn_right.png');
+      background-repeat: no-repeat;
+      background-position: top left, top right;
+      height: 68px;
+    }
+  }
+
+  /* --- Newest Primary Button Type --- */
+  .newblue {
+    background: url('./images/cv-btn-center.png');
+    background-repeat: repeat-x;
+    background-position: top center;
+    height: 68px;
+    padding: 0 40px;
+    transition: none;
+    border-radius: 20px;
+    text-transform: none;
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    font-size: 24px;
+    color: $beige-fill;
+    @include text-stroke(3.5px, $brown-stroke);
+    white-space: nowrap;
+
+    .buttonLoader {
+      width: 24px !important;
+      height: 24px !important;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 1024px) {
+      font-size: 22px;
+    }
+
+    @include mobile {
+      font-size: 16px;
+      white-space: normal;
+      line-height: 1;
+      padding: 0 30px;
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      width: calc(100% + 40px);
+      top: 0;
+      left: -20px;
+      background: url('./images/cv-btn-left.png'), url('./images/cv-btn-right.png');
+      background-repeat: no-repeat;
+      background-position: top left, top right;
+      height: 68px;
+    }
+  }
+
+  /* --- Red Button Type --- */
+  .red {
+    position: relative;
+    display: block;
+    text-align: center;
+    height: 58px;
+    max-height: 58px;
+    background-color: #c8521f;
+    line-height: 58px;
+    font-family: 'Lora', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: $white;
+    border-radius: 20px;
+    transition: none;
+    text-transform: none;
+    @include pixel-perfect;
+    @include text-stroke(3.5px, $brown-stroke);
+
+    @include mobile {
+      font-size: 18px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 16px;
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-image: url('../../assets/images/gui/btn_red_top_left.png'),
+        url('../../assets/images/gui/btn_red_top_right.png'), url('../../assets/images/gui/btn_red_bottom_left.png'),
+        url('../../assets/images/gui/btn_red_bottom_right.png');
+      background-repeat: no-repeat;
+      background-position: top left, top right, bottom left, bottom right;
+    }
+  }
+}
