@@ -37,12 +37,6 @@ for recipesTitle, recipe in recipes.items():
 
         logger.debug(f"[ARB #{roundTripCount}] Checking If Theres An Arbitrage Between The Pair")
 
-        # TEST SWAP
-        if recipe["origin"]["chain"]["name"] == "harmony":
-            x = recipe["origin"]
-            recipe["origin"] = recipe["destination"]
-            recipe["destination"] = x
-
         recipe["info"]["currentRoundTripCount"] = roundTripCount
 
         Utils.printRoundtrip(roundTripCount)
@@ -51,6 +45,8 @@ for recipesTitle, recipe in recipes.items():
         logger.info(f"[ARB #{roundTripCount}] Arbitrage Opportunity Identified")
         Utils.printSeperator()
         logger.info(recipe["info"]["reportString"])
+        if recipe["arbitrage"]["directionLockEnabled"]:
+            logger.info(f"Direction lock enabled")
         Utils.printSeperator(True)
 
         Utils.printSeperator()
@@ -59,7 +55,7 @@ for recipesTitle, recipe in recipes.items():
 
         recipe = Wallet.getWalletsInformation(recipe)
 
-        recipe["status"]["capital"] = startingCapitalTestAmount
+        recipe["status"]["capital"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
 
         if not recipe["status"]["stablesAreOnOrigin"]:
             initialStablecoinMoveQuote = Bridge.estimateBridgeOutput(
@@ -89,7 +85,11 @@ for recipesTitle, recipe in recipes.items():
 
         Utils.printSeperator(True)
 
-        arbitragePlan = Bridge.calculateSynapseBridgeFees(recipe)
+        recipe = Wallet.getSwapQuotes(recipe)
+
+        recipe = Bridge.calculateSynapseBridgeFees(recipe)
+
+        Utils.printSeperator(True)
 
         Utils.printSeperator(True)
 
@@ -97,7 +97,10 @@ for recipesTitle, recipe in recipes.items():
         logger.info(f'[ARB #{roundTripCount}] Potential Profit Would Be')
         Utils.printSeperator()
 
-        tripIsProfitible = Arbitrage.calculatePotentialProfit(recipe)
+        tripIsProfitible = Arbitrage.calculatePotentialProfit(
+            recipe=recipe,
+            trips="1"
+        )
 
         Utils.printSeperator(True)
 
@@ -116,8 +119,6 @@ for recipesTitle, recipe in recipes.items():
                 toToken='JEWEL',
                 rpcURL='https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc'
             )
-
-            x = 1
 
             # recipe = Bridge.executeBridge(
             #     amountToBridge=2,

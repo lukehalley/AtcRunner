@@ -58,7 +58,7 @@ def getGasPrice(rpcURL):
     return gasPrice
 
 # @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def swapToken(tokenToSwapFrom, tokenToSwapTo, amountIn, amountOutMin, swappingToGas, rpcURL, explorerUrl, contractAddress, timeout=180, gwei=30):
+def swapToken(tokenToSwapFrom, tokenToSwapTo, amountIn, amountOutMin, swappingToGas, rpcURL, explorerUrl, contractAddress, justGetQuote=True, timeout=180, gwei=30):
 
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -76,7 +76,8 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountIn, amountOutMin, swappingTo
 
     # WHEN SWAPPING TO GAS ALWAYS SWAP TO THE WRAPPED VERSION OF THE GAS TOKEN
     # EG: If going from JEWEL -> ONE go from JEWEL -> WONE
-    transactionSummary = market_place_router.swapTokensGeneric(
+    market_place_router.swapTokensGeneric(
+        justGetQuote=justGetQuote,
         swappingToGas=swappingToGas,
         amount_in=amountIn,
         amount_out_min=amountOutWithSlippage,
@@ -93,9 +94,6 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountIn, amountOutMin, swappingTo
         logger=logger
     )
 
-    x = 1
-
-    return transactionSummary
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcURL):
@@ -261,7 +259,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
             amountInWei = int(BridgeAPI.getTokenDecimalValue(amountIn, recipe[direction][toSwapFrom]["decimals"]))
             amountOutWei = int(BridgeAPI.getTokenDecimalValue(gasTokensNeeded, 18))
 
-            transactionSummary = swapToken(
+            swapToken(
                 tokenToSwapFrom=fromAddress,
                 tokenToSwapTo=toAddress,
                 amountIn=amountInWei,
@@ -269,7 +267,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
                 swappingToGas=True,
                 rpcURL=recipe[direction]["chain"]["rpc"],
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"],
-                contractAddress=recipe[direction]["chain"]["uniswapContract"]
+                contractAddress=recipe[direction]["chain"]["uniswapContract"],
+                justGetQuote=True
             )
 
         except Exception as err:
@@ -284,11 +283,10 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
             False
         )
 
-        Data.addFee(recipe=recipe, amount=float(transactionSummary["fee"]), section="originGas")
+        # Data.addFee(recipe=recipe, amount=float(transactionSummary["fee"]), section="originGas")
 
         logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up successful - new balance is {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]}')
     else:
-        transactionSummary = None
         logger.info(f"Origin wallet has enough gas")
 
     return recipe
@@ -416,3 +414,56 @@ def waitForBridgeToComplete(arbitragePlan, bridgeTimeout=10, waitForFundsTimeout
         errMsg = f'Waiting for funds to hit {readableFrom} wallet failed in an unknown state, this should not happen!'
         logger.error(errMsg)
         sys.exit(errMsg)
+
+def getSwapQuotes(recipe):
+
+    swapDict = {
+        "origin": "stablecoin",
+        "destination": "token"
+    }
+
+    Utils.printSeperator()
+    logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] "
+                f"Calculating Swap Fees For Arbitrage")
+    Utils.printSeperator()
+
+
+
+    for direction, toSwapFrom in swapDict.items():
+
+        oppositeDirection = Utils.getOppositeDirection(direction)
+
+        amountIn = 1
+        amountOutNeeded = 1
+
+        amountOfStables = recipe[direction]["wallet"]["balances"]["stablecoin"]
+        amountOfTokens = amountOfStables / recipe[direction]["token"]["price"]
+
+        if direction == "origin":
+            toSwapTo = "token"
+            amountToSwapFrom = amountOfStables
+            amountToSwapTo = amountOfTokens
+        else:
+            toSwapTo = "stablecoin"
+            amountToSwapFrom = amountOfTokens
+            amountToSwapTo = amountOfStables
+
+        fromAddress = recipe[direction][toSwapFrom]["address"]
+        toAddress = recipe[direction][toSwapTo]["address"]
+
+        amountInWei = int(BridgeAPI.getTokenDecimalValue(amountToSwapFrom, recipe[direction][toSwapFrom]["decimals"]))
+        amountOutWei = int(BridgeAPI.getTokenDecimalValue(amountToSwapTo, recipe[direction][toSwapTo]["decimals"]))
+
+        swapToken(
+            tokenToSwapFrom=fromAddress,
+            tokenToSwapTo=toAddress,
+            amountIn=amountInWei,
+            amountOutMin=amountOutWei,
+            swappingToGas=False,
+            rpcURL=recipe[direction]["chain"]["rpc"],
+            explorerUrl=recipe[direction]["chain"]["blockExplorer"],
+            contractAddress=recipe[direction]["chain"]["uniswapContract"],
+            justGetQuote=True
+        )
+
+    x = 1
