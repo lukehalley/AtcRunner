@@ -1,0 +1,130 @@
+@import 'styles/base-refs';
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.modalWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: fade 0.4s ease-in-out;
+  z-index: 200;
+  cursor: auto;
+
+  &.fadeOut {
+    opacity: 0;
+    transition: 0.4s opacity ease-in-out;
+  }
+
+  a,
+  button {
+    cursor: pointer;
+  }
+
+  &.customCursor {
+    cursor: url('../../../assets/images/gui/default-cursor-2x.png'), auto !important;
+
+    a,
+    button {
+      cursor: url('../../../assets/images/gui/click-cursor-2x.png'), auto !important;
+
+      &:disabled {
+        cursor: url('../../../assets/images/gui/default-cursor-2x.png'), auto !important;
+      }
+    }
+  }
+
+  .plainModal {
+    position: relative;
+    display: flex;
+    width: 95vw;
+    margin: auto;
+    padding: 0;
+    align-self: center;
+    max-height: 90vh;
+    border: 1px solid $brown-light;
+    background-color: rgba(0, 0, 0, 0.85);
+    box-shadow: 0 4px 8px 0 rgb(47 128 237 / 5%);
+    z-index: 1;
+
+    header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 16px 56px;
+      text-align: center;
+      overflow-y: hidden;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 2;
+
+      h4 {
+        margin: 0;
+        font-family: $serif-font;
+        font-size: 32px;
+        font-weight: 500;
+        text-transform: capitalize;
+
+        @include mobile {
+          font-size: 24px;
+        }
+      }
+
+      .closeIcon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 16px;
+        height: 62px;
+        width: 62px;
+        border: 0;
+        background-color: transparent;
+
+        svg {
+          width: 30px;
+          height: 30px;
+          color: white;
+        }
+      }
+    }
+  }
+
+  .plainContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 90vh;
+    padding: 88px 32px 32px;
+    overflow-y: auto;
+    z-index: 1;
+
+    @include mobile {
+      padding: 80px 16px 16px;
+    }
+  }
+
+  .plainOverlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: $overlay-gray;
+  }
+}

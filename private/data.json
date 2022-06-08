@@ -29,7 +29,8 @@
     "harmony": {
       "rpc": "https://harmony-0-rpc.gateway.pokt.network",
       "id": "1666600000",
-      "uniswapContract": "0x24ad62502d1C652Cc7684081169D04896aC20f30",
+      "uniswapRouter": "0x24ad62502d1C652Cc7684081169D04896aC20f30",
+      "uniswapFactory": "0x9014B937069918bd319f80e8B3BB4A2cf6FAA5F7",
       "blockExplorer": "https://explorer.harmony.one/tx",
       "symbol": "ONE",
       "gas": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a",
@@ -38,7 +39,8 @@
     "avalanchedfk": {
       "rpc": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc",
       "id": "53935",
-      "uniswapContract": "0x3C351E1afdd1b1BC44e931E12D4E05D6125eaeCa",
+      "uniswapRouter": "0x3C351E1afdd1b1BC44e931E12D4E05D6125eaeCa",
+      "uniswapFactory": "0x794C07912474351b3134E6D6B3B7b3b4A07cbAAa",
       "blockExplorer": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx",
       "symbol": "JEWEL",
       "gas": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",

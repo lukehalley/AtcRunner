@@ -1,0 +1,55 @@
+@import 'styles/base-refs';
+
+.connectModalWrapper {
+  max-width: 780px;
+  flex-direction: column;
+}
+
+.connectModal {
+  @include mobile {
+    width: 100% !important;
+  }
+
+  p {
+    font-size: 20px;
+  }
+
+  h3 {
+    margin: 24px 0 8px;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .connectModalContent {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .connectTextContent {
+    padding: 24px 48px;
+
+    @include mobile {
+      padding: 24px;
+    }
+  }
+
+  .tutorialRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    > div {
+      width: 50%;
+    }
+
+    @include mobile {
+      flex-direction: column;
+
+      > div {
+        width: 100%;
+      }
+    }
+  }
+}

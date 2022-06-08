@@ -1,0 +1,354 @@
+@import 'styles/base-refs';
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.modalWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: fade 0.4s ease-in-out;
+  z-index: 200;
+  cursor: auto;
+
+  a,
+  button {
+    cursor: pointer;
+  }
+
+  &.customCursor {
+    cursor: url('../../../assets/images/gui/default-cursor-2x.png'), auto !important;
+
+    a,
+    button {
+      cursor: url('../../../assets/images/gui/click-cursor-2x.png'), auto !important;
+
+      &:disabled {
+        cursor: url('../../../assets/images/gui/default-cursor-2x.png'), auto !important;
+      }
+    }
+  }
+
+  .contentWrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &.heightAdjust {
+    justify-content: flex-start;
+
+    > div:not(.fancyOverlay) {
+      margin: 30px 0;
+    }
+  }
+
+  &.fadeOut {
+    opacity: 0;
+    transition: 0.4s opacity ease-in-out;
+  }
+
+  .fancyOverlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: $overlay-gray;
+  }
+
+  .fancyModal {
+    position: relative;
+    width: 90%;
+    max-width: 565px;
+    padding: 50px;
+    background-color: $parchment;
+    background-image: url('../../../assets/images/gui/basic_left.png'),
+      url('../../../assets/images/gui/basic_right.png'), url('../../../assets/images/gui/fancy_top.png'),
+      url('../../../assets/images/gui/basic_bottom.png');
+    background-position: top left, top right, top left, bottom left;
+    background-repeat: repeat-y, repeat-y, repeat-x, repeat-x;
+    z-index: 1;
+    border-radius: 40px;
+    color: $brown;
+
+    @include mobile {
+      padding: 96px 48px 80px;
+      width: 100%;
+    }
+
+    &:before {
+      content: '';
+      pointer-events: none;
+      display: block;
+      position: absolute;
+      height: 100%;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: pixelated;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      background-image: url('../../../assets/images/gui/fancy_top_left_jewel.png'),
+        url('../../../assets/images/gui/fancy_top_right.png'), url('../../../assets/images/gui/basic_bottom_left.png'),
+        url('../../../assets/images/gui/basic_bottom_right.png');
+      background-position: top left, top right, bottom left, bottom right;
+      background-repeat: no-repeat;
+    }
+
+    h2 {
+      margin: 0 0 20px;
+      text-align: center;
+      font-family: $serif-font;
+      font-weight: 400;
+    }
+
+    .fancyContent {
+      position: relative;
+    }
+
+    .fancyTitleContainer {
+      position: relative;
+      text-align: center;
+      margin-top: -34px;
+
+      .fancyTitle {
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        background-image: url('../../../assets/images/gui/gui_title_middle.png');
+        background-repeat: repeat-x;
+        height: 70px;
+        padding: 0 20px;
+        color: $beige-fill;
+        @include text-stroke(3.5px, $brown-stroke);
+        font-size: 24px;
+        font-weight: bold;
+        display: inline-flex;
+        align-items: center;
+
+        @include mobile {
+          font-size: 20px;
+        }
+
+        &:before {
+          content: '';
+          position: absolute;
+          display: block;
+          width: calc(100% + 60px);
+          top: 0;
+          left: -30px;
+          height: 100%;
+          background-image: url('../../../assets/images/gui/gui_title_left.png'),
+            url('../../../assets/images/gui/gui_title_right.png');
+          background-repeat: no-repeat;
+          background-position: top left, top right;
+        }
+
+        span {
+          position: relative;
+        }
+      }
+    }
+
+    .frameClose {
+      position: absolute;
+      top: 16px;
+      right: 22px;
+      width: 52px;
+      height: 52px;
+      overflow: hidden;
+      padding: 0;
+      line-height: 0;
+      border: 0;
+      background-color: transparent;
+      cursor: pointer;
+      border: 2px solid transparent;
+      outline: none;
+      z-index: 2;
+      @include pixel-perfect;
+
+      &:focus-visible {
+        border: 2px dotted rgba(0, 0, 0, 0.8);
+      }
+
+      img {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      &:hover {
+        img {
+          top: auto;
+          bottom: 0;
+        }
+      }
+    }
+
+    .backArrow {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      padding: 5px;
+      line-height: 1;
+      color: #360f07;
+      cursor: pointer;
+      border: 0;
+      background: transparent;
+      z-index: 1;
+    }
+  }
+
+  .fancyContent {
+    position: relative;
+  }
+
+  &.plainModal {
+    .fancyModal {
+      background-color: rgba(0, 0, 0, 0.85);
+      background-image: none;
+      border: 1px solid $brown-light;
+
+      &:before,
+      &:after {
+        display: none;
+      }
+    }
+
+    .closeIcon {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0;
+      line-height: 0;
+      color: white;
+      background-color: transparent;
+      border: 0;
+      z-index: 1;
+
+      svg {
+        padding: 1rem;
+        width: 62px;
+        height: 62px;
+      }
+    }
+  }
+
+  &.parchmentModal {
+    .fancyModal {
+      background-image: none;
+      background-color: transparent;
+      border-radius: 65px;
+      padding: 25px;
+
+      @include mobile {
+        padding: 25px 0;
+      }
+
+      &:before {
+        background-image: url('../../../assets/images/gui/parchment-modal/leaderboard_top_left.png'),
+          url('../../../assets/images/gui/parchment-modal/leaderboard_top_right.png'),
+          url('../../../assets/images/gui/parchment-modal/leaderboard_bottom_left.png'),
+          url('../../../assets/images/gui/parchment-modal/leaderboard_bottom_right.png');
+      }
+
+      &:after {
+        content: '';
+        pointer-events: none;
+        display: block;
+        position: absolute;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: pixelated;
+        top: 0;
+        right: 160px;
+        bottom: 0;
+        left: 120px;
+        background-image: url('../../../assets/images/gui/parchment-modal/leaderboard_top.png'),
+          url('../../../assets/images/gui/parchment-modal/leaderboard_bottom.png');
+        background-position: top left, bottom left;
+        background-repeat: repeat-x, repeat-x;
+      }
+
+      .fancyContent {
+        background-color: $parchment2;
+        z-index: 1;
+        padding: 0 25px;
+
+        &:before {
+          content: '';
+          pointer-events: none;
+          display: block;
+          position: absolute;
+          image-rendering: -moz-crisp-edges;
+          image-rendering: pixelated;
+          top: 140px;
+          right: -25px;
+          bottom: 140px;
+          left: -25px;
+          background-image: url('../../../assets/images/gui/parchment-modal/leaderboard_left.png'),
+            url('../../../assets/images/gui/parchment-modal/leaderboard_right.png');
+          background-position: top left, top right;
+          background-repeat: repeat-y, repeat-y;
+        }
+      }
+
+      .frameClose {
+        width: 122px;
+        height: 128px;
+        border: none;
+
+        @include tablet {
+          transform: scale(75%);
+          top: 0;
+          right: 0;
+        }
+
+        @include mobile {
+          transform: scale(50%);
+          top: -20px;
+          right: -20px;
+        }
+      }
+
+      h2 {
+        margin: 16px 20px 20px;
+        text-align: center;
+        font-family: $antique-font;
+        font-size: 56px;
+        font-weight: 400;
+        background-image: url('../../../assets/images/gui/parchment-modal/title_embellishment_2x.png'),
+          url('../../../assets/images/gui/parchment-modal/title_embellishment_right_2x.png');
+        background-position: center left, center right;
+        background-repeat: no-repeat, no-repeat;
+        padding: 0 200px;
+        color: $fancyBrownDark;
+
+        @include tablet {
+          font-size: 42px;
+        }
+
+        @include mobile {
+          background: none;
+          font-size: 28px;
+          padding: 0;
+        }
+      }
+    }
+  }
+}

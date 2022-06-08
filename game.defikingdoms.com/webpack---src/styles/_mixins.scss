@@ -1,0 +1,177 @@
+@use 'sass:math';
+
+/* Define the mixin */
+@mixin fluid-typography($minFont, $maxFont, $minBreakpoint, $maxBreakpoint) {
+  /* Define variable for media query */
+  $maxLessOne: $maxBreakpoint - 1;
+
+  /* Define variable for fallback */
+  $avg: math.div(($maxFont + $minFont), 2);
+
+  /* Base font size */
+  font-size: #{$minFont}px;
+
+  @media (min-width: #{$minBreakpoint}px) and (max-width: #{$maxLessOne}px) {
+    /* Adds a fallback for unsupported browsers */
+    font-size: #{$avg}px;
+
+    /* The fluid typography magic 🌟  */
+    font-size: calc(
+      #{$minFont}px + (#{$maxFont} - #{$minFont}) * (100vw - #{$minBreakpoint}px) /
+        (#{$maxBreakpoint} - #{$minBreakpoint})
+    );
+  }
+
+  @media (min-width: #{$maxBreakpoint}px) {
+    font-size: #{$maxFont}px;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin pixel-perfect {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: pixelated;
+}
+
+// Pulled from this resource: https://dev.to/codingdudecom/everything-about-stroke-text-in-css-561i
+@mixin text-stroke($stroke-width, $stroke-color) {
+  letter-spacing: calc($stroke-width / 3);
+  text-shadow: calc($stroke-width * 1) calc($stroke-width * 0) 0 $stroke-color,
+    calc($stroke-width * 0.9239) calc($stroke-width * 0.3827) 0 $stroke-color,
+    calc($stroke-width * 0.7071) calc($stroke-width * 0.7071) 0 $stroke-color,
+    calc($stroke-width * 0.3827) calc($stroke-width * 0.9239) 0 $stroke-color,
+    calc($stroke-width * 0) calc($stroke-width * 1) 0 $stroke-color,
+    calc($stroke-width * -0.3827) calc($stroke-width * 0.9239) 0 $stroke-color,
+    calc($stroke-width * -0.7071) calc($stroke-width * 0.7071) 0 $stroke-color,
+    calc($stroke-width * -0.9239) calc($stroke-width * 0.3827) 0 $stroke-color,
+    calc($stroke-width * -1) calc($stroke-width * 0) 0 $stroke-color,
+    calc($stroke-width * -0.9239) calc($stroke-width * -0.3827) 0 $stroke-color,
+    calc($stroke-width * -0.7071) calc($stroke-width * -0.7071) 0 $stroke-color,
+    calc($stroke-width * -0.3827) calc($stroke-width * -0.9239) 0 $stroke-color,
+    calc($stroke-width * 0) calc($stroke-width * -1) 0 $stroke-color,
+    calc($stroke-width * 0.3827) calc($stroke-width * -0.9239) 0 $stroke-color,
+    calc($stroke-width * 0.7071) calc($stroke-width * -0.7071) 0 $stroke-color,
+    calc($stroke-width * 0.9239) calc($stroke-width * -0.3827) 0 $stroke-color;
+}
+
+@mixin range-input(
+  $foreground,
+  $background,
+  $border-color: $background,
+  $custom-color: $background,
+  $custom-cursor: false
+) {
+  $click-cursor: url('../assets/images/gui/click-cursor-2x.png'), auto;
+  $cursor-check: if($custom-cursor, $click-cursor, pointer);
+
+  [type='range'] {
+    cursor: $cursor-check;
+    -webkit-appearance: none;
+    background: transparent;
+    margin: 12px 0;
+    width: 100%;
+    &::-moz-focus-outer {
+      border: 0;
+    }
+    &:focus {
+      outline: 0;
+    }
+    &:focus::-webkit-slider-runnable-track {
+      background: $background;
+    }
+    &:focus::-ms-fill-lower {
+      background: $background;
+    }
+    &:focus::-ms-fill-upper {
+      background: $background;
+    }
+    &::-webkit-slider-runnable-track {
+      cursor: $cursor-check;
+      height: 14px;
+      transition: all 0.2s ease;
+      width: 100%;
+      background: $background;
+      border: 2px solid $border-color;
+      border-radius: 50px;
+      overflow: hidden;
+    }
+    &::-webkit-slider-thumb {
+      background: $foreground;
+      border: 2px solid $border-color;
+      border-radius: 50px;
+      box-sizing: border-box;
+      cursor: $cursor-check;
+      height: 14px;
+      width: 14px;
+      -webkit-appearance: none;
+      margin-top: -2px;
+      box-shadow: -80px -30px 0 80px $custom-color;
+    }
+    &::-moz-range-track {
+      cursor: $cursor-check;
+      height: 8px;
+      transition: all 0.2s ease;
+      width: 100%;
+      background: $background;
+      border: 2px solid $border-color;
+      border-radius: 5px;
+      height: 4px;
+    }
+    &::-moz-range-track {
+      background-color: $custom-color;
+      height: 4px;
+    }
+    &::-moz-range-thumb {
+      background: $foreground;
+      border: 2px solid $border-color;
+      border-radius: 12px;
+      box-sizing: border-box;
+      cursor: $cursor-check;
+      height: 24px;
+      width: 24px;
+    }
+    &::-ms-track {
+      cursor: $cursor-check;
+      height: 8px;
+      transition: all 0.2s ease;
+      width: 100%;
+      background: transparent;
+      border-color: transparent;
+      border-width: 12px 0;
+      color: transparent;
+    }
+    &::-ms-fill-lower {
+      background: $custom-color;
+      border: 2px solid $border-color;
+      border-radius: 10px;
+    }
+    &::-ms-fill-upper {
+      background: $background;
+      border: 2px solid $border-color;
+      border-radius: 10px;
+    }
+    &::-ms-thumb {
+      background: $foreground;
+      border: 2px solid $border-color;
+      border-radius: 12px;
+      box-sizing: border-box;
+      cursor: $cursor-check;
+      height: 24px;
+      width: 24px;
+      margin-top: 2px;
+    }
+    &:disabled::-webkit-slider-thumb,
+    &:disabled::-moz-range-thumb,
+    &:disabled::-ms-thumb,
+    &:disabled::-webkit-slider-runnable-track,
+    &:disabled::-ms-fill-lower,
+    &:disabled::-ms-fill-upper {
+      cursor: not-allowed;
+    }
+  }
+}

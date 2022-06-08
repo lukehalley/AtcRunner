@@ -1,0 +1,23 @@
+.continueButtonWrapper {
+  position: fixed;
+  left: 50%;
+  bottom: 60px;
+  width: 100%;
+  padding-left: 324px;
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 1;
+
+  button {
+    pointer-events: all;
+  }
+
+  @media (max-width: 960px) {
+    padding-left: 0;
+  }
+
+  @media (max-width: 768px) {
+    bottom: 10px;
+  }
+}

@@ -1,0 +1,38 @@
+@import 'styles/base-refs';
+
+.profileCreation {
+  .profileCreationWrapper {
+    display: grid;
+    align-items: initial;
+    grid-auto-rows: auto;
+    grid-template-columns: 3fr 2fr;
+    max-width: 1210px;
+    gap: 20px;
+    padding: 3% 20px;
+    margin: 0 auto;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+      padding: 20px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 0;
+    }
+  }
+
+  .profileCreationRight,
+  .profileCreationLeft {
+    width: 100%;
+    padding: 80px 60px;
+    max-width: none;
+    max-height: 610px;
+    text-align: center;
+  }
+
+  .profileCreationLeft {
+    > div {
+      height: 100%;
+    }
+  }
+}

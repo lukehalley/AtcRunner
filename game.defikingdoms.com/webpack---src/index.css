@@ -1,0 +1,61 @@
+@font-face {
+  font-family: 'LiberationSans';
+  src: url('./assets/fonts/Liberation/LiberationSans-Regular.eot') format('eot'),
+    url('./assets/fonts/Liberation/LiberationSans-Regular.woff') format('woff'),
+    url('./assets/fonts/Liberation/LiberationSans-Regular.ttf') format('truetype'),
+    url('./assets/fonts/Liberation/LiberationSans-Regular.svg#liberation_sansregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LiberationSans';
+  src: url('./assets/fonts/Liberation/LiberationSans-Bold.eot') format('eot'),
+    url('./assets/fonts/Liberation/LiberationSans-Bold.woff') format('woff'),
+    url('./assets/fonts/Liberation/LiberationSans-Bold.ttf') format('truetype'),
+    url('./assets/fonts/Liberation/LiberationSans-Bold.svg#liberation_sansbold') format('svg');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/poppins.eot') format('eot'), url('./assets/fonts/poppins.woff') format('woff'),
+    url('./assets/fonts/poppins.ttf') format('truetype'), url('./assets/fonts/poppins.svg#Poppins') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'OpenSans';
+  src: url('./assets/fonts/opensans.eot') format('eot'), url('./assets/fonts/opensans.woff') format('woff'),
+    url('./assets/fonts/opensans.ttf') format('truetype'), url('./assets/fonts/opensans.svg#OpenSans') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lora';
+  src: url('./assets/fonts/Lora/static/Lora-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lora';
+  src: url('./assets/fonts/Lora/static/Lora-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'RomanAntique';
+  src: url('./assets/fonts/romanantique-webfont.woff2') format('woff2'),
+    url('./assets/fonts/romanantique-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Poppins', Helvetica Neue, sans-serif;
+}

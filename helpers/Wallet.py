@@ -58,7 +58,7 @@ def getGasPrice(rpcURL):
     return gasPrice
 
 # @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def swapToken(tokenToSwapFrom, tokenToSwapTo, amountIn, amountOutMin, swappingToGas, rpcURL, explorerUrl, contractAddress, justGetQuote=True, timeout=180, gwei=30):
+def swapToken(tokenToSwapFrom, tokenToSwapTo, amountIn, amountOutMin, swappingToGas, rpcURL, explorerUrl, factoryAddress, routerAddress, justGetQuote=True, timeout=180, gwei=30):
 
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -76,7 +76,7 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountIn, amountOutMin, swappingTo
 
     # WHEN SWAPPING TO GAS ALWAYS SWAP TO THE WRAPPED VERSION OF THE GAS TOKEN
     # EG: If going from JEWEL -> ONE go from JEWEL -> WONE
-    market_place_router.swapTokensGeneric(
+    result = market_place_router.swapTokensGeneric(
         justGetQuote=justGetQuote,
         swappingToGas=swappingToGas,
         amount_in=amountIn,
@@ -89,11 +89,13 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountIn, amountOutMin, swappingTo
         gas_price_gwei=w3.fromWei(w3.eth.gas_price, 'gwei'),
         tx_timeout_seconds=transactionTimeout,
         rpc_address=rpcURL,
-        contractAddress=contractAddress,
+        factoryAddress=factoryAddress,
+        routerAddress=routerAddress,
         explorerUrl=explorerUrl,
         logger=logger
     )
 
+    return result
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcURL):
@@ -267,7 +269,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
                 swappingToGas=True,
                 rpcURL=recipe[direction]["chain"]["rpc"],
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"],
-                contractAddress=recipe[direction]["chain"]["uniswapContract"],
+                routerAddress=recipe[direction]["chain"]["uniswapRouter"],
+                factoryAddress=recipe[direction]["chain"]["uniswapFactory"],
                 justGetQuote=True
             )
 
@@ -454,7 +457,7 @@ def getSwapQuotes(recipe):
         amountInWei = int(BridgeAPI.getTokenDecimalValue(amountToSwapFrom, recipe[direction][toSwapFrom]["decimals"]))
         amountOutWei = int(BridgeAPI.getTokenDecimalValue(amountToSwapTo, recipe[direction][toSwapTo]["decimals"]))
 
-        swapToken(
+        quote = swapToken(
             tokenToSwapFrom=fromAddress,
             tokenToSwapTo=toAddress,
             amountIn=amountInWei,
@@ -462,8 +465,7 @@ def getSwapQuotes(recipe):
             swappingToGas=False,
             rpcURL=recipe[direction]["chain"]["rpc"],
             explorerUrl=recipe[direction]["chain"]["blockExplorer"],
-            contractAddress=recipe[direction]["chain"]["uniswapContract"],
+            routerAddress=recipe[direction]["chain"]["uniswapRouter"],
+            factoryAddress=recipe[direction]["chain"]["uniswapFactory"],
             justGetQuote=True
         )
-
-    x = 1
