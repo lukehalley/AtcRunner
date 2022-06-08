@@ -15,7 +15,6 @@ logger = logging.getLogger("DFK-DEX")
 def createDatabaseConnection():
 
     # Firebase Envs
-    load_dotenv()
     pkeyPath: Optional[str] = os.environ.get("PRIVATE_KEY_PATH")
     databaseURL = os.environ.get("DATABASE_URL")
 

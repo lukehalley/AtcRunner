@@ -1,7 +1,6 @@
-import logging
-import os
+import os, sys, logging
 from itertools import repeat
-import helpers.Dex as Dex
+from helpers import Dex, Utils
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -12,25 +11,53 @@ def setUpArbitrage(recipe):
     chainOnePrice = Dex.getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["address"], recipe["arbitrage"]["dexId"])
     chainTwoPrice = Dex.getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["address"], recipe["arbitrage"]["dexId"])
 
-    # Calculate
     priceDifference = calculateDifference(chainOnePrice, chainTwoPrice)
 
     origin, destination = calculateArbitrageStrategy(chainOnePrice, recipe["chainOne"]["chain"]["name"], chainTwoPrice, recipe["chainTwo"]["chain"]["name"])
     logger.debug(f"Calculating arbitrage origin and destination")
 
-    if origin == recipe["chainOne"]["chain"]["name"]:
+    directionlockEnabled = Utils.strToBool(os.getenv("DIRECTION_LOCK_ENABLED"))
 
-        recipe["origin"] = recipe["chainOne"]
-        recipe["origin"]["token"]["price"] = chainOnePrice
+    if directionlockEnabled and "directionLock" in recipe["arbitrage"]:
+        directionlock = recipe["arbitrage"]["directionLock"].split(",")
 
-        recipe["destination"] = recipe["chainTwo"]
-        recipe["destination"]["token"]["price"] = chainTwoPrice
+        originLock = directionlock[0]
+        destinationLock = directionlock[1]
+
+        if recipe["chainOne"]["chain"]["name"] == originLock and recipe["chainTwo"]["chain"]["name"] == destinationLock:
+
+            recipe["origin"] = recipe["chainOne"]
+            recipe["origin"]["token"]["price"] = chainOnePrice
+
+            recipe["destination"] = recipe["chainTwo"]
+            recipe["destination"]["token"]["price"] = chainTwoPrice
+
+        elif recipe["chainTwo"]["chain"]["name"] == originLock and recipe["chainOne"]["chain"]["name"] == destinationLock:
+
+            recipe["origin"] = recipe["chainTwo"]
+            recipe["origin"]["token"]["price"] = chainTwoPrice
+
+            recipe["destination"] = recipe["chainOne"]
+            recipe["destination"]["token"]["price"] = chainOnePrice
+
+        else:
+            errMsg = f'Invalid direction lock: {directionlock}'
+            logger.error(errMsg)
+            sys.exit(errMsg)
     else:
-        recipe["origin"] = recipe["chainTwo"]
-        recipe["origin"]["token"]["price"] = chainTwoPrice
+        if origin == recipe["chainOne"]["chain"]["name"]:
 
-        recipe["destination"] = recipe["chainOne"]
-        recipe["destination"]["token"]["price"] = chainOnePrice
+            recipe["origin"] = recipe["chainOne"]
+            recipe["origin"]["token"]["price"] = chainOnePrice
+
+            recipe["destination"] = recipe["chainTwo"]
+            recipe["destination"]["token"]["price"] = chainTwoPrice
+        else:
+            recipe["origin"] = recipe["chainTwo"]
+            recipe["origin"]["token"]["price"] = chainTwoPrice
+
+            recipe["destination"] = recipe["chainOne"]
+            recipe["destination"]["token"]["price"] = chainOnePrice
 
     del recipe['chainOne'], recipe['chainTwo']
 

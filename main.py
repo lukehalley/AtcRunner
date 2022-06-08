@@ -1,52 +1,41 @@
-import json
-import sys
 import time
+from dotenv import load_dotenv
+load_dotenv()
 
-import helpers.Database as Database
-import helpers.Logger as Log
-import helpers.Arbitrage as Arbitrage
-import helpers.Wallet as Wallet
-import helpers.Utils as Utils
-import helpers.Bridge as Bridge
+from helpers import Data, Database, Logger, Arbitrage, Wallet, Utils, Bridge
 
-from helpers import Data
+# General Init
 
 isDocker = Utils.checkIsDocker()
-
-# Init logger
-logger = Log.setupLogging(isDocker)
-
+logger = Logger.setupLogging(isDocker)
 roundTripCount = 1
 
+# Test Settings
+startingCapitalTestAmount = 100
+
+# Firebase Setup
 Utils.printSeperator()
 logger.info(f"Getting Data From Firebase")
 Utils.printSeperator()
-
-# Create connection to Firebase
 Database.createDatabaseConnection()
-
 recipes = Data.getRecipeDetails()
 
 Utils.printSeperator(True)
 
-# Calculate how often we can query dex tools
+# Interval Set-Up
 minimumInterval = Arbitrage.calculateQueryInterval(len(recipes))
 
 Utils.printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 Utils.printSeperator(True)
 
-startingCapitalTestAmount = 100
-tokensToLeave = 5
-minimumGasBalance = 1
-
 for recipesTitle, recipe in recipes.items():
 
     while True:
 
-        logger.debug(f"[ARB #{roundTripCount}] Checking If Theres An Arbitrage Between The Pair")
-
         recipe = Arbitrage.setUpArbitrage(recipe)
+
+        logger.debug(f"[ARB #{roundTripCount}] Checking If Theres An Arbitrage Between The Pair")
 
         # TEST SWAP
         if recipe["origin"]["chain"]["name"] == "harmony":
@@ -56,69 +45,63 @@ for recipesTitle, recipe in recipes.items():
 
         recipe["info"]["currentRoundTripCount"] = roundTripCount
 
-        if True:
+        Utils.printRoundtrip(roundTripCount)
 
-            Utils.printRoundtrip(roundTripCount)
+        Utils.printSeperator()
+        logger.info(f"[ARB #{roundTripCount}] Arbitrage Opportunity Identified")
+        Utils.printSeperator()
+        logger.info(recipe["info"]["reportString"])
+        Utils.printSeperator(True)
 
-            Utils.printSeperator()
-            logger.info(f"[ARB #{roundTripCount}] Arbitrage Opportunity Identified")
-            Utils.printSeperator()
-            logger.info(recipe["info"]["reportString"])
-            Utils.printSeperator(True)
+        Utils.printSeperator()
+        logger.info(f"[ARB #{roundTripCount}] Getting Wallet Details & Balance")
+        Utils.printSeperator()
 
-            Utils.printSeperator()
-            logger.info(f"[ARB #{roundTripCount}] Getting Wallet Details & Balance")
-            Utils.printSeperator()
+        recipe = Wallet.getWalletsInformation(recipe)
 
-            recipe = Wallet.getWalletsInformation(recipe)
+        recipe["status"]["capital"] = startingCapitalTestAmount
 
-            recipe["status"]["capital"] = startingCapitalTestAmount
-
-            if not recipe["status"]["stablesAreOnOrigin"]:
-                initialStablecoinMoveQuote = Bridge.estimateBridgeOutput(
-                    fromChain=recipe["destination"]["chain"]["id"],
-                    toChain=recipe["origin"]["chain"]["id"],
-                    fromToken=recipe["destination"]["stablecoin"]["symbol"],
-                    toToken=recipe["origin"]["stablecoin"]["symbol"],
-                    amountToBridge=recipe["status"]["capital"],
-                    decimalPlacesFrom=recipe["origin"]["stablecoin"]["decimals"],
-                    decimalPlacesTo=recipe["destination"]["stablecoin"]["decimals"]
-                )
-                recipe = Data.addFee(recipe, initialStablecoinMoveQuote["bridgeFee"], "setup")
-            else:
-                recipe = Data.addFee(recipe, 0, "setup")
-
-            Utils.printSeperator(True)
-
-            Utils.printSeperator()
-            logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas Both Wallets")
-            Utils.printSeperator()
-
-            recipe, originTopUpSummary = Wallet.topUpWalletGas(
-                recipe=recipe,
-                direction="origin",
-                toSwapFrom="stablecoin"
+        if not recipe["status"]["stablesAreOnOrigin"]:
+            initialStablecoinMoveQuote = Bridge.estimateBridgeOutput(
+                fromChain=recipe["destination"]["chain"]["id"],
+                toChain=recipe["origin"]["chain"]["id"],
+                fromToken=recipe["destination"]["stablecoin"]["symbol"],
+                toToken=recipe["origin"]["stablecoin"]["symbol"],
+                amountToBridge=recipe["status"]["capital"],
+                decimalPlacesFrom=recipe["origin"]["stablecoin"]["decimals"],
+                decimalPlacesTo=recipe["destination"]["stablecoin"]["decimals"]
             )
+            recipe = Data.addFee(recipe, initialStablecoinMoveQuote["bridgeFee"], "setup")
+        else:
+            recipe = Data.addFee(recipe, 0, "setup")
 
-            # Wallet.topUpWalletGas(
-            #     recipe=recipe,
-            #     direction="destination",
-            #     toSwapFrom="token"
-            # )
+        Utils.printSeperator(True)
 
-            Utils.printSeperator(True)
+        Utils.printSeperator()
+        logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas Both Wallets")
+        Utils.printSeperator()
 
-            arbitragePlan = Bridge.calculateSynapseBridgeFees(recipe)
+        recipe = Wallet.topUpWalletGas(
+            recipe=recipe,
+            direction="origin",
+            toSwapFrom="stablecoin"
+        )
 
-            Utils.printSeperator(True)
+        Utils.printSeperator(True)
 
-            Utils.printSeperator()
-            logger.info(f'[ARB #{roundTripCount}] Potential Profit Would Be')
-            Utils.printSeperator()
+        arbitragePlan = Bridge.calculateSynapseBridgeFees(recipe)
 
-            tripIsProfitible = Arbitrage.calculatePotentialProfit(recipe)
+        Utils.printSeperator(True)
 
-            Utils.printSeperator(True)
+        Utils.printSeperator()
+        logger.info(f'[ARB #{roundTripCount}] Potential Profit Would Be')
+        Utils.printSeperator()
+
+        tripIsProfitible = Arbitrage.calculatePotentialProfit(recipe)
+
+        Utils.printSeperator(True)
+
+        if tripIsProfitible:
 
             Utils.printSeperator()
             logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Executing] Origin -> Destination: {recipe["origin"]["chain"]["name"].title()} -> {recipe["destination"]["chain"]["name"].title()}')
@@ -158,16 +141,26 @@ for recipesTitle, recipe in recipes.items():
             Utils.printSeperator(True)
 
             Utils.printSeperator()
-            logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Waiting] Origin -> Destination: {recipe["destination"]["chain"]["name"].title()} -> {recipe["origin"]["chain"]["name"].title()}')
+            logger.info(
+                f'[ARB #{roundTripCount}] [Bridge (1/2)] [Waiting] Origin -> Destination: {recipe["destination"]["chain"]["name"].title()} -> {recipe["origin"]["chain"]["name"].title()}')
             Utils.printSeperator()
 
-            postOriginWalletTokenBalance, postDestinationWalletTokenBalance = Wallet.waitForBridgeToComplete(arbitragePlan)
+            # Wallet.topUpWalletGas(
+            #     recipe=recipe,
+            #     direction="destination",
+            #     toSwapFrom="token"
+            # )
+
+            # postOriginWalletTokenBalance, postDestinationWalletTokenBalance = Wallet.waitForBridgeToComplete(arbitragePlan)
 
             roundTripCount = roundTripCount + 1
 
             Utils.printSeperator(True)
 
-            arbitrageDestinationStableSwapTX = Wallet.swapToken(tokenToSwapFrom=destinationStablecoinName, tokenToSwapTo=destinationToken, amountToSwap=10, rpcURL=destinationRPCUrl, chain=arbitrageDestination["chain"])
+            arbitrageDestinationStableSwapTX = Wallet.swapToken(tokenToSwapFrom=destinationStablecoinName,
+                                                                tokenToSwapTo=destinationToken, amountToSwap=10,
+                                                                rpcURL=destinationRPCUrl,
+                                                                chain=arbitrageDestination["chain"])
 
         else:
             time.sleep(minimumInterval)

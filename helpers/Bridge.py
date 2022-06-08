@@ -8,10 +8,7 @@ from helpers import Utils, Wallet
 import logging
 from web3 import Web3
 
-
 logger = logging.getLogger("DFK-DEX")
-
-load_dotenv()
 
 synapseAPIEndpoint = os.getenv("SYNAPSE_API_ENDPOINT")
 synapseAPIVersion = os.getenv("SYNAPSE_API_VERSION")

@@ -7,9 +7,8 @@ import dex.erc20 as erc20
 from retry import retry
 from dotenv import load_dotenv
 
-load_dotenv()
+
 import os
-import signal
 import time
 
 import helpers.Utils as Utils
@@ -100,8 +99,6 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountIn, amountOutMin, swappingTo
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcURL):
-
-    load_dotenv()
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
@@ -294,7 +291,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
         transactionSummary = None
         logger.info(f"Origin wallet has enough gas")
 
-    return recipe, transactionSummary
+    return recipe
 
 def waitForBridgeToComplete(arbitragePlan, bridgeTimeout=10, waitForFundsTimeout=10):
 

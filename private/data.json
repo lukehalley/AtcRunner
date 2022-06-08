@@ -20,7 +20,8 @@
       "arbitrage" : {
         "token": "JEWEL",
         "stablecoin": "USD Circle",
-        "dexId": "defikingdoms"
+        "dexId": "defikingdoms",
+        "directionLock": "avalanchedfk,harmony"
       }
     }
   },

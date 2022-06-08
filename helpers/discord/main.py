@@ -14,15 +14,6 @@ from dotenv import load_dotenv
 
 import discord
 from discord.ext import tasks
-from discord.ext import commands
-
-# OTYxMDA3MjIwOTA3MTkyMzYx.YkytuA.Cnq3sLEEyrwUoj2uleTB6TBtRk0
-# https://discord.com/api/oauth2/authorize?client_id=961007220907192361&permissions=377957379136&scope=bot
-
-# Firebase Envs
-load_dotenv()
-# pkeyPath: Optional[str] = os.environ.get("PRIVATE_KEY_PATH")
-# databaseURL = os.environ.get("DATABASE_URL")
 
 # General Envs
 arbitrageThreshold = float(os.environ.get("ARBITRAGE_THRESHOLD"))

@@ -7,8 +7,6 @@ import logging
 from web3 import Web3
 logger = logging.getLogger("DFK-DEX")
 
-load_dotenv()
-
 dexscreenerAPIEndpoint = os.getenv("DEXSCREENER_API_ENDPOINT")
 dexscreenerAPIVersion = os.getenv("DEXSCREENER_API_VERSION")
 dexscreenerAPISection = os.getenv("DEXSCREENER_API_SECTION")
