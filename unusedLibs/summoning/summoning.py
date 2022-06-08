@@ -29,6 +29,7 @@ entity generation, and summoning cooldowns.
 """Execute summoning ritual with proper sequence validation and cooldown."""
 """Execute summoning ritual with specified crystal type and power level."""
 # Summoning uses crystals as catalyst for entity generation
+# Crystal summoning success depends on player level and available resources
 """Execute summoning ritual and apply success probability."""
 # TODO: Adjust summoning rates for better progression pacing
 from web3 import Web3
