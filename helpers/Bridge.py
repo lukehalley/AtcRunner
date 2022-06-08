@@ -124,9 +124,13 @@ def getSwappableTokensForNetwork(chainFrom, toChain):
 
 
 def calculateSynapseBridgeFees(recipe):
-    i = 0
 
     directionList = ("origin", "destination")
+
+    Utils.printSeperator()
+    logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] "
+                f"Calculating Bridge Fees For Arbitrage")
+    Utils.printSeperator()
 
     for direction in directionList:
 
@@ -140,12 +144,6 @@ def calculateSynapseBridgeFees(recipe):
         currentOrigin = recipe[direction]
         oppositeDirection = directionList[index]
         currentDestination = recipe[oppositeDirection]
-
-        Utils.printSeperator()
-        logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] "
-                    f"Calculating Bridge Fees For Arbitrage {direction.title()} to "
-                    f"Arbitrage {oppositeDirection.title()}")
-        Utils.printSeperator()
 
         bridgeQuote = estimateBridgeOutput(
             fromChain=currentOrigin["chain"]["id"],
@@ -166,15 +164,9 @@ def calculateSynapseBridgeFees(recipe):
 
         bridgeToken = currentOrigin[tokenType]["symbol"]
         logger.info(
-            f"After bridge we will receive {amountToReceive} {bridgeToken} with a fee of {bridgeFee} {bridgeToken}")
+            f"{direction} -> {oppositeDirection}: receive {amountToReceive} {bridgeToken} with a fee of {bridgeFee} {bridgeToken}")
 
-        Utils.printSeperator(True)
-
-    Utils.printSeperator()
-    logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] Bridge Fees Calculated")
-    Utils.printSeperator()
-
-    logger.info(f"Bridge Total Fee: ${recipe['status']['fees']['total']}")
+    logger.info(f"Total: ${recipe['status']['fees']['total']}")
 
     return recipe
 

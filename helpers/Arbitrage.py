@@ -4,6 +4,8 @@ from helpers import Dex, Utils
 
 logger = logging.getLogger("DFK-DEX")
 
+
+
 def setUpArbitrage(recipe):
 
     logger.debug(f"Calling Dexscreener API to find current price of pair")
@@ -16,9 +18,9 @@ def setUpArbitrage(recipe):
     origin, destination = calculateArbitrageStrategy(chainOnePrice, recipe["chainOne"]["chain"]["name"], chainTwoPrice, recipe["chainTwo"]["chain"]["name"])
     logger.debug(f"Calculating arbitrage origin and destination")
 
-    directionlockEnabled = Utils.strToBool(os.getenv("DIRECTION_LOCK_ENABLED"))
+    recipe["arbitrage"]["directionLockEnabled"] = Utils.strToBool(os.getenv("DIRECTION_LOCK_ENABLED"))
 
-    if directionlockEnabled and "directionLock" in recipe["arbitrage"]:
+    if recipe["arbitrage"]["directionLockEnabled"] and "directionLock" in recipe["arbitrage"]:
         directionlock = recipe["arbitrage"]["directionLock"].split(",")
 
         originLock = directionlock[0]
@@ -44,6 +46,7 @@ def setUpArbitrage(recipe):
             errMsg = f'Invalid direction lock: {directionlock}'
             logger.error(errMsg)
             sys.exit(errMsg)
+
     else:
         if origin == recipe["chainOne"]["chain"]["name"]:
 
@@ -74,11 +77,12 @@ def setUpArbitrage(recipe):
 
     return recipe
 
-def calculatePotentialProfit(recipe):
+def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
     logger.debug(f"Calculating potential profit")
 
     tripPredictions = {}
-    trips = [1, 2, 5, 10, 20, 100, 250, 500, 1000]
+
+    trips = list(map(int, trips.split(",")))
 
     tripIsProfitible = False
 

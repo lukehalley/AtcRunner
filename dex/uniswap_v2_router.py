@@ -1,12 +1,10 @@
 import sys
 
 import helpers.Bridge as Bridge
-import helpers.Bridge as Bridge
+import dex.uniswap_v2_pair as Pair
+import dex.uniswap_v2_factory as Factory
 
 from web3 import Web3
-
-
-CONTRACT_ADDRESS = '0x24ad62502d1C652Cc7684081169D04896aC20f30'
 
 ABI = """
         [
@@ -42,7 +40,7 @@ def block_explorer_link(url, txid):
     return url + "/" + str(txid)
 
 
-def weth(rpc_address):
+def weth(rpc_address, contractAddress):
     '''
     Return the wrapped address of the native token of the blockchain
     :param rpc_address:
@@ -51,48 +49,48 @@ def weth(rpc_address):
 
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
-    contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
+    contract_address = Web3.toChecksumAddress(contractAddress)
     contract = w3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.WETH().call()
 
 
-def factory(rpc_address):
+def factory(rpc_address, contractAddress):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
-    contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
+    contract_address = Web3.toChecksumAddress(contractAddress)
     contract = w3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.factory().call()
 
 
-def quote(amount_a, reserve_a, reserve_b, rpc_address):
+def quote(amount_a, reserve_a, reserve_b, rpc_address, contractAddress):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
-    contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
+    contract_address = Web3.toChecksumAddress(contractAddress)
     contract = w3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.quote(amount_a, reserve_a, reserve_b).call()
 
 
-def get_amount_in(amount_out, reserve_in, reserve_out, rpc_address):
+def get_amount_in(amount_out, reserve_in, reserve_out, rpc_address, contractAddress):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
-    contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
+    contract_address = Web3.toChecksumAddress(contractAddress)
     contract = w3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.getAmountIn(amount_out, reserve_in, reserve_out).call()
 
 
-def get_amount_out(amount_in, reserve_in, reserve_out, rpc_address):
+def get_amount_out(amount_in, reserve_in, reserve_out, rpc_address, contractAddress):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
-    contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
+    contract_address = Web3.toChecksumAddress(contractAddress)
     contract = w3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.getAmountOut(amount_in, reserve_in, reserve_out).call()
 
-def swapTokensGeneric(swappingToGas, amount_in, amount_out_min, path, to, deadline, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, contractAddress, explorerUrl, logger, gas=250000):
+def swapTokensGeneric(justGetQuote, swappingToGas, amount_in, amount_out_min, path, to, deadline, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, contractAddress, explorerUrl, logger, gas=250000):
     '''
     Swaps an exact amount of tokens for as much ETH as possible, along the route determined by the path.
     The first element of path is the input token, the last must be WETH, and any intermediate elements represent
@@ -131,34 +129,43 @@ def swapTokensGeneric(swappingToGas, amount_in, amount_out_min, path, to, deadli
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=private_key)
     logger.info("Transaction signed!")
 
-    logger.info("Sending transaction...")
-    w3.eth.send_raw_transaction(signed_tx.rawTransaction)
-    logger.info("Transaction successfully sent!")
+    if not justGetQuote:
 
-    logger.info("Waiting for transaction to be mined...")
-    tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=tx_timeout_seconds,
-                                                     poll_latency=2)
+        logger.info("Sending transaction...")
+        w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        logger.info("Transaction successfully sent!")
 
-    explorerLink = block_explorer_link(explorerUrl, signed_tx.hash.hex())
-    logger.info(f"Transaction was mined: {explorerLink}")
+        logger.info("Waiting for transaction to be mined...")
+        tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=tx_timeout_seconds,
+                                                         poll_latency=2)
 
-    txWasSuccessful = tx_receipt["status"] == 1
+        explorerLink = block_explorer_link(explorerUrl, signed_tx.hash.hex())
+        logger.info(f"Transaction was mined: {explorerLink}")
 
-    if txWasSuccessful:
-        logger.info(f"✅ Transaction was successful: {explorerLink}")
+        txWasSuccessful = tx_receipt["status"] == 1
 
-        transactionSummary = {
-            "successfull": txWasSuccessful,
-            "fee": Bridge.getTokenNormalValue(tx_receipt["gasUsed"] * w3.toWei(gas_price_gwei, 'gwei'), 18),
-            "blockURL": explorerLink,
-            "hash": signed_tx.hash.hex()
-        }
+        if txWasSuccessful:
+            logger.info(f"✅ Transaction was successful: {explorerLink}")
+
+            transactionSummary = {
+                "successfull": txWasSuccessful,
+                "fee": Bridge.getTokenNormalValue(tx_receipt["gasUsed"] * w3.toWei(gas_price_gwei, 'gwei'), 18),
+                "blockURL": explorerLink,
+                "hash": signed_tx.hash.hex()
+            }
+
+        else:
+            errMsg = f'⛔️ Transaction was unsuccessful: {explorerLink}'
+            logger.error(errMsg)
+            sys.exit(errMsg)
 
         return transactionSummary
 
     else:
-        errMsg = f'⛔️ Transaction was unsuccessful: {explorerLink}'
-        logger.error(errMsg)
-        sys.exit(errMsg)
+        one = Web3.toChecksumAddress(path[0])
+        two = Web3.toChecksumAddress(path[1])
+        Factory.get_pair(token_address_1=one, token_address_2=two, rpc_address=rpc_address, contractAddress=contractAddress)
+
+        x = 1
 
 
