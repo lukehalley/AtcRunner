@@ -180,7 +180,9 @@ def calculateSynapseBridgeFees(recipe):
 
     recipe = Data.addFee(recipe=recipe, fee=feeDict, section="bridge")
 
-    logger.info(f"Total: ${recipe['status']['fees']['total']}")
+    Utils.printSeperator()
+
+    logger.info(f"Bridge Fees Total: ${recipe['status']['fees']['bridge']['subTotal']}")
 
     return recipe
 

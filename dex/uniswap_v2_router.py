@@ -62,7 +62,7 @@ def get_amount_out(amount_in, reserve_in, reserve_out, rpc_address, routerAddres
 
     return contract.functions.getAmountOut(amount_in, reserve_in, reserve_out).call()
 
-def swapTokensGeneric(justGetQuote, swappingToGas, amount_in, amount_out_min, path, to, deadline, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, factoryAddress, routerAddress, explorerUrl, logger, gas=250000):
+def swapTokensGeneric(justGetQuote, swappingToGas, amount_in, path, to, deadline, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, factoryAddress, routerAddress, explorerUrl, logger, amount_out_min=0, gas=250000):
     '''
     Swaps an exact amount of tokens for as much ETH as possible, along the route determined by the path.
     The first element of path is the input token, the last must be WETH, and any intermediate elements represent
