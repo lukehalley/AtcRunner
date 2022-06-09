@@ -30,9 +30,11 @@ Utils.printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 Utils.printSeperator(True)
 
-for recipesTitle, recipe in recipes.items():
+while True:
 
-    while True:
+    for recipesTitle, originalRecipes in recipes.items():
+
+        recipe = originalRecipes.copy()
 
         recipe = Arbitrage.setUpArbitrage(recipe)
 
@@ -97,9 +99,9 @@ for recipesTitle, recipe in recipes.items():
 
         recipe = Wallet.getSwapQuotes(recipe)
 
-        recipe = Bridge.calculateSynapseBridgeFees(recipe)
-
         Utils.printSeperator(True)
+
+        recipe = Bridge.calculateSynapseBridgeFees(recipe)
 
         Utils.printSeperator(True)
 
@@ -109,7 +111,7 @@ for recipesTitle, recipe in recipes.items():
 
         tripIsProfitible = Arbitrage.calculatePotentialProfit(
             recipe=recipe,
-            trips="1"
+            trips="1,2,5,10,25,50,1000,10000"
         )
 
         Utils.printSeperator(True)
@@ -152,8 +154,7 @@ for recipesTitle, recipe in recipes.items():
             Utils.printSeperator(True)
 
             Utils.printSeperator()
-            logger.info(
-                f'[ARB #{roundTripCount}] [Bridge (1/2)] [Waiting] Origin -> Destination: {recipe["destination"]["chain"]["name"].title()} -> {recipe["origin"]["chain"]["name"].title()}')
+            logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Waiting] Origin -> Destination: {recipe["destination"]["chain"]["name"].title()} -> {recipe["origin"]["chain"]["name"].title()}')
             Utils.printSeperator()
 
             # Wallet.topUpWalletGas(
@@ -174,4 +175,7 @@ for recipesTitle, recipe in recipes.items():
             #                                                     chain=arbitrageDestination["chain"])
 
         else:
+            Utils.printSeperator()
+            logger.info(f'[ARB #{roundTripCount}] Trip predicted not profitable, waiting {minimumInterval} seconds')
             time.sleep(minimumInterval)
+            Utils.printSeperator(True)

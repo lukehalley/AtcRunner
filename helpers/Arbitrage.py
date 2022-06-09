@@ -1,6 +1,6 @@
 import os, sys, logging
 from itertools import repeat
-from helpers import Dex, Utils
+from helpers import Dex, Utils, Wallet
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -10,8 +10,10 @@ def setUpArbitrage(recipe):
 
     logger.debug(f"Calling Dexscreener API to find current price of pair")
 
-    chainOnePrice = Dex.getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["address"], recipe["arbitrage"]["dexId"])
-    chainTwoPrice = Dex.getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["address"], recipe["arbitrage"]["dexId"])
+    # chainOnePrice = Dex.getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["address"], recipe["arbitrage"]["dexId"])
+    # chainTwoPrice = Dex.getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["address"], recipe["arbitrage"]["dexId"])
+
+    chainOnePrice, chainTwoPrice = Wallet.getOnChainPrice(recipe)
 
     priceDifference = calculateDifference(chainOnePrice, chainTwoPrice)
 
@@ -62,7 +64,7 @@ def setUpArbitrage(recipe):
             recipe["destination"] = recipe["chainOne"]
             recipe["destination"]["token"]["price"] = chainOnePrice
 
-    del recipe['chainOne'], recipe['chainTwo']
+    # del recipe['chainOne'], recipe['chainTwo']
 
     recipe["info"] = {}
 
