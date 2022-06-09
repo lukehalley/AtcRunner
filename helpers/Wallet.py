@@ -447,20 +447,18 @@ def getSwapQuotes(recipe):
         position = settings["position"]
         toSwapFrom = settings["toSwapFrom"]
 
-        oppositeDirection = Utils.getOppositeDirection(position)
-
-        amountIn = 1
-        amountOutNeeded = 1
-
         amountOfStables = recipe[position]["wallet"]["balances"]["stablecoin"]
         amountOfTokens = amountOfStables / recipe[position]["token"]["price"]
 
         if position == "origin":
+
             toSwapTo = "token"
+            logger.info(f'Estimate: {amountOfStables} {recipe[position][toSwapFrom]["name"]} -> {amountOfTokens} {recipe[position][toSwapTo]["name"]}')
             amountToSwapFrom = amountOfStables
             amountToSwapTo = amountOfTokens
         else:
             toSwapTo = "stablecoin"
+            logger.info(f'Estimate: {amountOfTokens} {recipe[position][toSwapFrom]["name"]} > {amountOfStables} {recipe[position][toSwapTo]["name"]}')
             amountToSwapFrom = amountOfTokens
             amountToSwapTo = amountOfStables
 
@@ -484,29 +482,22 @@ def getSwapQuotes(recipe):
         )
 
         quoteRealValue = float(BridgeAPI.getTokenNormalValue(quote, recipe[position][toSwapTo]["decimals"]))
-        # amountToSwapFrom - (quoteRealValue * recipe[position][toSwapTo]["price"])
 
         swapFees[tripNumber] = {}
 
         if position == "origin":
-            swapFees[tripNumber]["swapFee"] = amountToSwapFrom - (quoteRealValue * recipe[position][toSwapTo]["price"])
+            swapFees[tripNumber] = amountToSwapFrom - (quoteRealValue * recipe[position][toSwapTo]["price"])
         else:
-            swapFees[tripNumber]["swapFee"] = amountToSwapFrom - (quoteRealValue / recipe[position][toSwapFrom]["price"])
+            swapFees[tripNumber] = amountToSwapFrom - (quoteRealValue / recipe[position][toSwapFrom]["price"])
 
-        swapFees[tripNumber]["actualTokenLoss"] = amountToSwapTo - quoteRealValue
-        swapFees[tripNumber]["estimatedOutput"] = quoteRealValue
+        tokenLoss = amountToSwapTo - quoteRealValue
+        estimatedOutput = quoteRealValue
 
-    swapFees["totals"] = {}
-    swapFees["totals"]["totalSwapFee"] = 0.0
-    swapFees["totals"]["totalActualTokenLoss"] = 0.0
-    swapFees["totals"]["totalEstimatedOutput"] = 0.0
+        logger.info(f'Output: {quoteRealValue} {recipe[position][toSwapTo]["name"]} w/ fee: ${swapFees[tripNumber]}')
 
-    for key, value in swapFees.items():
-        if key != "totals":
-            swapFees["totals"]["totalSwapFee"] = swapFees["totals"]["totalSwapFee"] + swapFees[key]["swapFee"]
-            swapFees["totals"]["totalActualTokenLoss"] = swapFees["totals"]["totalActualTokenLoss"] + swapFees[key]["actualTokenLoss"]
-            swapFees["totals"]["totalEstimatedOutput"] = swapFees["totals"]["totalEstimatedOutput"] + swapFees[key]["estimatedOutput"]
 
-    recipe = Data.addFee(recipe=recipe, amount=swapFees["totals"]["totalSwapFee"], section="swap")
+        Utils.printSeperator()
+
+    recipe = Data.addFee(recipe=recipe, fee=swapFees, section="swap")
 
     return recipe

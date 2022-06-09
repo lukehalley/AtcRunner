@@ -125,6 +125,17 @@ def getSwappableTokensForNetwork(chainFrom, toChain):
 
 def calculateSynapseBridgeFees(recipe):
 
+    bridgeDict = {
+        "originToDestination": {
+            "position": "origin"
+        },
+        "destinationToOrigin": {
+            "position": "destination"
+        }
+    }
+
+    feeDict = {}
+
     directionList = ("origin", "destination")
 
     Utils.printSeperator()
@@ -132,7 +143,9 @@ def calculateSynapseBridgeFees(recipe):
                 f"Calculating Bridge Fees For Arbitrage")
     Utils.printSeperator()
 
-    for direction in directionList:
+    for tripName, settings in bridgeDict.items():
+
+        direction = settings["position"]
 
         if direction == "origin":
             tokenType = "token"
@@ -156,15 +169,16 @@ def calculateSynapseBridgeFees(recipe):
             returning=(not direction == "origin"))
 
         amountToReceive = bridgeQuote["amountToReceive"]
+
         if tokenType == "token":
-            bridgeFee = bridgeQuote["bridgeFee"] * currentOrigin[tokenType]["price"]
+            feeDict[tripName] = bridgeQuote["bridgeFee"] * currentOrigin[tokenType]["price"]
         else:
-            bridgeFee = bridgeQuote["bridgeFee"]
-        recipe = Data.addFee(recipe, bridgeFee, direction)
+            feeDict[tripName] = bridgeQuote["bridgeFee"]
 
         bridgeToken = currentOrigin[tokenType]["symbol"]
-        logger.info(
-            f"{direction} -> {oppositeDirection}: receive {amountToReceive} {bridgeToken} with a fee of {bridgeFee} {bridgeToken}")
+        logger.info(f'{direction} -> {oppositeDirection}: receive {amountToReceive} {bridgeToken} with a fee of {feeDict[tripName]} {bridgeToken}')
+
+    recipe = Data.addFee(recipe=recipe, fee=feeDict, section="bridge")
 
     logger.info(f"Total: ${recipe['status']['fees']['total']}")
 

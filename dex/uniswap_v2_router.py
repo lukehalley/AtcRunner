@@ -97,9 +97,9 @@ def swapTokensGeneric(justGetQuote, swappingToGas, amount_in, amount_out_min, pa
     else:
         tx = contract.functions.swapExactTokensForTokens(amount_in, amount_out_min, path, to, deadline).buildTransaction(txParams)
 
-    logger.info("Signing transaction...")
+    logger.debug("Signing transaction...")
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=private_key)
-    logger.info("Transaction signed!")
+    logger.debug("Transaction signed!")
 
     if not justGetQuote:
 
