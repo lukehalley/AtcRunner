@@ -1,8 +1,9 @@
-from num2words import num2words
-from distutils import util
+import logging, sys
 
+from num2words import num2words
 from helpers import Database, Bridge, Dex
 
+logger = logging.getLogger("DFK-DEX")
 
 def getRecipeDetails():
 
@@ -76,7 +77,7 @@ def getRecipeDetails():
 
     return recipes
 
-def addFee(recipe, amount, section):
+def addFee(recipe, fee, section):
 
     if "fees" not in recipe["status"]:
         recipe["status"]["fees"] = {}
@@ -85,14 +86,34 @@ def addFee(recipe, amount, section):
         recipe["status"]["fees"]["total"] = 0
 
     if section not in recipe["status"]["fees"]:
-        recipe["status"]["fees"][section] = 0
+        recipe["status"]["fees"][section] = {}
 
-    recipe["status"]["fees"][section] = recipe["status"]["fees"][section] + amount
+    recipe["status"]["fees"][section]["subTotal"] = 0
+
+    if type(fee) is dict:
+        for title, value in fee.items():
+            recipe["status"]["fees"][section][title] = value
+        for k, v in recipe["status"]["fees"][section].items():
+            if k != "subTotal":
+                recipe["status"]["fees"][section]["subTotal"] = recipe["status"]["fees"][section]["subTotal"] + v
+    elif type(fee) is int or type(fee) is float:
+        feeName = f'{section}_{len(recipe["status"]["fees"][section])}'
+        recipe["status"]["fees"][section][feeName] = fee
+        x = 1
+        for k, v in recipe["status"]["fees"][section].items():
+            if k != "subTotal":
+                recipe["status"]["fees"][section]["subTotal"] = recipe["status"]["fees"][section]["subTotal"] + v
+    else:
+        errMsg = f'Invalid fee: {fee}'
+        logger.error(errMsg)
+        sys.exit(errMsg)
 
     recipe["status"]["fees"]["total"] = 0
 
     for key, value in recipe["status"]["fees"].items():
         if key != "total":
-            recipe["status"]["fees"]["total"] = recipe["status"]["fees"]["total"] + value
+            for feeName, feeAmount in value.items():
+                if feeName == "subTotal":
+                    recipe["status"]["fees"]["total"] = recipe["status"]["fees"]["total"] + feeAmount
 
     return recipe

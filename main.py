@@ -77,14 +77,14 @@ for recipesTitle, recipe in recipes.items():
                 decimalPlacesFrom=recipe["origin"]["stablecoin"]["decimals"],
                 decimalPlacesTo=recipe["destination"]["stablecoin"]["decimals"]
             )
-            recipe = Data.addFee(recipe, initialStablecoinMoveQuote["bridgeFee"], "setup")
+            recipe = Data.addFee(recipe=recipe, fee=initialStablecoinMoveQuote["bridgeFee"], section="setup")
         else:
-            recipe = Data.addFee(recipe, 0, "setup")
+            recipe = Data.addFee(recipe=recipe, fee=0, section="setup")
 
         Utils.printSeperator(True)
 
         Utils.printSeperator()
-        logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas Both Wallets")
+        logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas In Origin Wallet")
         Utils.printSeperator()
 
         recipe = Wallet.topUpWalletGas(
