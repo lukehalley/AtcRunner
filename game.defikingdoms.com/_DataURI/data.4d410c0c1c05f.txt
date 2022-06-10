@@ -1,1 +1,0 @@
-chrome-extension://hompjdfbfmmmgflfjdlnkohcplmboaeo/js/new_rightclick.js

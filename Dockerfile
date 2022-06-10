@@ -8,7 +8,7 @@ RUN python3 -m pip install selenium
 
 RUN mkdir -p /home/seluser/dfk-arb
 COPY dex/ /home/seluser/dfk-arb/dex/
-COPY helpers /home/seluser/dfk-arb/helpers/
+COPY srco /home/seluser/dfk-arb/helpers/
 COPY chrome/ /home/seluser/chrome/
 COPY private /home/seluser/dfk-arb/private/
 COPY web /home/seluser/dfk-arb/web/
