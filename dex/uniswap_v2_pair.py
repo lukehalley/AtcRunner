@@ -5,7 +5,7 @@ https://docs.uniswap.org/protocol/V2/reference/smart-contracts/pair
 
 from web3 import Web3
 from .utils.utils import swap_expected_amount1
-from helpers import Utils
+from srco import Utils
 
 ABI = Utils.getABI("IUniswapV2Pair.json")
 

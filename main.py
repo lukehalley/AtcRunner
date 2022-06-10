@@ -2,12 +2,29 @@ import time
 from dotenv import load_dotenv
 load_dotenv()
 
-from helpers import Data, Database, Logger, Arbitrage, Wallet, Utils, Bridge
+# Utility modules
+from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, calculateQueryInterval
+from src.utils.logger import setupLogging
+
+# API modules
+from src.api.firebase import createDatabaseConnection
+
+# Data modules
+from src.data.recipe import getRecipeDetails
+from src.data.arbitrage import determineArbitrageStrategy
+from src.data.fees import addFee
+from src.data.arbitrage import calculatePotentialProfit
+
+# Wallet modules for query and actions
+from src.wallet.queries.network import getWalletsInformation
+from src.wallet.queries.swap import calculateSwapOutputs
+from src.wallet.queries.bridge import estimateBridgeOutput, calculateSynapseBridgeFees
+from src.wallet.actions.network import topUpWalletGas
+from src.wallet.actions.bridge import executeBridge
 
 # General Init
-
-isDocker = Utils.checkIsDocker()
-logger = Logger.setupLogging(isDocker)
+isDocker = checkIsDocker()
+logger = setupLogging(isDocker)
 roundTripCount = 1
 
 # Test Settings
@@ -15,20 +32,20 @@ useTestCapital = True
 startingCapitalTestAmount = 150
 
 # Firebase Setup
-Utils.printSeperator()
+printSeperator()
 logger.info(f"Getting Data From Firebase")
-Utils.printSeperator()
-Database.createDatabaseConnection()
-recipes = Data.getRecipeDetails()
+printSeperator()
+createDatabaseConnection()
+recipes = getRecipeDetails()
 
-Utils.printSeperator(True)
+printSeperator(True)
 
 # Interval Set-Up
-minimumInterval = Arbitrage.calculateQueryInterval(len(recipes))
+minimumInterval = calculateQueryInterval(len(recipes))
 
-Utils.printSeperator()
+printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
-Utils.printSeperator(True)
+printSeperator(True)
 
 while True:
 
@@ -36,27 +53,27 @@ while True:
 
         recipe = originalRecipes.copy()
 
-        recipe = Arbitrage.setUpArbitrage(recipe)
+        recipe = determineArbitrageStrategy(recipe)
 
         logger.debug(f"[ARB #{roundTripCount}] Checking If Theres An Arbitrage Between The Pair")
 
-        recipe["info"]["currentRoundTripCount"] = roundTripCount
+        recipe["logger.info"]["currentRoundTripCount"] = roundTripCount
 
-        Utils.printRoundtrip(roundTripCount)
+        printRoundtrip(roundTripCount)
 
-        Utils.printSeperator()
+        printSeperator()
         logger.info(f"[ARB #{roundTripCount}] Arbitrage Opportunity Identified")
-        Utils.printSeperator()
-        logger.info(recipe["info"]["reportString"])
-        if recipe["arbitrage"]["directionLockEnabled"]:
+        printSeperator()
+        logger.info(recipe["logger.info"]["reportString"])
+        if recipe["data"]["directionLockEnabled"]:
             logger.info(f"Direction lock enabled")
-        Utils.printSeperator(True)
+        printSeperator(True)
 
-        Utils.printSeperator()
+        printSeperator()
         logger.info(f"[ARB #{roundTripCount}] Getting Wallet Details & Balance")
-        Utils.printSeperator()
+        printSeperator()
 
-        recipe = Wallet.getWalletsInformation(recipe)
+        recipe = getWalletsInformation.information(recipe)
 
         recipe["status"]["capital"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
 
@@ -70,7 +87,7 @@ while True:
         # TEST STUFF ####################################
 
         if not recipe["status"]["stablesAreOnOrigin"]:
-            initialStablecoinMoveQuote = Bridge.estimateBridgeOutput(
+            initialStablecoinMoveQuote = estimateBridgeOutput(
                 fromChain=recipe["destination"]["chain"]["id"],
                 toChain=recipe["origin"]["chain"]["id"],
                 fromToken=recipe["destination"]["stablecoin"]["symbol"],
@@ -79,50 +96,50 @@ while True:
                 decimalPlacesFrom=recipe["origin"]["stablecoin"]["decimals"],
                 decimalPlacesTo=recipe["destination"]["stablecoin"]["decimals"]
             )
-            recipe = Data.addFee(recipe=recipe, fee=initialStablecoinMoveQuote["bridgeFee"], section="setup")
+            recipe = addFee(recipe=recipe, fee=initialStablecoinMoveQuote["bridgeFee"], section="setup")
         else:
-            recipe = Data.addFee(recipe=recipe, fee=0, section="setup")
+            recipe = addFee(recipe=recipe, fee=0, section="setup")
 
-        Utils.printSeperator(True)
+        printSeperator(True)
 
-        Utils.printSeperator()
+        printSeperator()
         logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas In Origin Wallet")
-        Utils.printSeperator()
+        printSeperator()
 
-        recipe = Wallet.topUpWalletGas(
+        recipe = topUpWalletGas(
             recipe=recipe,
             direction="origin",
             toSwapFrom="stablecoin"
         )
 
-        Utils.printSeperator(True)
+        printSeperator(True)
 
-        recipe = Wallet.getSwapQuotes(recipe)
+        recipe = calculateSwapOutputs(recipe)
 
-        Utils.printSeperator(True)
+        printSeperator(True)
 
-        recipe = Bridge.calculateSynapseBridgeFees(recipe)
+        recipe = calculateSynapseBridgeFees(recipe)
 
-        Utils.printSeperator(True)
+        printSeperator(True)
 
-        Utils.printSeperator()
+        printSeperator()
         logger.info(f'[ARB #{roundTripCount}] Potential Profit Would Be')
-        Utils.printSeperator()
+        printSeperator()
 
-        tripIsProfitible = Arbitrage.calculatePotentialProfit(
+        tripIsProfitible = calculatePotentialProfit(
             recipe=recipe,
             trips="1,2,5,10,25,50,1000,10000"
         )
 
-        Utils.printSeperator(True)
+        printSeperator(True)
 
         if tripIsProfitible:
 
-            Utils.printSeperator()
+            printSeperator()
             logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Executing] Origin -> Destination: {recipe["origin"]["chain"]["name"].title()} -> {recipe["destination"]["chain"]["name"].title()}')
-            Utils.printSeperator()
+            printSeperator()
 
-            Bridge.executeBridge(
+            executeBridge(
                 amountToBridge=1,
                 decimals=18,
                 fromChain=53935,
@@ -132,7 +149,7 @@ while True:
                 rpcURL='https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc'
             )
 
-            # recipe = Bridge.executeBridge(
+            # recipe = executeBridge(
             #     amountToBridge=2,
             #     decimals=18,
             #     fromChain=53935,
@@ -142,7 +159,7 @@ while True:
             #     rpcURL='https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc'
             # )
 
-            # recipe = Bridge.executeBridge(
+            # recipe = executeBridge(
             #     amountToBridge=recipe["status"]["capital"],
             #     fromChain=recipe["origin"]["chain"]["id"],
             #     toChain=recipe["destination"]["chain"]["id"],
@@ -151,31 +168,31 @@ while True:
             #     rpcURL=recipe["origin"]["chain"]["rpc"]
             # )
 
-            Utils.printSeperator(True)
+            printSeperator(True)
 
-            Utils.printSeperator()
+            printSeperator()
             logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Waiting] Origin -> Destination: {recipe["destination"]["chain"]["name"].title()} -> {recipe["origin"]["chain"]["name"].title()}')
-            Utils.printSeperator()
+            printSeperator()
 
-            # Wallet.topUpWalletGas(
+            # topUpWalletGas(
             #     recipe=recipe,
             #     direction="destination",
             #     toSwapFrom="token"
             # )
 
-            # postOriginWalletTokenBalance, postDestinationWalletTokenBalance = Wallet.waitForBridgeToComplete(arbitragePlan)
+            # postOriginWalletTokenBalance, postDestinationWalletTokenBalance = waitForBridgeToComplete(arbitragePlan)
 
             roundTripCount = roundTripCount + 1
 
-            Utils.printSeperator(True)
+            printSeperator(True)
 
-            # arbitrageDestinationStableSwapTX = Wallet.swapToken(tokenToSwapFrom=destinationStablecoinName,
+            # arbitrageDestinationStableSwapTX = swapToken(tokenToSwapFrom=destinationStablecoinName,
             #                                                     tokenToSwapTo=destinationToken, amountToSwap=10,
             #                                                     rpcURL=destinationRPCUrl,
             #                                                     chain=arbitrageDestination["chain"])
 
         else:
-            Utils.printSeperator()
+            printSeperator()
             logger.info(f'[ARB #{roundTripCount}] Trip predicted not profitable, waiting {minimumInterval} seconds')
             time.sleep(minimumInterval)
-            Utils.printSeperator(True)
+            printSeperator(True)

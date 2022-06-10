@@ -1,1 +1,0 @@
-chrome-extension://cpnkcffhllafbdbljkmhebnpbnlhapmd/content-script/main.min.js
