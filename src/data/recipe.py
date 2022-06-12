@@ -3,7 +3,7 @@ from num2words import num2words
 
 from src.api.firebase import fetchFromDatabase
 from src.api.synapsebridge import getBridgeableTokens
-from src.api.dexscreener import getTokenPriceByDexId
+from src.api.dexscreener import getTokenPriceByDexId, doSearch
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -15,6 +15,8 @@ def getRecipeDetails():
     recipes = fetchFromDatabase("recipes")
 
     for recipesTitle, recipeDetails in recipes.items():
+
+        dexId = recipeDetails["arbitrage"]["dexId"]
 
         recipeToken = recipeDetails["arbitrage"]["token"]
         recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
@@ -33,6 +35,7 @@ def getRecipeDetails():
                 "token": recipeToken,
                 "stablecoin": recipeStablecoin
             }
+
 
             for key, value in toFill.items():
 
@@ -62,21 +65,70 @@ def getRecipeDetails():
                         recipeDetails[f"chain{num}"][key]["swapType"] = tokenDetails["swapType"]
                         recipeDetails[f"chain{num}"][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
 
+            # Add our custom routes - done in a hacky way, needs to be improved to be scalable.
+            hasCustomRoutes = "routes" in chain
+            if hasCustomRoutes:
+
+                for key, value in toFill.items():
+
+                    sectionHasRoutes = key in chain["routes"]
+
+                    if sectionHasRoutes:
+
+                        routes = chain["routes"][key].split(",")
+
+                        routeMap = []
+
+                        for route in routes:
+
+                            if recipeDetails[f"chain{num}"]["stablecoin"]["symbol"] == route:
+
+                                routeMap.append(recipeDetails[f"chain{num}"]["stablecoin"])
+
+                            elif recipeDetails[f"chain{num}"]["token"]["symbol"] == route:
+
+                                routeMap.append(recipeDetails[f"chain{num}"]["token"])
+
+                            else:
+
+                                tokenSearch = doSearch("CRYSTAL")
+
+                                for token in tokenSearch:
+
+                                    if token["chainId"] == recipeDetails[f"chain{num}"]["chain"]["name"] and token["baseToken"]["symbol"] == route and token["dexId"] == dexId:
+
+                                        routeObject = {}
+
+                                        foundToken = token
+
+                                        routeObject["isGas"] = False
+                                        routeObject["name"] = foundToken["baseToken"]["name"]
+                                        routeObject["symbol"] = foundToken["baseToken"]["symbol"]
+                                        routeObject["decimals"] = 18
+                                        routeObject["address"] = foundToken["baseToken"]["address"]
+                                        routeObject["swapType"] = "USD"
+                                        routeObject["wrapperAddresses"] = {}
+
+                                        routeMap.append(routeObject)
+
+                                        break
+
+                        recipeDetails[f"chain{num}"]["chain"]["routes"][key] = routeMap
+
             recipeDetails[f"chain{num}"]["gas"] = {}
             recipeDetails[f"chain{num}"]["gas"]["address"] = recipeDetails[f"chain{num}"]["chain"]["gas"]
             recipeDetails[f"chain{num}"]["gas"]["symbol"] = recipeDetails[f"chain{num}"]["chain"]["symbol"]
-            # recipeDetails[f"chain{num}"]["gas"]["price"] = Dex.getGasPrice(recipeDetails[f"chain{num}"]["chain"]["name"], recipeDetails[f"chain{num}"]["chain"]["pair"])
 
             recipeDetails[f"chain{num}"]["stablecoin"]["price"] = \
                 getTokenPriceByDexId(
                     chainName=recipeDetails[f"chain{num}"]["chain"]["name"],
                     tokenAddress=recipeDetails[f"chain{num}"]["stablecoin"]["address"],
-                    dexId=recipeDetails["arbitrage"]["dexId"]
+                    dexId=dexId
                 )
 
             if recipeDetails[f"chain{num}"]["stablecoin"]["price"] is None:
                 recipeDetails[f"chain{num}"]["stablecoin"]["price"] = 1.0
 
-            del recipeDetails[f"chain{num}"]["chain"]["symbol"], recipeDetails[f"chain{num}"]["chain"]["gas"], recipeDetails[f"chain{num}"]["chain"]["pair"]
+            del recipeDetails[f"chain{num}"]["chain"]["symbol"]
 
     return recipes

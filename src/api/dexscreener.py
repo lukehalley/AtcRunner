@@ -31,7 +31,7 @@ def doSearch(query):
     initEndpoint = buildApiURL(baseUrl=dexscreenerAPIBaseURL, endpoint=os.getenv("DEXSCREENER_SEARCH_TOKENS"))
     params = {":query": query}
     endpoint = replace_all(initEndpoint, params)
-    return (requests.get(endpoint, params=params)).json()
+    return (requests.get(endpoint, params=params)).json()["pairs"]
 
 # Get the token price by Dex id
 def getTokenPriceByDexId(chainName, tokenAddress, dexId):

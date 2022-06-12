@@ -3,7 +3,7 @@ from itertools import repeat
 
 from src.utils.general import strToBool
 from src.api.dexscreener import getTokenPriceByDexId
-from src.wallet.queries.network import getOnChainPriceIn, getOnChainPriceOut
+from src.wallet.queries.swap import getSwapQuoteOut, getSwapQuoteIn
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -13,28 +13,11 @@ def determineArbitrageStrategy(recipe):
 
     logger.debug(f"Calling Dexscreener API to find current price of pair")
 
-    oldChainOnePrice = getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["address"], recipe["arbitrage"]["dexId"])
-    oldChainTwoPrice = getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["address"], recipe["arbitrage"]["dexId"])
+    chainOneTokenPrice = getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["address"], recipe["arbitrage"]["dexId"])
+    chainTwoTokenPrice = getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["address"], recipe["arbitrage"]["dexId"])
 
-    chainOneTokenPrice = getOnChainPriceOut(
-        fromAddress=recipe["chainOne"]["token"]["address"],
-        fromDecimals=recipe["chainOne"]["token"]["decimals"],
-        toAddress=recipe["chainOne"]["stablecoin"]["address"],
-        toDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
-        rpcUrl=recipe["chainOne"]["chain"]["rpc"],
-        factoryAddress=recipe["chainOne"]["chain"]["uniswapFactory"],
-        routerAddress=recipe["chainOne"]["chain"]["uniswapRouter"]
-    )
-
-    chainTwoTokenPrice = getOnChainPriceOut(
-        fromAddress=recipe["chainTwo"]["stablecoin"]["address"],
-        fromDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
-        toAddress=recipe["chainTwo"]["token"]["address"],
-        toDecimals=recipe["chainTwo"]["token"]["decimals"],
-        rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
-        factoryAddress=recipe["chainTwo"]["chain"]["uniswapFactory"],
-        routerAddress=recipe["chainTwo"]["chain"]["uniswapRouter"]
-    )
+    chainOneGasPrice = getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["gas"]["address"], recipe["arbitrage"]["dexId"])
+    chainTwoGasPrice = getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["gas"]["address"], recipe["arbitrage"]["dexId"])
 
     priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
 

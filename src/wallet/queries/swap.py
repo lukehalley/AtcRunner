@@ -31,26 +31,46 @@ def getAmountIn(amount_out, path, rpc_address, factoryAddress, routerAddress):
 
     return priceWei
 
-def getAmountOut(amount_in, path, rpc_address, factoryAddress, routerAddress):
-    one = Web3.toChecksumAddress(path[0])
-    two = Web3.toChecksumAddress(path[1])
-    pairAddress = Factory.get_pair(token_address_1=one, token_address_2=two, rpc_address=rpc_address,
-                                   factoryAddress=factoryAddress)
+def getSwapQuoteIn(amountInNormal, fromAddress, fromDecimals, toAddress, toDecimals, rpcUrl, factoryAddress, routerAddress):
 
-    pairReserves = Pair.get_reserves(pairAddress, rpc_address)
+    amountWei = int(getTokenDecimalValue(amountInNormal, fromDecimals))
 
-    result = Router.get_amount_out(
-        amount_in=amount_in,
+    fromAddressCS = Web3.toChecksumAddress(fromAddress)
+    toAddressCS = Web3.toChecksumAddress(toAddress)
+
+    pairAddress = Factory.get_pair(token_address_1=fromAddressCS, token_address_2=toAddressCS, rpc_address=rpcUrl, factoryAddress=factoryAddress)
+
+    pairReserves = Pair.get_reserves(pairAddress, rpcUrl)
+
+    priceWei = Router.get_amount_in(
+        amount_out=amountWei,
         reserve_in=pairReserves[0],
         reserve_out=pairReserves[1],
-        rpc_address=rpc_address,
+        rpc_address=rpcUrl,
         routerAddress=routerAddress
     )
 
-    quote = Router.quote(amount_a=amount_in, reserve_a=pairReserves[0], reserve_b=pairReserves[1], rpc_address=rpc_address,
-                 routerAddress=routerAddress)
+    price = float(getTokenNormalValue(priceWei, toDecimals))
 
-    return result
+    return price
+
+def getSwapQuoteOut(amountInNormal, routes, fromDecimals, toDecimals, rpcUrl, factoryAddress, routerAddress):
+
+    normalisedRoutes = []
+
+    for route in routes:
+        normalisedRoutes.append(Web3.toChecksumAddress(route))
+
+    amountWei = int(getTokenDecimalValue(amountInNormal, fromDecimals))
+
+    out = Router.get_amounts_out(
+        amount_in=amountWei,
+        addresses=normalisedRoutes,
+        rpc_address=rpcUrl,
+        routerAddress=routerAddress
+    )
+
+    return float(getTokenNormalValue(out[-1], toDecimals))
 
 def calculateSwapOutputs(recipe):
 
@@ -85,49 +105,43 @@ def calculateSwapOutputs(recipe):
         amountOfTokens = amountOfStables / recipe[position]["token"]["price"]
 
         if position == "origin":
-
             toSwapTo = "token"
-            logger.info(f'Estimate: {amountOfStables} {recipe[position][toSwapFrom]["name"]} -> {amountOfTokens} {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'Estimate: {amountOfStables} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
             amountToSwapFrom = amountOfStables
-            amountToSwapTo = amountOfTokens
         else:
             toSwapTo = "stablecoin"
-            logger.info(f'Estimate: {amountOfTokens} {recipe[position][toSwapFrom]["name"]} -> {amountOfStables} {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'Estimate: {amountOfTokens} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
             amountToSwapFrom = amountOfTokens
-            amountToSwapTo = amountOfStables
 
-        fromAddress = recipe[position][toSwapFrom]["address"]
-        toAddress = recipe[position][toSwapTo]["address"]
+        hasCustomRoutes = "routes" in recipe[position]["chain"] and toSwapFrom in recipe[position]["chain"]["routes"]
 
-        amountInWei = int(getTokenDecimalValue(amountToSwapFrom, recipe[position][toSwapFrom]["decimals"]))
-        amountOutWei = int(getTokenDecimalValue(amountToSwapTo, recipe[position][toSwapTo]["decimals"]))
+        routes = []
+        if hasCustomRoutes:
+            for route in recipe[position]["chain"]["routes"][toSwapFrom]:
+                routes.append(route["address"])
+            toDecimals = recipe[position]["chain"]["routes"][toSwapFrom][-1]["decimals"]
+        else:
+            routes = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
+            toDecimals = recipe[position][toSwapTo]["decimals"]
 
-        quote = swapToken(
-            tokenToSwapFrom=fromAddress,
-            tokenToSwapTo=toAddress,
-            amountIn=amountInWei,
-            amountOutMin=amountOutWei,
-            swappingToGas=False,
-            rpcURL=recipe[position]["chain"]["rpc"],
-            explorerUrl=recipe[position]["chain"]["blockExplorer"],
+        quote = getSwapQuoteOut(
+            amountInNormal=amountToSwapFrom,
+            fromDecimals=recipe[position][toSwapFrom]["decimals"],
+            toDecimals=toDecimals,
+            rpcUrl=recipe[position]["chain"]["rpc"],
             routerAddress=recipe[position]["chain"]["uniswapRouter"],
             factoryAddress=recipe[position]["chain"]["uniswapFactory"],
-            justGetQuote=True
+            routes=routes
         )
-
-        quoteRealValue = float(getTokenNormalValue(quote, recipe[position][toSwapTo]["decimals"]))
 
         swapFees[tripNumber] = {}
 
         if position == "origin":
-            swapFees[tripNumber] = amountToSwapFrom - (quoteRealValue * recipe[position][toSwapTo]["price"])
+            swapFees[tripNumber] = amountToSwapFrom - (quote * recipe[position][toSwapTo]["price"])
         else:
-            swapFees[tripNumber] = amountToSwapFrom - (quoteRealValue / recipe[position][toSwapFrom]["price"])
+            swapFees[tripNumber] = amountToSwapFrom - (quote / recipe[position][toSwapFrom]["price"])
 
-        tokenLoss = amountToSwapTo - quoteRealValue
-        estimatedOutput = quoteRealValue
-
-        logger.info(f'Output: {quoteRealValue} {recipe[position][toSwapTo]["name"]} w/ fee: ${swapFees[tripNumber]}')
+        logger.info(f'Output: {quote} {recipe[position][toSwapTo]["name"]} w/ fee: ${swapFees[tripNumber]}')
 
         printSeperator()
 
@@ -136,3 +150,6 @@ def calculateSwapOutputs(recipe):
     logger.info(f"Swap Fees Total: ${recipe['status']['fees']['swap']['subTotal']}")
 
     return recipe
+
+
+

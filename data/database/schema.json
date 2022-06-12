@@ -34,7 +34,7 @@
       "blockExplorer": "https://explorer.harmony.one/tx",
       "symbol": "ONE",
       "gas": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a",
-      "pair": "0x27f0Bcb74822dF54f36151434999CBc8db07D4d9"
+      "routes": {}
     },
     "avalanchedfk": {
       "rpc": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc",
@@ -44,7 +44,9 @@
       "blockExplorer": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx",
       "symbol": "JEWEL",
       "gas": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
-      "pair": "0xCF329b34049033dE26e4449aeBCb41f1992724D3"
+      "routes": {
+        "stablecoin": "DFK_USDC,CRYSTAL,JEWEL"
+      }
     }
   }
 }
