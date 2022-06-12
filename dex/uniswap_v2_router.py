@@ -1,13 +1,8 @@
-import sys
-
-from srco import Bridge, Utils
-import dex.uniswap_v2_pair as Pair
-import dex.uniswap_v2_factory as Factory
+from src.utils.chain import getABI
 
 from web3 import Web3
 
-ABI = Utils.getABI("IUniswapV2Router02.json")
-
+ABI = getABI("IUniswapV2Router02.json")
 
 def weth(rpc_address, routerAddress):
     '''

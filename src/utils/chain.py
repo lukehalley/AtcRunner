@@ -1,5 +1,7 @@
-import json, os
+import json, os, sys, logging
 from src.utils.general import get_project_root, percentage
+
+logger = logging.getLogger("DFK-DEX")
 
 # Get the wei amount of a value from int value
 def getTokenDecimalValue(amount, decimalPlaces=18):
@@ -11,7 +13,7 @@ def getTokenNormalValue(amount, decimalPlaces=18):
 
 # Get the ABI file for a uniswap contract
 def getABI(file):
-    jsonPath = os.path.join(get_project_root(), "data", "abi", file)
+    jsonPath = os.path.join(get_project_root().parents[0], "data", "abi", file)
 
     jsonFile = open(jsonPath)
 
@@ -36,3 +38,9 @@ def checkIfStablesAreOnOrigin(recipe):
 # Generate a block explorer link fro a url and tx
 def generateBlockExplorerLink(url, txid):
     return url + "/" + str(txid)
+
+def checkWalletsMatch(recipe):
+    if recipe["origin"]["wallet"]["address"] != recipe["destination"]["wallet"]["address"]:
+        errMsg = f'originWalletAddress [{recipe["origin"]["wallet"]["address"]}] did not match destinationWalletAddress [{recipe["destination"]["wallet"]["address"]}] this should never happen!'
+        logger.error(errMsg)
+        sys.exit(errMsg)

@@ -1,12 +1,15 @@
-import logging
-import sys, os
+import logging, os
 from web3 import Web3
 import dex.erc20 as erc20
 from retry import retry
-import os
 
-from src.utils.chain import checkIfStablesAreOnOrigin
+from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
 from src.utils.general import isBetween,percentage
+
+from src.utils.general import printSeperator
+from src.api.synapsebridge import getTokenDecimalValue, getTokenNormalValue
+from src.wallet.actions.swap import swapToken
+from src.wallet.queries.swap import getAmountIn, getAmountOut
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -23,11 +26,11 @@ def getWalletAddressFromPrivateKey(rpcURL):
 
     return w3.eth.account.privateKeyToAccount(privateKey).address
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getPrivateKey():
     return privateKey
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getGasPrice(rpcURL):
 
     # Connect to our RPC.
@@ -37,7 +40,7 @@ def getGasPrice(rpcURL):
 
     return gasPrice
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getTokenBalance(rpcURL, walletAddress, address, printBalance=True):
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -101,13 +104,7 @@ def getWalletsInformation(recipe):
 
     return recipe
 
-def checkWalletsMatch(recipe):
-    if recipe["origin"]["wallet"]["address"] != recipe["destination"]["wallet"]["address"]:
-        errMsg = f'originWalletAddress [{recipe["origin"]["wallet"]["address"]}] did not match destinationWalletAddress [{recipe["destination"]["wallet"]["address"]}] this should never happen!'
-        logger.error(errMsg)
-        sys.exit(errMsg)
-
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletGasBalance(rpcURL, walletAddress, gasSymbol, printBalance=False):
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -151,3 +148,47 @@ def getWalletBalances(arbitragePlan):
     )
 
     return originWalletTokenBalance, destinationWalletTokenBalance
+
+
+def getOnChainPriceOut(fromAddress, fromDecimals, toAddress, toDecimals, rpcUrl, factoryAddress, routerAddress):
+
+    path = [fromAddress, toAddress]
+    amountOutWei = int(getTokenDecimalValue(1.0, fromDecimals))
+
+    priceWei = getAmountOut(
+        amount_in=amountOutWei,
+        path=path,
+        rpc_address=rpcUrl,
+        factoryAddress=factoryAddress,
+        routerAddress=routerAddress
+    )
+
+    price = float(getTokenNormalValue(priceWei, toDecimals))
+
+    return price
+
+def getOnChainPriceIn(fromAddress, fromDecimals, toAddress, toDecimals, rpcUrl, factoryAddress, routerAddress):
+
+    path = [fromAddress, toAddress]
+    amountOutWei = int(getTokenDecimalValue(1, toDecimals))
+    # amountOutWei = int(getTokenDecimalValue(1, fromDecimals))
+
+    priceWei = getAmountIn(
+        amount_out=amountOutWei,
+        path=path,
+        rpc_address=rpcUrl,
+        factoryAddress=factoryAddress,
+        routerAddress=routerAddress
+    )
+
+    # priceWei = getAmountOut(
+    #     amount_in=amountOutWei,
+    #     path=path,
+    #     rpc_address=rpcUrl,
+    #     factoryAddress=factoryAddress,
+    #     routerAddress=routerAddress
+    # )
+
+    price = float(getTokenNormalValue(priceWei, fromDecimals))
+
+    return price

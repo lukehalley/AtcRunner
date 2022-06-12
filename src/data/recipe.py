@@ -16,8 +16,8 @@ def getRecipeDetails():
 
     for recipesTitle, recipeDetails in recipes.items():
 
-        recipeToken = recipeDetails["data"]["token"]
-        recipeStablecoin = recipeDetails["data"]["stablecoin"]
+        recipeToken = recipeDetails["arbitrage"]["token"]
+        recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
 
         for i in range(1, 3):
 
@@ -71,7 +71,7 @@ def getRecipeDetails():
                 getTokenPriceByDexId(
                     chainName=recipeDetails[f"chain{num}"]["chain"]["name"],
                     tokenAddress=recipeDetails[f"chain{num}"]["stablecoin"]["address"],
-                    dexId=recipeDetails["data"]["dexId"]
+                    dexId=recipeDetails["arbitrage"]["dexId"]
                 )
 
             if recipeDetails[f"chain{num}"]["stablecoin"]["price"] is None:

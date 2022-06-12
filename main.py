@@ -11,9 +11,8 @@ from src.api.firebase import createDatabaseConnection
 
 # Data modules
 from src.data.recipe import getRecipeDetails
-from src.data.arbitrage import determineArbitrageStrategy
+from src.data.arbitrage import determineArbitrageStrategy, calculatePotentialProfit
 from src.data.fees import addFee
-from src.data.arbitrage import calculatePotentialProfit
 
 # Wallet modules for query and actions
 from src.wallet.queries.network import getWalletsInformation
@@ -57,15 +56,15 @@ while True:
 
         logger.debug(f"[ARB #{roundTripCount}] Checking If Theres An Arbitrage Between The Pair")
 
-        recipe["logger.info"]["currentRoundTripCount"] = roundTripCount
+        recipe["info"]["currentRoundTripCount"] = roundTripCount
 
         printRoundtrip(roundTripCount)
 
         printSeperator()
         logger.info(f"[ARB #{roundTripCount}] Arbitrage Opportunity Identified")
         printSeperator()
-        logger.info(recipe["logger.info"]["reportString"])
-        if recipe["data"]["directionLockEnabled"]:
+        logger.info(recipe["info"]["reportString"])
+        if recipe["arbitrage"]["directionLockEnabled"]:
             logger.info(f"Direction lock enabled")
         printSeperator(True)
 
@@ -73,7 +72,7 @@ while True:
         logger.info(f"[ARB #{roundTripCount}] Getting Wallet Details & Balance")
         printSeperator()
 
-        recipe = getWalletsInformation.information(recipe)
+        recipe = getWalletsInformation(recipe)
 
         recipe["status"]["capital"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
 
