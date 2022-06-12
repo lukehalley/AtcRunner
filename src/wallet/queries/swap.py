@@ -113,13 +113,13 @@ def calculateSwapOutputs(recipe):
             logger.info(f'Estimate: {amountOfTokens} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
             amountToSwapFrom = amountOfTokens
 
-        hasCustomRoutes = "routes" in recipe[position]["chain"] and toSwapFrom in recipe[position]["chain"]["routes"]
+        hasCustomRoutes = "routes" in recipe[position] and toSwapFrom in recipe[position]["routes"]
 
         routes = []
         if hasCustomRoutes:
-            for route in recipe[position]["chain"]["routes"][toSwapFrom]:
+            for route in recipe[position]["routes"][toSwapFrom]:
                 routes.append(route["address"])
-            toDecimals = recipe[position]["chain"]["routes"][toSwapFrom][-1]["decimals"]
+            toDecimals = recipe[position]["routes"][toSwapFrom][-1]["decimals"]
         else:
             routes = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
             toDecimals = recipe[position][toSwapTo]["decimals"]
