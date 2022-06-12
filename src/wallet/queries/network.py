@@ -6,11 +6,6 @@ from retry import retry
 from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
 from src.utils.general import isBetween,percentage
 
-from src.utils.general import printSeperator
-from src.api.synapsebridge import getTokenDecimalValue, getTokenNormalValue
-from src.wallet.actions.swap import swapToken
-from src.wallet.queries.swap import getAmountIn, getAmountOut
-
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
@@ -136,59 +131,13 @@ def getWalletBalances(arbitragePlan):
         arbitragePlan["arbitrageOrigin"]["walletAddress"],
         arbitragePlan["arbitrageOrigin"]["network"]['token'],
         arbitragePlan["arbitrageOrigin"]["network"]["networkDetails"]['chainName'],
-        printBalance=False
     )
 
     destinationWalletTokenBalance = getTokenBalance(
         arbitragePlan["arbitrageDestination"]["network"]["networkDetails"]["chainRPC"],
         arbitragePlan["arbitrageDestination"]["walletAddress"],
         arbitragePlan["arbitrageDestination"]["network"]['token'],
-        arbitragePlan["arbitrageDestination"]["network"]["networkDetails"]['chainName'],
-        printBalance=False
+        arbitragePlan["arbitrageDestination"]["network"]["networkDetails"]['chainName']
     )
 
     return originWalletTokenBalance, destinationWalletTokenBalance
-
-
-def getOnChainPriceOut(fromAddress, fromDecimals, toAddress, toDecimals, rpcUrl, factoryAddress, routerAddress):
-
-    path = [fromAddress, toAddress]
-    amountOutWei = int(getTokenDecimalValue(1.0, fromDecimals))
-
-    priceWei = getAmountOut(
-        amount_in=amountOutWei,
-        path=path,
-        rpc_address=rpcUrl,
-        factoryAddress=factoryAddress,
-        routerAddress=routerAddress
-    )
-
-    price = float(getTokenNormalValue(priceWei, toDecimals))
-
-    return price
-
-def getOnChainPriceIn(fromAddress, fromDecimals, toAddress, toDecimals, rpcUrl, factoryAddress, routerAddress):
-
-    path = [fromAddress, toAddress]
-    amountOutWei = int(getTokenDecimalValue(1, toDecimals))
-    # amountOutWei = int(getTokenDecimalValue(1, fromDecimals))
-
-    priceWei = getAmountIn(
-        amount_out=amountOutWei,
-        path=path,
-        rpc_address=rpcUrl,
-        factoryAddress=factoryAddress,
-        routerAddress=routerAddress
-    )
-
-    # priceWei = getAmountOut(
-    #     amount_in=amountOutWei,
-    #     path=path,
-    #     rpc_address=rpcUrl,
-    #     factoryAddress=factoryAddress,
-    #     routerAddress=routerAddress
-    # )
-
-    price = float(getTokenNormalValue(priceWei, fromDecimals))
-
-    return price

@@ -28,7 +28,7 @@ roundTripCount = 1
 
 # Test Settings
 useTestCapital = True
-startingCapitalTestAmount = 150
+startingCapitalTestAmount = 100
 
 # Firebase Setup
 printSeperator()
