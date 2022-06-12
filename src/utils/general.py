@@ -3,10 +3,9 @@ from datetime import datetime
 from math import log10, floor
 from time import strftime, gmtime
 from distutils import util
+from pathlib import Path
 
 logger = logging.getLogger("DFK-DEX")
-
-from pathlib import Path
 
 # Get the root of the python project
 def get_project_root() -> Path:

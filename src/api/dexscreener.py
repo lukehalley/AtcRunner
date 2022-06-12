@@ -13,14 +13,14 @@ dexscreenerAPIBaseURL = dexscreenerAPIEndpoint + "/" + dexscreenerAPIVersion + "
 
 # Get token pairs from Dexscreener
 def getPairs(chain, tokenAddress):
-    initEndpoint = buildApiURL(os.getenv("DEXSCREENER_GET_PAIRS"))
+    initEndpoint = buildApiURL(baseUrl=dexscreenerAPIBaseURL, endpoint=os.getenv("DEXSCREENER_GET_PAIRS"))
     params = {":chainId": chain, ":pairAddress": tokenAddress}
     endpoint = replace_all(initEndpoint, params)
     return (requests.get(endpoint, params=params)).json()
 
 # Get token(s) from Dexscreener
 def getTokens(tokenAddress):
-    initEndpoint = buildApiURL(os.getenv("DEXSCREENER_GET_TOKENS"))
+    initEndpoint = buildApiURL(baseUrl=dexscreenerAPIBaseURL, endpoint=os.getenv("DEXSCREENER_GET_TOKENS"))
     params = {":tokenAddress": tokenAddress}
     endpoint = replace_all(initEndpoint, params)
 
@@ -28,7 +28,7 @@ def getTokens(tokenAddress):
 
 # Do a query against the Dexscreener API
 def doSearch(query):
-    initEndpoint = buildApiURL(os.getenv("DEXSCREENER_SEARCH_TOKENS"))
+    initEndpoint = buildApiURL(baseUrl=dexscreenerAPIBaseURL, endpoint=os.getenv("DEXSCREENER_SEARCH_TOKENS"))
     params = {":query": query}
     endpoint = replace_all(initEndpoint, params)
     return (requests.get(endpoint, params=params)).json()

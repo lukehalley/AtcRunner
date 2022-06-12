@@ -1,11 +1,8 @@
-import json
-import logging
-import sys
-import pathlib
-import srco.Database as Database
+import json, logging, pathlib, os
+
 from web3 import Web3
 
-import os
+from src.api.firebase import fetchFromDatabase
 
 ROOT_DIR = (pathlib.Path(os.path.abspath(os.curdir))).parent
 
@@ -23,38 +20,8 @@ def wei2eth(w3, wei):
 def eth2wei(w3, eth):
     return w3.toWei(eth, 'ether')
 
-
-# def symbol2address(symbol, chain, info=True):
-#
-#     tokens = Database.fetchFromDatabase("tokens", info)
-#
-#     symbol = symbol.upper().strip()
-#     address = tokens[chain][symbol]["address"]
-#
-#     if address:
-#         return address
-#     else:
-#         sys.exit(f"No item reference for {symbol}")
-#
-#
-# def address2symbol(address, chain):
-#
-#     tokens = Database.fetchFromDatabase("tokens")
-#
-#     address = address.strip()
-#     result = None
-#
-#     for key, value in tokens.tokens():
-#         if address == value["address"]:
-#             result = key
-#             return result
-#
-#     if not result:
-#         sys.exit(f"No address reference for {address}")
-
-
 def all_tokens():
-    tokens = Database.fetchFromDatabase("tokens")
+    tokens = fetchFromDatabase("tokens")
     return tokens.copy()
 
 

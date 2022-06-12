@@ -2,12 +2,12 @@ import logging, sys
 from web3 import Web3
 
 from src.utils.chain import getABI, generateBlockExplorerLink, getTokenNormalValue
-from src.wallet.queries.network import getPrivateKey
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
 def swapToken(tokenToSwapFrom, tokenToSwapTo, amountInWei, amountOutMinWei, tokenPath, addressTo, txDeadline, txTimeoutSeconds, rpcURL, routerAddress, explorerUrl, swappingToGas=False, gas=250000):
+    from src.wallet.queries.network import getPrivateKey
 
     # Setup our web3 object
     w3 = Web3(Web3.HTTPProvider(rpcURL))

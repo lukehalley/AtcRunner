@@ -1,6 +1,9 @@
 import os, sys, logging
 from itertools import repeat
-from srco import Dex, Utils, Wallet
+
+from src.utils.general import strToBool
+from src.api.dexscreener import getTokenPriceByDexId
+from src.wallet.queries.network import getOnChainPriceIn, getOnChainPriceOut
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -10,20 +13,38 @@ def determineArbitrageStrategy(recipe):
 
     logger.debug(f"Calling Dexscreener API to find current price of pair")
 
-    oldChainOnePrice = Dex.getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["address"], recipe["data"]["dexId"])
-    oldChainTwoPrice = Dex.getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["address"], recipe["data"]["dexId"])
+    oldChainOnePrice = getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["address"], recipe["arbitrage"]["dexId"])
+    oldChainTwoPrice = getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["address"], recipe["arbitrage"]["dexId"])
 
-    chainOnePrice, chainTwoPrice = Wallet.getOnChainPrice(recipe)
+    chainOneTokenPrice = getOnChainPriceOut(
+        fromAddress=recipe["chainOne"]["token"]["address"],
+        fromDecimals=recipe["chainOne"]["token"]["decimals"],
+        toAddress=recipe["chainOne"]["stablecoin"]["address"],
+        toDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
+        rpcUrl=recipe["chainOne"]["chain"]["rpc"],
+        factoryAddress=recipe["chainOne"]["chain"]["uniswapFactory"],
+        routerAddress=recipe["chainOne"]["chain"]["uniswapRouter"]
+    )
 
-    priceDifference = calculateDifference(chainOnePrice, chainTwoPrice)
+    chainTwoTokenPrice = getOnChainPriceOut(
+        fromAddress=recipe["chainTwo"]["stablecoin"]["address"],
+        fromDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
+        toAddress=recipe["chainTwo"]["token"]["address"],
+        toDecimals=recipe["chainTwo"]["token"]["decimals"],
+        rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
+        factoryAddress=recipe["chainTwo"]["chain"]["uniswapFactory"],
+        routerAddress=recipe["chainTwo"]["chain"]["uniswapRouter"]
+    )
 
-    origin, destination = calculateArbitrageStrategy(chainOnePrice, recipe["chainOne"]["chain"]["name"], chainTwoPrice, recipe["chainTwo"]["chain"]["name"])
+    priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
+
+    origin, destination = calculateArbitrageStrategy(chainOneTokenPrice, recipe["chainOne"]["chain"]["name"], chainTwoTokenPrice, recipe["chainTwo"]["chain"]["name"])
     logger.debug(f"Calculating data origin and destination")
 
-    recipe["data"]["directionLockEnabled"] = Utils.strToBool(os.getenv("DIRECTION_LOCK_ENABLED"))
+    recipe["arbitrage"]["directionLockEnabled"] = strToBool(os.getenv("DIRECTION_LOCK_ENABLED"))
 
-    if recipe["data"]["directionLockEnabled"] and "directionLock" in recipe["data"]:
-        directionlock = recipe["data"]["directionLock"].split(",")
+    if recipe["arbitrage"]["directionLockEnabled"] and "directionLock" in recipe["arbitrage"]:
+        directionlock = recipe["arbitrage"]["directionLock"].split(",")
 
         originLock = directionlock[0]
         destinationLock = directionlock[1]
@@ -31,18 +52,22 @@ def determineArbitrageStrategy(recipe):
         if recipe["chainOne"]["chain"]["name"] == originLock and recipe["chainTwo"]["chain"]["name"] == destinationLock:
 
             recipe["origin"] = recipe["chainOne"]
-            recipe["origin"]["token"]["price"] = chainOnePrice
+            recipe["origin"]["token"]["price"] = chainOneTokenPrice
+            recipe["origin"]["gas"]["price"] = chainOneGasPrice
 
             recipe["destination"] = recipe["chainTwo"]
-            recipe["destination"]["token"]["price"] = chainTwoPrice
+            recipe["destination"]["token"]["price"] = chainTwoTokenPrice
+            recipe["destination"]["gas"]["price"] = chainTwoGasPrice
 
         elif recipe["chainTwo"]["chain"]["name"] == originLock and recipe["chainOne"]["chain"]["name"] == destinationLock:
 
             recipe["origin"] = recipe["chainTwo"]
-            recipe["origin"]["token"]["price"] = chainTwoPrice
+            recipe["origin"]["token"]["price"] = chainTwoTokenPrice
+            recipe["origin"]["gas"]["price"] = chainTwoGasPrice
 
             recipe["destination"] = recipe["chainOne"]
-            recipe["destination"]["token"]["price"] = chainOnePrice
+            recipe["destination"]["token"]["price"] = chainOneTokenPrice
+            recipe["destination"]["gas"]["price"] = chainOneGasPrice
 
         else:
             errMsg = f'Invalid direction lock: {directionlock}'
@@ -53,16 +78,16 @@ def determineArbitrageStrategy(recipe):
         if origin == recipe["chainOne"]["chain"]["name"]:
 
             recipe["origin"] = recipe["chainOne"]
-            recipe["origin"]["token"]["price"] = chainOnePrice
+            recipe["origin"]["token"]["price"] = chainOneTokenPrice
 
             recipe["destination"] = recipe["chainTwo"]
-            recipe["destination"]["token"]["price"] = chainTwoPrice
+            recipe["destination"]["token"]["price"] = chainTwoTokenPrice
         else:
             recipe["origin"] = recipe["chainTwo"]
-            recipe["origin"]["token"]["price"] = chainTwoPrice
+            recipe["origin"]["token"]["price"] = chainTwoTokenPrice
 
             recipe["destination"] = recipe["chainOne"]
-            recipe["destination"]["token"]["price"] = chainOnePrice
+            recipe["destination"]["token"]["price"] = chainOneTokenPrice
 
     # del recipe['chainOne'], recipe['chainTwo']
 
