@@ -7,7 +7,8 @@
         },
         "token": {
           "isGas": "False"
-        }
+        },
+        "routes": {}
       },
       "chainTwo": {
         "chain": {
@@ -15,6 +16,9 @@
         },
         "token": {
           "isGas": "True"
+        },
+        "routes": {
+        "stablecoin": "DFK_USDC,CRYSTAL,JEWEL"
         }
       },
       "arbitrage" : {
@@ -33,8 +37,7 @@
       "uniswapFactory": "0x9014B937069918bd319f80e8B3BB4A2cf6FAA5F7",
       "blockExplorer": "https://explorer.harmony.one/tx",
       "symbol": "ONE",
-      "gas": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a",
-      "routes": {}
+      "gas": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a"
     },
     "avalanchedfk": {
       "rpc": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc",
@@ -43,10 +46,7 @@
       "uniswapFactory": "0x794C07912474351b3134E6D6B3B7b3b4A07cbAAa",
       "blockExplorer": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx",
       "symbol": "JEWEL",
-      "gas": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
-      "routes": {
-        "stablecoin": "DFK_USDC,CRYSTAL,JEWEL"
-      }
+      "gas": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260"
     }
   }
 }

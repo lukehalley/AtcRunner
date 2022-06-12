@@ -127,7 +127,7 @@ while True:
 
         tripIsProfitible = calculatePotentialProfit(
             recipe=recipe,
-            trips="1,2,5,10,25,50,1000,10000"
+            trips="1,2,5,10,25,50,100,1000"
         )
 
         printSeperator(True)

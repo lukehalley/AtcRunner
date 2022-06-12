@@ -66,16 +66,16 @@ def getRecipeDetails():
                         recipeDetails[f"chain{num}"][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
 
             # Add our custom routes - done in a hacky way, needs to be improved to be scalable.
-            hasCustomRoutes = "routes" in chain
+            hasCustomRoutes = "routes" in recipeDetails[f"chain{num}"]
             if hasCustomRoutes:
 
                 for key, value in toFill.items():
 
-                    sectionHasRoutes = key in chain["routes"]
+                    sectionHasRoutes = key in recipeDetails[f"chain{num}"]["routes"]
 
                     if sectionHasRoutes:
 
-                        routes = chain["routes"][key].split(",")
+                        routes = recipeDetails[f"chain{num}"]["routes"][key].split(",")
 
                         routeMap = []
 
@@ -91,7 +91,7 @@ def getRecipeDetails():
 
                             else:
 
-                                tokenSearch = doSearch("CRYSTAL")
+                                tokenSearch = doSearch(route)
 
                                 for token in tokenSearch:
 
@@ -113,7 +113,7 @@ def getRecipeDetails():
 
                                         break
 
-                        recipeDetails[f"chain{num}"]["chain"]["routes"][key] = routeMap
+                        recipeDetails[f"chain{num}"]["routes"][key] = routeMap
 
             recipeDetails[f"chain{num}"]["gas"] = {}
             recipeDetails[f"chain{num}"]["gas"]["address"] = recipeDetails[f"chain{num}"]["chain"]["gas"]
