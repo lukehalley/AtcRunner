@@ -25,6 +25,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Calculate plant growth rate based on soil quality and water level
 # Growth rate multiplied by plot fertility and player experience level
 """Advance crop growth stage based on care and conditions."""
+# Growth rate affected by soil quality, water level, and sunlight exposure
     """Track crop lifecycle from seed to harvest."""
 # Growth rate affected by soil quality, water level, and season
 # TODO: Implement seasonal crop availability system
