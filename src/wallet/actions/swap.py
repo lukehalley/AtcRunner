@@ -1,27 +1,25 @@
 import logging, sys
 from web3 import Web3
 
-from src.utils.chain import getABI, generateBlockExplorerLink, getTokenNormalValue
+from src.utils.chain import getABI, generateBlockExplorerLink, getTokenNormalValue, getTransactionDeadline, getTokenDecimalValue
+from src.wallet.queries.network import getTokenBalance, getWalletGasBalance
+from src.wallet.actions.network import signAndSendTransaction
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def swapToken(tokenToSwapFrom, tokenToSwapTo, amountInWei, amountOutMinWei, tokenPath, addressTo, txDeadline, txTimeoutSeconds, rpcURL, routerAddress, explorerUrl, swappingToGas=False, gas=250000):
+def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, explorerUrl, txDeadline=300, txTimeoutSeconds=150, swappingToGas=False, gas=250000):
     from src.wallet.queries.network import getPrivateKey
 
     # Setup our web3 object
     w3 = Web3(Web3.HTTPProvider(rpcURL))
     privateKey = getPrivateKey()
-    account = w3.eth.account.privateKeyToAccount(privateKey).address
-    w3.eth.default_account = account.address
+    walletAddress = w3.eth.account.privateKeyToAccount(privateKey).address
+    w3.eth.default_account = walletAddress
 
     # Get general settings for our transaction
-    nonce = w3.eth.getTransactionCount(account)
+    nonce = w3.eth.getTransactionCount(walletAddress)
     gasPriceWei = w3.fromWei(w3.eth.gas_price, 'gwei')
-
-    # Get both origin and destination token address
-    originTokenAddress = w3.toChecksumAddress(tokenToSwapFrom)
-    destinationTokenAddress = w3.toChecksumAddress(tokenToSwapTo)
 
     # Get properties for our swap contract
     ABI = getABI("IUniswapV2Router02.json")
@@ -33,41 +31,42 @@ def swapToken(tokenToSwapFrom, tokenToSwapTo, amountInWei, amountOutMinWei, toke
         'gas': gas
     }
 
+    amountInWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
+    amountOutWei = int(getTokenDecimalValue(amountOutNormal, amountOutDecimals))
+
+    transactionDeadline = getTransactionDeadline(timeInSeconds=txDeadline)
+
+    normalisedRoutes = []
+
+    for token in tokenPath:
+        normalisedRoutes.append(Web3.toChecksumAddress(token))
+
     if swappingToGas:
-        tx = contract.functions.swapExactTokensForETH(amountInWei, amountOutMinWei, tokenPath, addressTo, txDeadline).buildTransaction(txParams)
+        tx = contract.functions.swapExactTokensForETH(amountInWei, amountOutWei, normalisedRoutes, walletAddress, transactionDeadline).buildTransaction(txParams)
     else:
-        tx = contract.functions.swapExactTokensForTokens(amountInWei, amountOutMinWei, tokenPath, addressTo, txDeadline).buildTransaction(txParams)
+        tx = contract.functions.swapExactTokensForTokens(amountInWei, amountOutWei, normalisedRoutes, walletAddress, transactionDeadline).buildTransaction(txParams)
 
-    logger.debug("Signing transaction...")
-    signed_tx = w3.eth.account.sign_transaction(tx, private_key=privateKey)
-    logger.debug("Transaction signed!")
-
-    logger.info("Sending transaction...")
-    w3.eth.send_raw_transaction(signed_tx.rawTransaction)
-    logger.info("Transaction successfully sent!")
-
-    logger.info("Waiting for transaction addressTo be mined...")
-    tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=txTimeoutSeconds,
-                                                     poll_latency=2)
-
-    explorerLink = generateBlockExplorerLink(explorerUrl, signed_tx.hash.hex())
-    logger.info(f"Transaction was mined: {explorerLink}")
-
-    txWasSuccessful = tx_receipt["status"] == 1
-
-    if txWasSuccessful:
-        logger.info(f"✅ Transaction was successful: {explorerLink}")
-
-        result = {
-            "successfull": txWasSuccessful,
-            "fee": getTokenNormalValue(tx_receipt["gasUsed"] * w3.toWei(gasPriceWei, 'gwei'), 18),
-            "blockURL": explorerLink,
-            "hash": signed_tx.hash.hex()
-        }
-
+    if swappingToGas:
+        balanceBeforeSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress)
     else:
-        errMsg = f'⛔️ Transaction was unsuccessful: {explorerLink}'
-        logger.error(errMsg)
-        sys.exit(errMsg)
+        balanceBeforeSwap = getTokenBalance(rpcURL=rpcURL, walletAddress=walletAddress, tokenAddress=tokenPath[-1], tokenDecimals=amountOutDecimals)
+
+    transactionResult = signAndSendTransaction(tx=tx, rpcURL=rpcURL, txTimeoutSeconds=txTimeoutSeconds, explorerUrl=explorerUrl)
+
+    if swappingToGas:
+        balanceAfterSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress)
+    else:
+        balanceAfterSwap = getTokenBalance(rpcURL=rpcURL, walletAddress=walletAddress, tokenAddress=tokenPath[-1],
+                                           tokenDecimals=amountOutDecimals)
+
+    actualSwapAmount = balanceAfterSwap - balanceBeforeSwap
+
+    result = {
+        "successfull": transactionResult["wasSuccessful"],
+        "swapOutput": actualSwapAmount,
+        "fee": getTokenNormalValue(transactionResult["gasUsed"] * w3.toWei(gasPriceWei, 'gwei'), 18),
+        "blockURL": transactionResult['explorerLink'],
+        "hash": transactionResult["hash"]
+    }
 
     return result

@@ -31,9 +31,9 @@ def getAmountIn(amount_out, path, rpc_address, factoryAddress, routerAddress):
 
     return priceWei
 
-def getSwapQuoteIn(amountInNormal, fromAddress, fromDecimals, toAddress, toDecimals, rpcUrl, factoryAddress, routerAddress):
+def getSwapQuoteIn(amountInNormal, amountInDecimals, fromAddress, toAddress, amountOutDecimals, rpcUrl, factoryAddress, routerAddress):
 
-    amountWei = int(getTokenDecimalValue(amountInNormal, fromDecimals))
+    amountWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
 
     fromAddressCS = Web3.toChecksumAddress(fromAddress)
     toAddressCS = Web3.toChecksumAddress(toAddress)
@@ -50,18 +50,18 @@ def getSwapQuoteIn(amountInNormal, fromAddress, fromDecimals, toAddress, toDecim
         routerAddress=routerAddress
     )
 
-    price = float(getTokenNormalValue(priceWei, toDecimals))
+    price = float(getTokenNormalValue(priceWei, amountOutDecimals))
 
     return price
 
-def getSwapQuoteOut(amountInNormal, routes, fromDecimals, toDecimals, rpcUrl, factoryAddress, routerAddress):
+def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress):
 
     normalisedRoutes = []
 
     for route in routes:
         normalisedRoutes.append(Web3.toChecksumAddress(route))
 
-    amountWei = int(getTokenDecimalValue(amountInNormal, fromDecimals))
+    amountWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
 
     out = Router.get_amounts_out(
         amount_in=amountWei,
@@ -70,7 +70,7 @@ def getSwapQuoteOut(amountInNormal, routes, fromDecimals, toDecimals, rpcUrl, fa
         routerAddress=routerAddress
     )
 
-    return float(getTokenNormalValue(out[-1], toDecimals))
+    return float(getTokenNormalValue(out[-1], amountOutDecimals))
 
 def calculateSwapOutputs(recipe):
 
@@ -128,15 +128,15 @@ def calculateSwapOutputs(recipe):
         if hasCustomRoutes:
             for route in recipe[position]["routes"][toSwapFrom]:
                 routes.append(route["address"])
-            toDecimals = recipe[position]["routes"][toSwapFrom][-1]["decimals"]
+            amountOutDecimals = recipe[position]["routes"][toSwapFrom][-1]["decimals"]
         else:
             routes = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
-            toDecimals = recipe[position][toSwapTo]["decimals"]
+            amountOutDecimals = recipe[position][toSwapTo]["decimals"]
 
         quote = getSwapQuoteOut(
             amountInNormal=amountToSwap,
-            fromDecimals=recipe[position][toSwapFrom]["decimals"],
-            toDecimals=toDecimals,
+            amountInDecimals=recipe[position][toSwapFrom]["decimals"],
+            amountOutDecimals=amountOutDecimals,
             rpcUrl=recipe[position]["chain"]["rpc"],
             routerAddress=recipe[position]["chain"]["uniswapRouter"],
             factoryAddress=recipe[position]["chain"]["uniswapFactory"],

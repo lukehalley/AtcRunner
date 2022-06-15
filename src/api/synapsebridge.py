@@ -21,7 +21,6 @@ transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 def checkBridgeStatus(toChain, fromChainTxnHash):
     params = {'toChain': toChain, 'fromChainTxnHash': fromChainTxnHash}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_CHECK_BRIDGE_STATUS_ENDPOINT"))
-
     return (requests.get(endpoint, params=params)).json()
 
 # Check if a swap is supported

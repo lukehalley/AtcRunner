@@ -1,8 +1,9 @@
-import logging, time
+import logging, time, sys
 
 from src.utils.general import printSeperator, getMinSecString
 from src.api.synapsebridge import estimateBridgeOutput, checkBridgeStatus
 from src.data.fees import addFee
+from src.wallet.queries.network import getTokenBalance
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -11,8 +12,7 @@ def waitForBridgeToComplete(transactionId, amountSent, toToken, toChain, timeout
 
     timeoutMins = int(timeout / 60)
 
-    logger.info(f"Waiting for bridge to complete with a timeout of {timeoutMins} minutes")
-    logger.info(f'Expecting {amountSent} {toToken}')
+    logger.info(f"Waiting for bridge to complete with a timeout of {timeoutMins} minutes...")
 
     fundsBridged = False
 
@@ -42,12 +42,12 @@ def waitForBridgeToComplete(transactionId, amountSent, toToken, toChain, timeout
         time.sleep(1)
 
     if fundsBridged:
-
         timerString = getMinSecString(time.time() - startingTime)
-        logger.info(f'Bridging {toToken} successful!')
-        logger.info(f'Took {timerString}')
+        logger.info(f'✅ Bridging {toToken} successful, took {timerString}!')
     elif bridgeTimedOut:
-        logger.warning(f'Waiting for funds to bridge timed out - Bridging was unsuccessful!')
+        errMsg = f'⛔️ Waiting for funds to bridge timed out - Bridging was unsuccessful!'
+        logger.error(errMsg)
+        sys.exit(errMsg)
 
     return fundsBridged
 

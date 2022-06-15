@@ -1,9 +1,8 @@
 import logging, os
 from web3 import Web3
 import dex.erc20 as erc20
-from retry import retry
 
-from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
+from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch, getTokenNormalValue
 from src.utils.general import isBetween,percentage
 
 # Set up our logging
@@ -36,15 +35,16 @@ def getGasPrice(rpcURL):
     return gasPrice
 
 # @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getTokenBalance(rpcURL, walletAddress, address, printBalance=True):
+def getTokenBalance(rpcURL, walletAddress, tokenAddress, tokenDecimals):
 
-    w3 = Web3(Web3.HTTPProvider(rpcURL))
+    balanceWei = erc20.balance_of\
+            (
+                rpc_address=rpcURL,
+                address=walletAddress,
+                token_address=tokenAddress
+        )
 
-    symbol = erc20.symbol(address, rpcURL)
-    balance = erc20.wei2eth(w3, erc20.balance_of(address=walletAddress, token_address=address, rpc_address=rpcURL))
-
-    if printBalance:
-        logger.info(f"Wallet {walletAddress} has {balance} {symbol}")
+    balance = getTokenNormalValue(amount=balanceWei, decimalPlaces=tokenDecimals)
 
     return float(balance)
 
@@ -64,26 +64,24 @@ def getWalletsInformation(recipe):
 
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
             recipe[direction]["chain"]["rpc"],
-            recipe[direction]["wallet"]["address"],
-            recipe[direction]["gas"]["symbol"],
-            False
+            recipe[direction]["wallet"]["address"]
         )
 
         recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
-            recipe[direction]["chain"]["rpc"],
-            recipe[direction]["wallet"]["address"],
-            recipe[direction]["stablecoin"]["address"],
-            False
+            rpcURL=recipe[direction]["chain"]["rpc"],
+            walletAddress=recipe[direction]["wallet"]["address"],
+            tokenAddress=recipe[direction]["stablecoin"]["address"],
+            tokenDecimals=recipe[direction]["stablecoin"]["decimals"]
         )
 
         if recipe[direction]["token"]["isGas"]:
             recipe[direction]["wallet"]["balances"]["token"] = recipe[direction]["wallet"]["balances"]["gas"]
         else:
             recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
-                recipe[direction]["chain"]["rpc"],
-                recipe[direction]["wallet"]["address"],
-                recipe[direction]["token"]["address"],
-                False
+                rpcURL=recipe[direction]["chain"]["rpc"],
+                walletAddress=recipe[direction]["wallet"]["address"],
+                tokenAddress=recipe[direction]["token"]["address"],
+                tokenDecimals=recipe[direction]["token"]["decimals"]
             )
 
         logger.info(
@@ -100,14 +98,14 @@ def getWalletsInformation(recipe):
     return recipe
 
 # @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getWalletGasBalance(rpcURL, walletAddress, gasSymbol, printBalance=False):
+def getWalletGasBalance(rpcURL, walletAddress):
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
     balance = erc20.wei2eth(w3, erc20.balance_of(address=walletAddress, rpc_address=rpcURL, getGasTokenBalance=True))
 
-    if printBalance:
-        logger.info(f"Wallet {walletAddress} has {balance} {gasSymbol}")
+    # if printBalance:
+    #     logger.info(f"Wallet {walletAddress} has {balance} {gasSymbol}")
 
     return float(balance)
 
@@ -123,21 +121,3 @@ def compareBalance(expected, actual, feeAllowancePercentage=10):
         return True
     else:
         return False
-
-def getWalletBalances(arbitragePlan):
-
-    originWalletTokenBalance = getTokenBalance(
-        arbitragePlan["arbitrageOrigin"]["network"]["networkDetails"]["chainRPC"],
-        arbitragePlan["arbitrageOrigin"]["walletAddress"],
-        arbitragePlan["arbitrageOrigin"]["network"]['token'],
-        arbitragePlan["arbitrageOrigin"]["network"]["networkDetails"]['chainName'],
-    )
-
-    destinationWalletTokenBalance = getTokenBalance(
-        arbitragePlan["arbitrageDestination"]["network"]["networkDetails"]["chainRPC"],
-        arbitragePlan["arbitrageDestination"]["walletAddress"],
-        arbitragePlan["arbitrageDestination"]["network"]['token'],
-        arbitragePlan["arbitrageDestination"]["network"]["networkDetails"]['chainName']
-    )
-
-    return originWalletTokenBalance, destinationWalletTokenBalance

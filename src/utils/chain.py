@@ -1,5 +1,6 @@
-import json, os, sys, logging
+import json, os, sys, logging, time
 from src.utils.general import get_project_root, percentage
+from web3 import Web3
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -43,7 +44,7 @@ def getOppositeDirection(direction):
 
 # Get a value with a percentage of slippage
 def getValueWithSlippage(amount, slippage=0.5):
-    return int(format(amount - percentage(slippage, amount), f'.0f'))
+    return amount - percentage(slippage, amount)
 
 # Check if stables are on origin network
 def checkIfStablesAreOnOrigin(recipe):
@@ -58,3 +59,9 @@ def checkWalletsMatch(recipe):
         errMsg = f'originWalletAddress [{recipe["origin"]["wallet"]["address"]}] did not match destinationWalletAddress [{recipe["destination"]["wallet"]["address"]}] this should never happen!'
         logger.error(errMsg)
         sys.exit(errMsg)
+
+def getTransactionDeadline(timeInSeconds=300):
+    return int(time.time() + timeInSeconds)
+
+def addressToChecksumAddress(address):
+    return Web3.toChecksumAddress(address)

@@ -2,8 +2,7 @@ import logging, os, sys
 from web3 import Web3
 
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
-from src.utils.chain import getTokenDecimalValue
-from src.wallet.actions.swap import swapToken
+from src.utils.chain import getTokenDecimalValue, generateBlockExplorerLink
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -23,7 +22,51 @@ def sendRawTransaction(rpcURL, transaction):
         logger.error(f"An error occured when sending raw transaction: {transactionError}")
         raise
 
+def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl):
+
+    # Setup our web3 object
+    w3 = Web3(Web3.HTTPProvider(rpcURL))
+    privateKey = getPrivateKey()
+    walletAddress = w3.eth.account.privateKeyToAccount(privateKey).address
+    w3.eth.default_account = walletAddress
+
+    logger.debug("Signing transaction...")
+    signed_tx = w3.eth.account.sign_transaction(tx, private_key=privateKey)
+    logger.debug("Transaction signed!")
+
+    logger.info("Sending transaction...")
+    w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    logger.info("Transaction successfully sent!")
+
+    logger.info(f"Waiting for transaction to be mined...")
+    txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=txTimeoutSeconds,
+                                                     poll_latency=2)
+
+    explorerLink = generateBlockExplorerLink(explorerUrl, signed_tx.hash.hex())
+    logger.info(f"Transaction was mined!")
+
+    wasSuccessful = txReceipt["status"] == 1
+
+    if wasSuccessful:
+        logger.info(f"✅ Transaction was successful!")
+        logger.info(f"{explorerLink}")
+        result = {
+            "wasSuccessful": txReceipt["status"] == 1,
+            "txReceipt": txReceipt,
+            "explorerLink": explorerLink,
+            "hash": signed_tx.hash.hex(),
+            "gasUsed": txReceipt["gasUsed"]
+        }
+
+        return result
+
+    else:
+        errMsg = f"⛔️ Transaction was unsuccessful: {explorerLink}"
+        logger.error(errMsg)
+        sys.exit(errMsg)
+
 def topUpWalletGas(recipe, direction, toSwapFrom):
+    from src.wallet.actions.swap import swapToken
 
     minimumGasBalance = float(os.environ.get("MIN_GAS_BALANCE"))
     maximumGasBalance = float(os.environ.get("MAX_GAS_BALANCE"))
@@ -56,19 +99,19 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
         try:
 
             amountInWei = int(getTokenDecimalValue(amountIn, recipe[direction][toSwapFrom]["decimals"]))
-            amountOutWei = int(getTokenDecimalValue(gasTokensNeeded, 18))
 
-            swapToken(
-                tokenToSwapFrom=fromAddress,
-                tokenToSwapTo=toAddress,
-                amountIn=amountInWei,
-                amountOutMin=amountOutWei,
-                swappingToGas=True,
+            result = swapToken(
+                amountInNormal=amountInWei,
+                amountInDecimals=recipe[direction][toSwapFrom]["decimals"],
+                amountOutNormal=gasTokensNeeded,
+                amountOutDecimals=18,
+                tokenPath=[fromAddress, toAddress],
                 rpcURL=recipe[direction]["chain"]["rpc"],
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"],
                 routerAddress=recipe[direction]["chain"]["uniswapRouter"],
-                factoryAddress=recipe[direction]["chain"]["uniswapFactory"],
-                justGetQuote=True
+                txDeadline=300,
+                txTimeoutSeconds=150,
+                swappingToGas=True
             )
 
         except Exception as err:
@@ -78,12 +121,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
 
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
             recipe[direction]["chain"]["rpc"],
-            recipe[direction]["wallet"]["address"],
-            recipe[direction]["gas"]["symbol"],
-            False
+            recipe[direction]["wallet"]["address"]
         )
-
-        # Data.addFee(recipe=recipe, amount=float(transactionSummary["fee"]), section="originGas")
 
         logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up successful - new balance is {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]}')
     else:

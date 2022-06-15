@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Utility modules
-from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, calculateQueryInterval
+from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, calculateQueryInterval
 from src.utils.logger import setupLogging
 
 # API modules
@@ -11,15 +11,11 @@ from src.api.firebase import createDatabaseConnection
 
 # Data modules
 from src.data.recipe import getRecipeDetails
-from src.data.arbitrage import determineArbitrageStrategy, calculatePotentialProfit, simulateArbitrage
-from src.data.fees import addFee
+from src.data.arbitrage import determineArbitrageStrategy, simulateArbitrage, executeArbitrage
 
-# Wallet modules for query and actions
+# Wallet modules
 from src.wallet.queries.network import getWalletsInformation
-from src.wallet.queries.swap import calculateSwapOutputs
-from src.wallet.queries.bridge import estimateBridgeOutput, calculateSynapseBridgeFees
 from src.wallet.actions.network import topUpWalletGas
-from src.wallet.actions.bridge import executeBridge
 
 # General Init
 isDocker = checkIsDocker()
@@ -28,7 +24,7 @@ roundTripCount = 1
 
 # Test Settings
 useTestCapital = True
-startingCapitalTestAmount = 170
+startingCapitalTestAmount = 10
 
 # Firebase Setup
 printSeperator()
@@ -93,80 +89,15 @@ while True:
 
         printSeperator(True)
 
-        if tripIsProfitible or True:
+        if tripIsProfitible:
 
-            printSeperator()
-            logger.info(f'[ARB #{roundTripCount}] Executing Arbitrage')
-            printSeperator()
+            printArbitrageProfitable(roundTripCount)
 
-            if not recipe["status"]["stablesAreOnOrigin"]:
-                fundsBridged = executeBridge(
-                    fromChain=recipe["destination"]["chain"]["id"],
-                    toChain=recipe["origin"]["chain"]["id"],
-                    fromToken=recipe["destination"]["stablecoin"]["symbol"],
-                    toToken=recipe["origin"]["stablecoin"]["symbol"],
-                    amountToBridge=recipe["status"]["capital"],
-                    decimalPlacesFrom=recipe["origin"]["stablecoin"]["decimals"],
-                    decimalPlacesTo=recipe["destination"]["stablecoin"]["decimals"],
-                    rpcURL=recipe["origin"]["chain"]["rpc"]
-                )
+            startingTime = time.perf_counter()
 
-            # Make stable swap
+            outcome = executeArbitrage(recipe, startingTime)
 
-            executeBridge(
-                fromChain=recipe["destination"]["chain"]["id"],
-                toChain=recipe["origin"]["chain"]["id"],
-                fromToken=recipe["destination"]["stablecoin"]["symbol"],
-                toToken=recipe["origin"]["stablecoin"]["symbol"],
-                amountToBridge=recipe["status"]["capital"],
-                decimalPlacesFrom=recipe["origin"]["stablecoin"]["decimals"],
-                decimalPlacesTo=recipe["destination"]["stablecoin"]["decimals"],
-                rpcURL=recipe["origin"]["chain"]["rpc"]
-            )
-
-            # executeBridge(
-            #     amountToBridge=1,
-            #     fromDecimals=18,
-            #     fromChain=53935,
-            #     toChain=1666600000,
-            #     fromToken='JEWEL',
-            #     toToken='JEWEL',
-            #     rpcURL='https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc'
-            # )
-
-            # recipe = executeBridge(
-            #     amountToBridge=2,
-            #     decimals=18,
-            #     fromChain=53935,
-            #     toChain=1666600000,
-            #     fromToken='DFK_USDC',
-            #     toToken='USDC',
-            #     rpcURL='https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc'
-            # )
-
-            # recipe = executeBridge(
-            #     amountToBridge=recipe["status"]["capital"],
-            #     fromChain=recipe["origin"]["chain"]["id"],
-            #     toChain=recipe["destination"]["chain"]["id"],
-            #     fromToken=recipe["origin"]["stablecoin"]["symbol"],
-            #     toToken=recipe["destination"]["stablecoin"]["symbol"],
-            #     rpcURL=recipe["origin"]["chain"]["rpc"]
-            # )
-
-            printSeperator(True)
-
-            printSeperator()
-            logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Waiting] Origin -> Destination: {recipe["destination"]["chain"]["name"].title()} -> {recipe["origin"]["chain"]["name"].title()}')
-            printSeperator()
-
-            roundTripCount = roundTripCount + 1
-
-            printSeperator(True)
-
-            # arbitrageDestinationStableSwapTX = swapToken(tokenToSwapFrom=destinationStablecoinName,
-            #                                                     tokenToSwapTo=destinationToken, amountToSwap=10,
-            #                                                     rpcURL=destinationRPCUrl,
-            #                                                     chain=arbitrageDestination["chain"])
+            endTimer = time.perf_counter()
 
         else:
             printSeperator()
