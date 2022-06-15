@@ -12,12 +12,26 @@ def getTokenNormalValue(amount, decimalPlaces=18):
     return str(format(float(amount) / (10 ** decimalPlaces), f'.{decimalPlaces}f'))
 
 # Get the ABI file for a uniswap contract
-def getABI(file):
-    jsonPath = os.path.join(get_project_root().parents[0], "data", "abi", file)
+def getABI(file, folder="abi"):
+
+    return getJSONFile(folder, file, section="abi", asStr=True)
+
+def getJSONFile(folder, file, section=None, asStr=False):
+    jsonPath = os.path.join(get_project_root().parents[0], "data", folder, file)
 
     jsonFile = open(jsonPath)
 
-    return json.dumps(((json.load(jsonFile))["abi"]))
+    if asStr:
+        if section:
+            return json.dumps(((json.load(jsonFile))[section]))
+        else:
+            return json.dumps((json.load(jsonFile)))
+    else:
+        if section:
+            return (json.load(jsonFile))[section]
+        else:
+            return json.load(jsonFile)
+
 
 # Get the opposite arb direction
 def getOppositeDirection(direction):

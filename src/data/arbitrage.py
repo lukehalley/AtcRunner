@@ -6,6 +6,7 @@ from src.utils.general import strToBool, printSeperator, percentageDifference, p
 from src.utils.chain import getOppositeDirection
 from src.wallet.queries.swap import getSwapQuoteOut
 from src.api.synapsebridge import estimateBridgeOutput
+from src.utils.chain import getJSONFile
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -157,40 +158,118 @@ def determineArbitrageStrategy(recipe):
 
 def simulateArbitrage(recipe):
 
-    steps = OrderedDict(
-        {
-            "stepOne": {
-                "from": "stablecoin",
-                "to": "token",
-                "position": "origin",
-                "type": "swap"
-            },
-            "stepTwo": {
-                "from": "token",
-                "to": "token",
-                "position": "origin",
-                "type": "bridge"
-            },
-            "stepThree": {
-                "from": "token",
-                "to": "stablecoin",
-                "position": "destination",
-                "type": "swap"
-            },
-            "stepFour": {
-                "from": "stablecoin",
-                "to": "stablecoin",
-                "position": "destination",
-                "type": "bridge"
-            },
-            "stepFive": {
-                "from": "stablecoin",
-                "to": "done",
-                "position": "origin",
-                "type": "swap"
-            }
-        }
-    )
+    arbStrat = getJSONFile(folder="arbitrage", file="arbStrat.json", section=None)
+    steps = OrderedDict(arbStrat)
+
+    if not recipe["status"]["stablesAreOnOrigin"]:
+        steps = prependToOrderedDict(
+            steps,
+            (
+                "stepZero",
+                {
+                    "from": "stablecoin",
+                    "to": "stablecoin",
+                    "position": "destination",
+                    "type": "bridge"
+                }
+            )
+        )
+
+    printSeperator()
+    logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] "
+                f"Simulating Arbitrage")
+    printSeperator()
+
+    startingStables = recipe["status"]["capital"]
+
+    currentFunds = {
+        "stablecoin": startingStables,
+        "token": 0
+    }
+
+
+    for stepNumber, stepSettings in steps.items():
+
+        stepType = stepSettings["type"]
+        position = stepSettings["position"]
+        oppositePosition = getOppositeDirection(position)
+        toSwapFrom = stepSettings["from"]
+        toSwapTo = stepSettings["to"]
+
+        stepNumber = list(steps).index(stepNumber) + 1
+
+        if stepNumber <= 1:
+            logger.info(f'Starting Capital: {startingStables} {recipe[position]["stablecoin"]["name"]}')
+            printSeperator()
+
+        if toSwapTo != "done":
+
+            logger.info(f'{stepNumber}. {stepType.title()} {round(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+
+            if stepType == "swap":
+
+                hasCustomRoutes = "routes" in recipe[position] and toSwapFrom in recipe[position]["routes"]
+
+                routes = []
+                if hasCustomRoutes:
+                    for route in recipe[position]["routes"][toSwapFrom]:
+                        routes.append(route["address"])
+                    toDecimals = recipe[position]["routes"][toSwapFrom][-1]["decimals"]
+                else:
+                    routes = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
+                    toDecimals = recipe[position][toSwapTo]["decimals"]
+
+                quote = getSwapQuoteOut(
+                    amountInNormal=currentFunds[toSwapFrom],
+                    fromDecimals=recipe[position][toSwapFrom]["decimals"],
+                    toDecimals=toDecimals,
+                    rpcUrl=recipe[position]["chain"]["rpc"],
+                    routerAddress=recipe[position]["chain"]["uniswapRouter"],
+                    factoryAddress=recipe[position]["chain"]["uniswapFactory"],
+                    routes=routes
+                )
+
+            elif stepType == "bridge":
+
+                quote = estimateBridgeOutput(
+                    fromChain=recipe[position]["chain"]["id"],
+                    toChain=recipe[oppositePosition]["chain"]["id"],
+                    fromToken=recipe[position][toSwapFrom]['symbol'],
+                    toToken=recipe[oppositePosition][toSwapFrom]['symbol'],
+                    amountToBridge=currentFunds[toSwapFrom],
+                    decimalPlacesFrom=recipe[position][toSwapFrom]["decimals"],
+                    decimalPlacesTo=recipe[oppositePosition][toSwapFrom]["decimals"],
+                    returning=(not position == "origin"))
+
+            else:
+                errMsg = f'Invalid Arbitrage simulation type: {stepType}'
+                logger.error(errMsg)
+                sys.exit(errMsg)
+
+            currentFunds[toSwapTo] = quote
+
+            logger.info(f'   Out {round(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
+
+            printSeperator()
+
+        else:
+
+            isProfitable = currentFunds["stablecoin"] > startingStables
+            profitLoss = abs(currentFunds["stablecoin"] - startingStables)
+
+            if isProfitable:
+                diff = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
+                logger.info(f'Profit: ${round(profitLoss, 6)} ({diff}%)')
+            else:
+                diff = percentageDifference(startingStables, currentFunds["stablecoin"], 2)
+                logger.info(f'Loss: ${round(profitLoss, 6)} ({diff}%)')
+
+            return isProfitable
+
+def executeArbitrage(recipe):
+
+    arbStrat = getJSONFile(folder="arbitrage", file="arbStrat.json", section=None)
+    steps = OrderedDict(arbStrat)
 
     if not recipe["status"]["stablesAreOnOrigin"]:
         steps = prependToOrderedDict(
