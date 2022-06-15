@@ -9,10 +9,10 @@ from src.wallet.queries.bridge import waitForBridgeToComplete
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def executeBridge(amountToBridge, decimals, fromChain, toChain, fromToken, toToken, rpcURL):
+def executeBridge(fromChain, fromToken, decimalPlacesFrom, toChain, toToken, decimalPlacesTo, amountToBridge, rpcURL):
     walletAddress = getWalletAddressFromPrivateKey(rpcURL)
 
-    amountToBridgeWei = getTokenDecimalValue(amountToBridge, decimals)
+    amountToBridgeWei = getTokenDecimalValue(amountToBridge, decimalPlacesFrom)
 
     bridgeTransaction = \
         generateUnsignedBridgeTransaction(

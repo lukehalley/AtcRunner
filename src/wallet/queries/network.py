@@ -87,11 +87,11 @@ def getWalletsInformation(recipe):
             )
 
         logger.info(
-            f'{direction} ({recipe[direction]["chain"]["name"]}) ->'
-            f' Token {recipe[direction]["wallet"]["balances"]["token"]}'
-            f' {recipe[direction]["token"]["name"]} | '
-            f'Gas {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]} | '
-            f'Stables {recipe[direction]["wallet"]["balances"]["stablecoin"]} {recipe[direction]["stablecoin"]["symbol"]}')
+            f'{direction.title()} ({recipe[direction]["chain"]["name"]}): '
+            f'Token {round(recipe[direction]["wallet"]["balances"]["token"], 6)} {recipe[direction]["token"]["name"]} | '
+            f'Gas {round(recipe[direction]["wallet"]["balances"]["gas"], 6)} {recipe[direction]["gas"]["symbol"]} | '
+            f'Stables {round(recipe[direction]["wallet"]["balances"]["stablecoin"], 6)} {recipe[direction]["stablecoin"]["symbol"]}'
+        )
 
     checkWalletsMatch(recipe)
 

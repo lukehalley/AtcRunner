@@ -92,7 +92,7 @@ def calculateSynapseBridgeFees(recipe):
             toChain=currentDestination["chain"]["id"],
             fromToken=currentOrigin[tokenType]['symbol'],
             toToken=currentDestination[tokenType]['symbol'],
-            amountToBridge=10,
+            amountToBridge=currentOrigin["wallet"]["predictions"][tokenType],
             decimalPlacesFrom=currentOrigin[tokenType]["decimals"],
             decimalPlacesTo=currentDestination[tokenType]["decimals"],
             returning=(not direction == "origin"))

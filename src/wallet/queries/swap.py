@@ -96,22 +96,31 @@ def calculateSwapOutputs(recipe):
 
     swapFees = {}
 
+    currentStables = 0
+    currentTokens = 0
+
     for tripNumber, settings in swapDict.items():
 
         position = settings["position"]
         toSwapFrom = settings["toSwapFrom"]
 
-        amountOfStables = recipe[position]["wallet"]["balances"]["stablecoin"]
-        amountOfTokens = amountOfStables / recipe[position]["token"]["price"]
+        if not "predictions" in recipe[position]["wallet"]:
+            recipe[position]["wallet"]["predictions"] = {}
+
+        if currentStables <=0:
+            currentStables = recipe[position]["wallet"]["balances"]["stablecoin"]
+            amountOfStables = currentStables
+        else:
+            amountOfStables = currentStables
 
         if position == "origin":
             toSwapTo = "token"
             logger.info(f'Estimate: {amountOfStables} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
-            amountToSwapFrom = amountOfStables
+            amountToSwap = amountOfStables
         else:
             toSwapTo = "stablecoin"
-            logger.info(f'Estimate: {amountOfTokens} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
-            amountToSwapFrom = amountOfTokens
+            logger.info(f'Estimate: {currentTokens} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+            amountToSwap = currentTokens
 
         hasCustomRoutes = "routes" in recipe[position] and toSwapFrom in recipe[position]["routes"]
 
@@ -125,7 +134,7 @@ def calculateSwapOutputs(recipe):
             toDecimals = recipe[position][toSwapTo]["decimals"]
 
         quote = getSwapQuoteOut(
-            amountInNormal=amountToSwapFrom,
+            amountInNormal=amountToSwap,
             fromDecimals=recipe[position][toSwapFrom]["decimals"],
             toDecimals=toDecimals,
             rpcUrl=recipe[position]["chain"]["rpc"],
@@ -136,12 +145,23 @@ def calculateSwapOutputs(recipe):
 
         swapFees[tripNumber] = {}
 
-        if position == "origin":
-            swapFees[tripNumber] = amountToSwapFrom - (quote * recipe[position][toSwapTo]["price"])
-        else:
-            swapFees[tripNumber] = amountToSwapFrom - (quote / recipe[position][toSwapFrom]["price"])
+        if toSwapTo == "token":
+            currentTokens = quote
+            valueAfterSwap = currentTokens * recipe[position][toSwapTo]["price"]
+            feeAmount = amountToSwap - valueAfterSwap
 
-        logger.info(f'Output: {quote} {recipe[position][toSwapTo]["name"]} w/ fee: ${swapFees[tripNumber]}')
+            recipe[position]["wallet"]["predictions"][toSwapTo] = currentTokens
+
+        else:
+            currentStables = quote
+            tokenLoss = amountToSwap - (currentStables / recipe[position][toSwapFrom]["price"])
+            feeAmount = tokenLoss * recipe[position][toSwapFrom]["price"]
+
+            recipe[position]["wallet"]["predictions"][toSwapTo] = currentStables
+
+        swapFees[tripNumber] = feeAmount
+
+        logger.info(f'Output: {quote} {recipe[position][toSwapTo]["name"]} w/ fee: ${feeAmount}')
 
         printSeperator()
 

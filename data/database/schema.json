@@ -26,6 +26,9 @@
         "stablecoin": "USD Circle",
         "dexId": "defikingdoms",
         "directionLock": "avalanchedfk,harmony"
+      },
+      "info": {
+        "currentRoundTripCount": 0
       }
     }
   },
@@ -47,6 +50,15 @@
       "blockExplorer": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx",
       "symbol": "JEWEL",
       "gas": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260"
+    },
+    "avalanche": {
+      "rpc": "https://api.avax.network/ext/bc/C/rpc",
+      "id": "43114",
+      "uniswapRouter": "0x60aE616a2155Ee3d9A68541Ba4544862310933d4",
+      "uniswapFactory": "0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10",
+      "blockExplorer": "https://snowtrace.io/tx/",
+      "symbol": "AVAX",
+      "gas": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
     }
   }
 }

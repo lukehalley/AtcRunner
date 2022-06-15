@@ -4,6 +4,7 @@ from math import log10, floor
 from time import strftime, gmtime
 from distutils import util
 from pathlib import Path
+from collections import OrderedDict
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -40,6 +41,9 @@ def printSeperator(newLine=False):
 # Get percentage of a number
 def percentage(percent, whole):
   return (percent * float(whole)) / 100.0
+
+def percentageDifference(a, b, rnd=6):
+    return round((((a - b) * 100) / b), rnd)
 
 # Check what percentage a number is of another number
 def percentageOf(part, whole):
@@ -89,3 +93,13 @@ def moveDecimalPoint(num, decimal_places):
 def calculateQueryInterval(recipeCount):
     requestLimit = float(os.environ.get("REQUEST_LIMIT"))
     return 60 / (requestLimit / recipeCount)
+
+def prependToOrderedDict(dictOriginal, dictAdd):
+    arr = dictOriginal
+    arr = OrderedDict(arr)
+    new = dictAdd
+    items = list(arr.items())
+    items.append(new)
+    arr = OrderedDict(items)
+    arr.move_to_end(dictAdd[0], last=False)
+    return arr

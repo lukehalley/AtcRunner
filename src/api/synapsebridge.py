@@ -34,8 +34,7 @@ def checkSwapSupported(fromChain, toChain, fromToken, toToken):
 
 # Estimate the output of a bridge
 # @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountToBridge, decimalPlacesFrom, decimalPlacesTo,
-                         returning=False):
+def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountToBridge, decimalPlacesFrom, decimalPlacesTo, returning=False):
     if returning:
         x = decimalPlacesFrom
         decimalPlacesFrom = decimalPlacesTo
@@ -47,10 +46,7 @@ def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountToBridge,
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_ESTIMATE_BRIDGE_OUTPUT_ENDPOINT"))
     result = (requests.get(endpoint, params=params)).json()
     amountToReceive = float(getTokenNormalValue(result["amountToReceive"], decimalPlacesFrom))
-    bridgeFeeManual = amountToBridge - amountToReceive
-    bridgeFee = float(getTokenNormalValue(result["bridgeFee"], 18))
-    bridgeQuote = {'amountToReceive': amountToReceive, 'bridgeFee': bridgeFee}
-    return bridgeQuote
+    return amountToReceive
 
 # Estimate the output of a swap
 # @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
