@@ -93,12 +93,10 @@ while True:
 
         printSeperator(True)
 
-        if tripIsProfitible:
+        if tripIsProfitible or True:
 
             printSeperator()
             logger.info(f'[ARB #{roundTripCount}] Executing Arbitrage')
-            logger.info(f'[ARB #{roundTripCount}] [Bridge (1/2)] [Executing] Origin -> Destination: {recipe["origin"]["chain"]["name"].title()} -> {recipe["destination"]["chain"]["name"].title()}')
-
             printSeperator()
 
             if not recipe["status"]["stablesAreOnOrigin"]:
@@ -172,6 +170,7 @@ while True:
 
         else:
             printSeperator()
-            logger.info(f'[ARB #{roundTripCount}] Trip predicted not profitable, waiting {minimumInterval} seconds')
+            logger.info(f'[ARB #{roundTripCount}] Trip Not Profitable, waiting {minimumInterval} seconds')
+            logger.info(f'Waiting {minimumInterval} seconds...')
             time.sleep(minimumInterval)
             printSeperator(True)
