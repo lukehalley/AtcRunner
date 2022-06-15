@@ -1,59 +1,70 @@
 import logging
 from web3 import Web3
 
-from src.wallet.queries.network import getWalletAddressFromPrivateKey, getPrivateKey
-from src.utils.chain import getTokenDecimalValue
+from src.utils.chain import getTokenDecimalValue, getTokenNormalValue
+
 from src.api.synapsebridge import generateUnsignedBridgeTransaction
+
+from src.wallet.queries.network import getWalletAddressFromPrivateKey, getTokenBalance
 from src.wallet.queries.bridge import waitForBridgeToComplete
+from src.wallet.actions.network import signAndSendTransaction
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def executeBridge(fromChain, fromToken, decimalPlacesFrom, toChain, toToken, decimalPlacesTo, amountToBridge, rpcURL):
-    walletAddress = getWalletAddressFromPrivateKey(rpcURL)
+def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenSymbol, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, txDeadline=300, txTimeoutSeconds=150, ):
+    walletAddress = getWalletAddressFromPrivateKey(fromChainRPCURL)
 
-    amountToBridgeWei = getTokenDecimalValue(amountToBridge, decimalPlacesFrom)
+    amountToBridgeWei = getTokenDecimalValue(amountToBridge, fromTokenDecimals)
 
     bridgeTransaction = \
         generateUnsignedBridgeTransaction(
             fromChain=fromChain,
             toChain=toChain,
-            fromToken=fromToken,
-            toToken=toToken,
+            fromToken=fromTokenSymbol,
+            toToken=toTokenSymbol,
             amountFrom=amountToBridgeWei,
             addressTo=walletAddress
         )
 
-    w3 = Web3(Web3.HTTPProvider(rpcURL))
+    if "value" not in bridgeTransaction:
+        bridgeTransaction["value"] = "0"
 
-    transaction = {
+    w3 = Web3(Web3.HTTPProvider(fromChainRPCURL))
+    gasPriceWei = w3.fromWei(w3.eth.gas_price, 'gwei')
+
+    tx = {
         'nonce': w3.eth.getTransactionCount(walletAddress),
         "chainId": bridgeTransaction["chainId"],
         'to': bridgeTransaction["to"],
-        'gas': 100206,
+        'gas': 250000,
         'gasPrice': w3.eth.gas_price,
         'data': bridgeTransaction["unsigned_data"],
         'value': int(bridgeTransaction["value"])
     }
 
-    privateKey = getPrivateKey()
+    balanceBeforeBridge = getTokenBalance(rpcURL=toChainRPCURL, walletAddress=walletAddress, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals)
 
-    signedTransaction = w3.eth.account.sign_transaction(transaction, privateKey)
-
-    sentTransaction = w3.eth.send_raw_transaction(signedTransaction.rawTransaction)
-
-    transactionDetails = w3.eth.waitForTransactionReceipt(sentTransaction)
-
-    transactionID = transactionDetails["transactionHash"].hex()
-
-    logger.info(f"Sent bridge transaction: {transactionID}")
+    transactionResult = signAndSendTransaction(tx=tx, rpcURL=fromChainRPCURL, txTimeoutSeconds=txTimeoutSeconds, explorerUrl=explorerUrl)
 
     fundsBridged = waitForBridgeToComplete(
-        transactionId=transactionID,
+        transactionId=transactionResult["hash"],
         amountSent=amountToBridge,
-        toToken=toToken,
+        toToken=toTokenSymbol,
         toChain=toChain,
-        timeout=600
+        timeout=1800
     )
 
-    return fundsBridged
+    balanceAfterBridge = getTokenBalance(rpcURL=toChainRPCURL, walletAddress=walletAddress, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals)
+
+    actualBridgedAmount = balanceAfterBridge - balanceBeforeBridge
+
+    result = {
+        "successfull": fundsBridged,
+        "bridgeOutput": actualBridgedAmount,
+        "fee": getTokenNormalValue(transactionResult["gasUsed"] * w3.toWei(gasPriceWei, 'gwei'), 18),
+        "blockURL": transactionResult["explorerLink"],
+        "hash": transactionResult["hash"],
+    }
+
+    return result

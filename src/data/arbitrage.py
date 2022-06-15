@@ -2,11 +2,14 @@ import os, sys, logging
 from itertools import repeat
 from collections import OrderedDict
 
-from src.utils.general import strToBool, printSeperator, percentageDifference, prependToOrderedDict
-from src.utils.chain import getOppositeDirection
+from src.utils.general import strToBool, printSeperator, percentageDifference, prependToOrderedDict, printArbitrageResult
+from src.utils.chain import getOppositeDirection, getJSONFile, getValueWithSlippage, addressToChecksumAddress
+
 from src.wallet.queries.swap import getSwapQuoteOut
+from src.wallet.actions.swap import swapToken
+from src.wallet.actions.bridge import executeBridge
+
 from src.api.synapsebridge import estimateBridgeOutput
-from src.utils.chain import getJSONFile
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -23,41 +26,37 @@ def determineArbitrageStrategy(recipe):
 
     chainOneTokenPrice = getSwapQuoteOut(
         amountInNormal=1.0,
-        fromDecimals=recipe["chainOne"]["token"]["decimals"],
-        toDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
+        amountInDecimals=recipe["chainOne"]["token"]["decimals"],
+        amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
         routerAddress=recipe["chainOne"]["chain"]["uniswapRouter"],
-        factoryAddress=recipe["chainOne"]["chain"]["uniswapFactory"],
         routes=[recipe["chainOne"]["token"]["address"], recipe["chainOne"]["stablecoin"]["address"]]
     )
 
     chainTwoTokenPrice = getSwapQuoteOut(
         amountInNormal=1.0,
-        fromDecimals=recipe["chainTwo"]["token"]["decimals"],
-        toDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
+        amountInDecimals=recipe["chainTwo"]["token"]["decimals"],
+        amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
         routerAddress=recipe["chainTwo"]["chain"]["uniswapRouter"],
-        factoryAddress=recipe["chainTwo"]["chain"]["uniswapFactory"],
         routes=[recipe["chainTwo"]["token"]["address"], recipe["chainTwo"]["stablecoin"]["address"]]
     )
 
     chainOneGasPrice = getSwapQuoteOut(
         amountInNormal=1.0,
-        fromDecimals=18,
-        toDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
+        amountInDecimals=18,
+        amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
         routerAddress=recipe["chainOne"]["chain"]["uniswapRouter"],
-        factoryAddress=recipe["chainOne"]["chain"]["uniswapFactory"],
         routes=[recipe["chainOne"]["gas"]["address"], recipe["chainOne"]["stablecoin"]["address"]]
     )
 
     chainTwoGasPrice = getSwapQuoteOut(
         amountInNormal=1.0,
-        fromDecimals=18,
-        toDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
+        amountInDecimals=18,
+        amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
         routerAddress=recipe["chainTwo"]["chain"]["uniswapRouter"],
-        factoryAddress=recipe["chainTwo"]["chain"]["uniswapFactory"],
         routes=[recipe["chainTwo"]["gas"]["address"], recipe["chainTwo"]["stablecoin"]["address"]]
     )
 
@@ -206,6 +205,8 @@ def simulateArbitrage(recipe):
 
             logger.info(f'{stepNumber}. {stepType.title()} {round(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
+            printSeperator()
+
             if stepType == "swap":
 
                 hasCustomRoutes = "routes" in recipe[position] and toSwapFrom in recipe[position]["routes"]
@@ -214,18 +215,17 @@ def simulateArbitrage(recipe):
                 if hasCustomRoutes:
                     for route in recipe[position]["routes"][toSwapFrom]:
                         routes.append(route["address"])
-                    toDecimals = recipe[position]["routes"][toSwapFrom][-1]["decimals"]
+                    amountOutDecimals = recipe[position]["routes"][toSwapFrom][-1]["decimals"]
                 else:
                     routes = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
-                    toDecimals = recipe[position][toSwapTo]["decimals"]
+                    amountOutDecimals = recipe[position][toSwapTo]["decimals"]
 
                 quote = getSwapQuoteOut(
                     amountInNormal=currentFunds[toSwapFrom],
-                    fromDecimals=recipe[position][toSwapFrom]["decimals"],
-                    toDecimals=toDecimals,
+                    amountInDecimals=recipe[position][toSwapFrom]["decimals"],
+                    amountOutDecimals=amountOutDecimals,
                     rpcUrl=recipe[position]["chain"]["rpc"],
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
-                    factoryAddress=recipe[position]["chain"]["uniswapFactory"],
                     routes=routes
                 )
 
@@ -266,7 +266,7 @@ def simulateArbitrage(recipe):
 
             return isProfitable
 
-def executeArbitrage(recipe):
+def executeArbitrage(recipe, startingTime):
 
     arbStrat = getJSONFile(folder="arbitrage", file="arbStrat.json", section=None)
     steps = OrderedDict(arbStrat)
@@ -287,7 +287,7 @@ def executeArbitrage(recipe):
 
     printSeperator()
     logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] "
-                f"Simulating Arbitrage")
+                f"Executing Arbitrage")
     printSeperator()
 
     startingStables = recipe["status"]["capital"]
@@ -296,7 +296,6 @@ def executeArbitrage(recipe):
         "stablecoin": startingStables,
         "token": 0
     }
-
 
     for stepNumber, stepSettings in steps.items():
 
@@ -316,6 +315,8 @@ def executeArbitrage(recipe):
 
             logger.info(f'{stepNumber}. {stepType.title()} {round(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
+            printSeperator()
+
             if stepType == "swap":
 
                 hasCustomRoutes = "routes" in recipe[position] and toSwapFrom in recipe[position]["routes"]
@@ -324,57 +325,84 @@ def executeArbitrage(recipe):
                 if hasCustomRoutes:
                     for route in recipe[position]["routes"][toSwapFrom]:
                         routes.append(route["address"])
-                    toDecimals = recipe[position]["routes"][toSwapFrom][-1]["decimals"]
+                    amountOutDecimals = recipe[position]["routes"][toSwapFrom][-1]["decimals"]
                 else:
                     routes = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
-                    toDecimals = recipe[position][toSwapTo]["decimals"]
+                    amountOutDecimals = recipe[position][toSwapTo]["decimals"]
 
-                quote = getSwapQuoteOut(
+                amountOutQuoted = getSwapQuoteOut(
                     amountInNormal=currentFunds[toSwapFrom],
-                    fromDecimals=recipe[position][toSwapFrom]["decimals"],
-                    toDecimals=toDecimals,
+                    amountInDecimals=recipe[position][toSwapFrom]["decimals"],
+                    amountOutDecimals=amountOutDecimals,
                     rpcUrl=recipe[position]["chain"]["rpc"],
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
-                    factoryAddress=recipe[position]["chain"]["uniswapFactory"],
                     routes=routes
                 )
 
+                amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
+
+                swapResult = swapToken(
+                    amountInNormal=currentFunds[toSwapFrom],
+                    amountInDecimals=recipe[position][toSwapFrom]["decimals"],
+                    amountOutNormal=amountOutMinWithSlippage,
+                    amountOutDecimals=recipe[position][toSwapTo]["decimals"],
+                    tokenPath=routes,
+                    rpcURL=recipe[position]["chain"]["rpc"],
+                    explorerUrl=recipe[position]["chain"]["blockExplorer"],
+                    routerAddress=recipe[position]["chain"]["uniswapRouter"],
+                    txDeadline=300,
+                    txTimeoutSeconds=150,
+                    swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
+                )
+
+                output = swapResult["swapOutput"]
+
             elif stepType == "bridge":
 
-                quote = estimateBridgeOutput(
+                bridgeResult = executeBridge(
                     fromChain=recipe[position]["chain"]["id"],
+                    fromTokenSymbol=recipe[position][toSwapFrom]['symbol'],
+                    fromTokenDecimals=recipe[position][toSwapFrom]["decimals"],
+                    fromChainRPCURL=recipe[position]["chain"]["rpc"],
                     toChain=recipe[oppositePosition]["chain"]["id"],
-                    fromToken=recipe[position][toSwapFrom]['symbol'],
-                    toToken=recipe[oppositePosition][toSwapFrom]['symbol'],
+                    toTokenSymbol=recipe[oppositePosition][toSwapFrom]['symbol'],
+                    toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
+                    toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
+                    toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
                     amountToBridge=currentFunds[toSwapFrom],
-                    decimalPlacesFrom=recipe[position][toSwapFrom]["decimals"],
-                    decimalPlacesTo=recipe[oppositePosition][toSwapFrom]["decimals"],
-                    returning=(not position == "origin"))
+                    explorerUrl=recipe[position]["chain"]["blockExplorer"]
+                )
+
+                output = bridgeResult["bridgeOutput"]
 
             else:
-                errMsg = f'Invalid Arbitrage simulation type: {stepType}'
+                errMsg = f'Invalid Arbitrage execution type: {stepType}'
                 logger.error(errMsg)
                 sys.exit(errMsg)
 
-            currentFunds[toSwapTo] = quote
+            currentFunds[toSwapTo] = output
 
-            logger.info(f'   Out {round(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
+            printSeperator()
+
+            logger.info(f'Output: {round(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
 
             printSeperator()
 
         else:
 
-            isProfitable = currentFunds["stablecoin"] > startingStables
+            wasProfitable = currentFunds["stablecoin"] > startingStables
             profitLoss = abs(currentFunds["stablecoin"] - startingStables)
 
-            if isProfitable:
+            printSeperator(True)
+
+            if wasProfitable:
                 diff = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
-                logger.info(f'Profit: ${round(profitLoss, 6)} ({diff}%)')
             else:
                 diff = percentageDifference(startingStables, currentFunds["stablecoin"], 2)
-                logger.info(f'Loss: ${round(profitLoss, 6)} ({diff}%)')
 
-            return isProfitable
+            printArbitrageResult(count=recipe["info"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=diff, wasProfitable=wasProfitable, startingTime=startingTime)
+
+            return wasProfitable
 
 # Predict our potential profit/loss
 def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):

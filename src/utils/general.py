@@ -1,4 +1,5 @@
-import functools, logging, os, re
+import functools, logging, os, re, time
+import sys
 from datetime import datetime
 from math import log10, floor
 from time import strftime, gmtime
@@ -13,8 +14,11 @@ def get_project_root() -> Path:
     return Path(__file__).parent.parent
 
 # Convert a str to a bool
-def strToBool(str):
-    return util.strtobool(str)
+def strToBool(x):
+    if type(x)==bool:
+        return x
+    else:
+        return util.strtobool(x)
 
 # Check if we are running in a docker container
 def checkIsDocker():
@@ -27,6 +31,31 @@ def printRoundtrip(count):
     logger.info("################################")
     logger.info(f"STARTING ARBITRAGE #{count}")
     logger.info("################################\n")
+
+# Print the Arbitrage is profitable alert
+def printArbitrageProfitable(count):
+    logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    logger.info(f"ARBITRAGE #{count} PROFITABLE")
+    logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
+
+# Print the Arbitrage is profitable alert
+def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime):
+    finishingTime = time.perf_counter()
+    timeString = f"Completed Arbitrage In {startingTime - finishingTime:0.4f} Seconds"
+    if wasProfitable:
+        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        logger.info(f"ARBITRAGE #{count} RESULT")
+        logger.info(f"Made A Profit Of ${amount} ({percentageDifference}%)")
+        logger.info(timeString)
+        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+    else:
+        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        logger.info(f"ARBITRAGE #{count} RESULT")
+        logger.info(f"Made A Loss Of ${amount} ({percentageDifference}%)")
+        logger.info(timeString)
+        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+    printSeperator(True)
+    sys.exit()
 
 # Print a seperator line
 def printSeperator(newLine=False):
