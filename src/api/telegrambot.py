@@ -14,3 +14,12 @@ def sendMessage(msg):
     result = bot.send_message(channelId, msg)
 
     return result
+
+def editMessage(originalMessage, messageToAppend):
+    originalText = originalMessage["text"]
+    newText = f"{originalText}\n{messageToAppend}"
+
+    bot.edit_message_text(chat_id=originalMessage.chat_id,
+                          message_id=originalMessage.message_id,
+                          text=newText)
+    x = 1
