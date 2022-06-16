@@ -42,7 +42,7 @@ def printArbitrageProfitable(count):
 
     sentMessage = sendMessage(
         msg=
-            f"Arbitrage #{count} Identified As Profitable 🤑\n"
+            f"Arbitrage #{count} Profitable 🤑\n"
             f""
     )
 

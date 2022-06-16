@@ -11,6 +11,8 @@ from src.wallet.actions.bridge import executeBridge
 
 from src.api.synapsebridge import estimateBridgeOutput
 
+from src.api.telegrambot import editMessage
+
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
@@ -314,6 +316,8 @@ def executeArbitrage(recipe, startingTime, telegramMessage):
         if toSwapTo != "done":
 
             logger.info(f'{stepNumber}. {stepType.title()} {round(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+
+            editMessage(originalMessage=telegramMessage, messageToAppend=f"Doing {stepNumber}. {stepType.title()}")
 
             printSeperator()
 
