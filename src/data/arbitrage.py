@@ -266,7 +266,7 @@ def simulateArbitrage(recipe):
 
             return isProfitable
 
-def executeArbitrage(recipe, startingTime):
+def executeArbitrage(recipe, startingTime, telegramMessage):
 
     arbStrat = getJSONFile(folder="arbitrage", file="arbStrat.json", section=None)
     steps = OrderedDict(arbStrat)
