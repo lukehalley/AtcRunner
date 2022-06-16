@@ -9,6 +9,8 @@ from collections import OrderedDict
 
 logger = logging.getLogger("DFK-DEX")
 
+from src.api.telegrambot import sendMessage
+
 # Get the root of the python project
 def get_project_root() -> Path:
     return Path(__file__).parent.parent
@@ -37,6 +39,14 @@ def printArbitrageProfitable(count):
     logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     logger.info(f"ARBITRAGE #{count} PROFITABLE")
     logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
+
+    sentMessage = sendMessage(
+        msg=
+            f"Arbitrage #{count} Identified As Profitable 🤑\n"
+            f""
+    )
+
+    return sentMessage
 
 # Print the Arbitrage is profitable alert
 def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime):

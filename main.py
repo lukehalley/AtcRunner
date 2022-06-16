@@ -89,13 +89,13 @@ while True:
 
         printSeperator(True)
 
-        if tripIsProfitible:
+        if tripIsProfitible or True:
 
-            printArbitrageProfitable(roundTripCount)
+            telegramMessage = printArbitrageProfitable(roundTripCount)
 
             startingTime = time.perf_counter()
 
-            outcome = executeArbitrage(recipe, startingTime)
+            outcome = executeArbitrage(recipe, startingTime, telegramMessage)
 
             endTimer = time.perf_counter()
 
