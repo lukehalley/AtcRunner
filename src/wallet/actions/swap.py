@@ -8,7 +8,7 @@ from src.wallet.actions.network import signAndSendTransaction
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, explorerUrl, txDeadline=300, txTimeoutSeconds=150, swappingToGas=False, gas=250000):
+def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, arbitrageNumber, stepCategory, explorerUrl, telegramStatusMessage=None, txDeadline=300, txTimeoutSeconds=150, swappingToGas=False, gas=250000):
     from src.wallet.queries.network import getPrivateKey
 
     # Setup our web3 object
@@ -49,15 +49,26 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
     if swappingToGas:
         balanceBeforeSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress)
     else:
-        balanceBeforeSwap = getTokenBalance(rpcURL=rpcURL, walletAddress=walletAddress, tokenAddress=tokenPath[-1], tokenDecimals=amountOutDecimals)
+        balanceBeforeSwap = getTokenBalance(rpcURL=rpcURL, tokenAddress=tokenPath[-1], tokenDecimals=amountOutDecimals)
 
-    transactionResult = signAndSendTransaction(tx=tx, rpcURL=rpcURL, txTimeoutSeconds=txTimeoutSeconds, explorerUrl=explorerUrl)
+    transactionResult = signAndSendTransaction(
+        tx=tx,
+        rpcURL=rpcURL,
+        txTimeoutSeconds=txTimeoutSeconds,
+        explorerUrl=explorerUrl,
+        arbitrageNumber=arbitrageNumber,
+        stepCategory=stepCategory,
+        telegramStatusMessage=telegramStatusMessage
+    )
 
-    if swappingToGas:
-        balanceAfterSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress)
-    else:
-        balanceAfterSwap = getTokenBalance(rpcURL=rpcURL, walletAddress=walletAddress, tokenAddress=tokenPath[-1],
-                                           tokenDecimals=amountOutDecimals)
+    balanceAfterSwap = balanceBeforeSwap
+
+    while balanceAfterSwap <= balanceBeforeSwap:
+        if swappingToGas:
+            balanceAfterSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress)
+        else:
+            balanceAfterSwap = getTokenBalance(rpcURL=rpcURL, tokenAddress=tokenPath[-1],
+                                               tokenDecimals=amountOutDecimals)
 
     actualSwapAmount = balanceAfterSwap - balanceBeforeSwap
 
@@ -66,7 +77,8 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
         "swapOutput": actualSwapAmount,
         "fee": getTokenNormalValue(transactionResult["gasUsed"] * w3.toWei(gasPriceWei, 'gwei'), 18),
         "blockURL": transactionResult['explorerLink'],
-        "hash": transactionResult["hash"]
+        "hash": transactionResult["hash"],
+        "telegramStatusMessage": transactionResult["telegramStatusMessage"]
     }
 
     return result

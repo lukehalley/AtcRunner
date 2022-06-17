@@ -35,7 +35,9 @@ def getGasPrice(rpcURL):
     return gasPrice
 
 # @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getTokenBalance(rpcURL, walletAddress, tokenAddress, tokenDecimals):
+def getTokenBalance(rpcURL, tokenAddress, tokenDecimals):
+
+    walletAddress = getWalletAddressFromPrivateKey(rpcURL=rpcURL)
 
     balanceWei = erc20.balance_of\
             (
@@ -69,7 +71,6 @@ def getWalletsInformation(recipe):
 
         recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
             rpcURL=recipe[direction]["chain"]["rpc"],
-            walletAddress=recipe[direction]["wallet"]["address"],
             tokenAddress=recipe[direction]["stablecoin"]["address"],
             tokenDecimals=recipe[direction]["stablecoin"]["decimals"]
         )
@@ -79,7 +80,6 @@ def getWalletsInformation(recipe):
         else:
             recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
                 rpcURL=recipe[direction]["chain"]["rpc"],
-                walletAddress=recipe[direction]["wallet"]["address"],
                 tokenAddress=recipe[direction]["token"]["address"],
                 tokenDecimals=recipe[direction]["token"]["decimals"]
             )

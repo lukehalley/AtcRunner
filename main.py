@@ -7,7 +7,7 @@ from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, pri
 from src.utils.logger import setupLogging
 
 # API modules
-from src.api.firebase import createDatabaseConnection
+from src.api.firebase import createDatabaseConnection, writeTransactionToDB
 
 # Data modules
 from src.data.recipe import getRecipeDetails
@@ -15,7 +15,6 @@ from src.data.arbitrage import determineArbitrageStrategy, simulateArbitrage, ex
 
 # Wallet modules
 from src.wallet.queries.network import getWalletsInformation
-from src.wallet.actions.network import topUpWalletGas
 
 # General Init
 isDocker = checkIsDocker()
@@ -73,29 +72,21 @@ while True:
 
         printSeperator(True)
 
-        printSeperator()
-        logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas In Origin Wallet")
-        printSeperator()
-
-        recipe = topUpWalletGas(
-            recipe=recipe,
-            direction="origin",
-            toSwapFrom="stablecoin"
-        )
-
-        printSeperator(True)
-
         tripIsProfitible = simulateArbitrage(recipe)
 
         printSeperator(True)
 
         if tripIsProfitible or True:
 
-            telegramMessage = printArbitrageProfitable(roundTripCount)
+            printSeperator()
+            logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas In Origin Wallet")
+            printSeperator()
+
+            telegramStatusMessage = printArbitrageProfitable(roundTripCount)
 
             startingTime = time.perf_counter()
 
-            outcome = executeArbitrage(recipe, startingTime, telegramMessage)
+            outcome = executeArbitrage(recipe, startingTime, telegramStatusMessage)
 
             endTimer = time.perf_counter()
 

@@ -10,8 +10,8 @@ from src.wallet.actions.swap import swapToken
 from src.wallet.actions.bridge import executeBridge
 
 from src.api.synapsebridge import estimateBridgeOutput
-
-from src.api.telegrambot import editMessage
+from src.wallet.actions.network import topUpWalletGas
+from src.api.telegrambot import appendToMessage, updatedStatusMessage
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -268,7 +268,7 @@ def simulateArbitrage(recipe):
 
             return isProfitable
 
-def executeArbitrage(recipe, startingTime, telegramMessage):
+def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
     arbStrat = getJSONFile(folder="arbitrage", file="arbStrat.json", section=None)
     steps = OrderedDict(arbStrat)
@@ -307,6 +307,12 @@ def executeArbitrage(recipe, startingTime, telegramMessage):
         toSwapFrom = stepSettings["from"]
         toSwapTo = stepSettings["to"]
 
+        recipe = topUpWalletGas(
+            recipe=recipe,
+            direction=position,
+            toSwapFrom=toSwapFrom
+        )
+
         stepNumber = list(steps).index(stepNumber) + 1
 
         if stepNumber <= 1:
@@ -317,7 +323,7 @@ def executeArbitrage(recipe, startingTime, telegramMessage):
 
             logger.info(f'{stepNumber}. {stepType.title()} {round(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
-            editMessage(originalMessage=telegramMessage, messageToAppend=f"Doing {stepNumber}. {stepType.title()}")
+            telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber}. Doing {position.title()} {stepType.title()} -> 📤")
 
             printSeperator()
 
@@ -352,14 +358,19 @@ def executeArbitrage(recipe, startingTime, telegramMessage):
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                     tokenPath=routes,
                     rpcURL=recipe[position]["chain"]["rpc"],
+                    arbitrageNumber=recipe["info"]["currentRoundTripCount"],
+                    stepCategory=f"{stepNumber}_swap",
                     explorerUrl=recipe[position]["chain"]["blockExplorer"],
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
+                    telegramStatusMessage=telegramStatusMessage,
                     txDeadline=300,
                     txTimeoutSeconds=150,
                     swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
                 )
 
                 output = swapResult["swapOutput"]
+
+                telegramStatusMessage = swapResult["telegramStatusMessage"]
 
             elif stepType == "bridge":
 
@@ -373,13 +384,19 @@ def executeArbitrage(recipe, startingTime, telegramMessage):
                     toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
                     toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                     toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
+                    arbitrageNumber=recipe["info"]["currentRoundTripCount"],
+                    stepCategory=f"{stepNumber}_bridge",
                     amountToBridge=currentFunds[toSwapFrom],
-                    explorerUrl=recipe[position]["chain"]["blockExplorer"]
+                    explorerUrl=recipe[position]["chain"]["blockExplorer"],
+                    telegramStatusMessage=telegramStatusMessage
                 )
 
                 output = bridgeResult["bridgeOutput"]
 
+                telegramStatusMessage = bridgeResult["telegramStatusMessage"]
+
             else:
+                updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
                 errMsg = f'Invalid Arbitrage execution type: {stepType}'
                 logger.error(errMsg)
                 sys.exit(errMsg)
@@ -389,6 +406,7 @@ def executeArbitrage(recipe, startingTime, telegramMessage):
             printSeperator()
 
             logger.info(f'Output: {round(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
+            telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
             printSeperator()
 
@@ -404,7 +422,7 @@ def executeArbitrage(recipe, startingTime, telegramMessage):
             else:
                 diff = percentageDifference(startingStables, currentFunds["stablecoin"], 2)
 
-            printArbitrageResult(count=recipe["info"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=diff, wasProfitable=wasProfitable, startingTime=startingTime)
+            printArbitrageResult(count=recipe["info"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=diff, wasProfitable=wasProfitable, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
             return wasProfitable
 
