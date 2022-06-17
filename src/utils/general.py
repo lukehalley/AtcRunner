@@ -7,6 +7,8 @@ from distutils import util
 from pathlib import Path
 from collections import OrderedDict
 
+from src.api.telegrambot import appendToMessage
+
 logger = logging.getLogger("DFK-DEX")
 
 from src.api.telegrambot import sendMessage
@@ -49,19 +51,21 @@ def printArbitrageProfitable(count):
     return sentMessage
 
 # Print the Arbitrage is profitable alert
-def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime):
+def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime, telegramStatusMessage):
     finishingTime = time.perf_counter()
     timeString = f"Completed Arbitrage In {startingTime - finishingTime:0.4f} Seconds"
     if wasProfitable:
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.info(f"ARBITRAGE #{count} RESULT")
         logger.info(f"Made A Profit Of ${amount} ({percentageDifference}%)")
+        appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"Made A Profit Of ${round(amount, 2)} ({percentageDifference}%) 👍")
         logger.info(timeString)
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
     else:
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.info(f"ARBITRAGE #{count} RESULT")
         logger.info(f"Made A Loss Of ${amount} ({percentageDifference}%)")
+        appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"Made A Loss Of ${round(amount, 2)} ({percentageDifference}%) 👎")
         logger.info(timeString)
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
     printSeperator(True)

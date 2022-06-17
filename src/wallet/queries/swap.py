@@ -13,47 +13,6 @@ import dex.uniswap_v2_router as Router
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def getAmountIn(amount_out, path, rpc_address, factoryAddress, routerAddress):
-
-    one = Web3.toChecksumAddress(path[0])
-    two = Web3.toChecksumAddress(path[1])
-    pairAddress = Factory.get_pair(token_address_1=one, token_address_2=two, rpc_address=rpc_address,factoryAddress=factoryAddress)
-
-    pairReserves = Pair.get_reserves(pairAddress, rpc_address)
-
-    priceWei = Router.get_amount_in(
-        amount_out=amount_out,
-        reserve_in=pairReserves[0],
-        reserve_out=pairReserves[1],
-        rpc_address=rpc_address,
-        routerAddress=routerAddress
-    )
-
-    return priceWei
-
-def getSwapQuoteIn(amountInNormal, amountInDecimals, fromAddress, toAddress, amountOutDecimals, rpcUrl, factoryAddress, routerAddress):
-
-    amountWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
-
-    fromAddressCS = Web3.toChecksumAddress(fromAddress)
-    toAddressCS = Web3.toChecksumAddress(toAddress)
-
-    pairAddress = Factory.get_pair(token_address_1=fromAddressCS, token_address_2=toAddressCS, rpc_address=rpcUrl, factoryAddress=factoryAddress)
-
-    pairReserves = Pair.get_reserves(pairAddress, rpcUrl)
-
-    priceWei = Router.get_amount_in(
-        amount_out=amountWei,
-        reserve_in=pairReserves[0],
-        reserve_out=pairReserves[1],
-        rpc_address=rpcUrl,
-        routerAddress=routerAddress
-    )
-
-    price = float(getTokenNormalValue(priceWei, amountOutDecimals))
-
-    return price
-
 def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress):
 
     normalisedRoutes = []
@@ -71,6 +30,24 @@ def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,
     )
 
     return float(getTokenNormalValue(out[-1], amountOutDecimals))
+
+def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,  rpcUrl, routerAddress):
+
+    normalisedRoutes = []
+
+    for route in routes:
+        normalisedRoutes.append(Web3.toChecksumAddress(route))
+
+    amountWei = int(getTokenDecimalValue(amountOutNormal, amountOutDecimals))
+
+    out = Router.get_amounts_in(
+        amount_out=amountWei,
+        addresses=normalisedRoutes,
+        rpc_address=rpcUrl,
+        routerAddress=routerAddress
+    )
+
+    return float(getTokenNormalValue(out[0], amountInDecimals))
 
 def calculateSwapOutputs(recipe):
 

@@ -1,8 +1,14 @@
-import logging, os, sys
+import logging, os, sys, json
 from web3 import Web3
 
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
-from src.utils.chain import getTokenDecimalValue, generateBlockExplorerLink
+from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
+from src.utils.general import getCurrentDateTime
+from src.api.telegrambot import updatedStatusMessage
+from src.api.firebase import writeTransactionToDB
+
+from src.wallet.queries.network import getTokenBalance
+from src.api.telegrambot import sendMessage
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -22,13 +28,15 @@ def sendRawTransaction(rpcURL, transaction):
         logger.error(f"An error occured when sending raw transaction: {transactionError}")
         raise
 
-def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl):
+def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):
 
     # Setup our web3 object
     w3 = Web3(Web3.HTTPProvider(rpcURL))
     privateKey = getPrivateKey()
     walletAddress = w3.eth.account.privateKeyToAccount(privateKey).address
     w3.eth.default_account = walletAddress
+
+    telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
 
     logger.debug("Signing transaction...")
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=privateKey)
@@ -47,66 +55,95 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl):
 
     wasSuccessful = txReceipt["status"] == 1
 
+    result = {
+        "wasSuccessful": txReceipt["status"] == 1,
+        "explorerLink": explorerLink,
+        "hash": signed_tx.hash.hex(),
+        "gasUsed": txReceipt["gasUsed"],
+        "dateTime": getCurrentDateTime()
+    }
+
+    writeTransactionToDB(
+        transaction=result,
+        arbitrageNumber=arbitrageNumber,
+        stepCategory=stepCategory
+    )
+
+    result["telegramStatusMessage"] = telegramStatusMessage
+
     if wasSuccessful:
         logger.info(f"✅ Transaction was successful!")
         logger.info(f"{explorerLink}")
-        result = {
-            "wasSuccessful": txReceipt["status"] == 1,
-            "txReceipt": txReceipt,
-            "explorerLink": explorerLink,
-            "hash": signed_tx.hash.hex(),
-            "gasUsed": txReceipt["gasUsed"]
-        }
-
         return result
 
     else:
         errMsg = f"⛔️ Transaction was unsuccessful: {explorerLink}"
+        if telegramStatusMessage:
+            updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
         logger.error(errMsg)
         sys.exit(errMsg)
 
 def topUpWalletGas(recipe, direction, toSwapFrom):
+    from src.wallet.queries.swap import getSwapQuoteIn
     from src.wallet.actions.swap import swapToken
 
     minimumGasBalance = float(os.environ.get("MIN_GAS_BALANCE"))
     maximumGasBalance = float(os.environ.get("MAX_GAS_BALANCE"))
 
-    fromAddress = recipe[direction][toSwapFrom]["address"]
-    toAddress = recipe[direction]["gas"]["address"]
-
     gasBalance = recipe[direction]["wallet"]["balances"]["gas"]
-
-    fromPrice = recipe[direction][toSwapFrom]["price"]
-    gasPrice = recipe[direction]["gas"]["price"]
-
-    fromBalanceValue = recipe[direction]["wallet"]["balances"][toSwapFrom] * fromPrice
 
     needsGas = gasBalance < minimumGasBalance
 
+    balanceBeforeBridge = getTokenBalance(
+        rpcURL=recipe[direction]["chain"]["rpc"],
+        tokenAddress=recipe[direction][toSwapFrom]["address"],
+        tokenDecimals=recipe[direction][toSwapFrom]["decimals"]
+    )
+
+    if direction == "origin":
+        gasTopUpCategory = f"gas_1"
+    else:
+        gasTopUpCategory = f"gas_2"
+
     if needsGas:
         gasTokensNeeded = maximumGasBalance - gasBalance
-        topUpCost = gasTokensNeeded * gasPrice
 
-        amountIn = topUpCost / fromPrice
+        routes = [recipe[direction][toSwapFrom]["address"], recipe[direction]["gas"]["address"]]
 
-        if topUpCost > fromBalanceValue:
-            errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: Not enough stables (balance: {fromBalanceValue}) to purchase {gasTokensNeeded} {recipe[direction]["gas"]["symbol"]} for {topUpCost} {recipe[direction]["stablecoin"]["symbol"]}'
+        amountInQuoted = getSwapQuoteIn(
+            amountOutNormal=gasTokensNeeded,
+            amountOutDecimals=recipe[direction][toSwapFrom]["decimals"],
+            amountInDecimals=recipe[direction][toSwapFrom]["decimals"],
+            rpcUrl=recipe[direction]["chain"]["rpc"],
+            routerAddress=recipe[direction]["chain"]["uniswapRouter"],
+            routes=routes
+        )
+
+        amountOutMinWithSlippage = getValueWithSlippage(amount=gasTokensNeeded, slippage=0.5)
+
+        if amountInQuoted > balanceBeforeBridge:
+            errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: ' \
+                     f'Not enough {toSwapFrom}s (balance: {balanceBeforeBridge}) to purchase {gasTokensNeeded} {recipe[direction]["gas"]["symbol"]} ' \
+                     f'for {amountInQuoted} {recipe[direction][toSwapFrom]["symbol"]}'
             logger.error(errMsg)
             sys.exit(errMsg)
 
-        logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[direction]["gas"]["symbol"]} for {topUpCost} {recipe[direction]["stablecoin"]["symbol"]}')
+        logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[direction]["gas"]["symbol"]} for {amountInQuoted} {recipe[direction][toSwapFrom]["symbol"]}')
 
         try:
 
-            amountInWei = int(getTokenDecimalValue(amountIn, recipe[direction][toSwapFrom]["decimals"]))
+            telegramStatusMessage = sendMessage(msg=f"Topping Up {direction.title()} Wallet -> ️")
 
             result = swapToken(
-                amountInNormal=amountInWei,
+                amountInNormal=amountInQuoted,
                 amountInDecimals=recipe[direction][toSwapFrom]["decimals"],
-                amountOutNormal=gasTokensNeeded,
+                amountOutNormal=amountOutMinWithSlippage,
                 amountOutDecimals=18,
-                tokenPath=[fromAddress, toAddress],
+                tokenPath=routes,
                 rpcURL=recipe[direction]["chain"]["rpc"],
+                arbitrageNumber=recipe["info"]["currentRoundTripCount"],
+                stepCategory=gasTopUpCategory,
+                telegramStatusMessage=telegramStatusMessage,
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"],
                 routerAddress=recipe[direction]["chain"]["uniswapRouter"],
                 txDeadline=300,
@@ -114,10 +151,14 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
                 swappingToGas=True
             )
 
+            updatedStatusMessage(originalMessage=result["telegramStatusMessage"], newStatus="✅")
+
+            x = 1
+
         except Exception as err:
             errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
             logger.error(errMsg)
-            sys.exit(errMsg)
+            sys.exit(err)
 
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
             recipe[direction]["chain"]["rpc"],
@@ -125,7 +166,5 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
         )
 
         logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up successful - new balance is {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]}')
-    else:
-        logger.info(f"Origin wallet has enough gas")
 
     return recipe

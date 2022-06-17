@@ -12,7 +12,7 @@ from src.wallet.actions.network import signAndSendTransaction
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenSymbol, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, txDeadline=300, txTimeoutSeconds=150, ):
+def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenSymbol, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, txTimeoutSeconds=150, ):
     walletAddress = getWalletAddressFromPrivateKey(fromChainRPCURL)
 
     amountToBridgeWei = getTokenDecimalValue(amountToBridge, fromTokenDecimals)
@@ -43,9 +43,16 @@ def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL
         'value': int(bridgeTransaction["value"])
     }
 
-    balanceBeforeBridge = getTokenBalance(rpcURL=toChainRPCURL, walletAddress=walletAddress, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals)
+    balanceBeforeBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals)
 
-    transactionResult = signAndSendTransaction(tx=tx, rpcURL=fromChainRPCURL, txTimeoutSeconds=txTimeoutSeconds, explorerUrl=explorerUrl)
+    transactionResult = signAndSendTransaction(
+        tx=tx,
+        rpcURL=fromChainRPCURL,
+        txTimeoutSeconds=txTimeoutSeconds,
+        explorerUrl=explorerUrl,
+        arbitrageNumber=arbitrageNumber,
+        stepCategory=stepCategory,
+        telegramStatusMessage=telegramStatusMessage)
 
     fundsBridged = waitForBridgeToComplete(
         transactionId=transactionResult["hash"],
@@ -55,7 +62,7 @@ def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL
         timeout=1800
     )
 
-    balanceAfterBridge = getTokenBalance(rpcURL=toChainRPCURL, walletAddress=walletAddress, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals)
+    balanceAfterBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals)
 
     actualBridgedAmount = balanceAfterBridge - balanceBeforeBridge
 
@@ -65,6 +72,7 @@ def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL
         "fee": getTokenNormalValue(transactionResult["gasUsed"] * w3.toWei(gasPriceWei, 'gwei'), 18),
         "blockURL": transactionResult["explorerLink"],
         "hash": transactionResult["hash"],
+        "telegramStatusMessage": transactionResult["telegramStatusMessage"]
     }
 
     return result

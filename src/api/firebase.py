@@ -1,6 +1,7 @@
-import logging, os
+import logging, os, json
 from typing import Optional
 from firebase_admin import credentials, initialize_app, db
+from collections import OrderedDict
 
 # Setup logging
 logger = logging.getLogger("DFK-DEX")
@@ -30,3 +31,27 @@ def fetchFromDatabase(reference):
     queryResult = (db.reference(f"/{reference}/")).get()
 
     return queryResult
+
+def writeTransactionToDB(transaction, arbitrageNumber, stepCategory):
+
+    arbitrageTitle = f"arbitrage_{arbitrageNumber}"
+
+    arbitrages = fetchFromDatabase("arbitrages")
+
+    if not arbitrages:
+
+        arbitrages = {}
+
+    if arbitrageTitle not in arbitrages:
+
+        arbitrages[arbitrageTitle] = {}
+
+        arbitrages[arbitrageTitle][stepCategory] = transaction
+
+    else:
+
+        arbitrages[arbitrageTitle][stepCategory] = transaction
+
+    ref = db.reference("/arbitrages")
+
+    ref.set(arbitrages)

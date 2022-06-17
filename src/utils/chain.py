@@ -1,6 +1,8 @@
 import json, os, sys, logging, time
-from src.utils.general import get_project_root, percentage
 from web3 import Web3
+from hexbytes import HexBytes
+
+from src.utils.general import get_project_root, percentage
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -42,6 +44,14 @@ def getOppositeDirection(direction):
     else:
         return "origin"
 
+# Get the opposite arb direction
+def getOppositeToken(token):
+
+    if token == "token":
+        return "stablecoin"
+    else:
+        return "token"
+
 # Get a value with a percentage of slippage
 def getValueWithSlippage(amount, slippage=0.5):
     return amount - percentage(slippage, amount)
@@ -65,3 +75,9 @@ def getTransactionDeadline(timeInSeconds=300):
 
 def addressToChecksumAddress(address):
     return Web3.toChecksumAddress(address)
+
+class HexJsonEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, HexBytes):
+            return obj.hex()
+        return super().default(obj)
