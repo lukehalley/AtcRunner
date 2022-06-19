@@ -50,7 +50,7 @@ def getTokenBalance(rpcURL, tokenAddress, tokenDecimals):
 
     return float(balance)
 
-def getWalletsInformation(recipe):
+def getWalletsInformation(recipe, printBalances=False):
 
     directionList = ("origin", "destination")
 
@@ -84,12 +84,13 @@ def getWalletsInformation(recipe):
                 tokenDecimals=recipe[direction]["token"]["decimals"]
             )
 
-        logger.info(
-            f'{direction.title()} ({recipe[direction]["chain"]["name"]}): '
-            f'Token {round(recipe[direction]["wallet"]["balances"]["token"], 6)} {recipe[direction]["token"]["name"]} | '
-            f'Gas {round(recipe[direction]["wallet"]["balances"]["gas"], 6)} {recipe[direction]["gas"]["symbol"]} | '
-            f'Stables {round(recipe[direction]["wallet"]["balances"]["stablecoin"], 6)} {recipe[direction]["stablecoin"]["symbol"]}'
-        )
+        if printBalances:
+            logger.info(
+                f'{direction.title()} ({recipe[direction]["chain"]["name"]}): '
+                f'Token {round(recipe[direction]["wallet"]["balances"]["token"], 6)} {recipe[direction]["token"]["name"]} | '
+                f'Gas {round(recipe[direction]["wallet"]["balances"]["gas"], 6)} {recipe[direction]["gas"]["symbol"]} | '
+                f'Stables {round(recipe[direction]["wallet"]["balances"]["stablecoin"], 6)} {recipe[direction]["stablecoin"]["symbol"]}'
+            )
 
     checkWalletsMatch(recipe)
 

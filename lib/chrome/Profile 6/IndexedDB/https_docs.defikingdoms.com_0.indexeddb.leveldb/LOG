@@ -1,0 +1,6 @@
+2022/04/23-14:12:52.223 25017 Creating DB /Users/luke/Library/Application Support/Google/Chrome/Profile 6/IndexedDB/https_docs.defikingdoms.com_0.indexeddb.leveldb since it was missing.
+2022/04/23-14:12:52.283 25017 Reusing MANIFEST /Users/luke/Library/Application Support/Google/Chrome/Profile 6/IndexedDB/https_docs.defikingdoms.com_0.indexeddb.leveldb/MANIFEST-000001
+2022/04/25-09:42:33.503 2ad37 Level-0 table #5: started
+2022/04/25-09:42:33.539 2ad37 Level-0 table #5: 1085 bytes OK
+2022/04/25-09:42:33.580 2ad37 Delete type=0 #3
+2022/04/25-09:42:33.581 2ad37 Manual compaction at level-0 from (begin) .. (end); will stop at (end)

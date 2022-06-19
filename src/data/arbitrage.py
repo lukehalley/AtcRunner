@@ -8,13 +8,22 @@ from src.utils.chain import getOppositeDirection, getJSONFile, getValueWithSlipp
 from src.wallet.queries.swap import getSwapQuoteOut
 from src.wallet.actions.swap import swapToken
 from src.wallet.actions.bridge import executeBridge
+from src.wallet.queries.network import getWalletsInformation
 
 from src.api.synapsebridge import estimateBridgeOutput
 from src.wallet.actions.network import topUpWalletGas
 from src.api.telegrambot import appendToMessage, updatedStatusMessage
+from src.api.firebase import fetchFromDatabase
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
+
+def getNextArbitrageNumber():
+    arbitrages = fetchFromDatabase("arbitrages")
+    if arbitrages:
+        return int(list(arbitrages.keys())[-1].split("_")[1]) + 1
+    else:
+        return 1
 
 # Determine our arbitrage strategy
 def determineArbitrageStrategy(recipe):
@@ -25,6 +34,8 @@ def determineArbitrageStrategy(recipe):
     # chainTwoTokenPrice = getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["address"], recipe["arbitrage"]["dexId"])
     # chainOneGasPrice = getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["gas"]["address"], recipe["arbitrage"]["dexId"])
     # chainTwoGasPrice = getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["gas"]["address"], recipe["arbitrage"]["dexId"])
+
+    recipe["arbitrage"]["currentRoundTripCount"] = getNextArbitrageNumber()
 
     chainOneTokenPrice = getSwapQuoteOut(
         amountInNormal=1.0,
@@ -119,21 +130,12 @@ def determineArbitrageStrategy(recipe):
             recipe["destination"]["token"]["price"] = chainOneTokenPrice
             recipe["destination"]["gas"]["price"] = chainOneGasPrice
 
-    recipe["info"]["reportString"] = \
-        f'Buy: {recipe["origin"]["token"]["name"]} on ' \
-        f'{recipe["origin"]["chain"]["name"]} @ ' \
-        f'{recipe["origin"]["token"]["price"]} {recipe["origin"]["stablecoin"]["symbol"]} ' \
-        f'Sell: {recipe["destination"]["token"]["name"]} on ' \
-        f'{recipe["destination"]["chain"]["name"]} ' \
-        f'@ {recipe["destination"]["token"]["price"]} ' \
-        f'{recipe["origin"]["stablecoin"]["symbol"]} for a {priceDifference}% data'
-
     printSeperator()
 
     if recipe["arbitrage"]["directionLockEnabled"]:
-        logger.info(f'[ARB #{recipe["info"]["currentRoundTripCount"]}] Locked Arbitrage Opportunity Identified')
+        logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Locked Arbitrage Opportunity Identified')
     else:
-        logger.info(f'[ARB #{recipe["info"]["currentRoundTripCount"]}] Arbitrage Opportunity Identified')
+        logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Arbitrage Opportunity Identified')
 
     logger.info(
         f'Buy: {recipe["origin"]["token"]["name"]} @ ${round(recipe["origin"]["token"]["price"], 6)} on '
@@ -177,7 +179,7 @@ def simulateArbitrage(recipe):
         )
 
     printSeperator()
-    logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] "
+    logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
                 f"Simulating Arbitrage")
     printSeperator()
 
@@ -187,7 +189,6 @@ def simulateArbitrage(recipe):
         "stablecoin": startingStables,
         "token": 0
     }
-
 
     for stepNumber, stepSettings in steps.items():
 
@@ -288,16 +289,13 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
         )
 
     printSeperator()
-    logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] "
+    logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
                 f"Executing Arbitrage")
     printSeperator()
 
-    startingStables = recipe["status"]["capital"]
+    recipe = getWalletsInformation(recipe)
 
-    currentFunds = {
-        "stablecoin": startingStables,
-        "token": 0
-    }
+    startingStables = recipe["origin"]["wallet"]["balances"]["stablecoin"]
 
     for stepNumber, stepSettings in steps.items():
 
@@ -313,6 +311,8 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
             toSwapFrom=toSwapFrom
         )
 
+        recipe = getWalletsInformation(recipe)
+
         stepNumber = list(steps).index(stepNumber) + 1
 
         if stepNumber <= 1:
@@ -321,7 +321,7 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
         if toSwapTo != "done":
 
-            logger.info(f'{stepNumber}. {stepType.title()} {round(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'{stepNumber}. {stepType.title()} {round(recipe[position]["wallet"]["balances"][toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
             telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber}. Doing {position.title()} {stepType.title()} -> 📤")
 
@@ -341,7 +341,7 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                     amountOutDecimals = recipe[position][toSwapTo]["decimals"]
 
                 amountOutQuoted = getSwapQuoteOut(
-                    amountInNormal=currentFunds[toSwapFrom],
+                    amountInNormal=recipe[position]["wallet"]["balances"][toSwapFrom],
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                     amountOutDecimals=amountOutDecimals,
                     rpcUrl=recipe[position]["chain"]["rpc"],
@@ -352,13 +352,13 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                 amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
                 swapResult = swapToken(
-                    amountInNormal=currentFunds[toSwapFrom],
+                    amountInNormal=recipe[position]["wallet"]["balances"][toSwapFrom],
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                     amountOutNormal=amountOutMinWithSlippage,
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                     tokenPath=routes,
                     rpcURL=recipe[position]["chain"]["rpc"],
-                    arbitrageNumber=recipe["info"]["currentRoundTripCount"],
+                    arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_swap",
                     explorerUrl=recipe[position]["chain"]["blockExplorer"],
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
@@ -368,7 +368,7 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                     swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
                 )
 
-                output = swapResult["swapOutput"]
+                recipe = getWalletsInformation(recipe)
 
                 telegramStatusMessage = swapResult["telegramStatusMessage"]
 
@@ -384,14 +384,14 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                     toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
                     toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                     toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
-                    arbitrageNumber=recipe["info"]["currentRoundTripCount"],
+                    arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_bridge",
-                    amountToBridge=currentFunds[toSwapFrom],
+                    amountToBridge=recipe[position]["wallet"]["balances"][toSwapFrom],
                     explorerUrl=recipe[position]["chain"]["blockExplorer"],
                     telegramStatusMessage=telegramStatusMessage
                 )
 
-                output = bridgeResult["bridgeOutput"]
+                recipe = getWalletsInformation(recipe)
 
                 telegramStatusMessage = bridgeResult["telegramStatusMessage"]
 
@@ -401,28 +401,30 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                 logger.error(errMsg)
                 sys.exit(errMsg)
 
-            currentFunds[toSwapTo] = output
+            recipe = getWalletsInformation(recipe)
 
             printSeperator()
 
-            logger.info(f'Output: {round(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'Output: {round(recipe[position]["wallet"]["balances"][toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
             telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
             printSeperator()
 
         else:
 
-            wasProfitable = currentFunds["stablecoin"] > startingStables
-            profitLoss = abs(currentFunds["stablecoin"] - startingStables)
+            recipe = getWalletsInformation(recipe)
+
+            wasProfitable = recipe[position]["wallet"]["balances"]["stablecoin"] > startingStables
+            profitLoss = abs(recipe[position]["wallet"]["balances"]["stablecoin"] - startingStables)
 
             printSeperator(True)
 
             if wasProfitable:
-                diff = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
+                diff = percentageDifference(recipe[position]["wallet"]["balances"]["stablecoin"], startingStables, 2)
             else:
-                diff = percentageDifference(startingStables, currentFunds["stablecoin"], 2)
+                diff = percentageDifference(startingStables, recipe[position]["wallet"]["balances"]["stablecoin"], 2)
 
-            printArbitrageResult(count=recipe["info"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=diff, wasProfitable=wasProfitable, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+            printArbitrageResult(count=recipe["arbitrage"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=diff, wasProfitable=wasProfitable, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
             return wasProfitable
 

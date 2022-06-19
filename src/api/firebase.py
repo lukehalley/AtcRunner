@@ -22,9 +22,10 @@ def createDatabaseConnection():
     logger.info(f"DB: Connection established to Firebase")
 
 # Fetch a collection from Firebase
-def fetchFromDatabase(reference):
+def fetchFromDatabase(reference, printInfo=False):
 
-    logger.info(f"DB: Getting '{reference}' from Firebase")
+    if printInfo:
+        logger.info(f"DB: Getting '{reference}' from Firebase")
 
     db.reference()
 

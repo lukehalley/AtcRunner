@@ -67,7 +67,7 @@ def calculateSwapOutputs(recipe):
     }
 
     printSeperator()
-    logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] "
+    logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
                 f"Calculating Swap Fees For Arbitrage")
     printSeperator()
 

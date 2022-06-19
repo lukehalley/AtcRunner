@@ -26,9 +26,6 @@
         "stablecoin": "USD Circle",
         "dexId": "defikingdoms",
         "directionLock": "avalanchedfk,harmony"
-      },
-      "info": {
-        "currentRoundTripCount": 0
       }
     }
   },

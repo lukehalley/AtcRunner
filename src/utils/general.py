@@ -69,7 +69,6 @@ def printArbitrageResult(count, amount, percentageDifference, wasProfitable, sta
         logger.info(timeString)
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
     printSeperator(True)
-    sys.exit()
 
 # Print a seperator line
 def printSeperator(newLine=False):

@@ -1,10 +1,8 @@
-pyvirtualdisplay~=3.0
-python-dotenv~=0.20.0
-StringIO
 web3~=5.28.0
 requests~=2.26.0
-tabulate~=0.8.9
-selenium~=3.141.0
+python-dotenv~=0.20.0
 retry~=0.9.2
 num2words~=0.5.10
 hexbytes~=0.2.2
+python-telegram-bot
+firebase-admin

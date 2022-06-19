@@ -1,19 +1,21 @@
-FROM selenium/standalone-chrome
+FROM nikolaik/python-nodejs:python3.9-nodejs18
 
-USER root
-RUN apt-get update && apt-get install python3-distutils xvfb nano -y
-RUN wget https://bootstrap.pypa.io/get-pip.py
-RUN python3 get-pip.py
-RUN python3 -m pip install selenium
+ARG HOME_DIR="home/arb-bot"
 
-RUN mkdir -p /home/seluser/dfk-arb
-COPY dex/ /home/seluser/dfk-arb/dex/
-COPY srco /home/seluser/dfk-arb/helpers/
-COPY chrome/ /home/seluser/chrome/
-COPY private /home/seluser/dfk-arb/private/
-COPY web /home/seluser/dfk-arb/web/
-COPY [".env", "main.py", "requirements.txt", "/home/seluser/dfk-arb/"]
+RUN mkdir -p /$HOME_DIR
+WORKDIR /$HOME_DIR
 
-WORKDIR "/home/seluser/dfk-arb"
-
+# Python
+COPY data/ /$HOME_DIR/data/
+COPY dex/ /$HOME_DIR/dex/
+COPY src/ /$HOME_DIR/src/
+RUN mkdir -p /$HOME_DIR/log
+COPY [".env", "main.py", "requirements.txt", "init.sh", "/$HOME_DIR/"]
 RUN pip install -r requirements.txt
+
+# Node API
+ARG SYNAPSE_API_DIR="/server"
+COPY $SYNAPSE_API_DIR/ /$HOME_DIR/$SYNAPSE_API_DIR/
+COPY ["package.json", "/$HOME_DIR/"]
+
+ENTRYPOINT [ "python", "main.py" ]
