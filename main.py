@@ -73,7 +73,7 @@ while True:
 
         printSeperator(True)
 
-        if tripIsProfitible or True:
+        if tripIsProfitible:
 
             telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'])
 
