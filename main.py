@@ -19,10 +19,9 @@ from src.wallet.queries.network import getWalletsInformation
 # General Init
 isDocker = checkIsDocker()
 logger = setupLogging(isDocker)
-roundTripCount = 1
 
 # Test Settings
-useTestCapital = True
+useTestCapital = False
 startingCapitalTestAmount = 10
 
 # Firebase Setup
@@ -45,19 +44,17 @@ while True:
 
     for recipesTitle, originalRecipes in recipes.items():
 
-        printRoundtrip(roundTripCount)
-
         recipe = originalRecipes.copy()
-
-        recipe["info"]["currentRoundTripCount"] = roundTripCount
 
         recipe = determineArbitrageStrategy(recipe)
 
+        printRoundtrip(recipe["arbitrage"]["currentRoundTripCount"])
+
         printSeperator()
-        logger.info(f"[ARB #{roundTripCount}] Getting Wallet Details & Balance")
+        logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] Getting Wallet Details & Balance")
         printSeperator()
 
-        recipe = getWalletsInformation(recipe)
+        recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
         recipe["status"]["capital"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
 
@@ -78,21 +75,15 @@ while True:
 
         if tripIsProfitible or True:
 
-            printSeperator()
-            logger.info(f"[ARB #{roundTripCount}] Checking We Have Enough Gas In Origin Wallet")
-            printSeperator()
-
-            telegramStatusMessage = printArbitrageProfitable(roundTripCount)
+            telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'])
 
             startingTime = time.perf_counter()
 
             outcome = executeArbitrage(recipe, startingTime, telegramStatusMessage)
 
-            endTimer = time.perf_counter()
-
         else:
             printSeperator()
-            logger.info(f'[ARB #{roundTripCount}] Trip Not Profitable, waiting {minimumInterval} seconds')
+            logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Trip Not Profitable, waiting {minimumInterval} seconds')
             logger.info(f'Waiting {minimumInterval} seconds...')
             time.sleep(minimumInterval)
             printSeperator(True)

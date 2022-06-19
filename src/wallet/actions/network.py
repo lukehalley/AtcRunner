@@ -141,7 +141,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
                 amountOutDecimals=18,
                 tokenPath=routes,
                 rpcURL=recipe[direction]["chain"]["rpc"],
-                arbitrageNumber=recipe["info"]["currentRoundTripCount"],
+                arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=gasTopUpCategory,
                 telegramStatusMessage=telegramStatusMessage,
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"],

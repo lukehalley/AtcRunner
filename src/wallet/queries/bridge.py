@@ -68,7 +68,7 @@ def calculateSynapseBridgeFees(recipe):
     directionList = ("origin", "destination")
 
     printSeperator()
-    logger.info(f"[ARB #{recipe['info']['currentRoundTripCount']}] "
+    logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
                 f"Calculating Bridge Fees For Arbitrage")
     printSeperator()
 
