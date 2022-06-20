@@ -1,40 +1,18 @@
-from src.utils.frontend import initBrowser, loginIntoMetamask, findElementByText, selectTokenInDex, switchMetamaskNetwork, safeClick
-import time
+from src.utils.frontend import loginIntoMetamask, findElementByText, selectTokenInDex, getRouteForSwap
 
-startingTime = time.perf_counter()
+def getRoutesFromFrontend(driver, dexURL, amountToSwap, tokenSymbolIn, tokenSymbolOut):
 
-driver, display = initBrowser()
+    loginIntoMetamask(driver=driver)
 
-loginIntoMetamask(driver=driver)
+    driver.get(dexURL)
 
-while True:
-
-    switchMetamaskNetwork(driver=driver, networkToSwitchTo="harmony")
-
-    driver.get("https://game.defikingdoms.com/#/marketplace/central")
-
+    # TODO: Make this compatible with other Dex's UI - clicking the trader is a DFK thing.
     trader = findElementByText(driver=driver, text="Trader")
 
     trader.click()
 
-    selectTokenInDex(driver=driver, direction="input", tokenSymbol="JEWEL")
+    selectTokenInDex(driver=driver, direction="input", tokenSymbol=tokenSymbolIn)
 
-    selectTokenInDex(driver=driver, direction="output", tokenSymbol="1USDC")
+    selectTokenInDex(driver=driver, direction="output", tokenSymbol=tokenSymbolOut)
 
-    switchMetamaskNetwork(driver=driver, networkToSwitchTo="avalanchedfk")
-
-    driver.get("https://game.defikingdoms.com/#/marketplace/central")
-
-    trader = findElementByText(driver=driver, text="Trader")
-
-    trader.click()
-
-    selectTokenInDex(driver=driver, direction="input", tokenSymbol="JEWEL")
-
-    selectTokenInDex(driver=driver, direction="output", tokenSymbol="USDC")
-
-    endingTime = time.perf_counter()
-
-    print(f"Completed Web Automation In {endingTime - startingTime :0.4f} Seconds")
-
-    x = 1
+    return getRouteForSwap(driver=driver, direction="input", amount=amountToSwap)
