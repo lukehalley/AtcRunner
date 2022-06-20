@@ -44,6 +44,8 @@ def initBrowser():
 
     logger.debug("Selenium initialised & ready")
 
+    loginIntoMetamask(driver=driver)
+
     return driver
 
 
@@ -164,7 +166,7 @@ def safeClick(driver, xpath):
     staleElement = True
     while staleElement:
         try:
-            element = WebDriverWait(driver, timeout=0).until(EC.element_to_be_clickable((By.XPATH, xpath)))
+            element = WebDriverWait(driver, timeout=3).until(EC.element_to_be_clickable((By.XPATH, xpath)))
             element.click()
             staleElement = False
         except StaleElementReferenceException:

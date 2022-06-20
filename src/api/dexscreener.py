@@ -49,6 +49,13 @@ def getTokenPrice(chainName, tokenAddress):
         if token["chainId"] == chainName:
             return float(token["priceUsd"])
 
+def getTokenAddressByDexId(query, dexId):
+    tokens = doSearch(query)
+
+    for token in tokens:
+        if token["dexId"] == dexId and token["baseToken"]["symbol"] == query:
+            return token["baseToken"]["address"]
+
 # Get the price of gas for a chain
 def getGasPrice(chainName, tokenAddress):
     tokens = getPairs(chain=chainName, tokenAddress=tokenAddress)["pairs"]

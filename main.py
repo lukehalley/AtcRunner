@@ -4,6 +4,7 @@ load_dotenv()
 
 # Utility modules
 from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, calculateQueryInterval
+from src.utils.frontend import initBrowser
 from src.utils.logger import setupLogging
 
 # API modules
@@ -20,9 +21,12 @@ from src.wallet.queries.network import getWalletsInformation
 isDocker = checkIsDocker()
 logger = setupLogging(isDocker)
 
+# Selenium
+driver = initBrowser()
+
 # Test Settings
-useTestCapital = False
-startingCapitalTestAmount = 10
+useTestCapital = True
+startingCapitalTestAmount = 1000
 
 # Firebase Setup
 printSeperator()
@@ -69,7 +73,7 @@ while True:
 
         printSeperator(True)
 
-        tripIsProfitible = simulateArbitrage(recipe)
+        tripIsProfitible = simulateArbitrage(recipe, driver=driver)
 
         printSeperator(True)
 

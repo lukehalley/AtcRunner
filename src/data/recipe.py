@@ -66,58 +66,58 @@ def getRecipeDetails():
                         recipeDetails[f"chain{num}"][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
 
             # Add our custom routes - done in a hacky way, needs to be improved to be scalable.
-            hasCustomRoutes = "routes" in recipeDetails[f"chain{num}"]
-            if hasCustomRoutes:
-
-                for key, value in toFill.items():
-
-                    sectionHasRoutes = key in recipeDetails[f"chain{num}"]["routes"]
-
-                    if sectionHasRoutes:
-
-                        routes = recipeDetails[f"chain{num}"]["routes"][key].split(",")
-
-                        routeMap = []
-
-                        for route in routes:
-
-                            if recipeDetails[f"chain{num}"]["stablecoin"]["symbol"] == route:
-
-                                routeMap.append(recipeDetails[f"chain{num}"]["stablecoin"])
-
-                            elif recipeDetails[f"chain{num}"]["token"]["symbol"] == route:
-
-                                routeMap.append(recipeDetails[f"chain{num}"]["token"])
-
-                            else:
-
-                                tokenSearch = doSearch(route)
-
-                                for token in tokenSearch:
-
-                                    if token["chainId"] == recipeDetails[f"chain{num}"]["chain"]["name"] and token["baseToken"]["symbol"] == route and token["dexId"] == dexId:
-
-                                        routeObject = {}
-
-                                        foundToken = token
-
-                                        routeObject["isGas"] = False
-                                        routeObject["name"] = foundToken["baseToken"]["name"]
-                                        routeObject["symbol"] = foundToken["baseToken"]["symbol"]
-                                        routeObject["decimals"] = 18
-                                        routeObject["address"] = foundToken["baseToken"]["address"]
-                                        routeObject["swapType"] = "USD"
-                                        routeObject["wrapperAddresses"] = {}
-
-                                        routeMap.append(routeObject)
-
-                                        break
-
-                        recipeDetails[f"chain{num}"]["routes"][key] = routeMap
+            # hasCustomRoutes = "routes" in recipeDetails[f"chain{num}"]
+            # if hasCustomRoutes:
+            #
+            #     for key, value in toFill.items():
+            #
+            #         sectionHasRoutes = key in recipeDetails[f"chain{num}"]["routes"]
+            #
+            #         if sectionHasRoutes:
+            #
+            #             routes = recipeDetails[f"chain{num}"]["routes"][key].split(",")
+            #
+            #             routeMap = []
+            #
+            #             for route in routes:
+            #
+            #                 if recipeDetails[f"chain{num}"]["stablecoin"]["symbol"] == route:
+            #
+            #                     routeMap.append(recipeDetails[f"chain{num}"]["stablecoin"])
+            #
+            #                 elif recipeDetails[f"chain{num}"]["token"]["symbol"] == route:
+            #
+            #                     routeMap.append(recipeDetails[f"chain{num}"]["token"])
+            #
+            #                 else:
+            #
+            #                     tokenSearch = doSearch(route)
+            #
+            #                     for token in tokenSearch:
+            #
+            #                         if token["chainId"] == recipeDetails[f"chain{num}"]["chain"]["name"] and token["baseToken"]["symbol"] == route and token["dexId"] == dexId:
+            #
+            #                             routeObject = {}
+            #
+            #                             foundToken = token
+            #
+            #                             routeObject["isGas"] = False
+            #                             routeObject["name"] = foundToken["baseToken"]["name"]
+            #                             routeObject["symbol"] = foundToken["baseToken"]["symbol"]
+            #                             routeObject["decimals"] = 18
+            #                             routeObject["address"] = foundToken["baseToken"]["address"]
+            #                             routeObject["swapType"] = "USD"
+            #                             routeObject["wrapperAddresses"] = {}
+            #
+            #                             routeMap.append(routeObject)
+            #
+            #                             break
+            #
+            #             recipeDetails[f"chain{num}"]["routes"][key] = routeMap
 
             recipeDetails[f"chain{num}"]["gas"] = {}
-            recipeDetails[f"chain{num}"]["gas"]["address"] = recipeDetails[f"chain{num}"]["chain"]["gas"]
-            recipeDetails[f"chain{num}"]["gas"]["symbol"] = recipeDetails[f"chain{num}"]["chain"]["symbol"]
+            recipeDetails[f"chain{num}"]["gas"]["address"] = recipeDetails[f"chain{num}"]["chain"]["gasDetails"]["address"]
+            recipeDetails[f"chain{num}"]["gas"]["symbol"] = recipeDetails[f"chain{num}"]["chain"]["gasDetails"]["symbol"]
 
             recipeDetails[f"chain{num}"]["stablecoin"]["price"] = \
                 getTokenPriceByDexId(
@@ -128,7 +128,5 @@ def getRecipeDetails():
 
             if recipeDetails[f"chain{num}"]["stablecoin"]["price"] is None:
                 recipeDetails[f"chain{num}"]["stablecoin"]["price"] = 1.0
-
-            del recipeDetails[f"chain{num}"]["chain"]["symbol"]
 
     return recipes
