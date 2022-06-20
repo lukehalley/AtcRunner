@@ -255,6 +255,8 @@ def simulateArbitrage(recipe, driver):
                     routes=routeAddressList
                 )
 
+                recipe[position]["route"] = routeAddressList
+
             elif stepType == "bridge":
 
                 quote = estimateBridgeOutput(
@@ -352,24 +354,13 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
             if stepType == "swap":
 
-                hasCustomRoutes = "routes" in recipe[position] and toSwapFrom in recipe[position]["routes"]
-
-                routes = []
-                if hasCustomRoutes:
-                    for route in recipe[position]["routes"][toSwapFrom]:
-                        routes.append(route["address"])
-                    amountOutDecimals = recipe[position]["routes"][toSwapFrom][-1]["decimals"]
-                else:
-                    routes = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
-                    amountOutDecimals = recipe[position][toSwapTo]["decimals"]
-
                 amountOutQuoted = getSwapQuoteOut(
                     amountInNormal=recipe[position]["wallet"]["balances"][toSwapFrom],
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
-                    amountOutDecimals=amountOutDecimals,
+                    amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                     rpcUrl=recipe[position]["chain"]["rpc"],
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
-                    routes=routes
+                    routes=recipe[position]["route"]
                 )
 
                 amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
@@ -379,7 +370,7 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                     amountOutNormal=amountOutMinWithSlippage,
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
-                    tokenPath=routes,
+                    tokenPath=recipe[position]["route"],
                     rpcURL=recipe[position]["chain"]["rpc"],
                     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_swap",
