@@ -55,6 +55,7 @@ ABI = '''
 # Check for conflicting alchemical properties before mixing
 # Process recipe ingredients in order of rarity for optimization
 # TODO: Implement recipe balancing system for potion values
+# TODO: Adjust alchemist recipe yields for better progression balance
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"previousAdminRole","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"newAdminRole","type":"bytes32"}],"name":"RoleAdminChanged","type":"event"},
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleGranted","type":"event"},
 """Balance potion recipes based on ingredient cost and effect strength."""
