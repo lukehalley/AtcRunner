@@ -1,7 +1,7 @@
 import os, sys, re, time, logging
 from dotenv import load_dotenv
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -15,16 +15,17 @@ from src.utils.general import printSeperator, checkIsDocker, getCurrentDateTime,
 
 logger = logging.getLogger("DFK-DEX")
 
+
 def initBrowser():
-    logger.info("Initialising Selenium")
+    logger.debug("Initialising Selenium")
 
     isDocker = checkIsDocker()
 
     if isDocker:
-        logger.info("Starting Virtual Display since we are running in Docker")
+        logger.debug("Starting Virtual Display since we are running in Docker")
         display = Display(visible=False, size=(1920, 1080))
         display.start()
-        logger.info("Virtual Display started")
+        logger.debug("Virtual Display started")
     else:
         display = None
 
@@ -43,16 +44,17 @@ def initBrowser():
     else:
         driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=chrome_options)
 
-    logger.info("Selenium initialised & ready")
+    logger.debug("Selenium initialised & ready")
 
     return driver, display
+
 
 def loginIntoMetamask(driver):
     load_dotenv()
 
     openMetamaskTab(driver)
 
-    logger.info("Waiting for Metamask password input...")
+    logger.debug("Waiting for Metamask password input...")
     passwordInput = None
     fails = 0
     while not passwordInput and fails < 6:
@@ -66,71 +68,117 @@ def loginIntoMetamask(driver):
     if fails >= 6:
         sys.exit("Couldn't log into Metamask!")
 
-    logger.info("Password input located!")
+    logger.debug("Password input located!")
 
-    logger.info("Filling in password...")
+    logger.debug("Filling in password...")
     mmPassword = os.environ.get("KNOCKKNOCK")
     passwordInput.send_keys(mmPassword)
-    logger.info("Password inputted!")
+    logger.debug("Password inputted!")
 
-    logger.info("Pressing enter...")
+    logger.debug("Pressing enter...")
     passwordInput.send_keys(Keys.RETURN)
-    logger.info("Enter key pressed!")
+    logger.debug("Enter key pressed!")
 
-    logger.info("Checking if logged in...")
+    logger.debug("Checking if logged in...")
     findWebElement(driver, os.environ.get("METAMASK_TABS"))
-    logger.info("Metamask logged in!")
+    logger.debug("Metamask logged in!")
+
 
 def typeToField(element, text):
     element.send_keys(text)
 
-def searchDexForToken(driver, direction, tokenSymbol):
 
-    tokenSelectBtn = os.environ.get("DEX_TOKEN_SELECTOR_BUTTON").replace("[DIRECTION]", direction)
+def findElementByText(driver, text):
+    return findWebElement(driver=driver, elementString=f"//*[text()='{text}']", selectorMode=False)
 
-    field = findWebElement(driver=driver,
-                                elementString=tokenSelectBtn,
-                                selectorMode=True)
 
-    field.click()
-
-    tokenAddressInput = findWebElement(driver=driver, elementString=os.environ.get("DEX_TOKEN_SEARCH"), selectorMode=True)
-
-    typeToField(tokenAddressInput, tokenSymbol)
-
+def waitForDexToLoad(driver):
     isLoading = driver.find_elements_by_class_name(os.environ.get("DEX_LOADING_SPINNER_CLASS"))
 
     while isLoading:
         isLoading = driver.find_elements_by_class_name(os.environ.get("DEX_LOADING_SPINNER_CLASS"))
 
-    firstResult = findWebElement(driver=driver,
-                                 elementString=os.environ.get("DEX_TOKEN_FIRST_RESULT"),
-                                 selectorMode=False)
 
-    firstResult.click()
+def selectTokenInDex(driver, direction, tokenSymbol):
+    tokenSelectBtn = os.environ.get("DEX_TOKEN_SELECTOR_BUTTON").replace("[DIRECTION]", direction)
+
+    field = findWebElement(driver=driver,
+                           elementString=tokenSelectBtn,
+                           selectorMode=True)
+
+    field.click()
     
+    tokenAddressInput = findWebElement(driver=driver, elementString=os.environ.get("DEX_TOKEN_SEARCH"),
+                                       selectorMode=True)
+
+    typeToField(tokenAddressInput, tokenSymbol)
+
+    symbolText = ""
+    while symbolText != tokenSymbol:
+        try:
+            symbolText = findWebElement(driver=driver,
+                                        elementString=os.environ.get("DEX_TOKEN_FIRST_RESULT_SYMBOL"),
+                                        selectorMode=False).text
+        except StaleElementReferenceException:
+            pass
+
+
+
+    safeClick(driver=driver, xpath=os.environ.get("DEX_TOKEN_FIRST_RESULT"))
+
+
+def safeClick(driver, xpath):
+    staleElement = True
+    while staleElement:
+        try:
+            element = WebDriverWait(driver, timeout=0).until(EC.element_to_be_clickable((By.XPATH, xpath)))
+            element.click()
+            staleElement = False
+        except StaleElementReferenceException:
+            staleElement = True
+
 
 def closeBrowser(driver, display):
-    logger.info("Shutting down Selenium")
+    logger.debug("Shutting down Selenium")
 
     if display:
-        logger.info("Shutting down display since were running in Docker")
+        logger.debug("Shutting down display since were running in Docker")
         display.stop()
-        logger.info("Display shut down")
+        logger.debug("Display shut down")
 
     driver.quit()
 
-    logger.info("Selenium shutdown")
+    logger.debug("Selenium shutdown")
+
 
 def findWebElement(driver, elementString, timeout=30, selectorMode=True):
-    if selectorMode:
-        return WebDriverWait(driver, timeout).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, elementString))
-        )
-    else:
-        return WebDriverWait(driver, timeout).until(
-            EC.visibility_of_element_located((By.XPATH, elementString))
-        )
+    ignoredExceptions = (NoSuchElementException, StaleElementReferenceException)
+
+    while True:
+        try:
+            if selectorMode:
+                return WebDriverWait(driver, timeout, ignored_exceptions=ignoredExceptions).until(
+                    EC.visibility_of_element_located((By.CSS_SELECTOR, elementString))
+                )
+            else:
+                return WebDriverWait(driver, timeout, ignored_exceptions=ignoredExceptions).until(
+                    EC.visibility_of_element_located((By.XPATH, elementString))
+                )
+        except StaleElementReferenceException:
+            pass
+
+
+
+def findClassInWebElement(element, className):
+    staleElement = True
+    while staleElement:
+        try:
+            return element.find_element_by_class_name(className)
+        except StaleElementReferenceException:
+            print("waiting")
+            staleElement = True
+
+
 
 def openMetamaskTab(driver):
     load_dotenv()
@@ -140,19 +188,21 @@ def openMetamaskTab(driver):
     metamaskAlreadyOpen = "metamask" in tabs.keys()
 
     if metamaskAlreadyOpen:
-        logger.info("Switching to Metamask tab...")
+        logger.debug("Switching to Metamask tab...")
         switchToTab(driver, "metamask")
     else:
-        logger.info("Opening Metamask tab...")
+        logger.debug("Opening Metamask tab...")
         mmExtString = os.environ.get("MM_EXT_STR")
         mmURL = f'chrome-extension://{mmExtString}/home.html'
 
         driver.get(mmURL)
 
-    logger.info("Metamask opened!")
+    logger.debug("Metamask opened!")
+
 
 def openURLInNewTab(driver, url):
     driver.execute_script(f'''window.open("{url}","_blank");''')
+
 
 def getCurrentOpenTabs(driver):
     tabs = {}
@@ -176,9 +226,11 @@ def getCurrentOpenTabs(driver):
 
     return tabs
 
+
 def closeMetamaskPopup(driver):
     driver.switch_to_window(driver.window_handles[-1])
     driver.close()
+
 
 def closeAllTabsExceptFirst(driver):
     currentTabs = getCurrentOpenTabs(driver)
@@ -188,6 +240,7 @@ def closeAllTabsExceptFirst(driver):
         for key in keys:
             driver.switch_to_window(driver.window_handles[currentTabs[key]["tabNumber"]])
             driver.close()
+
 
 def switchToTab(driver, tab):
     currentTabs = getCurrentOpenTabs(driver)
@@ -199,35 +252,32 @@ def switchToTab(driver, tab):
 def switchMetamaskNetwork(driver, networkToSwitchTo):
     openMetamaskTab(driver)
 
-    logger.info("Locating Metamask switch dropdown...")
+    logger.debug("Locating Metamask switch dropdown...")
     switchDropdown = findWebElement(driver, os.environ.get("METAMASK_SWITCH_DROPDOWN"))
-    logger.info("Metamask switch dropdown located!")
+    logger.debug("Metamask switch dropdown located!")
 
-    logger.info("Getting current network...")
+    logger.debug("Getting current network...")
     mmCurrentNetwork = findWebElement(driver, os.environ.get("METAMASK_CURRENT_NETWORK"))
     currentNetwork = mmCurrentNetwork.text
-    logger.info(f"Got current network: {currentNetwork}")
+    logger.debug(f"Got current network: {currentNetwork}")
 
     if (currentNetwork == networkToSwitchTo):
-        logger.info(f"We are already on {networkToSwitchTo} - no need to switch!")
-        printSeperator(True)
+        logger.debug(f"We are already on {networkToSwitchTo} - no need to switch!")
         return
     else:
-        logger.info("Clicking Metamask switch dropdown...")
+        logger.debug("Clicking Metamask switch dropdown...")
         switchDropdown.click()
-        logger.info("Metamask switch dropdown Clicked!")
+        logger.debug("Metamask switch dropdown Clicked!")
 
-        logger.info("Checking dropdown is open...")
+        logger.debug("Checking dropdown is open...")
         findWebElement(driver, os.environ.get("METAMASK_ADD_NETWORK_BUTTON"))
-        logger.info("Metamask switch dropdown is open!")
+        logger.debug("Metamask switch dropdown is open!")
 
-        logger.info("Getting network list element...")
+        logger.debug("Getting network list element...")
         findWebElement(driver, os.environ.get("METAMASK_NETWORK_LIST"))
-        logger.info("Got network list element!")
+        logger.debug("Got network list element!")
 
-        logger.info(f"Switching to {networkToSwitchTo}...")
+        logger.debug(f"Switching to {networkToSwitchTo}...")
         networkListItem = driver.find_element_by_xpath(f"//span[text()='{networkToSwitchTo}']")
         networkListItem.click()
-        logger.info(f"Switched to {networkToSwitchTo}!")
-
-        printSeperator(True)
+        logger.debug(f"Switched to {networkToSwitchTo}!")

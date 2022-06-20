@@ -1,17 +1,40 @@
-from src.utils.frontend import initBrowser, loginIntoMetamask, findWebElement, searchDexForToken
+from src.utils.frontend import initBrowser, loginIntoMetamask, findElementByText, selectTokenInDex, switchMetamaskNetwork, safeClick
+import time
+
+startingTime = time.perf_counter()
 
 driver, display = initBrowser()
 
 loginIntoMetamask(driver=driver)
 
-driver.get("https://game.defikingdoms.com/#/marketplace/central")
+while True:
 
-trader = findWebElement(driver=driver, elementString="//*[text()='Trader']", selectorMode=False)
+    switchMetamaskNetwork(driver=driver, networkToSwitchTo="harmony")
 
-trader.click()
+    driver.get("https://game.defikingdoms.com/#/marketplace/central")
 
-searchDexForToken(driver=driver, direction="input", tokenSymbol="JEWEL")
+    trader = findElementByText(driver=driver, text="Trader")
 
-searchDexForToken(driver=driver, direction="output", tokenSymbol="1USDC")
+    trader.click()
 
-x = 1
+    selectTokenInDex(driver=driver, direction="input", tokenSymbol="JEWEL")
+
+    selectTokenInDex(driver=driver, direction="output", tokenSymbol="1USDC")
+
+    switchMetamaskNetwork(driver=driver, networkToSwitchTo="avalanchedfk")
+
+    driver.get("https://game.defikingdoms.com/#/marketplace/central")
+
+    trader = findElementByText(driver=driver, text="Trader")
+
+    trader.click()
+
+    selectTokenInDex(driver=driver, direction="input", tokenSymbol="JEWEL")
+
+    selectTokenInDex(driver=driver, direction="output", tokenSymbol="USDC")
+
+    endingTime = time.perf_counter()
+
+    print(f"Completed Web Automation In {endingTime - startingTime :0.4f} Seconds")
+
+    x = 1
