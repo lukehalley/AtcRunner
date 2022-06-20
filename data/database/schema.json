@@ -6,19 +6,25 @@
           "name": "harmony"
         },
         "token": {
+          "frontendSymbol": "JEWEL",
           "isGas": "False"
         },
-        "routes": {}
+        "stablecoin": {
+          "frontendSymbol": "1USDC",
+          "isGas": "False"
+        }
       },
       "chainTwo": {
         "chain": {
           "name": "avalanchedfk"
         },
         "token": {
+          "frontendSymbol": "JEWEL",
           "isGas": "True"
         },
-        "routes": {
-        "stablecoin": "DFK_USDC,CRYSTAL,JEWEL"
+        "stablecoin": {
+          "frontendSymbol": "USDC",
+          "isGas": "False"
         }
       },
       "arbitrage" : {
@@ -32,30 +38,27 @@
   "chains": {
     "harmony": {
       "rpc": "https://harmony-0-rpc.gateway.pokt.network",
+      "frontendUrl": "https://game.defikingdoms.com/#/marketplace/central",
       "id": "1666600000",
       "uniswapRouter": "0x24ad62502d1C652Cc7684081169D04896aC20f30",
       "uniswapFactory": "0x9014B937069918bd319f80e8B3BB4A2cf6FAA5F7",
       "blockExplorer": "https://explorer.harmony.one/tx",
-      "symbol": "ONE",
-      "gas": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a"
+      "gasDetails": {
+        "symbol": "ONE",
+        "address": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a"
+      }
     },
     "avalanchedfk": {
       "rpc": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc",
+      "frontendUrl": "https://game.defikingdoms.com/#/marketplace",
       "id": "53935",
       "uniswapRouter": "0x3C351E1afdd1b1BC44e931E12D4E05D6125eaeCa",
       "uniswapFactory": "0x794C07912474351b3134E6D6B3B7b3b4A07cbAAa",
       "blockExplorer": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx",
-      "symbol": "JEWEL",
-      "gas": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260"
-    },
-    "avalanche": {
-      "rpc": "https://api.avax.network/ext/bc/C/rpc",
-      "id": "43114",
-      "uniswapRouter": "0x60aE616a2155Ee3d9A68541Ba4544862310933d4",
-      "uniswapFactory": "0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10",
-      "blockExplorer": "https://snowtrace.io/tx/",
-      "symbol": "AVAX",
-      "gas": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
+      "gasDetails": {
+        "symbol": "JEWEL",
+        "address": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260"
+      }
     }
   }
 }

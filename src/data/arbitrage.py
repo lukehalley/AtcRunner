@@ -3,18 +3,19 @@ from itertools import repeat
 from collections import OrderedDict
 
 from src.utils.general import strToBool, printSeperator, percentageDifference, prependToOrderedDict, printArbitrageResult
-from src.utils.chain import getOppositeDirection, getJSONFile, getValueWithSlippage, addressToChecksumAddress
+from src.utils.chain import getOppositeDirection, getJSONFile, getValueWithSlippage
 
 from src.wallet.queries.swap import getSwapQuoteOut
 from src.wallet.actions.swap import swapToken
 from src.wallet.actions.bridge import executeBridge
 from src.wallet.queries.network import getWalletsInformation
+from src.wallet.queries.frontend import getRoutesFromFrontend
 
 from src.api.synapsebridge import estimateBridgeOutput
 from src.wallet.actions.network import topUpWalletGas
 from src.api.telegrambot import appendToMessage, updatedStatusMessage
 from src.api.firebase import fetchFromDatabase
-
+from src.api.dexscreener import getTokenAddressByDexId
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
@@ -159,7 +160,7 @@ def determineArbitrageStrategy(recipe):
 
     return recipe
 
-def simulateArbitrage(recipe):
+def simulateArbitrage(recipe, driver):
 
     arbStrat = getJSONFile(folder="arbitrage", file="arbStrat.json", section=None)
     steps = OrderedDict(arbStrat)
@@ -212,24 +213,46 @@ def simulateArbitrage(recipe):
 
             if stepType == "swap":
 
-                hasCustomRoutes = "routes" in recipe[position] and toSwapFrom in recipe[position]["routes"]
+                routes = getRoutesFromFrontend(
+                    driver=driver,
+                    network=recipe[position]["chain"]["name"],
+                    dexURL=recipe[position]["chain"]["frontendUrl"],
+                    amountToSwap=currentFunds[toSwapFrom],
+                    tokenSymbolIn=recipe[position][toSwapFrom]["frontendSymbol"],
+                    tokenSymbolOut=recipe[position][toSwapTo]["frontendSymbol"]
+                )
 
-                routes = []
-                if hasCustomRoutes:
-                    for route in recipe[position]["routes"][toSwapFrom]:
-                        routes.append(route["address"])
-                    amountOutDecimals = recipe[position]["routes"][toSwapFrom][-1]["decimals"]
+                if routes:
+                    routes.pop(0)
+                    routes.pop(-1)
+                    routeAddressList = [recipe[position][toSwapFrom]["address"]]
+
+                    for route in routes:
+
+                        localCheck = ["stablecoin", "token", "gas"]
+
+                        routeAddress = None
+
+                        for localToken in localCheck:
+                            if route == recipe[position][localToken]["symbol"]:
+                                routeAddress = recipe[position][localToken]["address"]
+
+                        if not routeAddress:
+                            routeAddress = getTokenAddressByDexId(route, recipe["arbitrage"]["dexId"])
+
+                        routeAddressList.append(routeAddress)
+
+                    routeAddressList.append(recipe[position][toSwapTo]["address"])
                 else:
-                    routes = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
-                    amountOutDecimals = recipe[position][toSwapTo]["decimals"]
+                    routeAddressList = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
 
                 quote = getSwapQuoteOut(
                     amountInNormal=currentFunds[toSwapFrom],
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
-                    amountOutDecimals=amountOutDecimals,
+                    amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                     rpcUrl=recipe[position]["chain"]["rpc"],
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
-                    routes=routes
+                    routes=routeAddressList
                 )
 
             elif stepType == "bridge":
