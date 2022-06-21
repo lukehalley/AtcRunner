@@ -4,11 +4,13 @@ load_dotenv()
 
 # Utility modules
 from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, calculateQueryInterval
-from src.utils.frontend import initBrowser
 from src.utils.logger import setupLogging
 
+# Selenium modules
+from src.web.actions import initBrowser
+
 # API modules
-from src.api.firebase import createDatabaseConnection, writeTransactionToDB
+from src.api.firebase import createDatabaseConnection
 
 # Data modules
 from src.data.recipe import getRecipeDetails
@@ -21,12 +23,12 @@ from src.wallet.queries.network import getWalletsInformation
 isDocker = checkIsDocker()
 logger = setupLogging(isDocker)
 
-# Selenium
+# Create a chrome instance and log into Metamask
 driver = initBrowser()
 
 # Test Settings
-useTestCapital = True
-startingCapitalTestAmount = 1000
+useTestCapital = False
+startingCapitalTestAmount = 5
 
 # Firebase Setup
 printSeperator()
@@ -60,12 +62,9 @@ while True:
 
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
-        recipe["status"]["capital"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
-
         # TEST STUFF ####################################
 
         if useTestCapital:
-            recipe["status"]["capital"] = startingCapitalTestAmount
             recipe["destination"]["wallet"]["balances"]["stablecoin"] = startingCapitalTestAmount
             recipe["origin"]["wallet"]["balances"]["stablecoin"] = startingCapitalTestAmount
 
@@ -77,7 +76,7 @@ while True:
 
         printSeperator(True)
 
-        if tripIsProfitible:
+        if tripIsProfitible or True:
 
             telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'])
 
