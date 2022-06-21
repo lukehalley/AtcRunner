@@ -40,6 +40,8 @@ def initBrowser():
 
     logger.debug("Selenium initialised & ready")
 
+    loginIntoMetamask(driver=driver)
+
     return driver
 
 def loginIntoMetamask(driver):

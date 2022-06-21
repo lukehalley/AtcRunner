@@ -67,7 +67,10 @@ def get_amounts_out(amount_in, addresses, rpc_address, routerAddress):
     contract_address = Web3.toChecksumAddress(routerAddress)
     contract = w3.eth.contract(contract_address, abi=ABI)
 
-    return contract.functions.getAmountsOut(amount_in, addresses).call()
+    # execution reverted: UniswapV2Library: IDENTICAL_ADDRESSES
+    contract.functions.getAmountsOut(amount_in, addresses).call()
+
+    return
 
 
 

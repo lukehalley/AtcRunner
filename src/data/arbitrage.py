@@ -9,13 +9,16 @@ from src.wallet.queries.swap import getSwapQuoteOut
 from src.wallet.actions.swap import swapToken
 from src.wallet.actions.bridge import executeBridge
 from src.wallet.queries.network import getWalletsInformation
-from src.wallet.queries.frontend import getRoutesFromFrontend
+
 
 from src.api.synapsebridge import estimateBridgeOutput
 from src.wallet.actions.network import topUpWalletGas
 from src.api.telegrambot import appendToMessage, updatedStatusMessage
 from src.api.firebase import fetchFromDatabase
 from src.api.dexscreener import getTokenAddressByDexId
+
+from src.web.actions import getRoutesFromFrontend
+
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
@@ -30,11 +33,6 @@ def getNextArbitrageNumber():
 def determineArbitrageStrategy(recipe):
 
     logger.debug(f"Calling Dexscreener API to find current price of pair")
-
-    # chainOneTokenPrice = getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["token"]["address"], recipe["arbitrage"]["dexId"])
-    # chainTwoTokenPrice = getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["token"]["address"], recipe["arbitrage"]["dexId"])
-    # chainOneGasPrice = getTokenPriceByDexId(recipe["chainOne"]["chain"]["name"], recipe["chainOne"]["gas"]["address"], recipe["arbitrage"]["dexId"])
-    # chainTwoGasPrice = getTokenPriceByDexId(recipe["chainTwo"]["chain"]["name"], recipe["chainTwo"]["gas"]["address"], recipe["arbitrage"]["dexId"])
 
     recipe["arbitrage"]["currentRoundTripCount"] = getNextArbitrageNumber()
 
@@ -184,7 +182,7 @@ def simulateArbitrage(recipe, driver):
                 f"Simulating Arbitrage")
     printSeperator()
 
-    startingStables = recipe["status"]["capital"]
+    startingStables = recipe["origin"]["wallet"]["balances"]["stablecoin"]
 
     currentFunds = {
         "stablecoin": startingStables,
@@ -454,7 +452,7 @@ def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
 
     for tripAmount in trips:
 
-        startingCapital = recipe["status"]["capital"]
+        startingCapital = recipe["origin"]["wallet"]["balances"]["stablecoin"]
         currentCapital = startingCapital
         profitLoss = 0
 
