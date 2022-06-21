@@ -23,9 +23,6 @@ from src.wallet.queries.network import getWalletsInformation
 isDocker = checkIsDocker()
 logger = setupLogging(isDocker)
 
-# Create a chrome instance and log into Metamask
-driver = initBrowser()
-
 # Test Settings
 useTestCapital = False
 startingCapitalTestAmount = 5
@@ -71,6 +68,8 @@ while True:
         # TEST STUFF ####################################
 
         printSeperator(True)
+
+        driver = initBrowser()
 
         tripIsProfitible = simulateArbitrage(recipe, driver=driver)
 
