@@ -12,7 +12,11 @@ from src.web.general import getMetamaskURL
 
 logger = logging.getLogger("DFK-DEX")
 
-def initBrowser():
+def initBrowser(killChrome=True):
+
+    if killChrome:
+        os.system("ps aux | grep chrome | awk ' { print $2 } ' | xargs kill -9")
+
     logger.debug("Initialising Selenium")
 
     isDocker = checkIsDocker()
