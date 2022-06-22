@@ -1,18 +1,18 @@
 import json, os, sys, logging, time
 from web3 import Web3
 from hexbytes import HexBytes
-
+from decimal import Decimal
 from src.utils.general import get_project_root, percentage
 
 logger = logging.getLogger("DFK-DEX")
 
 # Get the wei amount of a value from int value
 def getTokenDecimalValue(amount, decimalPlaces=18):
-    return str(format(float(amount) * (10 ** decimalPlaces), f'.0f'))
+    return str(format(Decimal(amount) * (10 ** decimalPlaces), f'.0f'))
 
 # Get the int amount of a value from wei value
 def getTokenNormalValue(amount, decimalPlaces=18):
-    return str(format(float(amount) / (10 ** decimalPlaces), f'.{decimalPlaces}f'))
+    return str(format(Decimal(amount) / (10 ** decimalPlaces), f'.{decimalPlaces}f'))
 
 # Get the ABI file for a uniswap contract
 def getABI(file, folder="abi"):

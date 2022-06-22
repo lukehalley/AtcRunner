@@ -1,6 +1,6 @@
 import os, requests, logging
 from retry import retry
-
+from decimal import Decimal
 from src.utils.api import buildApiURL
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
 
@@ -43,7 +43,7 @@ def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountToBridge,
               "amountFrom": amountFromDecimal}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_ESTIMATE_BRIDGE_OUTPUT_ENDPOINT"))
     result = (requests.get(endpoint, params=params)).json()
-    amountToReceive = float(getTokenNormalValue(result["amountToReceive"], decimalPlacesFrom))
+    amountToReceive = Decimal(getTokenNormalValue(result["amountToReceive"], decimalPlacesFrom))
     return amountToReceive
 
 # Estimate the output of a swap

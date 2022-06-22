@@ -1,5 +1,5 @@
 import logging, os, sys, json
-
+from decimal import Decimal
 from retry import retry
 from web3 import Web3
 
@@ -81,8 +81,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
     from src.wallet.queries.swap import getSwapQuoteIn
     from src.wallet.actions.swap import swapToken
 
-    minimumGasBalance = float(os.environ.get("MIN_GAS_BALANCE"))
-    maximumGasBalance = float(os.environ.get("MAX_GAS_BALANCE"))
+    minimumGasBalance = Decimal(os.environ.get("MIN_GAS_BALANCE"))
+    maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
 
     gasBalance = recipe[direction]["wallet"]["balances"]["gas"]
 
