@@ -1,5 +1,5 @@
 import os, requests, logging
-
+from decimal import Decimal
 from retry import retry
 
 from src.utils.api import buildApiURL
@@ -56,7 +56,7 @@ def getTokenPriceByDexId(chainName, tokenAddress, dexId):
 
     for token in tokens:
         if token["chainId"] == chainName and token["dexId"] == dexId:
-            return float(token["priceUsd"])
+            return Decimal(token["priceUsd"])
 
 # Get the price of one token by its address
 def getTokenPrice(chainName, tokenAddress):
@@ -64,7 +64,7 @@ def getTokenPrice(chainName, tokenAddress):
 
     for token in tokens:
         if token["chainId"] == chainName:
-            return float(token["priceUsd"])
+            return Decimal(token["priceUsd"])
 
 def getTokenAddressByDexId(query, dexId):
     tokens = doSearch(query)

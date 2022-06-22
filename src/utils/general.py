@@ -5,7 +5,7 @@ from time import strftime, gmtime
 from distutils import util
 from pathlib import Path
 from collections import OrderedDict
-
+from decimal import Decimal
 from src.api.telegrambot import appendToMessage
 
 logger = logging.getLogger("DFK-DEX")
@@ -82,14 +82,14 @@ def printSeperator(newLine=False):
 
 # Get percentage of a number
 def percentage(percent, whole):
-  return (percent * float(whole)) / 100.0
+  return (Decimal(percent) * Decimal(whole)) / Decimal(100.0)
 
 def percentageDifference(a, b, rnd=6):
     return round((((a - b) * 100) / b), rnd)
 
 # Check what percentage a number is of another number
 def percentageOf(part, whole):
-  return 100 * float(part)/float(whole)
+  return 100 * Decimal(part)/Decimal(whole)
 
 # Get current date time
 def getCurrentDateTime():
@@ -120,7 +120,7 @@ def find_exp(number) -> int:
 
 # Move a decimal point for a float
 def moveDecimalPoint(num, decimal_places):
-    num = float(num)
+    num = Decimal(num)
 
     for _ in range(abs(decimal_places)):
 
@@ -129,11 +129,11 @@ def moveDecimalPoint(num, decimal_places):
         else:
             num /= 10.
 
-    return float(num)
+    return Decimal(num)
 
 # Calculate how many times we can query
 def calculateQueryInterval(recipeCount):
-    requestLimit = float(os.environ.get("REQUEST_LIMIT"))
+    requestLimit = Decimal(os.environ.get("REQUEST_LIMIT"))
     return 60 / (requestLimit / recipeCount)
 
 def prependToOrderedDict(dictOriginal, dictAdd):
@@ -146,5 +146,5 @@ def prependToOrderedDict(dictOriginal, dictAdd):
     arr.move_to_end(dictAdd[0], last=False)
     return arr
 
-def truncateFloat(f, n):
+def truncateDecimal(f, n):
     return math.floor(f * 10 ** n) / 10 ** n

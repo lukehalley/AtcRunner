@@ -1,13 +1,14 @@
-import logging, os, decimal
+import logging, os
 from collections import OrderedDict
 from itertools import repeat
+from decimal import Decimal
 
 from src.api.dexscreener import getTokenAddressByDexId
 from src.api.firebase import fetchFromDatabase
 from src.api.synapsebridge import estimateBridgeOutput
 from src.api.telegrambot import appendToMessage, updatedStatusMessage
 from src.utils.chain import getOppositeDirection, getJSONFile, getValueWithSlippage
-from src.utils.general import strToBool, printSeperator, percentageDifference, prependToOrderedDict, printArbitrageResult, truncateFloat
+from src.utils.general import strToBool, printSeperator, percentageDifference, prependToOrderedDict, printArbitrageResult, truncateDecimal
 from src.wallet.actions.bridge import executeBridge
 from src.wallet.actions.network import topUpWalletGas
 from src.wallet.actions.swap import swapToken
@@ -133,12 +134,12 @@ def determineArbitrageStrategy(recipe):
         logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Arbitrage Opportunity Identified')
 
     logger.info(
-        f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateFloat(recipe["origin"]["token"]["price"], 6)} on '
+        f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateDecimal(recipe["origin"]["token"]["price"], 6)} on '
         f'{recipe["origin"]["chain"]["name"]}'
     )
 
     logger.info(
-        f'Sell: {recipe["destination"]["token"]["name"]} @ ${truncateFloat(recipe["destination"]["token"]["price"], 6)} on '
+        f'Sell: {recipe["destination"]["token"]["name"]} @ ${truncateDecimal(recipe["destination"]["token"]["price"], 6)} on '
         f'{recipe["destination"]["chain"]["name"]} '
     )
 
@@ -201,7 +202,7 @@ def simulateArbitrage(recipe, driver):
 
         if toSwapTo != "done":
 
-            logger.info(f'{stepNumber}. {stepType.title()} {truncateFloat(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
             printSeperator()
 
@@ -270,7 +271,7 @@ def simulateArbitrage(recipe, driver):
 
             currentFunds[toSwapTo] = quote
 
-            logger.info(f'   Out {truncateFloat(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'   Out {truncateDecimal(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
 
             printSeperator()
 
@@ -281,10 +282,10 @@ def simulateArbitrage(recipe, driver):
 
             if isProfitable:
                 diff = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
-                logger.info(f'Profit: ${truncateFloat(profitLoss, 6)} ({diff}%)')
+                logger.info(f'Profit: ${truncateDecimal(profitLoss, 6)} ({diff}%)')
             else:
                 diff = percentageDifference(startingStables, currentFunds["stablecoin"], 2)
-                logger.info(f'Loss: ${truncateFloat(profitLoss, 6)} ({diff}%)')
+                logger.info(f'Loss: ${truncateDecimal(profitLoss, 6)} ({diff}%)')
 
             return isProfitable
 
@@ -345,7 +346,7 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
         if toSwapTo != "done":
 
-            logger.info(f'{stepNumber}. {stepType.title()} {truncateFloat(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
             telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber}. Doing {position.title()} {stepType.title()} -> 📤")
 
@@ -443,7 +444,7 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
             printSeperator()
 
-            logger.info(f'Output: {truncateFloat(result, 6)} {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[position][toSwapTo]["name"]}')
             telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
             printSeperator()
@@ -524,7 +525,7 @@ def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
 # Check if arbitrage is worth it
 def checkArbitrageIsWorthIt(difference):
     # Dex Screen Envs
-    threshold = float(os.environ.get("ARBITRAGE_THRESHOLD"))
+    threshold = Decimal(os.environ.get("ARBITRAGE_THRESHOLD"))
     if difference >= threshold:
         return True
     else:

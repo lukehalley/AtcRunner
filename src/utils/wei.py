@@ -1,4 +1,5 @@
 from web3 import Web3
+from decimal import Decimal
 
 def getWeiFamily(decimal):
     decimal = int("1" + str("0" * decimal))
@@ -34,10 +35,12 @@ def getWeiFamily(decimal):
 
 # Get the wei amount of a value from int value
 def getTokenDecimalValue(amount, decimalPlaces=18):
+    safeAmount = Decimal(amount)
     family = getWeiFamily(decimalPlaces)
-    return int(Web3.toWei(amount, family))
+    return int(Web3.toWei(safeAmount, family))
 
 # Get the int amount of a value from wei value
 def getTokenNormalValue(amount, decimalPlaces=18):
+    safeAmount = Decimal(amount)
     family = getWeiFamily(decimalPlaces)
-    return float(Web3.fromWei(amount, family))
+    return Decimal(Web3.fromWei(safeAmount, family))

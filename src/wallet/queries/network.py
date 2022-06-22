@@ -1,5 +1,5 @@
 import logging, os
-
+from decimal import Decimal
 from retry import retry
 from web3 import Web3
 import dex.erc20 as erc20
@@ -33,7 +33,7 @@ def getGasPrice(rpcURL):
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
-    gasPrice = float(w3.fromWei(w3.eth.gas_price, 'gwei'))
+    gasPrice = Decimal(w3.fromWei(w3.eth.gas_price, 'gwei'))
 
     return gasPrice
 
@@ -51,7 +51,7 @@ def getTokenBalance(rpcURL, tokenAddress, tokenDecimals):
 
     balance = getTokenNormalValue(amount=balanceWei, decimalPlaces=tokenDecimals)
 
-    return float(balance)
+    return Decimal(balance)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletsInformation(recipe, printBalances=False):
@@ -114,7 +114,7 @@ def getWalletGasBalance(rpcURL, walletAddress):
     # if printBalance:
     #     logger.info(f"Wallet {walletAddress} has {balance} {gasSymbol}")
 
-    return float(balance)
+    return Decimal(balance)
 
 def compareBalance(expected, actual, feeAllowancePercentage=10):
 
