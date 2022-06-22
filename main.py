@@ -43,6 +43,8 @@ printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 printSeperator(True)
 
+driver = initBrowser()
+
 while True:
 
     for recipesTitle, originalRecipes in recipes.items():
@@ -68,8 +70,6 @@ while True:
         # TEST STUFF ####################################
 
         printSeperator(True)
-
-        driver = initBrowser()
 
         tripIsProfitible = simulateArbitrage(recipe, driver=driver)
 

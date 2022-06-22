@@ -1,9 +1,12 @@
 import logging, os
+
+from retry import retry
 from web3 import Web3
 import dex.erc20 as erc20
 
-from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch, getTokenNormalValue
-from src.utils.general import isBetween,percentage
+from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
+from src.utils.wei import getTokenNormalValue
+from src.utils.general import isBetween, percentage, strToBool
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -14,17 +17,17 @@ privateKey = os.environ.get("NOHACKERSALLOWED")
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 
+def getPrivateKey():
+    return privateKey
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcURL):
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
     return w3.eth.account.privateKeyToAccount(privateKey).address
 
-# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getPrivateKey():
-    return privateKey
-
-# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getGasPrice(rpcURL):
 
     # Connect to our RPC.
@@ -34,7 +37,7 @@ def getGasPrice(rpcURL):
 
     return gasPrice
 
-# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getTokenBalance(rpcURL, tokenAddress, tokenDecimals):
 
     walletAddress = getWalletAddressFromPrivateKey(rpcURL=rpcURL)
@@ -50,6 +53,7 @@ def getTokenBalance(rpcURL, tokenAddress, tokenDecimals):
 
     return float(balance)
 
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletsInformation(recipe, printBalances=False):
 
     directionList = ("origin", "destination")
@@ -75,7 +79,9 @@ def getWalletsInformation(recipe, printBalances=False):
             tokenDecimals=recipe[direction]["stablecoin"]["decimals"]
         )
 
-        if recipe[direction]["token"]["isGas"]:
+        tokenIsGas = strToBool(recipe[direction]["token"]["isGas"])
+
+        if tokenIsGas:
             recipe[direction]["wallet"]["balances"]["token"] = recipe[direction]["wallet"]["balances"]["gas"]
         else:
             recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
@@ -98,7 +104,7 @@ def getWalletsInformation(recipe, printBalances=False):
 
     return recipe
 
-# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletGasBalance(rpcURL, walletAddress):
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))

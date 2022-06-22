@@ -1,4 +1,6 @@
 import logging, os, sys, json
+
+from retry import retry
 from web3 import Web3
 
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
@@ -13,21 +15,10 @@ from src.api.telegrambot import sendMessage
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-# Send a raw transaction
-def sendRawTransaction(rpcURL, transaction):
+transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
+transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 
-    w3 = Web3(Web3.HTTPProvider(rpcURL))
-
-    privateKey = getPrivateKey()
-
-    try:
-        signedTransaction = w3.eth.account.sign_transaction(transaction, private_key=privateKey)
-        sentTransaction = w3.eth.sendRawTransaction(signedTransaction.rawTransaction)
-        return sentTransaction.hex()
-    except ValueError as transactionError:
-        logger.error(f"An error occured when sending raw transaction: {transactionError}")
-        raise
-
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):
 
     # Setup our web3 object
@@ -35,6 +26,8 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
     privateKey = getPrivateKey()
     walletAddress = w3.eth.account.privateKeyToAccount(privateKey).address
     w3.eth.default_account = walletAddress
+
+    tx["nonce"] = w3.eth.getTransactionCount(walletAddress)
 
     telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
 
@@ -81,8 +74,9 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
         if telegramStatusMessage:
             updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
         logger.error(errMsg)
-        sys.exit(errMsg)
+        raise Exception(errMsg)
 
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def topUpWalletGas(recipe, direction, toSwapFrom):
     from src.wallet.queries.swap import getSwapQuoteIn
     from src.wallet.actions.swap import swapToken
@@ -126,7 +120,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
                      f'Not enough {toSwapFrom}s (balance: {balanceBeforeBridge}) to purchase {gasTokensNeeded} {recipe[direction]["gas"]["symbol"]} ' \
                      f'for {amountInQuoted} {recipe[direction][toSwapFrom]["symbol"]}'
             logger.error(errMsg)
-            sys.exit(errMsg)
+            raise Exception(errMsg)
 
         logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[direction]["gas"]["symbol"]} for {amountInQuoted} {recipe[direction][toSwapFrom]["symbol"]}')
 
