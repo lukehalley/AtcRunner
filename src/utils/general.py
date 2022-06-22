@@ -1,5 +1,4 @@
-import functools, logging, os, re, time
-import sys
+import functools, logging, os, re, time, math
 from datetime import datetime
 from math import log10, floor
 from time import strftime, gmtime
@@ -53,7 +52,8 @@ def printArbitrageProfitable(count):
 # Print the Arbitrage is profitable alert
 def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime, telegramStatusMessage):
     finishingTime = time.perf_counter()
-    timeString = f"Completed Arbitrage In {startingTime - finishingTime:0.4f} Seconds"
+    timeTook = finishingTime - startingTime
+    timeString = f"Completed Arbitrage In {getMinSecString(timeTook)}"
     if wasProfitable:
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.info(f"ARBITRAGE #{count} RESULT")
@@ -145,3 +145,6 @@ def prependToOrderedDict(dictOriginal, dictAdd):
     arr = OrderedDict(items)
     arr.move_to_end(dictAdd[0], last=False)
     return arr
+
+def truncateFloat(f, n):
+    return math.floor(f * 10 ** n) / 10 ** n

@@ -2,6 +2,8 @@ from src.utils.chain import getABI
 
 from web3 import Web3
 
+from web3.exceptions import ContractLogicError
+
 ABI = getABI("IUniswapV2Router02.json")
 
 def weth(rpc_address, routerAddress):

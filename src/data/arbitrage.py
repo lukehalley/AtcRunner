@@ -1,22 +1,18 @@
-import os, sys, logging
-from itertools import repeat
+import logging, os, decimal
 from collections import OrderedDict
+from itertools import repeat
 
-from src.utils.general import strToBool, printSeperator, percentageDifference, prependToOrderedDict, printArbitrageResult
-from src.utils.chain import getOppositeDirection, getJSONFile, getValueWithSlippage
-
-from src.wallet.queries.swap import getSwapQuoteOut
-from src.wallet.actions.swap import swapToken
-from src.wallet.actions.bridge import executeBridge
-from src.wallet.queries.network import getWalletsInformation
-
-
-from src.api.synapsebridge import estimateBridgeOutput
-from src.wallet.actions.network import topUpWalletGas
-from src.api.telegrambot import appendToMessage, updatedStatusMessage
-from src.api.firebase import fetchFromDatabase
 from src.api.dexscreener import getTokenAddressByDexId
-
+from src.api.firebase import fetchFromDatabase
+from src.api.synapsebridge import estimateBridgeOutput
+from src.api.telegrambot import appendToMessage, updatedStatusMessage
+from src.utils.chain import getOppositeDirection, getJSONFile, getValueWithSlippage
+from src.utils.general import strToBool, printSeperator, percentageDifference, prependToOrderedDict, printArbitrageResult, truncateFloat
+from src.wallet.actions.bridge import executeBridge
+from src.wallet.actions.network import topUpWalletGas
+from src.wallet.actions.swap import swapToken
+from src.wallet.queries.network import getWalletsInformation, getTokenBalance
+from src.wallet.queries.swap import getSwapQuoteOut
 from src.web.actions import getRoutesFromFrontend
 
 # Set up our logging
@@ -108,7 +104,7 @@ def determineArbitrageStrategy(recipe):
         else:
             errMsg = f'Invalid direction lock: {directionlock}'
             logger.error(errMsg)
-            sys.exit(errMsg)
+            raise Exception(errMsg)
 
     else:
         if origin == recipe["chainOne"]["chain"]["name"]:
@@ -137,12 +133,12 @@ def determineArbitrageStrategy(recipe):
         logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Arbitrage Opportunity Identified')
 
     logger.info(
-        f'Buy: {recipe["origin"]["token"]["name"]} @ ${round(recipe["origin"]["token"]["price"], 6)} on '
+        f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateFloat(recipe["origin"]["token"]["price"], 6)} on '
         f'{recipe["origin"]["chain"]["name"]}'
     )
 
     logger.info(
-        f'Sell: {recipe["destination"]["token"]["name"]} @ ${round(recipe["destination"]["token"]["price"], 6)} on '
+        f'Sell: {recipe["destination"]["token"]["name"]} @ ${truncateFloat(recipe["destination"]["token"]["price"], 6)} on '
         f'{recipe["destination"]["chain"]["name"]} '
     )
 
@@ -205,7 +201,7 @@ def simulateArbitrage(recipe, driver):
 
         if toSwapTo != "done":
 
-            logger.info(f'{stepNumber}. {stepType.title()} {round(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'{stepNumber}. {stepType.title()} {truncateFloat(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
             printSeperator()
 
@@ -270,11 +266,11 @@ def simulateArbitrage(recipe, driver):
             else:
                 errMsg = f'Invalid Arbitrage simulation type: {stepType}'
                 logger.error(errMsg)
-                sys.exit(errMsg)
+                raise Exception(errMsg)
 
             currentFunds[toSwapTo] = quote
 
-            logger.info(f'   Out {round(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'   Out {truncateFloat(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
 
             printSeperator()
 
@@ -285,10 +281,10 @@ def simulateArbitrage(recipe, driver):
 
             if isProfitable:
                 diff = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
-                logger.info(f'Profit: ${round(profitLoss, 6)} ({diff}%)')
+                logger.info(f'Profit: ${truncateFloat(profitLoss, 6)} ({diff}%)')
             else:
                 diff = percentageDifference(startingStables, currentFunds["stablecoin"], 2)
-                logger.info(f'Loss: ${round(profitLoss, 6)} ({diff}%)')
+                logger.info(f'Loss: ${truncateFloat(profitLoss, 6)} ({diff}%)')
 
             return isProfitable
 
@@ -320,6 +316,11 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
     startingStables = recipe["origin"]["wallet"]["balances"]["stablecoin"]
 
+    currentFunds = {
+        "stablecoin": startingStables,
+        "token": 0
+    }
+
     for stepNumber, stepSettings in steps.items():
 
         stepType = stepSettings["type"]
@@ -339,12 +340,12 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
         stepNumber = list(steps).index(stepNumber) + 1
 
         if stepNumber <= 1:
-            logger.info(f'Starting Capital: {startingStables} {recipe[position]["stablecoin"]["name"]}')
+            logger.info(f'Starting Capital: {currentFunds["stablecoin"]} {recipe[position]["stablecoin"]["name"]}')
             printSeperator()
 
         if toSwapTo != "done":
 
-            logger.info(f'{stepNumber}. {stepType.title()} {round(recipe[position]["wallet"]["balances"][toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'{stepNumber}. {stepType.title()} {truncateFloat(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
             telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber}. Doing {position.title()} {stepType.title()} -> 📤")
 
@@ -352,8 +353,10 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
             if stepType == "swap":
 
+                balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+
                 amountOutQuoted = getSwapQuoteOut(
-                    amountInNormal=recipe[position]["wallet"]["balances"][toSwapFrom],
+                    amountInNormal=currentFunds[toSwapFrom],
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                     rpcUrl=recipe[position]["chain"]["rpc"],
@@ -364,7 +367,7 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                 amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
                 swapResult = swapToken(
-                    amountInNormal=recipe[position]["wallet"]["balances"][toSwapFrom],
+                    amountInNormal=currentFunds[toSwapFrom],
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                     amountOutNormal=amountOutMinWithSlippage,
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
@@ -382,11 +385,25 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
                 recipe = getWalletsInformation(recipe)
 
+                balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+
+                while balanceAfterSwap == balanceBeforeSwap:
+                    print(f"Waiting for {toSwapTo} to update after swap")
+                    recipe = getWalletsInformation(recipe)
+                    balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+
+                result = balanceAfterSwap - balanceBeforeSwap
+
+                currentFunds[toSwapTo] = result
+
                 telegramStatusMessage = swapResult["telegramStatusMessage"]
 
             elif stepType == "bridge":
 
+                balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+
                 bridgeResult = executeBridge(
+                    amountToBridge=currentFunds[toSwapFrom],
                     fromChain=recipe[position]["chain"]["id"],
                     fromTokenSymbol=recipe[position][toSwapFrom]['symbol'],
                     fromTokenDecimals=recipe[position][toSwapFrom]["decimals"],
@@ -398,12 +415,21 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                     toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
                     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_bridge",
-                    amountToBridge=recipe[position]["wallet"]["balances"][toSwapFrom],
                     explorerUrl=recipe[position]["chain"]["blockExplorer"],
                     telegramStatusMessage=telegramStatusMessage
                 )
 
                 recipe = getWalletsInformation(recipe)
+                balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+
+                while balanceAfterBridge == balanceBeforeBridge:
+                    print(f"Waiting for {toSwapTo} to update after bridge")
+                    recipe = getWalletsInformation(recipe)
+                    balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+
+                result = balanceAfterBridge - balanceBeforeBridge
+
+                currentFunds[toSwapFrom] = result
 
                 telegramStatusMessage = bridgeResult["telegramStatusMessage"]
 
@@ -411,13 +437,13 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                 updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
                 errMsg = f'Invalid Arbitrage execution type: {stepType}'
                 logger.error(errMsg)
-                sys.exit(errMsg)
+                raise Exception(errMsg)
 
             recipe = getWalletsInformation(recipe)
 
             printSeperator()
 
-            logger.info(f'Output: {round(recipe[position]["wallet"]["balances"][toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
+            logger.info(f'Output: {truncateFloat(result, 6)} {recipe[position][toSwapTo]["name"]}')
             telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
             printSeperator()

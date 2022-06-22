@@ -1,9 +1,11 @@
-import logging, sys
+import logging
+
 from web3 import Web3
 
-from src.utils.chain import getABI, generateBlockExplorerLink, getTokenNormalValue, getTransactionDeadline, getTokenDecimalValue
-from src.wallet.queries.network import getTokenBalance, getWalletGasBalance
+from src.utils.chain import getABI, getTransactionDeadline
+from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
 from src.wallet.actions.network import signAndSendTransaction
+from src.wallet.queries.network import getTokenBalance, getWalletGasBalance
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")

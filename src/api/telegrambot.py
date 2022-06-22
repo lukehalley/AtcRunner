@@ -1,5 +1,6 @@
 import logging, os
 from dotenv import load_dotenv
+from retry import retry
 from telegram import Bot
 
 load_dotenv()
@@ -10,11 +11,16 @@ logger = logging.getLogger("DFK-DEX")
 
 bot = Bot(token)
 
+# Retry Envs
+httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))
+httpRetryDelay = int(os.environ.get("HTTP_RETRY_LIMIT"))
+
+@retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def sendMessage(msg):
     result = bot.send_message(channelId, msg)
-
     return result
 
+@retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def appendToMessage(originalMessage, messageToAppend):
     originalText = originalMessage["text"]
 
@@ -26,6 +32,7 @@ def appendToMessage(originalMessage, messageToAppend):
 
     return updatedMessage
 
+@retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def updatedStatusMessage(originalMessage, newStatus):
 
     originalText = originalMessage["text"]

@@ -15,7 +15,7 @@ logger = logging.getLogger("DFK-DEX")
 def initBrowser(killChrome=True):
 
     if killChrome:
-        os.system("ps aux | grep chrome | awk ' { print $2 } ' | xargs kill -9")
+        os.system("ps aux | grep chrome | awk ' { print $2 } ' | xargs kill -9 > /dev/null 2>&1")
 
     logger.debug("Initialising Selenium")
 

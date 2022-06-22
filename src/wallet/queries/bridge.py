@@ -1,14 +1,19 @@
-import logging, time, sys
+import logging, time, sys, os
+
+from retry import retry
 
 from src.utils.general import printSeperator, getMinSecString
 from src.api.synapsebridge import estimateBridgeOutput, checkBridgeStatus
 from src.data.fees import addFee
-from src.wallet.queries.network import getTokenBalance
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def waitForBridgeToComplete(transactionId, amountSent, toToken, toChain, timeout=600):
+transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
+transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def waitForBridgeToComplete(transactionId, toToken, toChain, timeout=600):
 
     timeoutMins = int(timeout / 60)
 
@@ -47,70 +52,6 @@ def waitForBridgeToComplete(transactionId, amountSent, toToken, toChain, timeout
     elif bridgeTimedOut:
         errMsg = f'⛔️ Waiting for funds to bridge timed out - Bridging was unsuccessful!'
         logger.error(errMsg)
-        sys.exit(errMsg)
+        raise Exception(errMsg)
 
     return fundsBridged
-
-# Calculate bridge fees
-def calculateSynapseBridgeFees(recipe):
-
-    bridgeDict = {
-        "originToDestination": {
-            "position": "origin"
-        },
-        "destinationToOrigin": {
-            "position": "destination"
-        }
-    }
-
-    feeDict = {}
-
-    directionList = ("origin", "destination")
-
-    printSeperator()
-    logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
-                f"Calculating Bridge Fees For Arbitrage")
-    printSeperator()
-
-    for tripName, settings in bridgeDict.items():
-
-        direction = settings["position"]
-
-        if direction == "origin":
-            tokenType = "token"
-            index = 1
-        else:
-            tokenType = "stablecoin"
-            index = 0
-
-        currentOrigin = recipe[direction]
-        oppositeDirection = directionList[index]
-        currentDestination = recipe[oppositeDirection]
-
-        bridgeQuote = estimateBridgeOutput(
-            fromChain=currentOrigin["chain"]["id"],
-            toChain=currentDestination["chain"]["id"],
-            fromToken=currentOrigin[tokenType]['symbol'],
-            toToken=currentDestination[tokenType]['symbol'],
-            amountToBridge=currentOrigin["wallet"]["predictions"][tokenType],
-            decimalPlacesFrom=currentOrigin[tokenType]["decimals"],
-            decimalPlacesTo=currentDestination[tokenType]["decimals"],
-            returning=(not direction == "origin"))
-
-        amountToReceive = bridgeQuote["amountToReceive"]
-
-        if tokenType == "token":
-            feeDict[tripName] = bridgeQuote["bridgeFee"] * currentOrigin[tokenType]["price"]
-        else:
-            feeDict[tripName] = bridgeQuote["bridgeFee"]
-
-        bridgeToken = currentOrigin[tokenType]["symbol"]
-        logger.info(f'{direction} -> {oppositeDirection}: receive {amountToReceive} {bridgeToken} with a fee of {feeDict[tripName]} {bridgeToken}')
-
-    recipe = addFee(recipe=recipe, fee=feeDict, section="bridge")
-
-    printSeperator()
-
-    logger.info(f"Bridge Fees Total: ${recipe['status']['fees']['bridge']['subTotal']}")
-
-    return recipe

@@ -1,7 +1,7 @@
 import logging
 from web3 import Web3
 
-from src.utils.chain import getTokenDecimalValue, getTokenNormalValue
+from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
 
 from src.api.synapsebridge import generateUnsignedBridgeTransaction
 
@@ -56,7 +56,6 @@ def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL
 
     fundsBridged = waitForBridgeToComplete(
         transactionId=transactionResult["hash"],
-        amountSent=amountToBridge,
         toToken=toTokenSymbol,
         toChain=toChain,
         timeout=1800

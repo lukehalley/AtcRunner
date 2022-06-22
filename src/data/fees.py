@@ -33,7 +33,7 @@ def addFee(recipe, fee, section):
     else:
         errMsg = f'Invalid fee: {fee}'
         logger.error(errMsg)
-        sys.exit(errMsg)
+        raise Exception(errMsg)
 
     recipe["status"]["fees"]["total"] = 0
 

@@ -35,7 +35,6 @@ def getJSONFile(folder, file, section=None, asStr=False):
         else:
             return json.load(jsonFile)
 
-
 # Get the opposite arb direction
 def getOppositeDirection(direction):
 
@@ -68,13 +67,16 @@ def checkWalletsMatch(recipe):
     if recipe["origin"]["wallet"]["address"] != recipe["destination"]["wallet"]["address"]:
         errMsg = f'originWalletAddress [{recipe["origin"]["wallet"]["address"]}] did not match destinationWalletAddress [{recipe["destination"]["wallet"]["address"]}] this should never happen!'
         logger.error(errMsg)
-        sys.exit(errMsg)
+        raise Exception(errMsg)
 
 def getTransactionDeadline(timeInSeconds=300):
     return int(time.time() + timeInSeconds)
 
 def addressToChecksumAddress(address):
     return Web3.toChecksumAddress(address)
+
+def getTrueSwappedAmount(amountBefore, amountAfter):
+    return abs(amountAfter - (amountAfter - amountBefore))
 
 class HexJsonEncoder(json.JSONEncoder):
     def default(self, obj):
