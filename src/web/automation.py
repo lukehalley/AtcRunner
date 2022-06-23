@@ -26,21 +26,6 @@ def findWebElement(driver, elementString, timeout=30, selectorMode=True):
             EC.visibility_of_element_located((By.XPATH, elementString))
         )
 
-    # ignoredExceptions = (NoSuchElementException, StaleElementReferenceException)
-    #
-    # while True:
-    #     try:
-    #         if selectorMode:
-    #             return WebDriverWait(driver, timeout, ignored_exceptions=ignoredExceptions).until(
-    #                 EC.visibility_of_element_located((By.CSS_SELECTOR, elementString))
-    #             )
-    #         else:
-    #             return WebDriverWait(driver, timeout, ignored_exceptions=ignoredExceptions).until(
-    #                 EC.visibility_of_element_located((By.XPATH, elementString))
-    #             )
-    #     except StaleElementReferenceException:
-    #         pass
-
 def findClassInWebElement(element, className):
     staleElement = True
     while staleElement:
@@ -68,7 +53,16 @@ def getRouteForSwap(driver, direction, amount):
                            elementString=directionSelector,
                            selectorMode=True)
 
-    typeToField(directionField, str(amount))
+    oppositeDirectionField = findWebElement(driver=driver,
+                           elementString=oppositeDirectionSelector,
+                           selectorMode=True)
+
+    directionField.clear()
+    oppositeDirectionField.clear()
+
+    roundedAmount = round(amount, 15)
+
+    typeToField(directionField, str(roundedAmount))
 
     oppositeField = findWebElement(driver=driver,
                            elementString=oppositeDirectionSelector,
@@ -78,12 +72,12 @@ def getRouteForSwap(driver, direction, amount):
     while not tradeIsReady:
         tradeIsReady = oppositeField.get_attribute("value") != ""
 
-    routeSelector = "/html/body/div[2]/div[1]/section/div/div[4]/div/div[2]/div"
+    routeSelector = os.environ.get("DEX_ROUTES")
 
     try:
         routes = findWebElement(driver=driver,
                                elementString=routeSelector,
-                               selectorMode=False, timeout=3).text.split("\n")
+                               selectorMode=False, timeout=1).text.split("\n")
     except:
         routes = []
         pass

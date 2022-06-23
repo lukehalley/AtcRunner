@@ -43,7 +43,8 @@ printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 printSeperator(True)
 
-driver = initBrowser()
+originDriver = initBrowser(profileToUse=1)
+destinationDriver = initBrowser(profileToUse=2)
 
 while True:
 
@@ -71,11 +72,11 @@ while True:
 
         printSeperator(True)
 
-        tripIsProfitible = simulateArbitrage(recipe, driver=driver)
+        tripIsProfitible = simulateArbitrage(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
 
         printSeperator(True)
 
-        if tripIsProfitible or True:
+        if tripIsProfitible and False:
 
             telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'])
 
@@ -87,5 +88,5 @@ while True:
             printSeperator()
             logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Trip Not Profitable, waiting {minimumInterval} seconds')
             logger.info(f'Waiting {minimumInterval} seconds...')
-            time.sleep(minimumInterval)
+            time.sleep(0)
             printSeperator(True)

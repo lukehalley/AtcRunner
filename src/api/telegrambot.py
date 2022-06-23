@@ -36,11 +36,17 @@ def appendToMessage(originalMessage, messageToAppend):
 def updatedStatusMessage(originalMessage, newStatus):
 
     originalText = originalMessage["text"]
-    statusText = originalText[-1]
-    newText = originalText.replace(statusText, newStatus)
 
-    updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
-                          message_id=originalMessage.message_id,
-                          text=newText)
+    if originalText != newStatus:
+        statusText = originalText[-1]
+        newText = originalText.replace(statusText, newStatus)
 
-    return updatedMessage
+        updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
+                              message_id=originalMessage.message_id,
+                              text=newText)
+
+
+        return updatedMessage
+    else:
+        logger.info("Telegram message same as before - not updating.")
+        return

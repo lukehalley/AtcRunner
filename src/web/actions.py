@@ -1,25 +1,32 @@
 import logging, os
 
 from pyvirtualdisplay import Display
+from retry import retry
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 
 from src.utils.general import checkIsDocker
 from src.web.automation import findWebElement, safeClick, selectTokenInDex, getRouteForSwap
-from src.web.tabs import openURL, getCurrentTabCount, switchToTabByIndex, closeLastTab
+from src.web.tabs import openURL, getCurrentTabCount, closeLastTab, switchToTabByIndex
 from src.web.general import getMetamaskURL
 
 logger = logging.getLogger("DFK-DEX")
 
-def initBrowser(killChrome=True):
+metamaskRetryLimit = int(os.environ.get("METAMASK_RETRY_LIMIT"))
+metamaskRetryDelay = int(os.environ.get("METAMASK_RETRY_DELAY"))
 
-    if killChrome:
-        os.system("ps aux | grep chrome | awk ' { print $2 } ' | xargs kill -9 > /dev/null 2>&1")
+@retry(tries=metamaskRetryLimit, delay=metamaskRetryDelay, logger=logger)
+def initBrowser(profileToUse):
+
+    profileName = f"Profile {profileToUse}"
 
     logger.debug("Initialising Selenium")
 
     isDocker = checkIsDocker()
+
+    if profileToUse == "Profile 1":
+        os.system("ps aux | grep chrome | awk ' { print $2 } ' | xargs kill -9 > /dev/null 2>&1")
 
     if isDocker:
         logger.debug("Starting Virtual Display since we are running in Docker")
@@ -30,29 +37,36 @@ def initBrowser(killChrome=True):
     chrome_options = webdriver.ChromeOptions()
 
     if isDocker:
-        chrome_options.add_argument(f"user-data-dir=/home/arb-bot/lib/chrome")
+        chrome_options.add_argument(f"user-data-dir=/home/arb-bot/chrome_{profileToUse}")
     else:
-        chrome_options.add_argument(f"user-data-dir=/Users/luke/Documents/chrome")
+        chrome_options.add_argument(f"user-data-dir=/Users/luke/dev/dfk-arb/lib/chrome_{profileToUse}")
 
-    chrome_options.add_argument("profile-directory=Profile 6")
+    chrome_options.add_argument(f"--profile-directory={profileName}")
     chrome_options.add_argument("--start-maximized")
 
     if isDocker:
-        driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver', options=chrome_options)
-    else:
-        driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=chrome_options)
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument('--window-size=1920,1080')
 
-    logger.debug("Selenium initialised & ready")
+        driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver', options=chrome_options, service_args=["--verbose", "--log-path=chromedriver.log"])
+    else:
+        driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=chrome_options, service_args=["--verbose", "--log-path=chromedriver.log"])
+
+    logger.info(f"{profileName} Selenium Initialised")
 
     loginIntoMetamask(driver=driver)
 
     return driver
 
+@retry(tries=metamaskRetryLimit, delay=metamaskRetryDelay, logger=logger)
 def loginIntoMetamask(driver):
 
     metamaskUrl = getMetamaskURL()
 
     openURL(driver=driver, url=metamaskUrl, newTab=False)
+
+    driver.save_screenshot("/home/arb-bot/metamask.png")
 
     logger.debug("Waiting for Metamask password input...")
     passwordInput = None
@@ -77,6 +91,10 @@ def loginIntoMetamask(driver):
     findWebElement(driver, os.environ.get("METAMASK_TABS"))
     logger.debug("Metamask logged in!")
 
+def getCurrentMetamaskNetwork(driver):
+    mmCurrentNetwork = findWebElement(driver, os.environ.get("METAMASK_CURRENT_NETWORK"))
+    return mmCurrentNetwork.text
+
 def switchMetamaskNetwork(driver, networkToSwitchTo):
 
     switchToTabByIndex(driver=driver, index=0)
@@ -86,8 +104,7 @@ def switchMetamaskNetwork(driver, networkToSwitchTo):
     logger.debug("Metamask switch dropdown located!")
 
     logger.debug("Getting current network...")
-    mmCurrentNetwork = findWebElement(driver, os.environ.get("METAMASK_CURRENT_NETWORK"))
-    currentNetwork = mmCurrentNetwork.text
+    currentNetwork = getCurrentMetamaskNetwork(driver=driver)
     logger.debug(f"Got current network: {currentNetwork}")
 
     if (currentNetwork == networkToSwitchTo):
@@ -125,21 +142,25 @@ def closeBrowser(driver, display):
 
 def getRoutesFromFrontend(driver, network, dexURL, amountToSwap, tokenSymbolIn, tokenSymbolOut):
 
-    switchMetamaskNetwork(driver=driver, networkToSwitchTo=network)
+    switchToTabByIndex(driver=driver, index=0)
+
+    currentNetwork = getCurrentMetamaskNetwork(driver=driver)
+
+    if currentNetwork != network:
+        switchMetamaskNetwork(driver=driver, networkToSwitchTo=network)
 
     tabCount = getCurrentTabCount(driver=driver)
 
     if tabCount <= 1:
         openURL(driver=driver, url=dexURL, newTab=True)
-
-    safeClick(driver=driver, xpath=f"//*[text()='Trader']")
+        safeClick(driver=driver, xpath=f"//*[text()='Trader']")
+    else:
+        switchToTabByIndex(driver=driver, index=1)
 
     selectTokenInDex(driver=driver, direction="input", tokenSymbol=tokenSymbolIn)
 
     selectTokenInDex(driver=driver, direction="output", tokenSymbol=tokenSymbolOut)
 
     routes = getRouteForSwap(driver=driver, direction="input", amount=amountToSwap)
-
-    closeLastTab(driver=driver)
 
     return routes

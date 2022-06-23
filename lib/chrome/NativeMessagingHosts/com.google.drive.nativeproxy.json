@@ -1,9 +1,0 @@
-{
-  "allowed_origins": [
-    "chrome-extension://lmjegmlicamnimmfhcmpkclmigmmcbeh/"
-  ], 
-  "description": "Google Drive Client Native Messaging Proxy", 
-  "name": "com.google.drive.nativeproxy", 
-  "path": "/Applications/Backup And Sync From Google.app/Contents/Helpers/nativeproxy", 
-  "type": "stdio"
-}
