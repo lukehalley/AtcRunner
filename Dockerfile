@@ -34,19 +34,7 @@ COPY $SYNAPSE_API_DIR/ /$HOME_DIR/server/
 COPY ["package.json", "/$HOME_DIR/"]
 RUN npm i pm2
 
-# Selenium
-#ARG CHROME_VERSION="102.0.5005.115-1"
-#ARG CHROMEDRIVER_VERSION="102.0.5005.61"
-#ARG CHROMEDRIVER_LOCATION="/usr/bin"
-#RUN wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb && \
-#    apt-get update && \
-#    apt install -y --allow-downgrades /tmp/chrome.deb && \
-#    rm /tmp/chrome.deb && \
-#    wget -q --continue -P $CHROMEDRIVER_LOCATION https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip && \
-#    unzip $CHROMEDRIVER_LOCATION/chromedriver* -d $CHROMEDRIVER_LOCATION && \
-#    apt-get install xvfb nano -y
-
-ARG src="lib/chrome"
-COPY $src /$HOME_DIR/chrome/
+COPY lib/chrome_1 /$HOME_DIR/chrome_1/
+COPY lib/chrome_2 /$HOME_DIR/chrome_2/
 
 #ENTRYPOINT [ "python", "main.py" ]
