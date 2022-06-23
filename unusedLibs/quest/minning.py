@@ -28,4 +28,5 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 # TODO: Improve ore yield calculation for different rock types
 # TODO: Balance ore yields to match resource economy targets
 # Determine ore yield based on mining depth
+# Ore yield scales with mining skill level and pickaxe quality tier
 # Detect ore veins within scan radius based on player mining skill
