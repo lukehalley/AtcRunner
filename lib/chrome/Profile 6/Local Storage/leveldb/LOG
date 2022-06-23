@@ -1,6 +1,0 @@
-2022/06/19-17:13:01.252 5203 Reusing MANIFEST /Users/luke/Library/Application Support/Google/Chrome/Profile 6/Local Storage/leveldb/MANIFEST-000001
-2022/06/19-17:13:01.254 5203 Recovering log #4
-2022/06/19-17:13:01.257 5203 Reusing old log /Users/luke/Library/Application Support/Google/Chrome/Profile 6/Local Storage/leveldb/000004.log 
-2022/06/19-17:14:15.185 4b03 Level-0 table #8: started
-2022/06/19-17:14:15.206 4b03 Level-0 table #8: 59246 bytes OK
-2022/06/19-17:14:15.245 4b03 Delete type=0 #4

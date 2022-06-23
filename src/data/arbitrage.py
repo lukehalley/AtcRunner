@@ -155,7 +155,7 @@ def determineArbitrageStrategy(recipe):
 
     return recipe
 
-def simulateArbitrage(recipe, driver):
+def simulateArbitrage(recipe, originDriver, destinationDriver):
 
     arbStrat = getJSONFile(folder="arbitrage", file="arbStrat.json", section=None)
     steps = OrderedDict(arbStrat)
@@ -193,6 +193,11 @@ def simulateArbitrage(recipe, driver):
         oppositePosition = getOppositeDirection(position)
         toSwapFrom = stepSettings["from"]
         toSwapTo = stepSettings["to"]
+
+        if position == "origin":
+            driver = originDriver
+        else:
+            driver = destinationDriver
 
         stepNumber = list(steps).index(stepNumber) + 1
 

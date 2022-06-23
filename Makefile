@@ -1,5 +1,10 @@
 build:
+	make -i nuke
 	docker build . -t arb-bot:$(version)
+	docker run -itd arb-bot:$(version)
+
+exec:
+	docker exec -it $(docker ps --latest --quiet) bash
 
 newRepo:
 	aws ecr create-repository --repository-name $(name) --region eu-west-1

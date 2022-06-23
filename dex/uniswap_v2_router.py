@@ -1,3 +1,5 @@
+import sys
+
 from src.utils.chain import getABI
 
 from web3 import Web3
@@ -50,10 +52,18 @@ def get_amount_in(amount_out, reserve_in, reserve_out, rpc_address, routerAddres
 def get_amounts_in(amount_out, addresses, rpc_address, routerAddress):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
-    contract_address = Web3.toChecksumAddress(routerAddress)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    hasDuplicateAddresses = len(addresses) != len(set(addresses))
 
-    return contract.functions.getAmountsIn(amount_out, addresses).call()
+    if not hasDuplicateAddresses:
+
+        contract_address = Web3.toChecksumAddress(routerAddress)
+        contract = w3.eth.contract(contract_address, abi=ABI)
+
+        return contract.functions.getAmountsIn(amount_out, addresses).call()
+
+    else:
+
+        sys.exit(f"getAmountsIn - has duplicate addresses: {addresses}")
 
 def get_amount_out(amount_out, reserve_in, reserve_out, rpc_address, routerAddress):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
@@ -66,10 +76,18 @@ def get_amount_out(amount_out, reserve_in, reserve_out, rpc_address, routerAddre
 def get_amounts_out(amount_in, addresses, rpc_address, routerAddress):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
-    contract_address = Web3.toChecksumAddress(routerAddress)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    hasDuplicateAddresses = len(addresses) != len(set(addresses))
 
-    return contract.functions.getAmountsOut(amount_in, addresses).call()
+    if not hasDuplicateAddresses:
+
+        contract_address = Web3.toChecksumAddress(routerAddress)
+        contract = w3.eth.contract(contract_address, abi=ABI)
+
+        return contract.functions.getAmountsOut(amount_in, addresses).call()
+
+    else:
+
+        sys.exit(f"get_amounts_out - has duplicate addresses: {addresses}")
 
 
 

@@ -13,13 +13,22 @@ logger = logging.getLogger("DFK-DEX")
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress):
-
+def normaliseSwapRoutes(routes):
     normalisedRoutes = []
 
     for route in routes:
-        normalisedRoutes.append(Web3.toChecksumAddress(route))
+        normalisedAddress = Web3.toChecksumAddress(route)
+
+        if normalisedAddress not in normalisedRoutes:
+            normalisedRoutes.append(Web3.toChecksumAddress(route))
+
+    return normalisedRoutes
+
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress):
+
+    normalisedRoutes = normaliseSwapRoutes(routes)
 
     amountInWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
 
@@ -34,18 +43,12 @@ def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,
 
     quote = getTokenNormalValue(amountOutWei, amountOutDecimals)
 
-    amountInLength = len(str(amountInWei))
-    amountOutLength = len(str(amountOutWei))
-
     return quote
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,  rpcUrl, routerAddress):
 
-    normalisedRoutes = []
-
-    for route in routes:
-        normalisedRoutes.append(Web3.toChecksumAddress(route))
+    normalisedRoutes = normaliseSwapRoutes(routes)
 
     amountWei = int(getTokenDecimalValue(amountOutNormal, amountOutDecimals))
 

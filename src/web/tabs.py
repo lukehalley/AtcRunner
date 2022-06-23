@@ -23,7 +23,7 @@ def openURL(driver, url, newTab=False):
     else:
         driver.get(url)
 
-def switchToTab(driver, url):
+def switchToTabByUrl(driver, url):
     currentTabs = getCurrentOpenTabs(driver=driver)
     desiredTab = currentTabs.index(url)
     driver.switch_to_window(driver.window_handles[desiredTab])
@@ -37,8 +37,6 @@ def getCurrentURL(driver):
 def closeLastTab(driver):
     driver.switch_to_window(driver.window_handles[-1])
     driver.close()
-
-######################################################
 
 
 
