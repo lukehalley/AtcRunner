@@ -1,5 +1,5 @@
 import logging
-import os
+import os, sys
 
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
@@ -62,7 +62,12 @@ def getRouteForSwap(driver, direction, amount):
 
     roundedAmount = round(amount, 15)
 
-    typeToField(directionField, str(roundedAmount))
+    amountToEnter = str(roundedAmount)
+
+    while directionField.get_attribute('value') != amountToEnter:
+        directionField.clear()
+        oppositeDirectionField.clear()
+        typeToField(directionField, amountToEnter)
 
     oppositeField = findWebElement(driver=driver,
                            elementString=oppositeDirectionSelector,
@@ -101,20 +106,37 @@ def selectTokenInDex(driver, direction, tokenSymbol):
         tokenAddressInput = findWebElement(driver=driver, elementString=os.environ.get("DEX_TOKEN_SEARCH"),
                                            selectorMode=True)
 
+        tokenAddressInput.clear()
+
         typeToField(tokenAddressInput, tokenSymbol)
 
-        symbolText = ""
-        while symbolText != tokenSymbol:
+        # selenium.common.exceptions.ElementClickInterceptedException: Message: element click intercepted: Element
+        # <div class="sc-n0cvl7-9 fpbloM">...</div>
+        # is not clickable at point (132, 204).
+        # Other element would receive the click: <div class="PlainModal_plainOverlay__378BW"></div>
+
+
+
+        tokenFound = False
+        while not tokenFound:
             try:
-                symbolText = findWebElement(driver=driver,
+                firstResultText = findWebElement(driver=driver,
                                             elementString=os.environ.get("DEX_TOKEN_FIRST_RESULT_SYMBOL"),
                                             selectorMode=False).text
+
+                if firstResultText != tokenSymbol:
+                    elementByText = findElementByText(driver, tokenSymbol)
+                    elementByText.click()
+                    tokenFound = True
+                elif firstResultText == tokenSymbol:
+                    safeClick(driver=driver, xpath=os.environ.get("DEX_TOKEN_FIRST_RESULT"))
+                    tokenFound = True
+                else:
+                    x = 1
+                    sys.exit("Couldnt find token in search")
+
             except StaleElementReferenceException:
                 pass
-
-
-
-        safeClick(driver=driver, xpath=os.environ.get("DEX_TOKEN_FIRST_RESULT"))
 
 def safeClick(driver, xpath):
     staleElement = True

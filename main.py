@@ -1,4 +1,4 @@
-import time
+import time, os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -37,7 +37,7 @@ recipes = getRecipeDetails()
 printSeperator(True)
 
 # Interval Set-Up
-minimumInterval = calculateQueryInterval(len(recipes))
+minimumInterval = int(os.environ.get("ARBITRAGE_INTERVAL"))
 
 printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")

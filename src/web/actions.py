@@ -153,6 +153,17 @@ def getRoutesFromFrontend(driver, network, dexURL, amountToSwap, tokenSymbolIn, 
 
     if tabCount <= 1:
         openURL(driver=driver, url=dexURL, newTab=True)
+
+        userDetailsBoxToggleSel = os.environ.get("DEX_USER_DETAILS_SHOW_HIDE_TOGGLE_BTN")
+
+        userDetailsBoxToggle = findWebElement(driver=driver, elementString=userDetailsBoxToggleSel,
+                                              selectorMode=True)
+
+        userDetailsBoxOpen = "down" not in userDetailsBoxToggle.get_attribute("class")
+
+        if userDetailsBoxOpen:
+            userDetailsBoxToggle.click()
+
         safeClick(driver=driver, xpath=f"//*[text()='Trader']")
     else:
         switchToTabByIndex(driver=driver, index=1)

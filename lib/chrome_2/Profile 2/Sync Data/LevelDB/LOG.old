@@ -1,3 +1,3 @@
-2022/06/23-12:35:01.708 14603 Reusing MANIFEST /Users/luke/dev/dfk-arb/lib/chrome_2/Profile 2/Sync Data/LevelDB/MANIFEST-000001
-2022/06/23-12:35:01.709 14603 Recovering log #3
-2022/06/23-12:35:01.709 14603 Reusing old log /Users/luke/dev/dfk-arb/lib/chrome_2/Profile 2/Sync Data/LevelDB/000003.log 
+2022/06/23-16:35:52.798 14403 Reusing MANIFEST /Users/luke/dev/dfk-arb/lib/chrome_2/Profile 2/Sync Data/LevelDB/MANIFEST-000001
+2022/06/23-16:35:52.798 14403 Recovering log #3
+2022/06/23-16:35:52.798 14403 Reusing old log /Users/luke/dev/dfk-arb/lib/chrome_2/Profile 2/Sync Data/LevelDB/000003.log 
