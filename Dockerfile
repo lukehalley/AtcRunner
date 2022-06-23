@@ -32,9 +32,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && \
 ARG SYNAPSE_API_DIR="lib/synapse-api"
 COPY $SYNAPSE_API_DIR/ /$HOME_DIR/server/
 COPY ["package.json", "/$HOME_DIR/"]
-RUN npm i pm2
+RUN npm install pm2 -g
 
 COPY lib/chrome_1 /$HOME_DIR/chrome_1/
 COPY lib/chrome_2 /$HOME_DIR/chrome_2/
+
+COPY start.sh /
+RUN chmod +x /start.sh
+
+#CMD ["/start.sh"]
 
 #ENTRYPOINT [ "python", "main.py" ]
