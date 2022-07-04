@@ -1,3 +1,4 @@
+"""Initialize and configure the Discord bot with required intents and event handlers."""
 """Discord bot for managing game interactions and commands."""
 """Discord bot main module for AtcRunner."""
 """Discord bot integration for AtcRunner."""
