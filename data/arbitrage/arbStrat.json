@@ -10,23 +10,5 @@
         "to": "token",
         "position": "origin",
         "type": "bridge"
-    },
-    "stepThree": {
-        "from": "token",
-        "to": "stablecoin",
-        "position": "destination",
-        "type": "swap"
-    },
-    "stepFour": {
-        "from": "stablecoin",
-        "to": "stablecoin",
-        "position": "destination",
-        "type": "bridge"
-    },
-    "stepFive": {
-        "from": "stablecoin",
-        "to": "done",
-        "position": "origin",
-        "type": "swap"
     }
 }

@@ -1,5 +1,6 @@
 import logging
 import os, sys
+import time
 
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
@@ -60,7 +61,7 @@ def getRouteForSwap(driver, direction, amount):
     directionField.clear()
     oppositeDirectionField.clear()
 
-    roundedAmount = round(amount, 15)
+    roundedAmount = round(amount, 6)
 
     amountToEnter = str(roundedAmount)
 
@@ -120,16 +121,19 @@ def selectTokenInDex(driver, direction, tokenSymbol):
         tokenFound = False
         while not tokenFound:
             try:
+
+                waitForDexToLoad(driver=driver)
+
                 firstResultText = findWebElement(driver=driver,
                                             elementString=os.environ.get("DEX_TOKEN_FIRST_RESULT_SYMBOL"),
                                             selectorMode=False).text
 
-                if firstResultText != tokenSymbol:
+                if firstResultText == tokenSymbol:
+                    safeClick(driver=driver, xpath=os.environ.get("DEX_TOKEN_FIRST_RESULT"))
+                    tokenFound = True
+                elif firstResultText != tokenSymbol:
                     elementByText = findElementByText(driver, tokenSymbol)
                     elementByText.click()
-                    tokenFound = True
-                elif firstResultText == tokenSymbol:
-                    safeClick(driver=driver, xpath=os.environ.get("DEX_TOKEN_FIRST_RESULT"))
                     tokenFound = True
                 else:
                     x = 1

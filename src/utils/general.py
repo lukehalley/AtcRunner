@@ -13,7 +13,7 @@ logger = logging.getLogger("DFK-DEX")
 from src.api.telegrambot import sendMessage
 
 # Get the root of the python project
-def get_project_root() -> Path:
+def getProjectRoot() -> Path:
     return Path(__file__).parent.parent
 
 # Convert a str to a bool
@@ -148,3 +148,6 @@ def prependToOrderedDict(dictOriginal, dictAdd):
 
 def truncateDecimal(f, n):
     return math.floor(f * 10 ** n) / 10 ** n
+
+def getDictLength(sub):
+    return len(sub)

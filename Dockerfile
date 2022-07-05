@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y nano python3-pip python-dev build-essen
 
 # Python
 COPY data/ /$HOME_DIR/data/
-COPY dex/ /$HOME_DIR/dex/
+COPY src/dex/ /$HOME_DIR/dex/
 COPY src/ /$HOME_DIR/src/
 RUN mkdir -p /$HOME_DIR/log
 COPY [".env", "main.py", "requirements.txt", "/$HOME_DIR/"]

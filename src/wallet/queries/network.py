@@ -2,11 +2,13 @@ import logging, os
 from decimal import Decimal
 from retry import retry
 from web3 import Web3
-import dex.erc20 as erc20
+
 
 from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
 from src.utils.wei import getTokenNormalValue
 from src.utils.general import isBetween, percentage, strToBool
+
+from src.dex.erc20 import balance_of, wei2eth
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -42,8 +44,7 @@ def getTokenBalance(rpcURL, tokenAddress, tokenDecimals):
 
     walletAddress = getWalletAddressFromPrivateKey(rpcURL=rpcURL)
 
-    balanceWei = erc20.balance_of\
-            (
+    balanceWei = balance_of (
                 rpc_address=rpcURL,
                 address=walletAddress,
                 token_address=tokenAddress
@@ -109,7 +110,7 @@ def getWalletGasBalance(rpcURL, walletAddress):
 
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
-    balance = erc20.wei2eth(w3, erc20.balance_of(address=walletAddress, rpc_address=rpcURL, getGasTokenBalance=True))
+    balance = wei2eth(w3, balance_of(address=walletAddress, rpc_address=rpcURL, getGasTokenBalance=True))
 
     # if printBalance:
     #     logger.info(f"Wallet {walletAddress} has {balance} {gasSymbol}")

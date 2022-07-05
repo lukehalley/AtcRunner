@@ -1,82 +1,309 @@
-[67702:259:0623/183236.388855:INFO:CONSOLE(1)] "Setting up Sentry Remote Error Reporting for 'production': SENTRY_DSN", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183236.468592:INFO:CONSOLE(1)] "Removing intrinsics.Object.hasOwn", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183236.474349:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183236.474432:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183236.474763:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183236.474862:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183236.475931:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183236.476115:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183237.108486:INFO:CONSOLE(1)] "missing dep: ethjs>ethjs-unit>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183237.114700:INFO:CONSOLE(1)] "missing dep: ethjs>number-to-bn>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183237.149683:INFO:CONSOLE(1)] "LavaMoat: ignoring write attempt to read-access global "XMLHttpRequest"", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183237.225636:INFO:CONSOLE(1)] "missing dep: @metamask/controllers>eth-method-registry>ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183237.315943:INFO:CONSOLE(1)] "missing dep: @metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183237.351916:INFO:CONSOLE(1)] "missing dep: ethjs-contract>ethjs-abi>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183237.358697:INFO:CONSOLE(1)] "missing dep: ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183237.465224:INFO:CONSOLE(1)] "Invalid asm.js: Unexpected token", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/background-2.js (1)
-[67702:259:0623/183238.095157:INFO:CONSOLE(1)] "%s: %s MaxListenersExceededWarning Possible EventEmitter memory leak detected. 13 "update" listeners added. Use emitter.setMaxListeners() to increase limit.", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.130628:INFO:CONSOLE(0)] "Error with Permissions-Policy header: Origin trial controlled feature not enabled: 'interest-cohort'.", source:  (0)
-[67702:259:0623/183238.170078:INFO:CONSOLE(1)] "Setting up Sentry Remote Error Reporting for 'production': SENTRY_DSN", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.182904:INFO:CONSOLE(1)] "Removing intrinsics.Object.hasOwn", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
-[67702:259:0623/183238.183560:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLast", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
-[67702:259:0623/183238.183606:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLastIndex", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
-[67702:259:0623/183238.183652:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLast", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
-[67702:259:0623/183238.183677:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLastIndex", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
-[67702:259:0623/183238.183824:INFO:CONSOLE(1)] "Removing intrinsics.%StringPrototype%.at", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
-[67702:259:0623/183238.185045:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLast", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
-[67702:259:0623/183238.185083:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLastIndex", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
-[67702:259:0623/183238.197149:INFO:CONSOLE(17)] "Service worker registered!", source: https://metamask.github.io/phishing-warning/v1.1.0/bundle.js (17)
-[67702:259:0623/183238.212531:INFO:CONSOLE(1)] "Removing intrinsics.Object.hasOwn", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.213200:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.213331:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.213515:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.213633:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.214506:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.214634:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.602113:INFO:CONSOLE(1)] "missing dep: ethjs>number-to-bn>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.611727:INFO:CONSOLE(1)] "missing dep: ethjs-contract>ethjs-abi>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.619277:INFO:CONSOLE(1)] "missing dep: ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.623001:INFO:CONSOLE(1)] "missing dep: ethjs>ethjs-unit>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.868508:INFO:CONSOLE(1)] "LavaMoat: ignoring write attempt to read-access global "XMLHttpRequest"", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183238.928941:INFO:CONSOLE(1)] "missing dep: @metamask/controllers>eth-method-registry>ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183239.074634:INFO:CONSOLE(1)] "missing dep: @metamask/eth-token-tracker>ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
-[67702:259:0623/183244.719310:INFO:CONSOLE(0)] "Error with Permissions-Policy header: Origin trial controlled feature not enabled: 'interest-cohort'.", source:  (0)
-[67702:259:0623/183244.866061:INFO:CONSOLE(373)] "MetaMask < = > Ledger Bridge initialized from https://metamask.github.io/eth-ledger-bridge-keyring/!", source: https://metamask.github.io/eth-ledger-bridge-keyring/bundle.js (373)
-[67702:259:0623/183302.778993:INFO:CONSOLE(1)] "MetaMask: 'ethereum.send(...)' is deprecated and may be removed in the future. Please use 'ethereum.sendAsync(...)' or 'ethereum.request(...)' instead.
+[90584:259:0704/122301.692759:INFO:CONSOLE(1)] "Setting up Sentry Remote Error Reporting for 'production': SENTRY_DSN", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122301.758083:INFO:CONSOLE(1)] "Removing intrinsics.Object.hasOwn", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122301.758981:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122301.759163:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122301.759349:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122301.759482:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122301.761008:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122301.761065:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122302.309129:INFO:CONSOLE(1)] "missing dep: ethjs>ethjs-unit>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122302.313144:INFO:CONSOLE(1)] "missing dep: ethjs>number-to-bn>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122302.345589:INFO:CONSOLE(1)] "LavaMoat: ignoring write attempt to read-access global "XMLHttpRequest"", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122302.407310:INFO:CONSOLE(1)] "missing dep: @metamask/controllers>eth-method-registry>ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122302.494465:INFO:CONSOLE(1)] "missing dep: @metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry>ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122302.529165:INFO:CONSOLE(1)] "missing dep: ethjs-contract>ethjs-abi>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122302.534732:INFO:CONSOLE(1)] "missing dep: ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122302.634964:INFO:CONSOLE(1)] "Invalid asm.js: Unexpected token", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/background-2.js (1)
+[90584:259:0704/122303.228920:INFO:CONSOLE(1)] "%s: %s MaxListenersExceededWarning Possible EventEmitter memory leak detected. 13 "update" listeners added. Use emitter.setMaxListeners() to increase limit.", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.253192:INFO:CONSOLE(0)] "Error with Permissions-Policy header: Origin trial controlled feature not enabled: 'interest-cohort'.", source:  (0)
+[90584:259:0704/122303.300428:INFO:CONSOLE(1)] "Setting up Sentry Remote Error Reporting for 'production': SENTRY_DSN", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.305267:INFO:CONSOLE(1)] "Removing intrinsics.Object.hasOwn", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
+[90584:259:0704/122303.305898:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLast", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
+[90584:259:0704/122303.305943:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLastIndex", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
+[90584:259:0704/122303.306018:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLast", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
+[90584:259:0704/122303.306038:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLastIndex", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
+[90584:259:0704/122303.306305:INFO:CONSOLE(1)] "Removing intrinsics.%StringPrototype%.at", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
+[90584:259:0704/122303.307530:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLast", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
+[90584:259:0704/122303.307563:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLastIndex", source: https://metamask.github.io/phishing-warning/v1.1.0/lockdown-install.js (1)
+[90584:259:0704/122303.321587:INFO:CONSOLE(17)] "Service worker registered!", source: https://metamask.github.io/phishing-warning/v1.1.0/bundle.js (17)
+[90584:259:0704/122303.345465:INFO:CONSOLE(1)] "Removing intrinsics.Object.hasOwn", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.346473:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.346585:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.346756:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.346893:INFO:CONSOLE(1)] "Removing intrinsics.%ArrayPrototype%.@@unscopables.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.348081:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLast", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.348264:INFO:CONSOLE(1)] "Removing intrinsics.%TypedArrayPrototype%.findLastIndex", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.715357:INFO:CONSOLE(1)] "missing dep: ethjs>number-to-bn>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.721935:INFO:CONSOLE(1)] "missing dep: ethjs-contract>ethjs-abi>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.729993:INFO:CONSOLE(1)] "missing dep: ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.733932:INFO:CONSOLE(1)] "missing dep: ethjs>ethjs-unit>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122303.951306:INFO:CONSOLE(1)] "LavaMoat: ignoring write attempt to read-access global "XMLHttpRequest"", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122304.001029:INFO:CONSOLE(1)] "missing dep: @metamask/controllers>eth-method-registry>ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122304.132768:INFO:CONSOLE(1)] "missing dep: @metamask/eth-token-tracker>ethjs>bn.js requested buffer", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/122306.708544:INFO:CONSOLE(0)] "Error with Permissions-Policy header: Origin trial controlled feature not enabled: 'interest-cohort'.", source:  (0)
+[90584:259:0704/122306.834527:INFO:CONSOLE(373)] "MetaMask < = > Ledger Bridge initialized from https://metamask.github.io/eth-ledger-bridge-keyring/!", source: https://metamask.github.io/eth-ledger-bridge-keyring/bundle.js (373)
+[90584:259:0704/122320.819728:INFO:CONSOLE(1)] "MetaMask: 'ethereum.send(...)' is deprecated and may be removed in the future. Please use 'ethereum.sendAsync(...)' or 'ethereum.request(...)' instead.
 For more information, see: https://eips.ethereum.org/EIPS/eip-1193", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
-[67702:259:0623/183302.811799:INFO:CONSOLE(1)] "MetaMask: The event 'close' is deprecated and may be removed in the future. Please use 'disconnect' instead.
+[90584:259:0704/122320.836403:INFO:CONSOLE(1)] "MetaMask: The event 'close' is deprecated and may be removed in the future. Please use 'disconnect' instead.
 For more information, see: https://eips.ethereum.org/EIPS/eip-1193#disconnect", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
-[67702:259:0623/183302.812058:INFO:CONSOLE(1)] "MetaMask: The event 'networkChanged' is deprecated and may be removed in the future. Use 'chainChanged' instead.
+[90584:259:0704/122320.836631:INFO:CONSOLE(1)] "MetaMask: The event 'networkChanged' is deprecated and may be removed in the future. Use 'chainChanged' instead.
 For more information, see: https://eips.ethereum.org/EIPS/eip-1193#chainchanged", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
-[67702:259:0623/183303.498140:INFO:CONSOLE(2)] "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu", source: https://game.defikingdoms.com/static/js/10.b6f29e81.chunk.js (2)
-[67702:259:0623/183303.502795:INFO:CONSOLE(2)] "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu", source: https://game.defikingdoms.com/static/js/10.b6f29e81.chunk.js (2)
-[67702:259:0623/183303.518107:INFO:CONSOLE(1)] "Profile not found for account id: 0x19035Fda2292F246c804EFe69d1A9F46d4B3F300.", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183303.701504:INFO:CONSOLE(1)] "error getting item quantity Error: call revert exception [ See: https://links.ethers.org/v5-errors-CALL_EXCEPTION ] (method="balanceOf(address)", data="0x", errorArgs=null, errorName=null, errorSignature=null, reason=null, code=CALL_EXCEPTION, version=abi/5.6.1)", source: https://game.defikingdoms.com/static/js/35.7cfa90f9.chunk.js (1)
-[67702:259:0623/183303.890991:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183304.163041:INFO:CONSOLE(2)] "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu", source: https://game.defikingdoms.com/static/js/10.b6f29e81.chunk.js (2)
-[67702:259:0623/183305.503875:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183305.708624:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183306.699824:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183306.810751:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183306.919609:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183308.334875:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183308.718037:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183309.721193:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183310.131710:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183310.164314:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183311.647023:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183311.748046:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183313.008561:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183313.244711:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183313.360860:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183314.620497:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183314.640664:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183315.983626:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183316.204495:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183316.330454:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183317.865251:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183318.119764:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183318.934665:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183319.084223:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183319.389068:INFO:CONSOLE(1)] "Fetched results for old block number: 3638111 vs. 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
-[67702:259:0623/183320.090098:INFO:CONSOLE(1)] "Cancelled fetch for blockNumber 3638112", source: https://game.defikingdoms.com/static/js/main.01963f0b.chunk.js (1)
+[90584:259:0704/122321.356851:INFO:CONSOLE(2)] "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu", source: https://game.defikingdoms.com/static/js/10.7a0ea1a9.chunk.js (2)
+[90584:259:0704/122321.357659:INFO:CONSOLE(2)] "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu", source: https://game.defikingdoms.com/static/js/10.7a0ea1a9.chunk.js (2)
+[90584:259:0704/122321.465996:INFO:CONSOLE(1)] "Profile not found for account id: 0x19035Fda2292F246c804EFe69d1A9F46d4B3F300.", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122321.815099:INFO:CONSOLE(1)] "error getting item quantity Error: call revert exception [ See: https://links.ethers.org/v5-errors-CALL_EXCEPTION ] (method="balanceOf(address)", data="0x", errorArgs=null, errorName=null, errorSignature=null, reason=null, code=CALL_EXCEPTION, version=abi/5.6.1)", source: https://game.defikingdoms.com/static/js/35.5b600a06.chunk.js (1)
+[90584:259:0704/122321.897942:INFO:CONSOLE(2)] "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu", source: https://game.defikingdoms.com/static/js/10.7a0ea1a9.chunk.js (2)
+[90584:259:0704/122326.404886:INFO:CONSOLE(1)] "Cancelled fetch for blockNumber 4101657", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122749.365981:INFO:CONSOLE(1)] "Fetched results for old block number: 4101797 vs. 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122749.455916:INFO:CONSOLE(1)] "Fetched results for old block number: 4101797 vs. 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122753.389817:INFO:CONSOLE(1)] "Fetched results for old block number: 4101797 vs. 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122753.390306:INFO:CONSOLE(1)] "Fetched results for old block number: 4101797 vs. 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122757.351600:INFO:CONSOLE(1)] "Fetched results for old block number: 4101797 vs. 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122757.351894:INFO:CONSOLE(1)] "Fetched results for old block number: 4101797 vs. 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122801.372933:INFO:CONSOLE(1)] "Fetched results for old block number: 4101797 vs. 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122801.373360:INFO:CONSOLE(1)] "Fetched results for old block number: 4101797 vs. 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122805.367624:INFO:CONSOLE(1)] "Fetched results for old block number: 4101797 vs. 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/122805.368056:INFO:CONSOLE(1)] "Fetched results for old block number: 4101797 vs. 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/124453.878589:INFO:CONSOLE(1)] "Cancelled fetch for blockNumber 4101798", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/124454.253552:INFO:CONSOLE(1)] "Fetched results for old block number: 4102301 vs. 4102304", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/124454.569716:INFO:CONSOLE(1)] "Fetched results for old block number: 4102301 vs. 4102304", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/124454.654464:INFO:CONSOLE(1)] "Fetched results for old block number: 4102301 vs. 4102304", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/124456.203366:INFO:CONSOLE(1)] "Cancelled fetch for blockNumber 4102304", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/124750.271599:INFO:CONSOLE(1)] "Cancelled fetch for blockNumber 4102382", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:60163:0704/130401.904241:WARNING:dns_config_service_posix.cc(195)] Failed to read DnsConfig.
+[90593:20227:0704/130401.906074:WARNING:dns_config_service_posix.cc(195)] Failed to read DnsConfig.
+[90584:259:0704/130408.881189:INFO:CONSOLE(1)] "Error: PollingBlockTracker - encountered an error while attempting to update latest block:
+{
+  "code": -32603,
+  "message": "JsonRpcEngine: Response has no error or result for request:\n{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 5199327132005932,\n  \"method\": \"eth_blockNumber\",\n  \"params\": []\n}",
+  "data": {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5199327132005932,
+      "method": "eth_blockNumber",
+      "params": []
+    }
+  },
+  "stack": "Error: JsonRpcEngine: Response has no error or result for request:\n{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 5199327132005932,\n  \"method\": \"eth_blockNumber\",\n  \"params\": []\n}\n    at new i (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-1.js:27:361440)\n    at a._checkForCompletion (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:39657)\n    at a._processRequest (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:38849)\n    at async a._handle (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:38637)"
+}
+  at new i (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-1.js:27:361440)
+  at a._checkForCompletion (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:39657)
+  at a._processRequest (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:38849)
+  at async a._handle (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:38637)", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90593:20915:0704/130411.322003:WARNING:dns_config_service_posix.cc(195)] Failed to read DnsConfig.
+[90584:60163:0704/130411.322395:WARNING:dns_config_service_posix.cc(195)] Failed to read DnsConfig.
+[90584:36099:0704/130417.851556:WARNING:dns_config_service_posix.cc(195)] Failed to read DnsConfig.
+[90593:20915:0704/130417.851755:WARNING:dns_config_service_posix.cc(195)] Failed to read DnsConfig.
+[90584:259:0704/131831.027558:INFO:CONSOLE(1)] "Fetched results for old block number: 4103308 vs. 4103311", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/131831.402967:INFO:CONSOLE(1)] "Fetched results for old block number: 4103308 vs. 4103311", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90584:259:0704/132445.906718:INFO:CONSOLE(1)] "Cancelled fetch for blockNumber 4103311", source: https://game.defikingdoms.com/static/js/main.d517db71.chunk.js (1)
+[90593:12803:0704/134310.367598:WARNING:spdy_session.cc(3541)] Received HEADERS for invalid stream 1
+[90584:259:0704/140056.237453:INFO:CONSOLE(1)] "Error: PollingBlockTracker - encountered an error while attempting to update latest block:
+{
+  "code": -32603,
+  "message": "JsonRpcEngine: Response has no error or result for request:\n{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 5199327132006075,\n  \"method\": \"eth_blockNumber\",\n  \"params\": []\n}",
+  "data": {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 5199327132006075,
+      "method": "eth_blockNumber",
+      "params": []
+    }
+  },
+  "stack": "Error: JsonRpcEngine: Response has no error or result for request:\n{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 5199327132006075,\n  \"method\": \"eth_blockNumber\",\n  \"params\": []\n}\n    at new i (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-1.js:27:361440)\n    at a._checkForCompletion (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:39657)\n    at a._processRequest (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:38849)\n    at async a._handle (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:38637)"
+}
+  at new i (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-1.js:27:361440)
+  at a._checkForCompletion (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:39657)
+  at a._processRequest (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:38849)
+  at async a._handle (chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/common-5.js:19:38637)", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/140056.241293:INFO:CONSOLE(1)] "Error in RPC response:
+ [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/140056.241840:INFO:CONSOLE(1)] "Error in RPC response:
+ [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/140056.242334:INFO:CONSOLE(1)] "Error in RPC response:
+ [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/140056.242757:INFO:CONSOLE(1)] "Error in RPC response:
+ [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/140056.243160:INFO:CONSOLE(1)] "Error in RPC response:
+ [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/140056.244801:INFO:CONSOLE(1)] "MetaMask - RPC Error: JsonRpcEngine: Response has no error or result for request:
+{
+  "method": "eth_getLogs",
+  "params": [
+    {
+      "fromBlock": "0x3ea0ba",
+      "toBlock": "0x3ea0c4",
+      "address": "0xeb9b61b145d6489be575d3603f4a704810e143df",
+      "topics": [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+      ]
+    }
+  ],
+  "jsonrpc": "2.0",
+  "id": 1685146921,
+  "origin": "https://game.defikingdoms.com",
+  "tabId": 68
+} [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
+[90584:259:0704/140056.261521:INFO:CONSOLE(1)] "MetaMask - RPC Error: JsonRpcEngine: Response has no error or result for request:
+{
+  "method": "eth_getLogs",
+  "params": [
+    {
+      "fromBlock": "0x3ea0ba",
+      "toBlock": "0x3ea0c4",
+      "address": "0x8101cffbec8e045c3fadc3877a1d30f97d301209",
+      "topics": [
+        "0xe40da2ed231723b222a7ba7da994c3afc3f83a51da76262083e38841e2da0982"
+      ]
+    }
+  ],
+  "jsonrpc": "2.0",
+  "id": 1685146922,
+  "origin": "https://game.defikingdoms.com",
+  "tabId": 68
+} [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
+[90584:259:0704/140056.261997:INFO:CONSOLE(1)] "MetaMask - RPC Error: JsonRpcEngine: Response has no error or result for request:
+{
+  "method": "eth_getLogs",
+  "params": [
+    {
+      "fromBlock": "0x3ea0ba",
+      "toBlock": "0x3ea0c4",
+      "address": "0x8101cffbec8e045c3fadc3877a1d30f97d301209",
+      "topics": [
+        "0x9a33d4a1b0a13cd8ff614a080df31b4b20c845e5cde181e3ae6f818f62b6ddde"
+      ]
+    }
+  ],
+  "jsonrpc": "2.0",
+  "id": 1685146923,
+  "origin": "https://game.defikingdoms.com",
+  "tabId": 68
+} [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
+[90584:259:0704/140056.262305:INFO:CONSOLE(1)] "MetaMask - RPC Error: JsonRpcEngine: Response has no error or result for request:
+{
+  "method": "eth_getLogs",
+  "params": [
+    {
+      "fromBlock": "0x3ea0ba",
+      "toBlock": "0x3ea0c4",
+      "address": "0xeb9b61b145d6489be575d3603f4a704810e143df",
+      "topics": [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+      ]
+    }
+  ],
+  "jsonrpc": "2.0",
+  "id": 1685146921,
+  "origin": "https://game.defikingdoms.com",
+  "tabId": 68
+} [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
+[90584:259:0704/140056.264187:INFO:CONSOLE(1)] "MetaMask - RPC Error: JsonRpcEngine: Response has no error or result for request:
+{
+  "method": "eth_getLogs",
+  "params": [
+    {
+      "fromBlock": "0x3ea0ba",
+      "toBlock": "0x3ea0c4",
+      "address": "0x8101cffbec8e045c3fadc3877a1d30f97d301209",
+      "topics": [
+        "0xe40da2ed231723b222a7ba7da994c3afc3f83a51da76262083e38841e2da0982"
+      ]
+    }
+  ],
+  "jsonrpc": "2.0",
+  "id": 1685146922,
+  "origin": "https://game.defikingdoms.com",
+  "tabId": 68
+} [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
+[90584:259:0704/140135.736168:INFO:CONSOLE(1)] "Error in RPC response:
+ [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/140135.736719:INFO:CONSOLE(1)] "Error in RPC response:
+ [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/140135.737199:INFO:CONSOLE(1)] "Error in RPC response:
+ [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/140135.737661:INFO:CONSOLE(1)] "Error in RPC response:
+ [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/sentry-install.js (1)
+[90584:259:0704/140135.739267:INFO:CONSOLE(1)] "MetaMask - RPC Error: JsonRpcEngine: Response has no error or result for request:
+{
+  "method": "eth_getLogs",
+  "params": [
+    {
+      "fromBlock": "0x3ea0ba",
+      "toBlock": "0x3ea0c4",
+      "address": "0x58e63a9bbb2047cd9ba7e6bb4490c238d271c278",
+      "topics": [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+      ]
+    }
+  ],
+  "jsonrpc": "2.0",
+  "id": 1685146926,
+  "origin": "https://game.defikingdoms.com",
+  "tabId": 68
+} [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
+[90584:259:0704/140135.739936:INFO:CONSOLE(1)] "MetaMask - RPC Error: JsonRpcEngine: Response has no error or result for request:
+{
+  "method": "eth_getLogs",
+  "params": [
+    {
+      "fromBlock": "0x3ea0ba",
+      "toBlock": "0x3ea0c4",
+      "address": "0x0000000000000000000000000000000000000001",
+      "topics": [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+      ]
+    }
+  ],
+  "jsonrpc": "2.0",
+  "id": 1685146927,
+  "origin": "https://game.defikingdoms.com",
+  "tabId": 68
+} [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
+[90584:259:0704/140135.741064:INFO:CONSOLE(1)] "MetaMask - RPC Error: JsonRpcEngine: Response has no error or result for request:
+{
+  "method": "eth_getLogs",
+  "params": [
+    {
+      "fromBlock": "0x3ea0ba",
+      "toBlock": "0x3ea0c4",
+      "address": "0x0000000000000000000000000000000000000001",
+      "topics": [
+        "0xe40da2ed231723b222a7ba7da994c3afc3f83a51da76262083e38841e2da0982"
+      ]
+    }
+  ],
+  "jsonrpc": "2.0",
+  "id": 1685146928,
+  "origin": "https://game.defikingdoms.com",
+  "tabId": 68
+} [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
+[90584:259:0704/140135.741418:INFO:CONSOLE(1)] "MetaMask - RPC Error: JsonRpcEngine: Response has no error or result for request:
+{
+  "method": "eth_getLogs",
+  "params": [
+    {
+      "fromBlock": "0x3ea0ba",
+      "toBlock": "0x3ea0c4",
+      "address": "0x0000000000000000000000000000000000000001",
+      "topics": [
+        "0x9a33d4a1b0a13cd8ff614a080df31b4b20c845e5cde181e3ae6f818f62b6ddde"
+      ]
+    }
+  ],
+  "jsonrpc": "2.0",
+  "id": 1685146929,
+  "origin": "https://game.defikingdoms.com",
+  "tabId": 68
+} [object Object]", source: chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/inpage.js (1)
+[90593:12803:0704/140152.126338:ERROR:ssl_client_socket_impl.cc(996)] handshake failed; returned -1, SSL error code 1, net_error -100
+[90593:12803:0704/140156.733276:ERROR:ssl_client_socket_impl.cc(996)] handshake failed; returned -1, SSL error code 1, net_error -100
+[90593:12803:0704/140157.369890:ERROR:ssl_client_socket_impl.cc(996)] handshake failed; returned -1, SSL error code 1, net_error -100
+[90593:12803:0704/140202.322886:ERROR:ssl_client_socket_impl.cc(996)] handshake failed; returned -1, SSL error code 1, net_error -101
+[90593:12803:0704/142310.195773:WARNING:spdy_session.cc(3541)] Received HEADERS for invalid stream 1
+[90593:16947:0704/143824.369132:WARNING:dns_config_service_posix.cc(195)] Failed to read DnsConfig.
+[90584:166695:0704/143824.369241:WARNING:dns_config_service_posix.cc(195)] Failed to read DnsConfig.
+[90593:23339:0704/143824.629993:WARNING:dns_config_service_posix.cc(195)] Failed to read DnsConfig.
+[90584:166695:0704/143824.630725:WARNING:dns_config_service_posix.cc(195)] Failed to read DnsConfig.
+[90584:259:0704/145844.185110:INFO:render_frame_host_impl.cc(11505)] RenderFrameHostImpl::MaybeGenerateCrashReport url = https://metamask.github.io/eth-ledger-bridge-keyring/, status = 4, exit_code = 0
+[90584:259:0704/145844.461594:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
