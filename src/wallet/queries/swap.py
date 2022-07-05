@@ -1,11 +1,10 @@
-import logging, sys, os
+import logging, os
 
 from retry import retry
 from web3 import Web3
-from web3.exceptions import ContractLogicError
 
 from src.api.synapsebridge import getTokenDecimalValue, getTokenNormalValue
-import dex.uniswap_v2_router as Router
+from src.dex.uniswap_v2_router import get_amounts_out, get_amounts_in
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -25,14 +24,14 @@ def normaliseSwapRoutes(routes):
     return normalisedRoutes
 
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress):
 
     normalisedRoutes = normaliseSwapRoutes(routes)
 
     amountInWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
 
-    out = Router.get_amounts_out(
+    out = get_amounts_out(
         amount_in=amountInWei,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,
@@ -52,7 +51,7 @@ def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,
 
     amountWei = int(getTokenDecimalValue(amountOutNormal, amountOutDecimals))
 
-    out = Router.get_amounts_in(
+    out = get_amounts_in(
         amount_out=amountWei,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,

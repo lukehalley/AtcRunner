@@ -1,4 +1,5 @@
 import logging, os
+import sys
 from collections import OrderedDict
 from itertools import repeat
 from decimal import Decimal
@@ -161,18 +162,21 @@ def simulateArbitrage(recipe, originDriver, destinationDriver):
     steps = OrderedDict(arbStrat)
 
     if not recipe["status"]["stablesAreOnOrigin"]:
-        steps = prependToOrderedDict(
-            steps,
-            (
-                "stepZero",
-                {
-                    "from": "stablecoin",
-                    "to": "stablecoin",
-                    "position": "destination",
-                    "type": "bridge"
-                }
-            )
-        )
+        balanceOnDest = recipe["destination"]["wallet"]["balances"]["stablecoin"]
+        recipe["destination"]["wallet"]["balances"]["stablecoin"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
+        recipe["origin"]["wallet"]["balances"]["stablecoin"] = balanceOnDest
+        # steps = prependToOrderedDict(
+        #     steps,
+        #     (
+        #         "stepZero",
+        #         {
+        #             "from": "stablecoin",
+        #             "to": "stablecoin",
+        #             "position": "destination",
+        #             "type": "bridge"
+        #         }
+        #     )
+        # )
 
     printSeperator()
     logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
@@ -300,6 +304,9 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
     steps = OrderedDict(arbStrat)
 
     if not recipe["status"]["stablesAreOnOrigin"]:
+        balanceOnDest = recipe["destination"]["wallet"]["balances"]["stablecoin"]
+        recipe["destination"]["wallet"]["balances"]["stablecoin"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
+        recipe["origin"]["wallet"]["balances"]["stablecoin"] = balanceOnDest
         steps = prependToOrderedDict(
             steps,
             (
@@ -372,22 +379,22 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
                 amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
-                swapResult = swapToken(
-                    amountInNormal=currentFunds[toSwapFrom],
-                    amountInDecimals=recipe[position][toSwapFrom]["decimals"],
-                    amountOutNormal=amountOutMinWithSlippage,
-                    amountOutDecimals=recipe[position][toSwapTo]["decimals"],
-                    tokenPath=recipe[position]["route"],
-                    rpcURL=recipe[position]["chain"]["rpc"],
-                    arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
-                    stepCategory=f"{stepNumber}_swap",
-                    explorerUrl=recipe[position]["chain"]["blockExplorer"],
-                    routerAddress=recipe[position]["chain"]["uniswapRouter"],
-                    telegramStatusMessage=telegramStatusMessage,
-                    txDeadline=300,
-                    txTimeoutSeconds=150,
-                    swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
-                )
+                # swapResult = swapToken(
+                #     amountInNormal=currentFunds[toSwapFrom],
+                #     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
+                #     amountOutNormal=amountOutMinWithSlippage,
+                #     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
+                #     tokenPath=recipe[position]["route"],
+                #     rpcURL=recipe[position]["chain"]["rpc"],
+                #     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+                #     stepCategory=f"{stepNumber}_swap",
+                #     explorerUrl=recipe[position]["chain"]["blockExplorer"],
+                #     routerAddress=recipe[position]["chain"]["uniswapRouter"],
+                #     telegramStatusMessage=telegramStatusMessage,
+                #     txDeadline=300,
+                #     txTimeoutSeconds=150,
+                #     swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
+                # )
 
                 recipe = getWalletsInformation(recipe)
 
@@ -402,7 +409,7 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
                 currentFunds[toSwapTo] = result
 
-                telegramStatusMessage = swapResult["telegramStatusMessage"]
+                # telegramStatusMessage = swapResult["telegramStatusMessage"]
 
             elif stepType == "bridge":
 
@@ -438,6 +445,8 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                 currentFunds[toSwapFrom] = result
 
                 telegramStatusMessage = bridgeResult["telegramStatusMessage"]
+
+                sys.exit("done")
 
             else:
                 updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
@@ -516,7 +525,10 @@ def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
 # Calculate the difference between two tokens
 def calculateDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")
-    return abs(round(((pairTwo - pairOne) * 100) / pairOne, 2))
+
+    ans = ((pairOne - pairTwo) / ((pairOne + pairTwo) / 2)) * 100
+
+    return round(ans, 6)
 
 # Determine which token is the origin and destination
 def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):

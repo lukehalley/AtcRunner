@@ -2,7 +2,7 @@ import json, os, sys, logging, time
 from web3 import Web3
 from hexbytes import HexBytes
 from decimal import Decimal
-from src.utils.general import get_project_root, percentage
+from src.utils.general import getProjectRoot, percentage
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -20,7 +20,7 @@ def getABI(file, folder="abi"):
     return getJSONFile(folder, file, section="abi", asStr=True)
 
 def getJSONFile(folder, file, section=None, asStr=False):
-    jsonPath = os.path.join(get_project_root().parents[0], "data", folder, file)
+    jsonPath = os.path.join(getProjectRoot().parents[0], "data", folder, file)
 
     jsonFile = open(jsonPath)
 
