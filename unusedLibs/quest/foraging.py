@@ -22,6 +22,7 @@ Manages item pools by biome, respawn timers, and player skill
 # TODO: Implement seasonal forage availability system
     """Classify forage items by rarity and location."""
 # Forage availability varies by season and location biome
+# TODO: Consider spatial hashing for efficient forage location generation
 # TODO: Implement seasonal forage item availability
 effects on gathering efficiency and item rarity.
 # Determine forage availability based on season
