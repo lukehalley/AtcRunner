@@ -16,7 +16,7 @@ dexscreenerAPIBaseURL = dexscreenerAPIEndpoint + "/" + dexscreenerAPIVersion + "
 
 # Retry Envs
 httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))
-httpRetryDelay = int(os.environ.get("HTTP_RETRY_LIMIT"))
+httpRetryDelay = int(os.environ.get("HTTP_RETRY_DELAY"))
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def safeRequest(endpoint, params):

@@ -13,7 +13,7 @@ ABI = getABI("IUniswapV2Router02.json")
 
 # Retry Envs
 httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))
-httpRetryDelay = int(os.environ.get("HTTP_RETRY_LIMIT"))
+httpRetryDelay = int(os.environ.get("HTTP_RETRY_DELAY"))
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def weth(rpc_address, routerAddress):

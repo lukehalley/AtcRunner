@@ -14,7 +14,7 @@ synapseAPIBaseURL = synapseAPIEndpoint + "/" + synapseAPIVersion
 
 # Get the setting envs for the retry events
 httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))
-httpRetryDelay = int(os.environ.get("HTTP_RETRY_LIMIT"))
+httpRetryDelay = int(os.environ.get("HTTP_RETRY_DELAY"))
 # Check what is the status of our bridge transaction
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def checkBridgeStatus(toChain, fromChainTxnHash):

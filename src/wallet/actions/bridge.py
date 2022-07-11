@@ -1,4 +1,4 @@
-import logging
+import logging, os
 from web3 import Web3
 
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
@@ -37,7 +37,7 @@ def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL
         'nonce': w3.eth.getTransactionCount(walletAddress, 'pending'),
         "chainId": bridgeTransaction["chainId"],
         'to': bridgeTransaction["to"],
-        'gas': 250000,
+        'gas': int(os.environ.get("BRIDGE_GAS")),
         'gasPrice': w3.eth.gas_price,
         'data': bridgeTransaction["unsigned_data"],
         'value': int(bridgeTransaction["value"])
