@@ -11,7 +11,7 @@ logger = logging.getLogger("DFK-DEX")
 
 # Opening JSON file
 
-ABI = json.load(open(os.path.abspath(f'{ROOT_DIR}/dex/abi.json')))
+ABI = json.load(open('src/dex/abi.json'))
 
 def wei2eth(w3, wei):
     return w3.fromWei(wei, 'ether')

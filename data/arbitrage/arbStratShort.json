@@ -1,0 +1,14 @@
+{
+    "stepOne": {
+        "from": "stablecoin",
+        "to": "token",
+        "position": "origin",
+        "type": "swap"
+    },
+    "stepTwo": {
+        "from": "token",
+        "to": "token",
+        "position": "origin",
+        "type": "bridge"
+    }
+}

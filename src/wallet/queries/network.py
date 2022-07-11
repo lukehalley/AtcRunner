@@ -6,14 +6,18 @@ from web3 import Web3
 
 from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
 from src.utils.wei import getTokenNormalValue
-from src.utils.general import isBetween, percentage, strToBool
+from src.utils.general import isBetween, percentage, strToBool, checkIsDocker
 
 from src.dex.erc20 import balance_of, wei2eth
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-privateKey = os.environ.get("NOHACKERSALLOWED")
+if checkIsDocker():
+    privateKey = os.environ.get("arbKey")
+else:
+    with open('key.txt', 'r') as file:
+        privateKey = file.read().replace('\n', '')
 
 # Retry Envs
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))

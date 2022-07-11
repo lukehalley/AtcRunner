@@ -20,7 +20,7 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
     w3.eth.default_account = walletAddress
 
     # Get general settings for our transaction
-    nonce = w3.eth.getTransactionCount(walletAddress)
+    nonce = w3.eth.getTransactionCount(walletAddress, 'pending')
     gasPriceWei = w3.fromWei(w3.eth.gas_price, 'gwei')
 
     # Get properties for our swap contract

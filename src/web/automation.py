@@ -2,7 +2,7 @@ import logging
 import os, sys
 import time
 
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -16,7 +16,7 @@ logger = logging.getLogger("DFK-DEX")
 def findElementByText(driver, text):
     return findWebElement(driver=driver, elementString=f"//*[text()='{text}']", selectorMode=False)
 
-def findWebElement(driver, elementString, timeout=30, selectorMode=True):
+def findWebElement(driver, elementString, timeout=60, selectorMode=True):
     ignoredExceptions = (NoSuchElementException, StaleElementReferenceException)
     if selectorMode:
         return WebDriverWait(driver, timeout, ignored_exceptions=ignoredExceptions).until(
@@ -111,13 +111,6 @@ def selectTokenInDex(driver, direction, tokenSymbol):
 
         typeToField(tokenAddressInput, tokenSymbol)
 
-        # selenium.common.exceptions.ElementClickInterceptedException: Message: element click intercepted: Element
-        # <div class="sc-n0cvl7-9 fpbloM">...</div>
-        # is not clickable at point (132, 204).
-        # Other element would receive the click: <div class="PlainModal_plainOverlay__378BW"></div>
-
-
-
         tokenFound = False
         while not tokenFound:
             try:
@@ -149,7 +142,7 @@ def safeClick(driver, xpath):
             element = WebDriverWait(driver, timeout=15).until(EC.element_to_be_clickable((By.XPATH, xpath)))
             element.click()
             staleElement = False
-        except StaleElementReferenceException:
+        except (StaleElementReferenceException, ElementClickInterceptedException):
             staleElement = True
 
 

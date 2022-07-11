@@ -5,202 +5,234 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
-from src.utils.general import getDictLength
-from src.data.arbitrage import calculateDifference
 from src.api.synapsebridge import getBridgeableTokens
 from src.utils.general import getDictLength, getProjectRoot
 import urllib.request, json, os
 
 from src.wallet.queries.swap import getSwapQuoteOut
 
+root = getProjectRoot().parent
+
 chainIdsToIgnore = [1]
 
 synapseAllBridgeabletokens = {}
-tokens = []
-filteredChains = {}
+chainsDetails = {}
 
-# Get JSON of loads of networks
-with urllib.request.urlopen("https://chainid.network/chains.json") as url:
-    evmChains = json.loads(url.read().decode())
+def getAllBridgeableTokensFromURL(chainsURL="https://chainid.network/chains.json"):
+    bridgeableTokens = []
 
-root = getProjectRoot().parent
+    with urllib.request.urlopen(chainsURL) as url:
+        evmChains = json.loads(url.read().decode())
 
-chainDetailsDictJSON = os.path.join(root, "data", "misc", "openXswap-misc", "Chains", "Chains.json")
-chainDexsDictJSON = os.path.join(root, "data", "misc", "openXswap-misc", "Projects")
+    # Filter out testnet chains and get bridgeable tokens
+    for chain in evmChains:
 
-allChainsDetails = {}
+        if chain["chainId"] not in chainIdsToIgnore:
 
-for path in Path(chainDexsDictJSON).rglob('*.json'):
-    try:
-        currentJSON = json.load(open(path))
-        allChainsDetails = allChainsDetails | currentJSON
-    except JSONDecodeError:
-        # print(f"Invalid JSON: {path}")
-        pass
+            filterStrings = ["test"]
 
-# Filter out testnet chains and get bridgeable tokens
-for chain in evmChains:
+            hasFilterStrings = False
+            for filterString in filterStrings:
+                hasFilterString = any(filterString in (str(v)).lower() for v in chain.values())
 
-    if chain["chainId"] not in chainIdsToIgnore:
+                if hasFilterString:
+                    hasFilterStrings = True
+                    break
 
-        filterStrings = ["test"]
+            if not hasFilterStrings:
+                output = getBridgeableTokens(chain=chain["chainId"])
+                if "error" not in output:
+                    chainsDetails[chain["chainId"]] = chain
+                    bridgeableTokens.append(output)
 
-        hasFilterStrings = False
-        for filterString in filterStrings:
-            hasFilterString = any(filterString in (str(v)).lower() for v in chain.values())
+    bridgeableTokens.sort(key=getDictLength, reverse=True)
 
-            if hasFilterString:
-                hasFilterStrings = True
-                break
+    for currentDictList in bridgeableTokens:
+        for result in currentDictList:
 
-        if not hasFilterStrings:
-            output = getBridgeableTokens(chain=chain["chainId"])
-            if "error" not in output:
+            filterStrings = []
+            hasFilterStrings = False
+            for filterString in filterStrings:
+                hasFilterString = any(filterString in (str(v)).lower() for v in result.values())
 
-                filteredChains[chain["chainId"]] = chain
-                tokens.append(output)
+                if hasFilterString:
+                    hasFilterStrings = True
+                    break
 
-# Sort by how many tokens they have
-tokens.sort(key=getDictLength, reverse=True)
+            if not hasFilterStrings:
+                currentName = result["name"]
+                if currentName not in synapseAllBridgeabletokens:
+                    synapseAllBridgeabletokens[currentName] = result
+                else:
+                    synapseAllBridgeabletokens[currentName] = synapseAllBridgeabletokens[currentName] | result
 
-# Merge all bridgeable tokens
-for currentDictList in tokens:
-    for result in currentDictList:
+    return synapseAllBridgeabletokens, chainsDetails
 
-        filterStrings = []
-        hasFilterStrings = False
-        for filterString in filterStrings:
-            hasFilterString = any(filterString in (str(v)).lower() for v in result.values())
+def getTokenByChain(allChainIds, chainsDetails):
+    bridgeableTokensByChain = {}
+    for chainId in allChainIds:
 
-            if hasFilterString:
-                hasFilterStrings = True
-                break
+        chainTokens = []
 
-        if not hasFilterStrings:
-            currentName = result["name"]
-            if currentName not in synapseAllBridgeabletokens:
-                synapseAllBridgeabletokens[currentName] = result
-            else:
-                synapseAllBridgeabletokens[currentName] = synapseAllBridgeabletokens[currentName] | result
+        if chainId not in bridgeableTokensByChain.keys():
+            bridgeableTokensByChain[chainId] = {}
+        else:
+            x = 1
 
-with open('../../data/collection/allBridgeableTokens.json', 'w') as fp:
-    json.dump(synapseAllBridgeabletokens, fp, sort_keys=True, indent=4)
+        for key, value in synapseAllBridgeabletokens.items():
 
-allChainIds = []
-for key, value in synapseAllBridgeabletokens.items():
-    chainIds = value["addresses"]
-    for chainId in chainIds:
-        if int(chainId) not in allChainIds and int(chainId) not in chainIdsToIgnore:
-            allChainIds.append(int(chainId))
+            details = deepcopy(value)
 
-allChainIds.sort()
+            if str(chainId) in details["addresses"].keys():
+                details["address"] = details["addresses"][str(chainId)]
+                siblingChains = list(details["addresses"].keys())
+                siblingChains.remove(str(chainId))
+                details["siblingChains"] = list(map(int, siblingChains))
 
-bridgeableTokensByChain = {}
+            if str(chainId) in details["decimals"].keys():
+                details["decimal"] = details["decimals"][str(chainId)]
 
-for chainId in allChainIds:
+            if str(chainId) in details["wrapperAddresses"].keys():
+                details["wrapperAddress"] = details["wrapperAddresses"][str(chainId)]
 
-    chainTokens = []
+            if "address" in details or "decimal" in details or "wrapperAddress" in details:
+                chainTokens.append(details)
 
-    if chainId not in bridgeableTokensByChain.keys():
-        bridgeableTokensByChain[chainId] = {}
-    else:
-        x = 1
+        if len(chainTokens) > 0:
+            # Add network tokens
+            bridgeableTokensByChain[chainId]["tokens"] = chainTokens
 
-    for key, value in synapseAllBridgeabletokens.items():
+            # Add network info
+            bridgeableTokensByChain[chainId]["chain"] = chainsDetails[chainId]
 
-        details = deepcopy(value)
+            if str(chainId) in chainsDetails:
+                bridgeableTokensByChain[chainId]["dexs"] = chainsDetails[str(chainId)]
+    return bridgeableTokensByChain
 
-        if str(chainId) in details["addresses"].keys():
-            details["address"] = details["addresses"][str(chainId)]
-            siblingChains = list(details["addresses"].keys())
-            siblingChains.remove(str(chainId))
-            details["siblingChains"] = list(map(int, siblingChains))
+def getChainsFromLocal():
+    return os.path.join(root, "data", "misc", "openXswap-misc", "Chains", "Chains.json")
 
-        if str(chainId) in details["decimals"].keys():
-            details["decimal"] = details["decimals"][str(chainId)]
+def getDexsFromLocal():
+    return os.path.join(root, "data", "misc", "openXswap-misc", "Projects")
 
-        if str(chainId) in details["wrapperAddresses"].keys():
-            details["wrapperAddress"] = details["wrapperAddresses"][str(chainId)]
+def getDexsFromLocal():
+    dexs = {}
+    chainDexsDictJSON = os.path.join(root, "data", "misc", "openXswap-misc", "Projects")
+    for path in Path(chainDexsDictJSON).rglob('*.json'):
+        try:
+            currentJSON = json.load(open(path))
+            dexs = dexs | currentJSON
+        except JSONDecodeError:
+            pass
+    return dexs
 
-        del details["addresses"]
-        del details["decimals"]
-        del details["wrapperAddresses"]
+def getAllChainIds(bridgeableTokens):
+    allChainIds = []
+    for key, value in bridgeableTokens.items():
+        chainIds = value["addresses"]
+        for chainId in chainIds:
+            if int(chainId) not in allChainIds and int(chainId) not in chainIdsToIgnore:
+                allChainIds.append(int(chainId))
+    allChainIds.sort()
+    return allChainIds
 
-        if "address" in details or "decimal" in details or "wrapperAddress" in details:
-            chainTokens.append(details)
+bridgeableDexs = getDexsFromLocal()
+bridgeableTokens, chainsDetails = getAllBridgeableTokensFromURL()
 
-    if len(chainTokens) > 0:
-        # Add network tokens
-        bridgeableTokensByChain[chainId]["tokens"] = chainTokens
-
-        # Add network info
-        bridgeableTokensByChain[chainId]["chain"] = filteredChains[chainId]
-
-        if str(chainId) in allChainsDetails:
-            bridgeableTokensByChain[chainId]["dexs"] = allChainsDetails[str(chainId)]
+allChainIds = getAllChainIds(bridgeableTokens)
+tokensByChain = getTokenByChain(allChainIds, chainsDetails)
 
 stabecoinName = "USD Circle"
+stabecoinDetails = synapseAllBridgeabletokens[stabecoinName]
 
-for chainId, chainProps in bridgeableTokensByChain.items():
+# Global Arb
+bridgeArb = {}
+for tokenName, tokenProps in synapseAllBridgeabletokens.items():
 
-    if "dexs" in chainProps:
+    for tokenChain in allChainIds:
 
-        print(f"-----------------------------------")
-        print(f"{chainProps['chain']['name']}")
-        print(f"-----------------------------------")
+        try:
+            chainOneTokenPrice = getSwapQuoteOut(
+                amountInNormal=1.0,
+                amountInDecimals=tokenProps["decimals"][tokenChain],
+                amountOutDecimals=stabecoinDetails["decimals"][tokenChain],
+                rpcUrl=chainsDetails[tokenChain]["rpc"][0],
+                routerAddress=dex["router"],
+                routes=[token["address"], stablecoin["address"]]
+            )
 
-        stablecoin = next(item for item in chainProps["tokens"] if item["name"] == stabecoinName)
+        except Exception as e:
+            chainOneTokenPrice = None
+            pass
 
-        for token in chainProps["tokens"]:
-
-            if token["name"] != stabecoinName:
-
-                tokenPrices = []
-
-                for dex in chainProps["dexs"]:
-
-                    try:
-                        chainOneTokenPrice = getSwapQuoteOut(
-                            amountInNormal=1.0,
-                            amountInDecimals=token["decimal"],
-                            amountOutDecimals=stablecoin["decimal"],
-                            rpcUrl=chainProps["chain"]["rpc"][0],
-                            routerAddress=dex["router"],
-                            routes=[token["address"], stablecoin["address"]]
-                        )
-
-                    except Exception as e:
-                        chainOneTokenPrice = None
-                        pass
-
-                    priceObject = {
-                        "name": token['name'],
-                        "price": chainOneTokenPrice,
-                        "dex": dex["name"],
-                        "router": dex["router"]
-                    }
-
-                    tokenPrices.append(priceObject)
-
-                validPrices = [i for i in tokenPrices if not (i['price'] is None) and (i['price'] != 0)]
-
-                if len(validPrices) > 1:
-
-                    print(f"  - {validPrices[0]['name']}")
-
-                    sortedValidPrices = sorted(validPrices, key=lambda d: d['price'], reverse=True)
-
-                    for validPrice in validPrices:
-                        print("    - Price On", validPrice["dex"], ":", validPrice["price"])
-
-                    highestPrice = sortedValidPrices[0]["price"]
-                    lowestPrice = sortedValidPrices[-1]["price"]
-
-                    percentageDiff = calculateDifference(pairOne=highestPrice, pairTwo=lowestPrice)
-
-                    print("      - Difference", f"{percentageDiff}%")
+        priceObject = {
+            "name": token['name'],
+            "price": chainOneTokenPrice,
+            "dex": dex["name"],
+            "router": dex["router"]
+        }
 
 
+
+# Local Arb
+# for chainId, chainProps in bridgeableTokensByChain.items():
+#
+#     if "dexs" in chainProps:
+#
+#         print(f"-----------------------------------")
+#         print(f"{chainProps['chain']['name']}")
+#         print(f"-----------------------------------")
+#
+#         stablecoin = next(item for item in chainProps["tokens"] if item["name"] == stabecoinName)
+#
+#         for token in chainProps["tokens"]:
+#
+#             if token["name"] != stabecoinName:
+#
+#                 tokenPrices = []
+#
+#                 for dex in chainProps["dexs"]:
+#
+#                     try:
+#                         chainOneTokenPrice = getSwapQuoteOut(
+#                             amountInNormal=1.0,
+#                             amountInDecimals=token["decimal"],
+#                             amountOutDecimals=stablecoin["decimal"],
+#                             rpcUrl=chainProps["chain"]["rpc"][0],
+#                             routerAddress=dex["router"],
+#                             routes=[token["address"], stablecoin["address"]]
+#                         )
+#
+#                     except Exception as e:
+#                         chainOneTokenPrice = None
+#                         pass
+#
+#                     priceObject = {
+#                         "name": token['name'],
+#                         "price": chainOneTokenPrice,
+#                         "dex": dex["name"],
+#                         "router": dex["router"]
+#                     }
+#
+#                     tokenPrices.append(priceObject)
+#
+#                 validPrices = [i for i in tokenPrices if not (i['price'] is None) and (i['price'] != 0)]
+#
+#                 if len(validPrices) > 1:
+#
+#                     print(f"  - {validPrices[0]['name']}")
+#
+#                     sortedValidPrices = sorted(validPrices, key=lambda d: d['price'], reverse=True)
+#
+#                     for validPrice in validPrices:
+#                         print("    - Price On", validPrice["dex"], ":", validPrice["price"])
+#
+#                     highestPrice = sortedValidPrices[0]["price"]
+#                     lowestPrice = sortedValidPrices[-1]["price"]
+#
+#                     percentageDiff = calculateDifference(pairOne=highestPrice, pairTwo=lowestPrice)
+#
+#                     print("      - Difference", f"{percentageDiff}%")
 
 with open('../../data/collection/allTokensByChainID.json', 'w') as fp:
     json.dump(bridgeableTokensByChain, fp, indent=4)

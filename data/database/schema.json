@@ -12,6 +12,10 @@
         "stablecoin": {
           "frontendSymbol": "1USDC",
           "isGas": "False"
+        },
+        "fallbackRoute": {
+          "stablecoin-token": "",
+          "token-stablecoin": ""
         }
       },
       "chainTwo": {
@@ -25,9 +29,13 @@
         "stablecoin": {
           "frontendSymbol": "USDC",
           "isGas": "False"
+        },
+        "fallbackRoute": {
+          "stablecoin-token": "USDC,CRYSTAL,JEWEL",
+          "token-stablecoin": "JEWEL,CRYSTAL,USDC"
         }
       },
-      "arbitrage" : {
+      "arbitrage": {
         "token": "JEWEL",
         "stablecoin": "USD Circle",
         "dexId": "defikingdoms",
@@ -60,5 +68,6 @@
         "address": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260"
       }
     }
-  }
+  },
+  "arbitrages": {}
 }

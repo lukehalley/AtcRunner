@@ -27,7 +27,7 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
     walletAddress = w3.eth.account.privateKeyToAccount(privateKey).address
     w3.eth.default_account = walletAddress
 
-    tx["nonce"] = w3.eth.getTransactionCount(walletAddress)
+    tx["nonce"] = w3.eth.getTransactionCount(walletAddress, 'pending')
 
     telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
 
