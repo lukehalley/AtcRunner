@@ -2,6 +2,7 @@ import logging, os
 from dotenv import load_dotenv
 from retry import retry
 from telegram import Bot
+from src.utils.general import getAWSSecret
 
 load_dotenv()
 token = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -9,7 +10,7 @@ channelId = os.getenv("TELEGRAM_BOT_CHANNEL_ID")
 
 logger = logging.getLogger("DFK-DEX")
 
-bot = Bot(token)
+bot = Bot(getAWSSecret(key="TELEGRAM_BOT_TOKEN"))
 
 # Retry Envs
 httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))

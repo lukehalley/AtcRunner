@@ -1,4 +1,4 @@
-import functools, logging, os, re, time, math
+import functools, logging, os, re, time, math, json
 from datetime import datetime
 from math import log10, floor
 from time import strftime, gmtime
@@ -6,11 +6,8 @@ from distutils import util
 from pathlib import Path
 from collections import OrderedDict
 from decimal import Decimal
-from src.api.telegrambot import appendToMessage
 
 logger = logging.getLogger("DFK-DEX")
-
-from src.api.telegrambot import sendMessage
 
 # Get the root of the python project
 def getProjectRoot() -> Path:
@@ -37,6 +34,7 @@ def printRoundtrip(count):
 
 # Print the Arbitrage is profitable alert
 def printArbitrageProfitable(count):
+    from src.api.telegrambot import sendMessage
     logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     logger.info(f"ARBITRAGE #{count} PROFITABLE")
     logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
@@ -51,6 +49,7 @@ def printArbitrageProfitable(count):
 
 # Print the Arbitrage is profitable alert
 def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime, telegramStatusMessage):
+    from src.api.telegrambot import appendToMessage
     finishingTime = time.perf_counter()
     timeTook = finishingTime - startingTime
     timeString = f"Completed Arbitrage In {getMinSecString(timeTook)}"
@@ -151,3 +150,6 @@ def truncateDecimal(f, n):
 
 def getDictLength(sub):
     return len(sub)
+
+def getAWSSecret(key):
+    return json.loads(os.environ.get(key))[key]
