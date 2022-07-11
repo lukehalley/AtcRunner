@@ -1,4 +1,4 @@
-import logging, os
+import logging, os, json
 from decimal import Decimal
 from retry import retry
 from web3 import Web3
@@ -6,14 +6,14 @@ from web3 import Web3
 
 from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
 from src.utils.wei import getTokenNormalValue
-from src.utils.general import isBetween, percentage, strToBool, checkIsDocker
+from src.utils.general import isBetween, percentage, strToBool
 
 from src.dex.erc20 import balance_of, wei2eth
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-privateKey = os.environ.get("ARB_KEY")
+privateKey = json.loads(os.environ.get("ARB_KEY"))["ARB_KEY"]
 
 # Retry Envs
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))

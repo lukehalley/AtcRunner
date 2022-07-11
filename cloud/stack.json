@@ -190,6 +190,7 @@
           "MaximumPercent": 200
         },
         "DesiredCount": 1,
+        "EnableExecuteCommand" : true,
         "LaunchType": "FARGATE",
         "NetworkConfiguration": {
           "AwsvpcConfiguration": {
