@@ -25,8 +25,9 @@ logger = setupLogging(isDocker)
 useFallbackRoutes = strToBool(os.getenv("USE_FALLBACK_ROUTES"))
 
 # Test Settings
+forceRun = True
 useTestCapital = True
-startingCapitalTestAmount = 1000
+startingCapitalTestAmount = 10
 
 # Firebase Setup
 printSeperator()
@@ -81,7 +82,7 @@ while True:
 
         printSeperator(True)
 
-        if tripIsProfitible and not useTestCapital:
+        if tripIsProfitible or forceRun:
 
             telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'])
 

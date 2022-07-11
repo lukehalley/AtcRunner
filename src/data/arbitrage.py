@@ -349,6 +349,8 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
         if toSwapTo != "done":
 
+            recipe = getWalletsInformation(recipe)
+
             logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
             telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber}. Doing {position.title()} {stepType.title()} -> 📤")
