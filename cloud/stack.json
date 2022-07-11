@@ -97,7 +97,7 @@
             "Secrets": [
               {
                 "name": "ARB_KEY",
-                "valueFrom": "arn:aws:secretsmanager:eu-west-1:538602529242:secret:arbKey-M2xwzY"
+                "valueFrom": "arn:aws:secretsmanager:eu-west-1:538602529242:secret:arbBotSecrets-Eg3a7f"
               }
             ],
             "LogConfiguration": {

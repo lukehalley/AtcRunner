@@ -6,14 +6,15 @@ from web3 import Web3
 
 from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
 from src.utils.wei import getTokenNormalValue
-from src.utils.general import isBetween, percentage, strToBool
+from src.utils.general import isBetween, percentage, strToBool, getAWSSecret
 
 from src.dex.erc20 import balance_of, wei2eth
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-privateKey = json.loads(os.environ.get("ARB_KEY"))["ARB_KEY"]
+# privateKey = json.loads(os.environ.get("ARB_KEY"))["ARB_KEY"]
+privateKey = getAWSSecret(key="ARB_KEY")
 
 # Retry Envs
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
