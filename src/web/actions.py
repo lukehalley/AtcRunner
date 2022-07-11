@@ -10,11 +10,14 @@ from src.utils.general import checkIsDocker
 from src.web.automation import findWebElement, safeClick, selectTokenInDex, getRouteForSwap
 from src.web.tabs import openURL, getCurrentTabCount, closeLastTab, switchToTabByIndex
 from src.web.general import getMetamaskURL
+from src.web.general import getOppositeDirection
 
 logger = logging.getLogger("DFK-DEX")
 
 metamaskRetryLimit = int(os.environ.get("METAMASK_RETRY_LIMIT"))
 metamaskRetryDelay = int(os.environ.get("METAMASK_RETRY_DELAY"))
+
+cachedRoutes = None
 
 @retry(tries=metamaskRetryLimit, delay=metamaskRetryDelay, logger=logger)
 def initBrowser(profileToUse):
@@ -168,9 +171,22 @@ def getRoutesFromFrontend(driver, network, dexURL, amountToSwap, tokenSymbolIn, 
     else:
         switchToTabByIndex(driver=driver, index=1)
 
-    selectTokenInDex(driver=driver, direction="input", tokenSymbol=tokenSymbolIn)
+    directionSelector = os.environ.get("DEX_TOKEN_INPUT_AMOUNT").replace("[DIRECTION]", "input")
+    oppositeDirectionSelector = os.environ.get("DEX_TOKEN_INPUT_AMOUNT").replace("[DIRECTION]", "output")
 
-    selectTokenInDex(driver=driver, direction="output", tokenSymbol=tokenSymbolOut)
+    inputField = findWebElement(driver=driver,
+                           elementString=directionSelector,
+                           selectorMode=True)
+
+    outputField = findWebElement(driver=driver,
+                           elementString=oppositeDirectionSelector,
+                           selectorMode=True)
+
+    alreadySetup = inputField.get_attribute("value") != '' and outputField.get_attribute("value") != ''
+
+    if not alreadySetup:
+        selectTokenInDex(driver=driver, direction="input", tokenSymbol=tokenSymbolIn)
+        selectTokenInDex(driver=driver, direction="output", tokenSymbol=tokenSymbolOut)
 
     routes = getRouteForSwap(driver=driver, direction="input", amount=amountToSwap)
 

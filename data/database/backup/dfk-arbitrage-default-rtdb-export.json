@@ -1,0 +1,198 @@
+{
+  "arbitrages": {
+    "arbitrage_1": {
+      "1_swap": {
+        "dateTime": "21/06/2022 11:55:40",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x53dfb480ab06dc1d127d2e621318f1604d66084d75e732916e6893020d843901",
+        "gasUsed": 42323,
+        "hash": "0x53dfb480ab06dc1d127d2e621318f1604d66084d75e732916e6893020d843901",
+        "wasSuccessful": false
+      }
+    },
+    "arbitrage_10": {
+      "1_bridge": {
+        "dateTime": "24/06/2022 10:08:37",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0xa9bf887bd9a7085f1a0546b01631fdfa50f9c771f0f28aab7042c86a5a3303a8",
+        "gasUsed": 107989,
+        "hash": "0xa9bf887bd9a7085f1a0546b01631fdfa50f9c771f0f28aab7042c86a5a3303a8",
+        "wasSuccessful": true
+      },
+      "1_swap": {
+        "dateTime": "10/07/2022 18:16:55",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x915e1bf1d77518bafd74f35fcd81d2128f74f5e6754eaf5f77fba0d574615db2",
+        "gasUsed": 218703,
+        "hash": "0x915e1bf1d77518bafd74f35fcd81d2128f74f5e6754eaf5f77fba0d574615db2",
+        "wasSuccessful": true
+      },
+      "2_bridge": {
+        "dateTime": "10/07/2022 18:17:06",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x815966f52e01e466f166c2a8cac9f855419657f15ce103caf0b24fd8a3c76879",
+        "gasUsed": 97249,
+        "hash": "0x815966f52e01e466f166c2a8cac9f855419657f15ce103caf0b24fd8a3c76879",
+        "wasSuccessful": true
+      },
+      "3_swap": {
+        "dateTime": "24/06/2022 10:26:13",
+        "explorerLink": "https://explorer.harmony.one/tx/0xef0014fa70eba4d62b6bab5d414371301c83b8b0e4ae364a14e28ebe607f1b68",
+        "gasUsed": 178979,
+        "hash": "0xef0014fa70eba4d62b6bab5d414371301c83b8b0e4ae364a14e28ebe607f1b68",
+        "wasSuccessful": true
+      },
+      "4_bridge": {
+        "dateTime": "24/06/2022 10:27:59",
+        "explorerLink": "https://explorer.harmony.one/tx/0x179b04205d0f3a85957dc1e05679c61ab69669989f5d046cc875dd5da331d8d2",
+        "gasUsed": 248711,
+        "hash": "0x179b04205d0f3a85957dc1e05679c61ab69669989f5d046cc875dd5da331d8d2",
+        "wasSuccessful": false
+      },
+      "gas_1": {
+        "dateTime": "04/07/2022 12:20:40",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x569cf35e09741b4167cb8d8ab6c123a4e72b5754afa2abf2a38e110c9d793de7",
+        "gasUsed": 149924,
+        "hash": "0x569cf35e09741b4167cb8d8ab6c123a4e72b5754afa2abf2a38e110c9d793de7",
+        "wasSuccessful": true
+      }
+    },
+    "arbitrage_2": {
+      "1_swap": {
+        "dateTime": "21/06/2022 12:09:50",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0xe16c8cc6980747ce882db9f14c1fa394807ece27aefd1ac51dcb79e3175e24be",
+        "gasUsed": 42299,
+        "hash": "0xe16c8cc6980747ce882db9f14c1fa394807ece27aefd1ac51dcb79e3175e24be",
+        "wasSuccessful": false
+      }
+    },
+    "arbitrage_3": {
+      "1_swap": {
+        "dateTime": "21/06/2022 12:14:53",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0xff6e977eee4a5c62b59b02830162258a49a328529730dcb1a2100c1d465c77e5",
+        "gasUsed": 42299,
+        "hash": "0xff6e977eee4a5c62b59b02830162258a49a328529730dcb1a2100c1d465c77e5",
+        "wasSuccessful": false
+      }
+    },
+    "arbitrage_4": {
+      "1_swap": {
+        "dateTime": "21/06/2022 12:20:53",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0xd3f2880276180734f5c2abe910ba5ca36db1c72a82761fb33d23470eae511db3",
+        "gasUsed": 31887,
+        "hash": "0xd3f2880276180734f5c2abe910ba5ca36db1c72a82761fb33d23470eae511db3",
+        "wasSuccessful": false
+      }
+    },
+    "arbitrage_5": {
+      "1_swap": {
+        "dateTime": "21/06/2022 14:10:45",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x5d3a1344da6bc2a000f59ab8c43c466b4e94cbb995b20b8d4eea4eb41c163bc1",
+        "gasUsed": 218667,
+        "hash": "0x5d3a1344da6bc2a000f59ab8c43c466b4e94cbb995b20b8d4eea4eb41c163bc1",
+        "wasSuccessful": true
+      },
+      "gas_1": {
+        "dateTime": "21/06/2022 14:04:48",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x714f7f75588008e860c22c18230c8167c9fdf1435e2b0a803198515dd0f81b15",
+        "gasUsed": 149912,
+        "hash": "0x714f7f75588008e860c22c18230c8167c9fdf1435e2b0a803198515dd0f81b15",
+        "wasSuccessful": true
+      }
+    },
+    "arbitrage_6": {
+      "1_swap": {
+        "dateTime": "21/06/2022 14:19:09",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x0c29b8aa1c80f84f6583c6b94bc48360e112ee4c61c690ce848de246e9dea8b5",
+        "gasUsed": 42299,
+        "hash": "0x0c29b8aa1c80f84f6583c6b94bc48360e112ee4c61c690ce848de246e9dea8b5",
+        "wasSuccessful": false
+      }
+    },
+    "arbitrage_7": {
+      "1_swap": {
+        "dateTime": "21/06/2022 16:34:07",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x433e349da1927ee42f290f391d0f28dbd6ff448b2b71f4edc772700640be55c6",
+        "gasUsed": 218667,
+        "hash": "0x433e349da1927ee42f290f391d0f28dbd6ff448b2b71f4edc772700640be55c6",
+        "wasSuccessful": true
+      }
+    },
+    "arbitrage_8": {
+      "1_swap": {
+        "dateTime": "21/06/2022 16:45:33",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0xfe3d08cfb135356c61605179bf34f4e00550853e7e95a946eb965ecd1125497b",
+        "gasUsed": 149912,
+        "hash": "0xfe3d08cfb135356c61605179bf34f4e00550853e7e95a946eb965ecd1125497b",
+        "wasSuccessful": true
+      }
+    },
+    "arbitrage_9": {
+      "1_swap": {
+        "dateTime": "21/06/2022 17:12:02",
+        "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x27b0a420eed9f8caa984b885874ae0afd6880ee52cf2ad692142ed1ccd4f680f",
+        "gasUsed": 149900,
+        "hash": "0x27b0a420eed9f8caa984b885874ae0afd6880ee52cf2ad692142ed1ccd4f680f",
+        "wasSuccessful": true
+      }
+    }
+  },
+  "chains": {
+    "avalanchedfk": {
+      "blockExplorer": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx",
+      "frontendUrl": "https://game.defikingdoms.com/#/marketplace",
+      "gasDetails": {
+        "address": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
+        "symbol": "JEWEL"
+      },
+      "id": "53935",
+      "rpc": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc",
+      "uniswapFactory": "0x794C07912474351b3134E6D6B3B7b3b4A07cbAAa",
+      "uniswapRouter": "0x3C351E1afdd1b1BC44e931E12D4E05D6125eaeCa"
+    },
+    "harmony": {
+      "blockExplorer": "https://explorer.harmony.one/tx",
+      "frontendUrl": "https://game.defikingdoms.com/#/marketplace/central",
+      "gasDetails": {
+        "address": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a",
+        "symbol": "ONE"
+      },
+      "id": "1666600000",
+      "rpc": "https://harmony-0-rpc.gateway.pokt.network",
+      "uniswapFactory": "0x9014B937069918bd319f80e8B3BB4A2cf6FAA5F7",
+      "uniswapRouter": "0x24ad62502d1C652Cc7684081169D04896aC20f30"
+    }
+  },
+  "recipes": {
+    "JEWEL_Harmony_DFKChain": {
+      "arbitrage": {
+        "dexId": "defikingdoms",
+        "directionLock": "avalanchedfk,harmony",
+        "stablecoin": "USD Circle",
+        "token": "JEWEL"
+      },
+      "chainOne": {
+        "chain": {
+          "name": "harmony"
+        },
+        "stablecoin": {
+          "frontendSymbol": "1USDC",
+          "isGas": "False"
+        },
+        "token": {
+          "frontendSymbol": "JEWEL",
+          "isGas": "False"
+        }
+      },
+      "chainTwo": {
+        "chain": {
+          "name": "avalanchedfk"
+        },
+        "stablecoin": {
+          "frontendSymbol": "USDC",
+          "isGas": "False"
+        },
+        "token": {
+          "frontendSymbol": "JEWEL",
+          "isGas": "True"
+        }
+      }
+    }
+  }
+}

@@ -16,7 +16,7 @@
     },
     "Image": {
       "Type": "String",
-      "Default": "538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot:0.03"
+      "Default": "538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot:0.01"
     },
     "ServiceName": {
       "Type": "String",
@@ -92,6 +92,12 @@
                 "ContainerPort": {
                   "Ref": "ContainerPort"
                 }
+              }
+            ],
+            "Secrets": [
+              {
+                "name": "ARB_KEY",
+                "valueFrom": "arn:aws:secretsmanager:eu-west-1:538602529242:secret:arbKey-M2xwzY"
               }
             ],
             "LogConfiguration": {

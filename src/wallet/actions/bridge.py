@@ -34,7 +34,7 @@ def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL
     gasPriceWei = w3.fromWei(w3.eth.gas_price, 'gwei')
 
     tx = {
-        'nonce': w3.eth.getTransactionCount(walletAddress),
+        'nonce': w3.eth.getTransactionCount(walletAddress, 'pending'),
         "chainId": bridgeTransaction["chainId"],
         'to': bridgeTransaction["to"],
         'gas': 250000,

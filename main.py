@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Utility modules
-from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, calculateQueryInterval
+from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, strToBool
 from src.utils.logger import setupLogging
 
 # Selenium modules
@@ -22,10 +22,11 @@ from src.wallet.queries.network import getWalletsInformation
 # General Init
 isDocker = checkIsDocker()
 logger = setupLogging(isDocker)
+useFallbackRoutes = strToBool(os.getenv("USE_FALLBACK_ROUTES"))
 
 # Test Settings
-useTestCapital = False
-startingCapitalTestAmount = 5
+useTestCapital = True
+startingCapitalTestAmount = 1000
 
 # Firebase Setup
 printSeperator()
@@ -37,14 +38,18 @@ recipes = getRecipeDetails()
 printSeperator(True)
 
 # Interval Set-Up
-minimumInterval = int(os.environ.get("ARBITRAGE_INTERVAL"))
+pauseTime = int(os.environ.get("ARBITRAGE_INTERVAL"))
 
 printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 printSeperator(True)
 
-originDriver = initBrowser(profileToUse=1)
-destinationDriver = initBrowser(profileToUse=2)
+if not useFallbackRoutes:
+    originDriver = initBrowser(profileToUse=1)
+    destinationDriver = initBrowser(profileToUse=2)
+else:
+    originDriver = None
+    destinationDriver = None
 
 while True:
 
@@ -76,7 +81,7 @@ while True:
 
         printSeperator(True)
 
-        if True:
+        if tripIsProfitible and not useTestCapital:
 
             telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'])
 
@@ -86,7 +91,7 @@ while True:
 
         else:
             printSeperator()
-            logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Trip Not Profitable, waiting {minimumInterval} seconds')
-            logger.info(f'Waiting {minimumInterval} seconds...')
-            time.sleep(0)
+            logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Trip Not Profitable')
+            logger.info(f'Waiting {pauseTime} seconds...')
             printSeperator(True)
+            time.sleep(pauseTime)

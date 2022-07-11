@@ -12,7 +12,11 @@ newRepo:
 tag:
 	docker tag arb-bot:$(version) 538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot:$(version)
 
+ecr-login:
+	aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot
+
 push:
+	make ecr-login
 	docker push 538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot:$(version)
 
 buildAndPush:
