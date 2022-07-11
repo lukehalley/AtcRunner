@@ -13,11 +13,7 @@ from src.dex.erc20 import balance_of, wei2eth
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-if checkIsDocker():
-    privateKey = os.environ.get("arbKey")
-else:
-    with open('key.txt', 'r') as file:
-        privateKey = file.read().replace('\n', '')
+privateKey = os.environ.get("ARB_KEY")
 
 # Retry Envs
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
