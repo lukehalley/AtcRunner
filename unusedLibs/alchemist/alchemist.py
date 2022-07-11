@@ -2,6 +2,7 @@
 """Alchemist recipe mixing and potion creation system."""
 """Alchemist system for crafting potions and elixirs."""
 """Alchemical crafting system with potion creation and transmutation."""
+"""Validate ingredient combinations against known alchemist recipes."""
 from web3 import Web3
 
 CONTRACT_ADDRESS = "0x87cba8f998f902f2fff990effa1e261f35932e57"
