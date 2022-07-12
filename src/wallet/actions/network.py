@@ -8,9 +8,8 @@ from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
 from src.utils.general import getCurrentDateTime
 from src.api.telegrambot import updatedStatusMessage
 from src.api.firebase import writeTransactionToDB
-
-from src.wallet.queries.network import getTokenBalance
-from src.api.telegrambot import sendMessage
+from src.wallet.queries.network import getTokenBalance, getWalletsInformation
+from src.api.telegrambot import sendMessage, appendToMessage
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -77,7 +76,7 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
         raise Exception(errMsg)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def topUpWalletGas(recipe, direction, toSwapFrom):
+def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
     from src.wallet.queries.swap import getSwapQuoteIn
     from src.wallet.actions.swap import swapToken
 
@@ -100,6 +99,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
         gasTopUpCategory = f"gas_2"
 
     if needsGas:
+
         gasTokensNeeded = maximumGasBalance - gasBalance
 
         routes = [recipe[direction][toSwapFrom]["address"], recipe[direction]["gas"]["address"]]
@@ -126,7 +126,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
 
         try:
 
-            telegramStatusMessage = sendMessage(msg=f"Topping Up {direction.title()} Wallet -> ️")
+            telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
+                                                    messageToAppend=f"⛽️. Topping Up {direction.title()} Wallet -> 📤")
 
             result = swapToken(
                 amountInNormal=amountInQuoted,
@@ -147,8 +148,6 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
 
             updatedStatusMessage(originalMessage=result["telegramStatusMessage"], newStatus="✅")
 
-            x = 1
-
         except Exception as err:
             errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
             logger.error(errMsg)
@@ -159,6 +158,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom):
             recipe[direction]["wallet"]["address"]
         )
 
+        recipe = getWalletsInformation(recipe)
+
         logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up successful - new balance is {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]}')
 
-    return recipe
+    return recipe, needsGas, telegramStatusMessage
