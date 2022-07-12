@@ -17,6 +17,7 @@ Handles terrain types, land values, and location-based mechanics.
 # Calculate land value based on location tier and improvements
 from web3 import Web3
 
+# Land value tier determined by improvements and time held
 # Land value calculated based on terrain type and resource density
 # Calculate total land value including improvements
 # Land value is calculated based on location tier and improvements
