@@ -33,7 +33,7 @@ def printRoundtrip(count):
     logger.info("################################\n")
 
 # Print the Arbitrage is profitable alert
-def printArbitrageProfitable(count):
+def printArbitrageProfitable(count, predictions):
     from src.api.telegrambot import sendMessage
     logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     logger.info(f"ARBITRAGE #{count} PROFITABLE")
@@ -42,7 +42,8 @@ def printArbitrageProfitable(count):
     sentMessage = sendMessage(
         msg=
             f"Arbitrage #{count} Profitable 🤑\n"
-            f""
+            f"${predictions['startingStables']} -> ${predictions['outStables']}\n"
+            f"Profit: ${predictions['profitLoss']} | {predictions['arbitragePercentage']}%"
     )
 
     return sentMessage
@@ -152,4 +153,4 @@ def getDictLength(sub):
     return len(sub)
 
 def getAWSSecret(key):
-    return json.loads(os.environ.get(key))[key]
+    return json.loads(os.environ.get("ARB_SECRETS"))[key]

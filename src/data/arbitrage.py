@@ -279,15 +279,26 @@ def simulateArbitrage(recipe, originDriver, destinationDriver):
 
             isProfitable = currentFunds["stablecoin"] > startingStables
             profitLoss = abs(currentFunds["stablecoin"] - startingStables)
+            profitLossReadable = truncateDecimal(profitLoss, 2)
+
+            startingStablesReadable = truncateDecimal(startingStables, 2)
+            outStablesReadable = truncateDecimal(currentFunds["stablecoin"], 2)
 
             if isProfitable:
-                diff = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
-                logger.info(f'Profit: ${truncateDecimal(profitLoss, 6)} ({diff}%)')
+                arbitragePercentage = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
+                logger.info(f'Profit: ${profitLossReadable} ({arbitragePercentage}%)')
             else:
-                diff = percentageDifference(startingStables, currentFunds["stablecoin"], 2)
-                logger.info(f'Loss: ${truncateDecimal(profitLoss, 6)} ({diff}%)')
+                arbitragePercentage = percentageDifference(startingStables, currentFunds["stablecoin"], 2)
+                logger.info(f'Loss: ${profitLossReadable} ({arbitragePercentage}%)')
 
-            return isProfitable
+            predictionsObject = {
+                "startingStables": startingStablesReadable,
+                "outStables": outStablesReadable,
+                "profitLoss": profitLossReadable,
+                "arbitragePercentage": arbitragePercentage
+            }
+
+            return isProfitable, predictionsObject
 
 def executeArbitrage(recipe, startingTime, telegramStatusMessage):
 
@@ -333,15 +344,20 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
         toSwapFrom = stepSettings["from"]
         toSwapTo = stepSettings["to"]
 
-        recipe = topUpWalletGas(
+        stepNumber = list(steps).index(stepNumber) + 1
+
+        recipe, toppedUpOccured, telegramStatusMessage = topUpWalletGas(
             recipe=recipe,
             direction=position,
-            toSwapFrom=toSwapFrom
+            toSwapFrom=toSwapFrom,
+            telegramStatusMessage=telegramStatusMessage,
         )
 
-        recipe = getWalletsInformation(recipe)
+        if toppedUpOccured:
+            currentFunds["stablecoin"] = recipe[position]["wallet"]["balances"]["stablecoin"]
+            currentFunds["token"] = recipe[position]["wallet"]["balances"]["token"]
 
-        stepNumber = list(steps).index(stepNumber) + 1
+        recipe = getWalletsInformation(recipe)
 
         if stepNumber <= 1:
             logger.info(f'Starting Capital: {currentFunds["stablecoin"]} {recipe[position]["stablecoin"]["name"]}')
@@ -394,7 +410,6 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                 balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
 
                 while balanceAfterSwap == balanceBeforeSwap:
-                    print(f"Waiting for {toSwapTo} to update after swap")
                     recipe = getWalletsInformation(recipe)
                     balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
 
@@ -429,7 +444,6 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
                 balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
 
                 while balanceAfterBridge == balanceBeforeBridge:
-                    print(f"Waiting for {toSwapTo} to update after bridge")
                     recipe = getWalletsInformation(recipe)
                     balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
 
@@ -464,11 +478,11 @@ def executeArbitrage(recipe, startingTime, telegramStatusMessage):
             printSeperator(True)
 
             if wasProfitable:
-                diff = percentageDifference(recipe[position]["wallet"]["balances"]["stablecoin"], startingStables, 2)
+                arbitragePercentage = percentageDifference(recipe[position]["wallet"]["balances"]["stablecoin"], startingStables, 2)
             else:
-                diff = percentageDifference(startingStables, recipe[position]["wallet"]["balances"]["stablecoin"], 2)
+                arbitragePercentage = percentageDifference(startingStables, recipe[position]["wallet"]["balances"]["stablecoin"], 2)
 
-            printArbitrageResult(count=recipe["arbitrage"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=diff, wasProfitable=wasProfitable, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+            printArbitrageResult(count=recipe["arbitrage"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=arbitragePercentage, wasProfitable=wasProfitable, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
             return wasProfitable
 

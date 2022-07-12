@@ -16,7 +16,7 @@
     },
     "Image": {
       "Type": "String",
-      "Default": "538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot:0.01"
+      "Default": "538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot:0.03"
     },
     "ServiceName": {
       "Type": "String",
@@ -96,7 +96,7 @@
             ],
             "Secrets": [
               {
-                "name": "ARB_KEY",
+                "name": "ARB_SECRETS",
                 "valueFrom": "arn:aws:secretsmanager:eu-west-1:538602529242:secret:arbBotSecrets-Eg3a7f"
               }
             ],

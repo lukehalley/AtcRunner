@@ -78,13 +78,13 @@ while True:
 
         printSeperator(True)
 
-        tripIsProfitible = simulateArbitrage(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
+        isProfitable, predictions = simulateArbitrage(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
 
         printSeperator(True)
 
-        if tripIsProfitible:
+        if isProfitable:
 
-            telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'])
+            telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'], predictions)
 
             startingTime = time.perf_counter()
 

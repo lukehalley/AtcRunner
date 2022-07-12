@@ -11,7 +11,7 @@ def createDatabaseConnection():
 
     databaseURL = os.environ.get("DATABASE_URL")
 
-    firebaseKey = getAWSSecret(key="FIREBASE_KEY")
+    firebaseKey = getAWSSecret(key="FIREBASE_KEY").replace("\\n", "\n")
 
     firebaseAuth = {
         "type": "service_account",
