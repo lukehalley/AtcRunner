@@ -50,7 +50,9 @@ def printArbitrageProfitable(count, predictions):
 
 # Print the Arbitrage is profitable alert
 def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime, telegramStatusMessage):
-    from src.api.telegrambot import appendToMessage
+    from src.api.telegrambot import appendToMessage, sendMessage
+    from src.api.firebase import writeResultToDB
+
     finishingTime = time.perf_counter()
     timeTook = finishingTime - startingTime
     timeString = f"Completed Arbitrage In {getMinSecString(timeTook)}"
@@ -58,16 +60,29 @@ def printArbitrageResult(count, amount, percentageDifference, wasProfitable, sta
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.info(f"ARBITRAGE #{count} RESULT")
         logger.info(f"Made A Profit Of ${amount} ({percentageDifference}%)")
-        appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"Made A Profit Of ${round(amount, 2)} ({percentageDifference}%) 👍")
+        appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"Made A Profit Of ${round(amount, 2)} ({percentageDifference}%) 👍\n")
         logger.info(timeString)
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
     else:
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.info(f"ARBITRAGE #{count} RESULT")
         logger.info(f"Made A Loss Of ${amount} ({percentageDifference}%)")
-        appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"Made A Loss Of ${round(amount, 2)} ({percentageDifference}%) 👎")
+        appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"Made A Loss Of ${round(amount, 2)} ({percentageDifference}%) 👎\n")
         logger.info(timeString)
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+
+    sendMessage(msg="@lukehalley done")
+
+    logger.info("Writing result to Firebase...")
+    result = {
+        "wasProfitable": wasProfitable,
+        "profitLoss": float(amount),
+        "percentageDifference": float(percentageDifference),
+        "timeTookSeconds": timeTook,
+    }
+    writeResultToDB(result=result, arbitrageNumber=count)
+    logger.info("Result written to Firebase\n")
+
     printSeperator(True)
 
 # Print a seperator line

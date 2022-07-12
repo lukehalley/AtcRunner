@@ -1,4 +1,5 @@
 import logging, os
+import sys
 from typing import Optional
 from firebase_admin import credentials, initialize_app, db
 from src.utils.general import getAWSSecret
@@ -70,3 +71,31 @@ def writeTransactionToDB(transaction, arbitrageNumber, stepCategory):
     ref = db.reference("/arbitrages")
 
     ref.set(arbitrages)
+
+def writeResultToDB(result, arbitrageNumber):
+
+    arbitrageTitle = f"arbitrage_{arbitrageNumber}"
+
+    arbitrages = fetchFromDatabase("arbitrages")
+
+    if arbitrages:
+
+        if arbitrageTitle not in arbitrages:
+
+            err = f"Tried to write profit/loss to DB but {arbitrageTitle} didn't exist!"
+            logger.error(err)
+            sys.exit(err)
+
+        else:
+
+            arbitrages[arbitrageTitle]["result"] = result
+
+            ref = db.reference("/arbitrages")
+
+            ref.set(arbitrages)
+
+    else:
+       err = "Tried to write profit/loss to DB the arbitrages collection didn't exist!"
+       logger.error(err)
+       sys.exit(err)
+
