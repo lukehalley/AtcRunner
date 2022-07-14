@@ -11,6 +11,7 @@ from src.web.actions import initBrowser
 
 # API modules
 from src.api.firebase import createDatabaseConnection
+from src.api.telegrambot import notifyHangingBridge
 
 # Data modules
 from src.data.recipe import getRecipeDetails
@@ -88,7 +89,7 @@ while True:
 
             startingTime = time.perf_counter()
 
-            outcome = executeArbitrage(recipe, startingTime, telegramStatusMessage)
+            outcome = executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage)
 
         else:
             printSeperator()

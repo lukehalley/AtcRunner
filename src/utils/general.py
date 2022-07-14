@@ -121,8 +121,8 @@ def camelCaseSplit(identifier):
     return [m.group(0) for m in matches]
 
 # Check if number is between two value
-def isBetween(a, x, b):
-    return min(a, b) < x < max(a, b)
+def isBetween(lowerLimit, middleNumber, upperLimit):
+    return min(lowerLimit, upperLimit) < middleNumber < max(lowerLimit, upperLimit)
 
 # Replace a value in all values in a dict
 def replace_all(text, dictionary):
