@@ -1,6 +1,9 @@
 import os, requests, logging
+import sys
+
 from retry import retry
 from decimal import Decimal
+from src.utils.general import percentage, isBetween
 from src.utils.api import buildApiURL
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
 
@@ -15,12 +18,31 @@ synapseAPIBaseURL = synapseAPIEndpoint + "/" + synapseAPIVersion
 # Get the setting envs for the retry events
 httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))
 httpRetryDelay = int(os.environ.get("HTTP_RETRY_DELAY"))
-# Check what is the status of our bridge transaction
+
+# Check what is the status of our bridge transaction using the API
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def checkBridgeStatus(toChain, fromChainTxnHash):
+def checkBridgeStatusAPI(toChain, fromChainTxnHash):
     params = {'toChain': toChain, 'fromChainTxnHash': fromChainTxnHash}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_CHECK_BRIDGE_STATUS_ENDPOINT"))
     return (requests.get(endpoint, params=params)).json()
+
+# Check what is the status of our bridge transaction using the API
+@retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
+def checkBridgeStatusBalance(predictions, stepNumber, toChainRPCURL, toTokenAddress, toTokenDecimals):
+    from src.wallet.queries.network import getTokenBalance
+    if predictions["steps"][stepNumber]["stepType"] == "bridge":
+        bridgePredictions = predictions["steps"][stepNumber]["amountOut"]
+
+        percentageDifference = percentage(percent=10, whole=predictions["steps"][2]["amountOut"])
+        lowerLimit = bridgePredictions - percentageDifference
+        upperLimit = bridgePredictions + percentageDifference
+
+        currentBalance = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress,
+                                         tokenDecimals=toTokenDecimals)
+
+        return isBetween(lowerLimit=lowerLimit, middleNumber=currentBalance, upperLimit=upperLimit)
+    else:
+        sys.exit("Prediction not a bridge type!")
 
 # Check if a swap is supported
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)

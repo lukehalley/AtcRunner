@@ -1,35 +1,42 @@
-import logging, time, sys, os
+import logging
+import os
+import time
 
 from retry import retry
 
-from src.utils.general import printSeperator, getMinSecString
-from src.api.synapsebridge import estimateBridgeOutput, checkBridgeStatus
-from src.data.fees import addFee
+from src.api.synapsebridge import checkBridgeStatusAPI, checkBridgeStatusBalance
+from src.api.telegrambot import notifyHangingBridge, notifyUnstickedBridge
+from src.utils.general import getMinSecString
 
-# Set up our logging
+
 logger = logging.getLogger("DFK-DEX")
 
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 
+bridgeStuckLimitMin = int(os.environ.get("BRIDGE_STUCK_MINS_LIMIT"))
+
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def waitForBridgeToComplete(transactionId, toToken, toChain, timeout=600):
+def waitForBridgeToComplete(transactionId, toToken, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals, predictions, stepNumber, timeout=600):
 
     timeoutMins = int(timeout / 60)
 
     logger.info(f"Waiting for bridge to complete with a timeout of {timeoutMins} minutes...")
 
-    fundsBridged = False
-
     minutesWaiting = 0
     secondSegment = 60
+
+    fundsBridgedAPI = False
+    fundsBridgedBalance = False
+    bridgeTransactionNotificationSent = False
 
     startingTime = time.time()
     segmentTime = startingTime
     timeoutTime = startingTime + timeout
     while True:
 
-        if fundsBridged:
+        if fundsBridgedAPI or fundsBridgedBalance:
             bridgeTimedOut = False
             break
 
@@ -37,16 +44,26 @@ def waitForBridgeToComplete(transactionId, toToken, toChain, timeout=600):
             bridgeTimedOut = True
             break
 
-        fundsBridged = checkBridgeStatus(toChain=toChain, fromChainTxnHash=transactionId)["isComplete"]
-
         if time.time() - segmentTime > secondSegment:
             minutesWaiting = minutesWaiting + 1
             logger.info(f"{minutesWaiting} Mins Have Elapsed...")
             segmentTime = time.time()
 
-        time.sleep(1)
+        if minutesWaiting >= bridgeStuckLimitMin and not bridgeTransactionNotificationSent:
+            notifyHangingBridge(fromChainId=fromChain, transactionId=transactionId)
+            bridgeTransactionNotificationSent = True
 
-    if fundsBridged:
+        fundsBridgedAPI = checkBridgeStatusAPI(toChain=toChain, fromChainTxnHash=transactionId)["isComplete"]
+
+        fundsBridgedBalance = checkBridgeStatusBalance(predictions=predictions, stepNumber=stepNumber, toChainRPCURL=toChainRPCURL, toTokenAddress=toTokenAddress, toTokenDecimals=toTokenDecimals)
+
+        time.sleep(0)
+
+    if fundsBridgedAPI or fundsBridgedBalance:
+
+        if bridgeTransactionNotificationSent:
+            notifyUnstickedBridge(transactionId=transactionId)
+
         timerString = getMinSecString(time.time() - startingTime)
         logger.info(f'✅ Bridging {toToken} successful, took {timerString}!')
     elif bridgeTimedOut:
@@ -54,4 +71,4 @@ def waitForBridgeToComplete(transactionId, toToken, toChain, timeout=600):
         logger.error(errMsg)
         raise Exception(errMsg)
 
-    return fundsBridged
+    return fundsBridgedAPI or fundsBridgedBalance

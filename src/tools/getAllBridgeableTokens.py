@@ -136,12 +136,19 @@ def getAllChainIds(bridgeableTokens):
     allChainIds.sort()
     return allChainIds
 
+print("Getting Dexs...")
 bridgeableDexs = getDexsFromLocal()
+
+print("Getting Tokens...")
 bridgeableTokens, chainsDetails = getAllBridgeableTokensFromURL()
 
+print("Getting Chains...")
 allChainIds = getAllChainIds(bridgeableTokens)
+
+print("Getting Tokens For Chains...")
 tokensByChain = getTokenByChain(allChainIds, chainsDetails)
 
+print("Getting USDC Details...")
 stabecoinName = "USD Circle"
 stabecoinDetails = synapseAllBridgeabletokens[stabecoinName]
 

@@ -124,7 +124,7 @@ def compareBalance(expected, actual, feeAllowancePercentage=10):
 
     expectedLower = expected - feeAllowance
     expectedUpper = expected + feeAllowance
-    isInRange = isBetween(expectedLower, actual, expectedUpper)
+    isInRange = isBetween(lowerLimit=expectedLower, middleNumber=actual, upperLimit=expectedUpper)
 
     if actual == expected or isInRange:
         return True

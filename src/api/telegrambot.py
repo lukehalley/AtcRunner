@@ -6,7 +6,8 @@ from src.utils.general import getAWSSecret
 
 load_dotenv()
 token = os.getenv("TELEGRAM_BOT_TOKEN")
-channelId = os.getenv("TELEGRAM_BOT_CHANNEL_ID")
+arbitrageNotificationID = os.getenv("TELEGRAM_ARBITRAGE_NOTIFICATION_CHANNEL_ID")
+arbitrageHangingBridgeID = os.getenv("TELEGRAM_ARBITRAGE_BRIDGE_CHANNEL_ID")
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -16,8 +17,11 @@ bot = Bot(getAWSSecret(key="TELEGRAM_BOT_TOKEN"))
 httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))
 httpRetryDelay = int(os.environ.get("HTTP_RETRY_DELAY"))
 
+usernames = ["Parsa2400", "TomyLBT"]
+mentionStr = " ".join(["@" + s for s in usernames])
+
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def sendMessage(msg):
+def sendMessage(msg, channelId=arbitrageNotificationID):
     result = bot.send_message(channelId, msg)
     return result
 
@@ -51,3 +55,19 @@ def updatedStatusMessage(originalMessage, newStatus):
     else:
         logger.info("Telegram message same as before - not updating.")
         return
+
+def notifyHangingBridge(fromChainId, transactionId):
+
+    msg = \
+        f"!unsticktx {transactionId} {fromChainId}\n" \
+        f"{mentionStr}"
+
+    sendMessage(msg, channelId=arbitrageHangingBridgeID)
+
+def notifyUnstickedBridge(transactionId):
+
+    msg = \
+        f"{transactionId} unstuck ✅\n" \
+        f"{mentionStr}"
+
+    sendMessage(msg, channelId=arbitrageHangingBridgeID)
