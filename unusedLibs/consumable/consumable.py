@@ -4,6 +4,7 @@
 """Consumable item system for handling potions, food, and temporary effects."""
 """Consumable items with effect application and use mechanics."""
 """Consumable items management and tracking system."""
+"""Apply consumable effects to player stats with duration and stacking rules."""
 from web3 import Web3
 """Define consumable items and their effects on player stats."""
 """Manage consumable items and their temporary stat effects."""
