@@ -43,13 +43,12 @@ def updatedStatusMessage(originalMessage, newStatus):
     originalText = originalMessage["text"]
 
     if originalText != newStatus:
-        statusText = originalText[-1]
-        newText = originalText.replace(statusText, newStatus)
+        statusText = originalText[:-1]
+        newText = statusText + newStatus
 
         updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
                               message_id=originalMessage.message_id,
                               text=newText)
-
 
         return updatedMessage
     else:

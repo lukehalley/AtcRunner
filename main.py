@@ -1,5 +1,8 @@
-import time, os
+import os
+import time
+
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Utility modules
@@ -11,11 +14,10 @@ from src.web.actions import initBrowser
 
 # API modules
 from src.api.firebase import createDatabaseConnection
-from src.api.telegrambot import notifyHangingBridge
 
 # Data modules
 from src.data.recipe import getRecipeDetails
-from src.data.arbitrage import determineArbitrageStrategy, simulateArbitrage, executeArbitrage
+from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfitable, executeArbitrage
 
 # Wallet modules
 from src.wallet.queries.network import getWalletsInformation
@@ -79,7 +81,7 @@ while True:
 
         printSeperator(True)
 
-        isProfitable, predictions = simulateArbitrage(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
+        isProfitable, predictions = checkArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
 
         printSeperator(True)
 
@@ -89,7 +91,7 @@ while True:
 
             startingTime = time.perf_counter()
 
-            outcome = executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage)
+            outcome = executeArbitrage(recipe=recipe, predictions=predictions, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
         else:
             printSeperator()

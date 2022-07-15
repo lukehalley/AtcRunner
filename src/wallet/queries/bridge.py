@@ -14,11 +14,13 @@ logger = logging.getLogger("DFK-DEX")
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 
+bridgeWaitTimeout = int(os.environ.get("BRIDGE_TIMEOUT_SECS"))
 bridgeStuckLimitMin = int(os.environ.get("BRIDGE_STUCK_MINS_LIMIT"))
 
-
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def waitForBridgeToComplete(transactionId, toToken, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals, predictions, stepNumber, timeout=600):
+def waitForBridgeToComplete(transactionId, toToken, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals, predictions, stepNumber):
+
+    timeout = bridgeWaitTimeout
 
     timeoutMins = int(timeout / 60)
 
@@ -50,7 +52,9 @@ def waitForBridgeToComplete(transactionId, toToken, fromChain, toChain, toChainR
             segmentTime = time.time()
 
         if minutesWaiting >= bridgeStuckLimitMin and not bridgeTransactionNotificationSent:
+            logger.info(f'Bridge Stuck - Sending Hanging Bridge Notification...')
             notifyHangingBridge(fromChainId=fromChain, transactionId=transactionId)
+            logger.info(f'Notification Sent!')
             bridgeTransactionNotificationSent = True
 
         fundsBridgedAPI = checkBridgeStatusAPI(toChain=toChain, fromChainTxnHash=transactionId)["isComplete"]

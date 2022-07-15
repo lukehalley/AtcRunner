@@ -63,8 +63,7 @@ def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL
         toTokenAddress=toTokenAddress,
         toTokenDecimals=toTokenDecimals,
         predictions=predictions,
-        stepNumber=stepNumber,
-        timeout=1800
+        stepNumber=stepNumber
     )
 
     balanceAfterBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals)
