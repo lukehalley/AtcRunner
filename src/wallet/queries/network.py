@@ -60,7 +60,8 @@ def getWalletsInformation(recipe, printBalances=False):
 
     directionList = ("origin", "destination")
 
-    recipe["status"] = {}
+    if not "status" in recipe:
+        recipe["status"] = {}
 
     for direction in directionList:
 

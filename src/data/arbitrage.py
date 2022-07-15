@@ -1,5 +1,6 @@
 import logging, os
 import sys
+import time
 from collections import OrderedDict
 from itertools import repeat
 from decimal import Decimal
@@ -156,39 +157,113 @@ def determineArbitrageStrategy(recipe):
 
     return recipe
 
-def simulateStep(recipe, step):
+def getRoutes(recipe, position, driver, currentFunds, toSwapFrom, toSwapTo):
 
-    stepType = step["type"]
-    stepNumber = step["stepNumber"]
+    if driver:
+        routes = getRoutesFromFrontend(
+            driver=driver,
+            network=recipe[position]["chain"]["name"],
+            dexURL=recipe[position]["chain"]["frontendUrl"],
+            amountToSwap=currentFunds[toSwapFrom],
+            tokenSymbolIn=recipe[position][toSwapFrom]["frontendSymbol"],
+            tokenSymbolOut=recipe[position][toSwapTo]["frontendSymbol"]
+        )
+    else:
+        routes = [x for x in recipe[position]["fallbackRoute"][f"{toSwapTo}-{toSwapFrom}"].split(",") if x]
 
-    position = step["position"]
+    if routes:
+        routes.pop(0)
+        routes.pop(-1)
+        routeAddressList = [recipe[position][toSwapFrom]["address"]]
+
+        for route in routes:
+
+            localCheck = ["stablecoin", "token", "gas"]
+
+            routeAddress = None
+
+            for localToken in localCheck:
+                if route == recipe[position][localToken]["symbol"]:
+                    routeAddress = recipe[position][localToken]["address"]
+
+            if not routeAddress:
+                routeAddress = getTokenAddressByDexId(route, recipe["arbitrage"]["dexId"])
+
+            routeAddressList.append(routeAddress)
+
+        routeAddressList.append(recipe[position][toSwapTo]["address"])
+    else:
+        routeAddressList = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
+
+    recipe[position]["route"] = routeAddressList
+
+    return routeAddressList
+
+def simulateStep(recipe, stepSettings, currentFunds, driver=None):
+
+    stepType = stepSettings["type"]
+    position = stepSettings["position"]
     oppositePosition = getOppositeDirection(position)
 
-    toSwapFrom = step["from"]
-    toSwapTo = step["to"]
+    toSwapFrom = stepSettings["from"]
+    toSwapTo = stepSettings["to"]
 
-    logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+    if stepType == "swap":
+        routeAddressList = getRoutes(recipe=recipe, position=position, driver=driver, currentFunds=currentFunds,
+                                     toSwapFrom=toSwapFrom, toSwapTo=toSwapTo)
 
+        quote = getSwapQuoteOut(
+            amountInNormal=currentFunds[toSwapFrom],
+            amountInDecimals=recipe[position][toSwapFrom]["decimals"],
+            amountOutDecimals=recipe[position][toSwapTo]["decimals"],
+            rpcUrl=recipe[position]["chain"]["rpc"],
+            routerAddress=recipe[position]["chain"]["uniswapRouter"],
+            routes=routeAddressList
+        )
 
-def simulateArbitrage(recipe, originDriver, destinationDriver, arbStrat = getJSONFile(folder="arbitrage", file="arbStrat.json", section=None)):
+    elif stepType == "bridge":
+        quote = estimateBridgeOutput(
+                fromChain=recipe[position]["chain"]["id"],
+                toChain=recipe[oppositePosition]["chain"]["id"],
+                fromToken=recipe[position][toSwapFrom]['symbol'],
+                toToken=recipe[oppositePosition][toSwapFrom]['symbol'],
+                amountToBridge=currentFunds[toSwapFrom],
+                decimalPlacesFrom=recipe[position][toSwapFrom]["decimals"],
+                decimalPlacesTo=recipe[oppositePosition][toSwapFrom]["decimals"],
+                returning=(not position == "origin"))
+    else:
+        errMsg = f'Invalid Arbitrage simulation type: {stepType}'
+        logger.error(errMsg)
+        raise Exception(errMsg)
+
+    return quote
+
+def checkArbitrageIsProfitable(recipe, originDriver, destinationDriver, printInfo=True, position="origin", arbStrat = getJSONFile(folder="arbitrage", file="arbStrat.json", section=None)):
 
     steps = OrderedDict(arbStrat)
+    isProfitable = False
 
     if not recipe["status"]["stablesAreOnOrigin"]:
         balanceOnDest = recipe["destination"]["wallet"]["balances"]["stablecoin"]
         recipe["destination"]["wallet"]["balances"]["stablecoin"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
         recipe["origin"]["wallet"]["balances"]["stablecoin"] = balanceOnDest
 
-    printSeperator()
-    logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
-                f"Simulating Arbitrage")
-    printSeperator()
+    if printInfo:
+        printSeperator()
+        logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
+                    f"Simulating Arbitrage")
+        printSeperator()
 
-    startingStables = recipe["origin"]["wallet"]["balances"]["stablecoin"]
+    if "startingStables" in recipe["status"]:
+        startingStables = recipe["status"]["startingStables"]
+    else:
+        startingStables = recipe[position]["wallet"]["balances"]["stablecoin"]
+
+    startingTokens = recipe[position]["wallet"]["balances"]["token"]
 
     currentFunds = {
         "stablecoin": startingStables,
-        "token": 0
+        "token": startingTokens
     }
 
     predictions = {}
@@ -197,141 +272,91 @@ def simulateArbitrage(recipe, originDriver, destinationDriver, arbStrat = getJSO
 
     for stepNumber, stepSettings in steps.items():
 
-        stepType = stepSettings["type"]
-        position = stepSettings["position"]
-        oppositePosition = getOppositeDirection(position)
-        toSwapFrom = stepSettings["from"]
-        toSwapTo = stepSettings["to"]
+        if not stepSettings["done"]:
 
-        if position == "origin":
-            driver = originDriver
-        else:
-            driver = destinationDriver
+            position = stepSettings["position"]
 
-        stepNumber = list(steps).index(stepNumber) + 1
+            stepNumber = list(steps).index(stepNumber) + 1
+            stepType = stepSettings["type"]
 
-        if stepNumber <= 1:
-            logger.info(f'Starting Capital: {startingStables} {recipe[position]["stablecoin"]["name"]}')
-            printSeperator()
+            toSwapFrom = stepSettings["from"]
+            toSwapTo = stepSettings["to"]
 
-        if toSwapTo != "done":
+            if position == "origin":
+                driver = originDriver
+            else:
+                driver = destinationDriver
 
-            logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+            if stepNumber <= 1 and printInfo:
+                logger.info(f'Starting Capital: {startingStables} {recipe[position]["stablecoin"]["name"]}')
+                printSeperator()
 
-            predictions["steps"][stepNumber] = {
-                "stepType": stepType,
-                "amountIn": currentFunds[toSwapFrom],
-            }
+            if toSwapTo != "done":
 
-            printSeperator()
+                if printInfo:
+                    logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
-            if stepType == "swap":
+                predictions["steps"][stepNumber] = {
+                    "stepType": stepType,
+                    "amountIn": currentFunds[toSwapFrom],
+                }
 
-                if driver:
-                    routes = getRoutesFromFrontend(
-                        driver=driver,
-                        network=recipe[position]["chain"]["name"],
-                        dexURL=recipe[position]["chain"]["frontendUrl"],
-                        amountToSwap=currentFunds[toSwapFrom],
-                        tokenSymbolIn=recipe[position][toSwapFrom]["frontendSymbol"],
-                        tokenSymbolOut=recipe[position][toSwapTo]["frontendSymbol"]
-                    )
-                else:
-                    routes = [x for x in recipe[position]["fallbackRoute"][f"{toSwapTo}-{toSwapFrom}"].split(",") if x]
+                if printInfo:
+                    printSeperator()
 
-                if routes:
-                    routes.pop(0)
-                    routes.pop(-1)
-                    routeAddressList = [recipe[position][toSwapFrom]["address"]]
+                quote = simulateStep(recipe=recipe, stepSettings=stepSettings, currentFunds=currentFunds, driver=driver)
 
-                    for route in routes:
+                currentFunds[toSwapTo] = quote
 
-                        localCheck = ["stablecoin", "token", "gas"]
+                if printInfo:
+                    logger.info(f'   Out {truncateDecimal(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
 
-                        routeAddress = None
+                predictions["steps"][stepNumber]["amountOut"] = currentFunds[toSwapTo]
 
-                        for localToken in localCheck:
-                            if route == recipe[position][localToken]["symbol"]:
-                                routeAddress = recipe[position][localToken]["address"]
-
-                        if not routeAddress:
-                            routeAddress = getTokenAddressByDexId(route, recipe["arbitrage"]["dexId"])
-
-                        routeAddressList.append(routeAddress)
-
-                    routeAddressList.append(recipe[position][toSwapTo]["address"])
-                else:
-                    routeAddressList = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
-
-                quote = getSwapQuoteOut(
-                    amountInNormal=currentFunds[toSwapFrom],
-                    amountInDecimals=recipe[position][toSwapFrom]["decimals"],
-                    amountOutDecimals=recipe[position][toSwapTo]["decimals"],
-                    rpcUrl=recipe[position]["chain"]["rpc"],
-                    routerAddress=recipe[position]["chain"]["uniswapRouter"],
-                    routes=routeAddressList
-                )
-
-                recipe[position]["route"] = routeAddressList
-
-            elif stepType == "bridge":
-
-                quote = estimateBridgeOutput(
-                    fromChain=recipe[position]["chain"]["id"],
-                    toChain=recipe[oppositePosition]["chain"]["id"],
-                    fromToken=recipe[position][toSwapFrom]['symbol'],
-                    toToken=recipe[oppositePosition][toSwapFrom]['symbol'],
-                    amountToBridge=currentFunds[toSwapFrom],
-                    decimalPlacesFrom=recipe[position][toSwapFrom]["decimals"],
-                    decimalPlacesTo=recipe[oppositePosition][toSwapFrom]["decimals"],
-                    returning=(not position == "origin"))
+                if printInfo:
+                    printSeperator()
 
             else:
-                errMsg = f'Invalid Arbitrage simulation type: {stepType}'
-                logger.error(errMsg)
-                raise Exception(errMsg)
 
-            currentFunds[toSwapTo] = quote
+                isProfitable = currentFunds["stablecoin"] > startingStables
+                arbitragePercentage = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
+                overPercentage = arbitragePercentage > 3
 
-            logger.info(f'   Out {truncateDecimal(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
-            
-            predictions["steps"][stepNumber]["amountOut"] = currentFunds[toSwapTo]
+                profitLoss = currentFunds["stablecoin"] - startingStables
+                profitLossReadable = truncateDecimal(profitLoss, 2)
 
-            printSeperator()
+                startingStablesReadable = truncateDecimal(startingStables, 2)
+                outStablesReadable = truncateDecimal(currentFunds["stablecoin"], 2)
+
+                calculateDifference(outStablesReadable, startingStablesReadable)
+
+                if profitLossReadable > 0:
+                    amountStr = f"${profitLossReadable}"
+                else:
+                    amountStr = f"-${abs(profitLossReadable)}"
+
+                if printInfo:
+                    # if overPercentage:
+                    #     if isProfitable:
+                    #         logger.info(f'Profit: {amountStr} ({arbitragePercentage}%)')
+                    #     else:
+                    #         logger.info(f'Loss: {amountStr} ({arbitragePercentage}%)')
+                    # else:
+                    if isProfitable:
+                        logger.info(f'Profit: {amountStr} ({arbitragePercentage}%)')
+                    else:
+                        logger.info(f'Loss: {amountStr} ({arbitragePercentage}%)')
+
+                predictions["startingStables"] = startingStablesReadable
+                predictions["outStables"] = outStablesReadable
+                predictions["profitLoss"] = profitLossReadable
+                predictions["arbitragePercentage"] = arbitragePercentage
 
         else:
 
-            isProfitable = currentFunds["stablecoin"] > startingStables
-            arbitragePercentage = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
-            overPercentage = arbitragePercentage > 3
+            x = 1
 
-            profitLoss = currentFunds["stablecoin"] - startingStables
-            profitLossReadable = truncateDecimal(profitLoss, 2)
-
-            startingStablesReadable = truncateDecimal(startingStables, 2)
-            outStablesReadable = truncateDecimal(currentFunds["stablecoin"], 2)
-
-            calculateDifference(outStablesReadable, startingStablesReadable)
-
-            if profitLossReadable > 0:
-                amountStr = f"${profitLossReadable}"
-            else:
-                amountStr = f"-${abs(profitLossReadable)}"
-
-            if overPercentage:
-                if isProfitable:
-                    logger.info(f'Profit: {amountStr} ({arbitragePercentage}%)')
-                else:
-                    logger.info(f'Loss: {amountStr} ({arbitragePercentage}%)')
-            else:
-                logger.info(f'Below % Threshold: {amountStr} ({arbitragePercentage}%)')
-
-            predictions["startingStables"] = startingStablesReadable
-            predictions["outStables"] = outStablesReadable
-            predictions["profitLoss"] = profitLossReadable
-            predictions["arbitragePercentage"] = arbitragePercentage
-
-            return isProfitable, predictions
+    return isProfitable, predictions
 
 def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
@@ -364,12 +389,19 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
     startingStables = recipe["origin"]["wallet"]["balances"]["stablecoin"]
 
+    recipe["status"]["startingStables"] = startingStables
+
     currentFunds = {
         "stablecoin": startingStables,
         "token": 0
     }
 
+    stepCount = len(list(steps.values()))
+    secondLastStep = stepCount - 1
+
     for stepNumber, stepSettings in steps.items():
+
+        isSecondLastStep = (list(steps).index(stepNumber) + 1) == secondLastStep
 
         stepType = stepSettings["type"]
         position = stepSettings["position"]
@@ -398,13 +430,29 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
         if toSwapTo != "done":
 
+            if not isSecondLastStep:
+
+                isStillProfitable, midPredictions = checkArbitrageIsProfitable(recipe, printInfo=False, arbStrat=arbStrat, originDriver=None, destinationDriver=None)
+
+                if not isStillProfitable:
+                    logger.info(f'{stepType.title()} No Longer Profitable - Waiting')
+                    if stepNumber > 1:
+                        updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏸️")
+                    while not isStillProfitable:
+                        isStillProfitable, midPredictions = checkArbitrageIsProfitable(recipe, printInfo=False,
+                                                                                       arbStrat=arbStrat, originDriver=None,
+                                                                                       destinationDriver=None)
+                    logger.info(f'{stepType.title()} Profitable Again!')
+            else:
+                logger.info(f'Last {stepType.title()} Step - Not Checking If Profitable')
+
             recipe = getWalletsInformation(recipe)
+
+            printSeperator()
 
             logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
             telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber}. Doing {position.title()} {stepType.title()} -> 📤")
-
-            printSeperator()
 
             if stepType == "swap":
 
@@ -500,6 +548,10 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
             logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[position][toSwapTo]["name"]}')
             telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
+
+
+
+            stepSettings["done"] = True
 
             printSeperator()
 
