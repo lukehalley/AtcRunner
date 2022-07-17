@@ -33,6 +33,17 @@ def printRoundtrip(count):
     logger.info("################################\n")
 
 # Print the Arbitrage is profitable alert
+def printSettingUpArbitrage(count):
+    from src.api.telegrambot import sendMessage
+
+    sentMessage = sendMessage(
+        msg=
+            f"Setting Up Arbitrage #{count} 🗺\n"
+    )
+
+    return sentMessage
+
+# Print the Arbitrage is profitable alert
 def printArbitrageProfitable(count, predictions):
     from src.api.telegrambot import sendMessage
     logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")

@@ -18,7 +18,7 @@ transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):
+def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageNumber, stepCategory, telegramMessage):
 
     # Setup our web3 object
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -28,7 +28,7 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
 
     tx["nonce"] = w3.eth.getTransactionCount(walletAddress, 'pending')
 
-    telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
+    telegramMessage = updatedStatusMessage(originalMessage=telegramMessage, newStatus="⏳")
 
     logger.debug("Signing transaction...")
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=privateKey)
@@ -61,7 +61,7 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
         stepCategory=stepCategory
     )
 
-    result["telegramStatusMessage"] = telegramStatusMessage
+    result["telegramMessage"] = telegramMessage
 
     if wasSuccessful:
         logger.info(f"✅ Transaction was successful!")
@@ -70,13 +70,13 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
 
     else:
         errMsg = f"⛔️ Transaction was unsuccessful: {explorerLink}"
-        if telegramStatusMessage:
-            updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
+        if telegramMessage:
+            updatedStatusMessage(originalMessage=telegramMessage, newStatus="⛔️")
         logger.error(errMsg)
         raise Exception(errMsg)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
+def topUpWalletGas(recipe, direction, toSwapFrom, telegramMessage):
     from src.wallet.queries.swap import getSwapQuoteIn
     from src.wallet.actions.swap import swapToken
 
@@ -126,7 +126,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
 
         try:
 
-            telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
+            telegramMessage = appendToMessage(originalMessage=telegramMessage,
                                                     messageToAppend=f"⛽️. Topping Up {direction.title()} Wallet -> 📤")
 
             result = swapToken(
@@ -138,7 +138,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 rpcURL=recipe[direction]["chain"]["rpc"],
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=gasTopUpCategory,
-                telegramStatusMessage=telegramStatusMessage,
+                telegramMessage=telegramMessage,
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"],
                 routerAddress=recipe[direction]["chain"]["uniswapRouter"],
                 txDeadline=300,
@@ -146,7 +146,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 swappingToGas=True
             )
 
-            updatedStatusMessage(originalMessage=result["telegramStatusMessage"], newStatus="✅")
+            updatedStatusMessage(originalMessage=result["telegramMessage"], newStatus="✅")
 
         except Exception as err:
             errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
@@ -162,4 +162,4 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
 
         logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up successful - new balance is {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]}')
 
-    return recipe, needsGas, telegramStatusMessage
+    return recipe, needsGas, telegramMessage

@@ -10,7 +10,7 @@ from src.wallet.queries.network import getTokenBalance, getWalletGasBalance
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, arbitrageNumber, stepCategory, explorerUrl, telegramStatusMessage=None, txDeadline=300, txTimeoutSeconds=150, swappingToGas=False):
+def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, arbitrageNumber, stepCategory, explorerUrl, telegramMessage=None, txDeadline=300, txTimeoutSeconds=150, swappingToGas=False):
     from src.wallet.queries.network import getPrivateKey
 
     # Setup our web3 object
