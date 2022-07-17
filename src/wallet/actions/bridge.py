@@ -12,7 +12,7 @@ from src.wallet.actions.network import signAndSendTransaction
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenSymbol, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, predictions, stepNumber, txTimeoutSeconds=150):
+def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenSymbol, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramMessage, predictions, stepNumber, txTimeoutSeconds=150):
     walletAddress = getWalletAddressFromPrivateKey(fromChainRPCURL)
 
     amountToBridgeWei = getTokenDecimalValue(amountToBridge, fromTokenDecimals)
@@ -52,7 +52,7 @@ def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL
         explorerUrl=explorerUrl,
         arbitrageNumber=arbitrageNumber,
         stepCategory=stepCategory,
-        telegramStatusMessage=telegramStatusMessage)
+        telegramMessage=telegramMessage)
 
     fundsBridged = waitForBridgeToComplete(
         transactionId=transactionResult["hash"],
@@ -76,7 +76,7 @@ def executeBridge(fromChain, fromTokenSymbol, fromTokenDecimals, fromChainRPCURL
         "fee": getTokenNormalValue(transactionResult["gasUsed"] * w3.toWei(gasPriceWei, 'gwei'), 18),
         "blockURL": transactionResult["explorerLink"],
         "hash": transactionResult["hash"],
-        "telegramStatusMessage": transactionResult["telegramStatusMessage"]
+        "telegramMessage": transactionResult["telegramMessage"]
     }
 
     return result

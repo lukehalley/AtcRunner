@@ -4,34 +4,34 @@
         "to": "token",
         "position": "origin",
         "type": "swap",
-        "family" : "setup"
+        "done":false
     },
     "stepTwo": {
         "from": "token",
         "to": "token",
         "position": "origin",
         "type": "bridge",
-        "family" : "setup"
+        "done": false
     },
     "stepThree": {
         "from": "token",
         "to": "stablecoin",
         "position": "destination",
         "type": "swap",
-        "family" : "execute"
+        "done": false
     },
     "stepFour": {
         "from": "stablecoin",
         "to": "stablecoin",
         "position": "destination",
         "type": "bridge",
-        "family" : "execute"
+        "done": false
     },
     "stepFive": {
         "from": "stablecoin",
         "to": "done",
         "position": "origin",
         "type": "swap",
-        "family" : "execute"
+        "done": false
     }
 }

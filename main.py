@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Utility modules
-from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, strToBool
+from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, strToBool, printSettingUpArbitrage
 from src.utils.logger import setupLogging
 
 # Selenium modules
@@ -17,7 +17,7 @@ from src.api.firebase import createDatabaseConnection
 
 # Data modules
 from src.data.recipe import getRecipeDetails
-from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfitable, executeArbitrage
+from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfitable, executeArbitrage, setupArbitrage
 
 # Wallet modules
 from src.wallet.queries.network import getWalletsInformation
@@ -63,10 +63,12 @@ while True:
 
         recipe = determineArbitrageStrategy(recipe)
 
+        currentRoundTripCount = recipe['arbitrage']['currentRoundTripCount']
+
         printRoundtrip(recipe["arbitrage"]["currentRoundTripCount"])
 
         printSeperator()
-        logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] Getting Wallet Details & Balance")
+        logger.info(f"[ARB #{currentRoundTripCount}] Getting Wallet Details & Balance")
         printSeperator()
 
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
@@ -81,13 +83,19 @@ while True:
 
         printSeperator(True)
 
+        # Setting Up Arb
+
+        telegramSetupMessage = printSettingUpArbitrage(count=currentRoundTripCount)
         isProfitable, predictions = checkArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
+        setupArbitrage(recipe=recipe, predictions=predictions, telegramSetupMessage=telegramSetupMessage)
 
         printSeperator(True)
 
+        # Do init setup - buy tokens + bridge, then wait until profitable to swap and bridge back.
+
         if isProfitable:
 
-            telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'], predictions)
+            telegramStatusMessage = printArbitrageProfitable(currentRoundTripCount, predictions)
 
             startingTime = time.perf_counter()
 
