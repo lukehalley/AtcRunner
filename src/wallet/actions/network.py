@@ -35,7 +35,15 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
     logger.debug("Transaction signed!")
 
     logger.info("Sending transaction...")
-    w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    try:
+        w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    except Exception as e:
+        isKnownTransactionError = "known transaction" in e.args[0]["message"]
+        if isKnownTransactionError:
+            pass
+        else:
+            sys.exit(e.args[0]["message"])
+
     logger.info("Transaction successfully sent!")
 
     logger.info(f"Waiting for transaction to be mined...")

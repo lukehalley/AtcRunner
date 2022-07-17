@@ -24,7 +24,7 @@ logger = logging.getLogger("DFK-DEX")
 def getNextArbitrageNumber():
     arbitrages = fetchFromDatabase("arbitrages")
     if arbitrages:
-        return int(list(arbitrages.keys())[-1].split("_")[1]) + 1
+        return sorted([int(w.replace('arbitrage_', '')) for w in list(arbitrages.keys())])[-1] + 1
     else:
         return 1
 
@@ -393,8 +393,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
     for stepNumber, stepSettings in steps.items():
 
-        isSecondLastStep = (list(steps).index(stepNumber) + 1) == secondLastStep
-
         stepType = stepSettings["type"]
         position = stepSettings["position"]
         oppositePosition = getOppositeDirection(position)
@@ -421,22 +419,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
             printSeperator()
 
         if toSwapTo != "done":
-
-            # if not isSecondLastStep:
-            #
-            #     isStillProfitable, midPredictions = checkArbitrageIsProfitable(recipe, printInfo=False, arbStrat=arbStrat, originDriver=None, destinationDriver=None)
-            #
-            #     if not isStillProfitable:
-            #         logger.info(f'{stepType.title()} No Longer Profitable - Waiting')
-            #         if stepNumber > 1:
-            #             updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏸️")
-            #         while not isStillProfitable:
-            #             isStillProfitable, midPredictions = checkArbitrageIsProfitable(recipe, printInfo=False,
-            #                                                                            arbStrat=arbStrat, originDriver=None,
-            #                                                                            destinationDriver=None)
-            #         logger.info(f'{stepType.title()} Profitable Again!')
-            # else:
-            #     logger.info(f'Last {stepType.title()} Step - Not Checking If Profitable')
 
             recipe = getWalletsInformation(recipe)
 
