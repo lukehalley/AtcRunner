@@ -40,6 +40,7 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
     except Exception as e:
         isKnownTransactionError = "known transaction" in e.args[0]["message"]
         if isKnownTransactionError:
+            logger.warning("Hit isKnownTransactionError but going ahead...")
             pass
         else:
             sys.exit(e.args[0]["message"])
