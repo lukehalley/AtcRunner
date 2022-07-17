@@ -318,9 +318,11 @@ def checkArbitrageIsProfitable(recipe, originDriver, destinationDriver, printInf
 
             else:
 
-                isProfitable = currentFunds["stablecoin"] > startingStables
+
                 arbitragePercentage = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
-                overPercentage = arbitragePercentage > 3
+                isOverPercentage = checkArbitrageIsWorthIt(difference=arbitragePercentage)
+
+                isProfitable = (currentFunds["stablecoin"] > startingStables) and isOverPercentage
 
                 profitLoss = currentFunds["stablecoin"] - startingStables
                 profitLossReadable = truncateDecimal(profitLoss, 2)
@@ -336,12 +338,6 @@ def checkArbitrageIsProfitable(recipe, originDriver, destinationDriver, printInf
                     amountStr = f"-${abs(profitLossReadable)}"
 
                 if printInfo:
-                    # if overPercentage:
-                    #     if isProfitable:
-                    #         logger.info(f'Profit: {amountStr} ({arbitragePercentage}%)')
-                    #     else:
-                    #         logger.info(f'Loss: {amountStr} ({arbitragePercentage}%)')
-                    # else:
                     if isProfitable:
                         logger.info(f'Profit: {amountStr} ({arbitragePercentage}%)')
                     else:
@@ -351,10 +347,6 @@ def checkArbitrageIsProfitable(recipe, originDriver, destinationDriver, printInf
                 predictions["outStables"] = outStablesReadable
                 predictions["profitLoss"] = profitLossReadable
                 predictions["arbitragePercentage"] = arbitragePercentage
-
-        else:
-
-            x = 1
 
     return isProfitable, predictions
 
@@ -430,21 +422,21 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
         if toSwapTo != "done":
 
-            if not isSecondLastStep:
-
-                isStillProfitable, midPredictions = checkArbitrageIsProfitable(recipe, printInfo=False, arbStrat=arbStrat, originDriver=None, destinationDriver=None)
-
-                if not isStillProfitable:
-                    logger.info(f'{stepType.title()} No Longer Profitable - Waiting')
-                    if stepNumber > 1:
-                        updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏸️")
-                    while not isStillProfitable:
-                        isStillProfitable, midPredictions = checkArbitrageIsProfitable(recipe, printInfo=False,
-                                                                                       arbStrat=arbStrat, originDriver=None,
-                                                                                       destinationDriver=None)
-                    logger.info(f'{stepType.title()} Profitable Again!')
-            else:
-                logger.info(f'Last {stepType.title()} Step - Not Checking If Profitable')
+            # if not isSecondLastStep:
+            #
+            #     isStillProfitable, midPredictions = checkArbitrageIsProfitable(recipe, printInfo=False, arbStrat=arbStrat, originDriver=None, destinationDriver=None)
+            #
+            #     if not isStillProfitable:
+            #         logger.info(f'{stepType.title()} No Longer Profitable - Waiting')
+            #         if stepNumber > 1:
+            #             updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏸️")
+            #         while not isStillProfitable:
+            #             isStillProfitable, midPredictions = checkArbitrageIsProfitable(recipe, printInfo=False,
+            #                                                                            arbStrat=arbStrat, originDriver=None,
+            #                                                                            destinationDriver=None)
+            #         logger.info(f'{stepType.title()} Profitable Again!')
+            # else:
+            #     logger.info(f'Last {stepType.title()} Step - Not Checking If Profitable')
 
             recipe = getWalletsInformation(recipe)
 
@@ -548,8 +540,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
             logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[position][toSwapTo]["name"]}')
             telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
-
-
 
             stepSettings["done"] = True
 
