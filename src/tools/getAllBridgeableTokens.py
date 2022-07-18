@@ -6,10 +6,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from src.api.synapsebridge import getBridgeableTokens
-from src.utils.general import getDictLength, getProjectRoot
-import urllib.request, json, os
-
+from src.utils.general import getDictLength, getProjectRoot, printSeperator
+import urllib.request, os
+import simplejson as json
 from src.wallet.queries.swap import getSwapQuoteOut
+from collections import OrderedDict
+from operator import getitem
 
 root = getProjectRoot().parent
 
@@ -138,13 +140,81 @@ def getAllChainIds(bridgeableTokens):
     allChainIds.sort()
     return allChainIds
 
+def getPricesForAllTokensOnAllDexs(bridgeableTokens, bridgeableDexs):
+    tokenPrices = {}
+    for tokenName, tokenProps in bridgeableTokens.items():
+
+        tokenPrices[tokenProps['name']] = {}
+
+        prices = []
+
+        for tokenChain in allChainIds:
+
+            tokenChain = str(tokenChain)
+
+            currentChainDetails = chainsDetails[tokenChain]
+
+            printSeperator()
+
+            if tokenChain in bridgeableDexs:
+
+                for dex in bridgeableDexs[tokenChain]:
+
+                    try:
+                        price = getSwapQuoteOut(
+                            amountInNormal=1.0,
+                            amountInDecimals=tokenProps["decimals"][tokenChain],
+                            amountOutDecimals=stablecoinDetails["decimals"][tokenChain],
+                            rpcUrl=currentChainDetails["rpc"][0],
+                            routerAddress=dex["router"],
+                            routes=[tokenProps["addresses"][tokenChain], stablecoinDetails["addresses"][tokenChain]]
+                        )
+
+                        priceObject = {
+                            "dexName": dex["name"],
+                            "tokenPrice": price,
+                            "tokenAddress": tokenProps["addresses"][tokenChain],
+                            "chainName": currentChainDetails["name"],
+                            "chainId": tokenChain
+                        }
+
+                        prices.append(priceObject)
+
+                    except:
+                        pass
+
+                tokenPrices[tokenProps['name']]["prices"] = prices
+
+    filteredTokenPrices = {k: v for k, v in tokenPrices.items() if v["prices"]}
+
+    tokenPricesSorted = {}
+    for currentTokenName, currentTokenPrices in filteredTokenPrices.items():
+        tokenPricesSorted[currentTokenName] = sorted([d for d in currentTokenPrices["prices"] if d["tokenPrice"] > 0], key=lambda d: d["tokenPrice"], reverse=True)
+
+    tokenPricesFinal = {}
+    for currentTokenName, currentTokenPrices in tokenPricesSorted.items():
+        tokenPricesFinal[currentTokenName] = {}
+        tokenPricesFinal[currentTokenName]["prices"] = currentTokenPrices
+        tokenPricesFinal[currentTokenName]["recipe"] = {}
+        tokenPricesFinal[currentTokenName]["recipe"]["tokenOne"] = currentTokenPrices[0]
+        tokenPricesFinal[currentTokenName]["recipe"]["tokenTwo"] = currentTokenPrices[-1]
+        tokenPricesFinal[currentTokenName]["recipe"]["difference"] = calculateDifference(pairOne=currentTokenPrices[0]["tokenPrice"], pairTwo=currentTokenPrices[-1]["tokenPrice"])
+
+    return tokenPricesFinal
+
 def saveToCache(fileName, fileData):
     with open(f'../../data/cache/{fileName}.json', 'w') as cacheFile:
-        json.dump(fileData, cacheFile, indent=4)
+        json.dump(fileData, cacheFile, indent=4, use_decimal=True)
 
 def loadFromCache(fileName):
     with open(f'../../data/cache/{fileName}.json', 'r') as cacheFile:
         return json.load(cacheFile)
+
+def calculateDifference(pairOne, pairTwo):
+
+    ans = ((pairOne - pairTwo) / ((pairOne + pairTwo) / 2)) * 100
+
+    return round(ans, 6)
 
 print("Getting Dexs...")
 if useCache:
@@ -181,39 +251,19 @@ if useCache:
     stablecoinDetails = loadFromCache(fileName="stablecoinDetails")
 else:
     stablecoinName = "USD Circle"
-    stablecoinDetails = synapseAllBridgeabletokens[stablecoinName]
+    stablecoinDetails = bridgeableTokens[stablecoinName]
     saveToCache(fileName="stablecoinDetails", fileData=stablecoinDetails)
 
+printSeperator(newLine=True)
+
+print("Getting Prices Cross Chain...")
+if useCache:
+    tokenPrices = loadFromCache(fileName="tokenPrices")
+else:
+    tokenPrices = getPricesForAllTokensOnAllDexs(bridgeableTokens=bridgeableTokens, bridgeableDexs=bridgeableDexs)
+    saveToCache(fileName="tokenPrices", fileData=tokenPrices)
+
 x = 1
-
-# Global Arb
-# bridgeArb = {}
-# for tokenName, tokenProps in synapseAllBridgeabletokens.items():
-#
-#     for tokenChain in allChainIds:
-#
-#         try:
-#             chainOneTokenPrice = getSwapQuoteOut(
-#                 amountInNormal=1.0,
-#                 amountInDecimals=tokenProps["decimals"][tokenChain],
-#                 amountOutDecimals=stablecoinDetails["decimals"][tokenChain],
-#                 rpcUrl=chainsDetails[tokenChain]["rpc"][0],
-#                 routerAddress=dex["router"],
-#                 routes=[token["address"], stablecoin["address"]]
-#             )
-#
-#         except Exception as e:
-#             chainOneTokenPrice = None
-#             pass
-#
-#         priceObject = {
-#             "name": token['name'],
-#             "price": chainOneTokenPrice,
-#             "dex": dex["name"],
-#             "router": dex["router"]
-#         }
-
-
 
 # Local Arb
 # for chainId, chainProps in bridgeableTokensByChain.items():
@@ -235,7 +285,7 @@ x = 1
 #                 for dex in chainProps["dexs"]:
 #
 #                     try:
-#                         chainOneTokenPrice = getSwapQuoteOut(
+#                         tokenPrice = getSwapQuoteOut(
 #                             amountInNormal=1.0,
 #                             amountInDecimals=token["decimal"],
 #                             amountOutDecimals=stablecoin["decimal"],
@@ -245,12 +295,12 @@ x = 1
 #                         )
 #
 #                     except Exception as e:
-#                         chainOneTokenPrice = None
+#                         tokenPrice = None
 #                         pass
 #
 #                     priceObject = {
 #                         "name": token['name'],
-#                         "price": chainOneTokenPrice,
+#                         "price": tokenPrice,
 #                         "dex": dex["name"],
 #                         "router": dex["router"]
 #                     }
@@ -275,7 +325,7 @@ x = 1
 #
 #                     print("      - Difference", f"{percentageDiff}%")
 
-with open('../../data/collection/allTokensByChainID.json', 'w') as fp:
-    json.dump(bridgeableTokensByChain, fp, indent=4)
+# with open('../../data/collection/allTokensByChainID.json', 'w') as fp:
+#     json.dump(bridgeableTokensByChain, fp, indent=4)
 
 x = 1

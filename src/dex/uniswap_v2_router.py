@@ -83,7 +83,7 @@ def get_amount_out(amount_out, reserve_in, reserve_out, rpc_address, routerAddre
 
     return contract.functions.getAmountOut(amount_out, reserve_in, reserve_out).call()
 
-@retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
+# @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def get_amounts_out(amount_in, addresses, rpc_address, routerAddress):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
