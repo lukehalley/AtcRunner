@@ -1,4 +1,39 @@
 {
+    "Harmony ETH": {
+        "prices": [
+            {
+                "dexName": "SushiSwap Dex",
+                "tokenPrice": 111.296495,
+                "tokenAddress": "0x6983d1e6def3690c4d616b13597a09e6193ea013",
+                "chainName": "Harmony Mainnet Shard 0",
+                "chainId": "1666600000"
+            },
+            {
+                "dexName": "DFK Dex",
+                "tokenPrice": 0.284405,
+                "tokenAddress": "0x6983d1e6def3690c4d616b13597a09e6193ea013",
+                "chainName": "Harmony Mainnet Shard 0",
+                "chainId": "1666600000"
+            }
+        ],
+        "recipe": {
+            "tokenOne": {
+                "dexName": "SushiSwap Dex",
+                "tokenPrice": 111.296495,
+                "tokenAddress": "0x6983d1e6def3690c4d616b13597a09e6193ea013",
+                "chainName": "Harmony Mainnet Shard 0",
+                "chainId": "1666600000"
+            },
+            "tokenTwo": {
+                "dexName": "DFK Dex",
+                "tokenPrice": 0.284405,
+                "tokenAddress": "0x6983d1e6def3690c4d616b13597a09e6193ea013",
+                "chainName": "Harmony Mainnet Shard 0",
+                "chainId": "1666600000"
+            },
+            "difference": 198.980453
+        }
+    },
     "Synapse": {
         "prices": [
             {
@@ -143,7 +178,7 @@
             },
             {
                 "dexName": "PancakeSwap Dex",
-                "tokenPrice": 0.99756202014446449,
+                "tokenPrice": 0.9975620201444645,
                 "tokenAddress": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
                 "chainName": "Binance Smart Chain Mainnet",
                 "chainId": "56"
@@ -171,7 +206,7 @@
             },
             {
                 "dexName": "ApeSwap Dex",
-                "tokenPrice": 0.799639116065137381,
+                "tokenPrice": 0.7996391160651374,
                 "tokenAddress": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
                 "chainName": "Binance Smart Chain Mainnet",
                 "chainId": "56"
@@ -202,6 +237,48 @@
             "difference": 189.405116
         }
     },
+    "Wrapped Ether": {
+        "prices": [
+            {
+                "dexName": "TraderJoe Dex",
+                "tokenPrice": 1442.829093,
+                "tokenAddress": "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            },
+            {
+                "dexName": "Pangolin Dex",
+                "tokenPrice": 84.936679,
+                "tokenAddress": "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            },
+            {
+                "dexName": "SushiSwap Dex",
+                "tokenPrice": 64.380664,
+                "tokenAddress": "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            }
+        ],
+        "recipe": {
+            "tokenOne": {
+                "dexName": "TraderJoe Dex",
+                "tokenPrice": 1442.829093,
+                "tokenAddress": "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            },
+            "tokenTwo": {
+                "dexName": "SushiSwap Dex",
+                "tokenPrice": 64.380664,
+                "tokenAddress": "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            },
+            "difference": 182.913947
+        }
+    },
     "USD Tether": {
         "prices": [
             {
@@ -227,7 +304,7 @@
             },
             {
                 "dexName": "PancakeSwap Dex",
-                "tokenPrice": 0.99801943078212201,
+                "tokenPrice": 0.998019430782122,
                 "tokenAddress": "0x55d398326f99059ff775485246999027b3197955",
                 "chainName": "Binance Smart Chain Mainnet",
                 "chainId": "56"
@@ -297,7 +374,7 @@
             },
             {
                 "dexName": "ApeSwap Dex",
-                "tokenPrice": 0.336712440391190598,
+                "tokenPrice": 0.3367124403911906,
                 "tokenAddress": "0x55d398326f99059ff775485246999027b3197955",
                 "chainName": "Binance Smart Chain Mainnet",
                 "chainId": "56"
@@ -313,201 +390,12 @@
             },
             "tokenTwo": {
                 "dexName": "ApeSwap Dex",
-                "tokenPrice": 0.336712440391190598,
+                "tokenPrice": 0.3367124403911906,
                 "tokenAddress": "0x55d398326f99059ff775485246999027b3197955",
                 "chainName": "Binance Smart Chain Mainnet",
                 "chainId": "56"
             },
             "difference": 99.180605
-        }
-    },
-    "Wrapped Ether": {
-        "prices": [
-            {
-                "dexName": "TraderJoe Dex",
-                "tokenPrice": 1442.829093,
-                "tokenAddress": "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            },
-            {
-                "dexName": "Pangolin Dex",
-                "tokenPrice": 84.936679,
-                "tokenAddress": "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            },
-            {
-                "dexName": "SushiSwap Dex",
-                "tokenPrice": 64.380664,
-                "tokenAddress": "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            }
-        ],
-        "recipe": {
-            "tokenOne": {
-                "dexName": "TraderJoe Dex",
-                "tokenPrice": 1442.829093,
-                "tokenAddress": "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            },
-            "tokenTwo": {
-                "dexName": "SushiSwap Dex",
-                "tokenPrice": 64.380664,
-                "tokenAddress": "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            },
-            "difference": 182.913947
-        }
-    },
-    "Feisty Doge": {
-        "prices": [
-            {
-                "dexName": "PancakeSwap Dex",
-                "tokenPrice": 0.000033874722808486,
-                "tokenAddress": "0x0fe9778c005a5a6115cbe12b0568a2d50b765a51",
-                "chainName": "Binance Smart Chain Mainnet",
-                "chainId": "56"
-            }
-        ],
-        "recipe": {
-            "tokenOne": {
-                "dexName": "PancakeSwap Dex",
-                "tokenPrice": 0.000033874722808486,
-                "tokenAddress": "0x0fe9778c005a5a6115cbe12b0568a2d50b765a51",
-                "chainName": "Binance Smart Chain Mainnet",
-                "chainId": "56"
-            },
-            "tokenTwo": {
-                "dexName": "PancakeSwap Dex",
-                "tokenPrice": 0.000033874722808486,
-                "tokenAddress": "0x0fe9778c005a5a6115cbe12b0568a2d50b765a51",
-                "chainName": "Binance Smart Chain Mainnet",
-                "chainId": "56"
-            },
-            "difference": 0.000000
-        }
-    },
-    "Stake DAO Token": {
-        "prices": [
-            {
-                "dexName": "TraderJoe Dex",
-                "tokenPrice": 0.584942,
-                "tokenAddress": "0xCCBf7c451F81752F7d2237F2c18C371E6e089E69",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            }
-        ],
-        "recipe": {
-            "tokenOne": {
-                "dexName": "TraderJoe Dex",
-                "tokenPrice": 0.584942,
-                "tokenAddress": "0xCCBf7c451F81752F7d2237F2c18C371E6e089E69",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            },
-            "tokenTwo": {
-                "dexName": "TraderJoe Dex",
-                "tokenPrice": 0.584942,
-                "tokenAddress": "0xCCBf7c451F81752F7d2237F2c18C371E6e089E69",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            },
-            "difference": 0.000000
-        }
-    },
-    "USD Balance": {
-        "prices": [
-            {
-                "dexName": "SpookySwap Dex",
-                "tokenPrice": 0.078413,
-                "tokenAddress": "0x6fc9383486c163fa48becdec79d6058f984f62ca",
-                "chainName": "Fantom Opera",
-                "chainId": "250"
-            }
-        ],
-        "recipe": {
-            "tokenOne": {
-                "dexName": "SpookySwap Dex",
-                "tokenPrice": 0.078413,
-                "tokenAddress": "0x6fc9383486c163fa48becdec79d6058f984f62ca",
-                "chainName": "Fantom Opera",
-                "chainId": "250"
-            },
-            "tokenTwo": {
-                "dexName": "SpookySwap Dex",
-                "tokenPrice": 0.078413,
-                "tokenAddress": "0x6fc9383486c163fa48becdec79d6058f984f62ca",
-                "chainName": "Fantom Opera",
-                "chainId": "250"
-            },
-            "difference": 0.000000
-        }
-    },
-    "Multichain JEWEL": {
-        "prices": [
-            {
-                "dexName": "TraderJoe Dex",
-                "tokenPrice": 0.015993,
-                "tokenAddress": "0x4f60a160D8C2DDdaAfe16FCC57566dB84D674BD6",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            }
-        ],
-        "recipe": {
-            "tokenOne": {
-                "dexName": "TraderJoe Dex",
-                "tokenPrice": 0.015993,
-                "tokenAddress": "0x4f60a160D8C2DDdaAfe16FCC57566dB84D674BD6",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            },
-            "tokenTwo": {
-                "dexName": "TraderJoe Dex",
-                "tokenPrice": 0.015993,
-                "tokenAddress": "0x4f60a160D8C2DDdaAfe16FCC57566dB84D674BD6",
-                "chainName": "Avalanche C-Chain",
-                "chainId": "43114"
-            },
-            "difference": 0.000000
-        }
-    },
-    "Harmony ETH": {
-        "prices": [
-            {
-                "dexName": "SushiSwap Dex",
-                "tokenPrice": 111.296495,
-                "tokenAddress": "0x6983d1e6def3690c4d616b13597a09e6193ea013",
-                "chainName": "Harmony Mainnet Shard 0",
-                "chainId": "1666600000"
-            },
-            {
-                "dexName": "DFK Dex",
-                "tokenPrice": 0.284405,
-                "tokenAddress": "0x6983d1e6def3690c4d616b13597a09e6193ea013",
-                "chainName": "Harmony Mainnet Shard 0",
-                "chainId": "1666600000"
-            }
-        ],
-        "recipe": {
-            "tokenOne": {
-                "dexName": "SushiSwap Dex",
-                "tokenPrice": 111.296495,
-                "tokenAddress": "0x6983d1e6def3690c4d616b13597a09e6193ea013",
-                "chainName": "Harmony Mainnet Shard 0",
-                "chainId": "1666600000"
-            },
-            "tokenTwo": {
-                "dexName": "DFK Dex",
-                "tokenPrice": 0.284405,
-                "tokenAddress": "0x6983d1e6def3690c4d616b13597a09e6193ea013",
-                "chainName": "Harmony Mainnet Shard 0",
-                "chainId": "1666600000"
-            },
-            "difference": 198.980453
         }
     },
     "Frax": {
@@ -594,6 +482,153 @@
             "difference": 0.333716
         }
     },
+    "Binance USD": {
+        "prices": [
+            {
+                "dexName": "PancakeSwap Dex",
+                "tokenPrice": 0.9973800700306429,
+                "tokenAddress": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
+                "chainName": "Binance Smart Chain Mainnet",
+                "chainId": "56"
+            },
+            {
+                "dexName": "ApeSwap Dex",
+                "tokenPrice": 0.9968054901050883,
+                "tokenAddress": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
+                "chainName": "Binance Smart Chain Mainnet",
+                "chainId": "56"
+            }
+        ],
+        "recipe": {
+            "tokenOne": {
+                "dexName": "PancakeSwap Dex",
+                "tokenPrice": 0.9973800700306429,
+                "tokenAddress": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
+                "chainName": "Binance Smart Chain Mainnet",
+                "chainId": "56"
+            },
+            "tokenTwo": {
+                "dexName": "ApeSwap Dex",
+                "tokenPrice": 0.9968054901050883,
+                "tokenAddress": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
+                "chainName": "Binance Smart Chain Mainnet",
+                "chainId": "56"
+            },
+            "difference": 0.057626
+        }
+    },
+    "Feisty Doge": {
+        "prices": [
+            {
+                "dexName": "PancakeSwap Dex",
+                "tokenPrice": 3.3874722808486e-05,
+                "tokenAddress": "0x0fe9778c005a5a6115cbe12b0568a2d50b765a51",
+                "chainName": "Binance Smart Chain Mainnet",
+                "chainId": "56"
+            }
+        ],
+        "recipe": {
+            "tokenOne": {
+                "dexName": "PancakeSwap Dex",
+                "tokenPrice": 3.3874722808486e-05,
+                "tokenAddress": "0x0fe9778c005a5a6115cbe12b0568a2d50b765a51",
+                "chainName": "Binance Smart Chain Mainnet",
+                "chainId": "56"
+            },
+            "tokenTwo": {
+                "dexName": "PancakeSwap Dex",
+                "tokenPrice": 3.3874722808486e-05,
+                "tokenAddress": "0x0fe9778c005a5a6115cbe12b0568a2d50b765a51",
+                "chainName": "Binance Smart Chain Mainnet",
+                "chainId": "56"
+            },
+            "difference": 0.0
+        }
+    },
+    "Stake DAO Token": {
+        "prices": [
+            {
+                "dexName": "TraderJoe Dex",
+                "tokenPrice": 0.584942,
+                "tokenAddress": "0xCCBf7c451F81752F7d2237F2c18C371E6e089E69",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            }
+        ],
+        "recipe": {
+            "tokenOne": {
+                "dexName": "TraderJoe Dex",
+                "tokenPrice": 0.584942,
+                "tokenAddress": "0xCCBf7c451F81752F7d2237F2c18C371E6e089E69",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            },
+            "tokenTwo": {
+                "dexName": "TraderJoe Dex",
+                "tokenPrice": 0.584942,
+                "tokenAddress": "0xCCBf7c451F81752F7d2237F2c18C371E6e089E69",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            },
+            "difference": 0.0
+        }
+    },
+    "USD Balance": {
+        "prices": [
+            {
+                "dexName": "SpookySwap Dex",
+                "tokenPrice": 0.078413,
+                "tokenAddress": "0x6fc9383486c163fa48becdec79d6058f984f62ca",
+                "chainName": "Fantom Opera",
+                "chainId": "250"
+            }
+        ],
+        "recipe": {
+            "tokenOne": {
+                "dexName": "SpookySwap Dex",
+                "tokenPrice": 0.078413,
+                "tokenAddress": "0x6fc9383486c163fa48becdec79d6058f984f62ca",
+                "chainName": "Fantom Opera",
+                "chainId": "250"
+            },
+            "tokenTwo": {
+                "dexName": "SpookySwap Dex",
+                "tokenPrice": 0.078413,
+                "tokenAddress": "0x6fc9383486c163fa48becdec79d6058f984f62ca",
+                "chainName": "Fantom Opera",
+                "chainId": "250"
+            },
+            "difference": 0.0
+        }
+    },
+    "Multichain JEWEL": {
+        "prices": [
+            {
+                "dexName": "TraderJoe Dex",
+                "tokenPrice": 0.015993,
+                "tokenAddress": "0x4f60a160D8C2DDdaAfe16FCC57566dB84D674BD6",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            }
+        ],
+        "recipe": {
+            "tokenOne": {
+                "dexName": "TraderJoe Dex",
+                "tokenPrice": 0.015993,
+                "tokenAddress": "0x4f60a160D8C2DDdaAfe16FCC57566dB84D674BD6",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            },
+            "tokenTwo": {
+                "dexName": "TraderJoe Dex",
+                "tokenPrice": 0.015993,
+                "tokenAddress": "0x4f60a160D8C2DDdaAfe16FCC57566dB84D674BD6",
+                "chainName": "Avalanche C-Chain",
+                "chainId": "43114"
+            },
+            "difference": 0.0
+        }
+    },
     "AnySwap/Multi Wrapped AVAX": {
         "prices": [
             {
@@ -619,42 +654,7 @@
                 "chainName": "Harmony Mainnet Shard 0",
                 "chainId": "1666600000"
             },
-            "difference": 0.000000
-        }
-    },
-    "Binance USD": {
-        "prices": [
-            {
-                "dexName": "PancakeSwap Dex",
-                "tokenPrice": 0.997380070030642924,
-                "tokenAddress": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
-                "chainName": "Binance Smart Chain Mainnet",
-                "chainId": "56"
-            },
-            {
-                "dexName": "ApeSwap Dex",
-                "tokenPrice": 0.996805490105088398,
-                "tokenAddress": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
-                "chainName": "Binance Smart Chain Mainnet",
-                "chainId": "56"
-            }
-        ],
-        "recipe": {
-            "tokenOne": {
-                "dexName": "PancakeSwap Dex",
-                "tokenPrice": 0.997380070030642924,
-                "tokenAddress": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
-                "chainName": "Binance Smart Chain Mainnet",
-                "chainId": "56"
-            },
-            "tokenTwo": {
-                "dexName": "ApeSwap Dex",
-                "tokenPrice": 0.996805490105088398,
-                "tokenAddress": "0xe9e7cea3dedca5984780bafc599bd69add087d56",
-                "chainName": "Binance Smart Chain Mainnet",
-                "chainId": "56"
-            },
-            "difference": 0.057626
+            "difference": 0.0
         }
     }
 }
