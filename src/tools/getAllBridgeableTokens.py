@@ -18,6 +18,8 @@ chainIdsToIgnore = [1]
 synapseAllBridgeabletokens = {}
 chainsDetails = {}
 
+useCache = True
+
 def getAllBridgeableTokensFromURL(chainsURL="https://chainid.network/chains.json"):
     bridgeableTokens = []
 
@@ -136,48 +138,80 @@ def getAllChainIds(bridgeableTokens):
     allChainIds.sort()
     return allChainIds
 
+def saveToCache(fileName, fileData):
+    with open(f'../../data/cache/{fileName}.json', 'w') as cacheFile:
+        json.dump(fileData, cacheFile, indent=4)
+
+def loadFromCache(fileName):
+    with open(f'../../data/cache/{fileName}.json', 'r') as cacheFile:
+        return json.load(cacheFile)
+
 print("Getting Dexs...")
-bridgeableDexs = getDexsFromLocal()
+if useCache:
+    bridgeableDexs = loadFromCache(fileName="bridgeableDexs")
+else:
+    bridgeableDexs = getDexsFromLocal()
+    saveToCache(fileName="bridgeableDexs", fileData=bridgeableDexs)
 
 print("Getting Tokens...")
-bridgeableTokens, chainsDetails = getAllBridgeableTokensFromURL()
+if useCache:
+    bridgeableTokens = loadFromCache(fileName="bridgeableTokens")
+    chainsDetails = loadFromCache(fileName="chainsDetails")
+else:
+    bridgeableTokens, chainsDetails = getAllBridgeableTokensFromURL()
+    saveToCache(fileName="bridgeableTokens", fileData=bridgeableTokens)
+    saveToCache(fileName="chainsDetails", fileData=chainsDetails)
 
 print("Getting Chains...")
-allChainIds = getAllChainIds(bridgeableTokens)
+if useCache:
+    allChainIds = loadFromCache(fileName="allChainIds")
+else:
+    allChainIds = getAllChainIds(bridgeableTokens)
+    saveToCache(fileName="allChainIds", fileData=allChainIds)
 
 print("Getting Tokens For Chains...")
-tokensByChain = getTokenByChain(allChainIds, chainsDetails)
+if useCache:
+    tokensByChain = loadFromCache(fileName="tokensByChain")
+else:
+    tokensByChain = getTokenByChain(allChainIds, chainsDetails)
+    saveToCache(fileName="tokensByChain", fileData=tokensByChain)
 
 print("Getting USDC Details...")
-stabecoinName = "USD Circle"
-stabecoinDetails = synapseAllBridgeabletokens[stabecoinName]
+if useCache:
+    stablecoinDetails = loadFromCache(fileName="stablecoinDetails")
+else:
+    stablecoinName = "USD Circle"
+    stablecoinDetails = synapseAllBridgeabletokens[stablecoinName]
+    saveToCache(fileName="stablecoinDetails", fileData=stablecoinDetails)
+
+x = 1
 
 # Global Arb
-bridgeArb = {}
-for tokenName, tokenProps in synapseAllBridgeabletokens.items():
-
-    for tokenChain in allChainIds:
-
-        try:
-            chainOneTokenPrice = getSwapQuoteOut(
-                amountInNormal=1.0,
-                amountInDecimals=tokenProps["decimals"][tokenChain],
-                amountOutDecimals=stabecoinDetails["decimals"][tokenChain],
-                rpcUrl=chainsDetails[tokenChain]["rpc"][0],
-                routerAddress=dex["router"],
-                routes=[token["address"], stablecoin["address"]]
-            )
-
-        except Exception as e:
-            chainOneTokenPrice = None
-            pass
-
-        priceObject = {
-            "name": token['name'],
-            "price": chainOneTokenPrice,
-            "dex": dex["name"],
-            "router": dex["router"]
-        }
+# bridgeArb = {}
+# for tokenName, tokenProps in synapseAllBridgeabletokens.items():
+#
+#     for tokenChain in allChainIds:
+#
+#         try:
+#             chainOneTokenPrice = getSwapQuoteOut(
+#                 amountInNormal=1.0,
+#                 amountInDecimals=tokenProps["decimals"][tokenChain],
+#                 amountOutDecimals=stablecoinDetails["decimals"][tokenChain],
+#                 rpcUrl=chainsDetails[tokenChain]["rpc"][0],
+#                 routerAddress=dex["router"],
+#                 routes=[token["address"], stablecoin["address"]]
+#             )
+#
+#         except Exception as e:
+#             chainOneTokenPrice = None
+#             pass
+#
+#         priceObject = {
+#             "name": token['name'],
+#             "price": chainOneTokenPrice,
+#             "dex": dex["name"],
+#             "router": dex["router"]
+#         }
 
 
 
@@ -190,11 +224,11 @@ for tokenName, tokenProps in synapseAllBridgeabletokens.items():
 #         print(f"{chainProps['chain']['name']}")
 #         print(f"-----------------------------------")
 #
-#         stablecoin = next(item for item in chainProps["tokens"] if item["name"] == stabecoinName)
+#         stablecoin = next(item for item in chainProps["tokens"] if item["name"] == stablecoinName)
 #
 #         for token in chainProps["tokens"]:
 #
-#             if token["name"] != stabecoinName:
+#             if token["name"] != stablecoinName:
 #
 #                 tokenPrices = []
 #
