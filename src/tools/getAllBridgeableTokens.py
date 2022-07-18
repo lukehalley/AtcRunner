@@ -200,6 +200,8 @@ def getPricesForAllTokensOnAllDexs(bridgeableTokens, bridgeableDexs):
         tokenPricesFinal[currentTokenName]["recipe"]["tokenTwo"] = currentTokenPrices[-1]
         tokenPricesFinal[currentTokenName]["recipe"]["difference"] = calculateDifference(pairOne=currentTokenPrices[0]["tokenPrice"], pairTwo=currentTokenPrices[-1]["tokenPrice"])
 
+    tokenPricesFinal = OrderedDict(sorted(tokenPricesFinal.items(), key=lambda x: x[1]['recipe']['difference'], reverse=True))
+
     return tokenPricesFinal
 
 def saveToCache(fileName, fileData):
