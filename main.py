@@ -57,9 +57,9 @@ else:
 
 while True:
 
-    for recipesTitle, originalRecipes in recipes.items():
+    for recipesTitle, recipesDetails in recipes.items():
 
-        recipe = originalRecipes.copy()
+        recipe = recipesDetails.copy()
 
         recipe = determineArbitrageStrategy(recipe)
 

@@ -172,11 +172,11 @@
           "name": "harmony"
         },
         "stablecoin": {
-          "frontendSymbol": "1USDC",
+          "symbol": "1USDC",
           "isGas": "False"
         },
         "token": {
-          "frontendSymbol": "JEWEL",
+          "symbol": "JEWEL",
           "isGas": "False"
         }
       },
@@ -185,11 +185,11 @@
           "name": "avalanchedfk"
         },
         "stablecoin": {
-          "frontendSymbol": "USDC",
+          "symbol": "USDC",
           "isGas": "False"
         },
         "token": {
-          "frontendSymbol": "JEWEL",
+          "symbol": "JEWEL",
           "isGas": "True"
         }
       }
