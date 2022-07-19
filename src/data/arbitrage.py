@@ -165,8 +165,8 @@ def getRoutes(recipe, position, driver, currentFunds, toSwapFrom, toSwapTo):
             network=recipe[position]["chain"]["name"],
             dexURL=recipe[position]["chain"]["frontendUrl"],
             amountToSwap=currentFunds[toSwapFrom],
-            tokenSymbolIn=recipe[position][toSwapFrom]["frontendSymbol"],
-            tokenSymbolOut=recipe[position][toSwapTo]["frontendSymbol"]
+            tokenSymbolIn=recipe[position][toSwapFrom]["symbol"],
+            tokenSymbolOut=recipe[position][toSwapTo]["symbol"]
         )
     else:
         routes = [x for x in recipe[position]["fallbackRoute"][f"{toSwapTo}-{toSwapFrom}"].split(",") if x]

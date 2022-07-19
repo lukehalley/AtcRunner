@@ -6,11 +6,11 @@
           "name": "harmony"
         },
         "token": {
-          "frontendSymbol": "JEWEL",
+          "symbol": "JEWEL",
           "isGas": "False"
         },
         "stablecoin": {
-          "frontendSymbol": "1USDC",
+          "symbol": "1USDC",
           "isGas": "False"
         },
         "fallbackRoute": {
@@ -23,11 +23,11 @@
           "name": "avalanchedfk"
         },
         "token": {
-          "frontendSymbol": "JEWEL",
+          "symbol": "JEWEL",
           "isGas": "True"
         },
         "stablecoin": {
-          "frontendSymbol": "USDC",
+          "symbol": "USDC",
           "isGas": "False"
         },
         "fallbackRoute": {
