@@ -1,0 +1,408 @@
+{
+    "10": {
+        "name": "Optimism",
+        "chain": "ETH",
+        "rpc": [
+            "https://mainnet.optimism.io/"
+        ],
+        "faucets": [],
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "infoURL": "https://optimism.io",
+        "shortName": "oeth",
+        "chainId": 10,
+        "networkId": 10,
+        "explorers": [
+            {
+                "name": "etherscan",
+                "url": "https://optimistic.etherscan.io",
+                "standard": "EIP3091"
+            }
+        ]
+    },
+    "25": {
+        "name": "Cronos Mainnet Beta",
+        "chain": "CRO",
+        "rpc": [
+            "https://evm.cronos.org"
+        ],
+        "faucets": [],
+        "nativeCurrency": {
+            "name": "Cronos",
+            "symbol": "CRO",
+            "decimals": 18
+        },
+        "infoURL": "https://cronos.org/",
+        "shortName": "cro",
+        "chainId": 25,
+        "networkId": 25,
+        "explorers": [
+            {
+                "name": "Cronos Explorer",
+                "url": "https://cronos.org/explorer",
+                "standard": "none"
+            }
+        ]
+    },
+    "56": {
+        "name": "Binance Smart Chain Mainnet",
+        "chain": "BSC",
+        "rpc": [
+            "https://bsc-dataseed1.binance.org",
+            "https://bsc-dataseed2.binance.org",
+            "https://bsc-dataseed3.binance.org",
+            "https://bsc-dataseed4.binance.org",
+            "https://bsc-dataseed1.defibit.io",
+            "https://bsc-dataseed2.defibit.io",
+            "https://bsc-dataseed3.defibit.io",
+            "https://bsc-dataseed4.defibit.io",
+            "https://bsc-dataseed1.ninicoin.io",
+            "https://bsc-dataseed2.ninicoin.io",
+            "https://bsc-dataseed3.ninicoin.io",
+            "https://bsc-dataseed4.ninicoin.io",
+            "wss://bsc-ws-node.nariox.org"
+        ],
+        "faucets": [
+            "https://free-online-app.com/faucet-for-eth-evm-chains/"
+        ],
+        "nativeCurrency": {
+            "name": "Binance Chain Native Token",
+            "symbol": "BNB",
+            "decimals": 18
+        },
+        "infoURL": "https://www.binance.org",
+        "shortName": "bnb",
+        "chainId": 56,
+        "networkId": 56,
+        "slip44": 714,
+        "explorers": [
+            {
+                "name": "bscscan",
+                "url": "https://bscscan.com",
+                "standard": "EIP3091"
+            }
+        ]
+    },
+    "137": {
+        "name": "Polygon Mainnet",
+        "chain": "Polygon",
+        "rpc": [
+            "https://polygon-rpc.com/",
+            "https://rpc-mainnet.matic.network",
+            "https://matic-mainnet.chainstacklabs.com",
+            "https://rpc-mainnet.maticvigil.com",
+            "https://rpc-mainnet.matic.quiknode.pro",
+            "https://matic-mainnet-full-rpc.bwarelabs.com"
+        ],
+        "faucets": [],
+        "nativeCurrency": {
+            "name": "MATIC",
+            "symbol": "MATIC",
+            "decimals": 18
+        },
+        "infoURL": "https://polygon.technology/",
+        "shortName": "MATIC",
+        "chainId": 137,
+        "networkId": 137,
+        "slip44": 966,
+        "explorers": [
+            {
+                "name": "polygonscan",
+                "url": "https://polygonscan.com",
+                "standard": "EIP3091"
+            }
+        ]
+    },
+    "250": {
+        "name": "Fantom Opera",
+        "chain": "FTM",
+        "rpc": [
+            "https://rpc.ftm.tools"
+        ],
+        "faucets": [
+            "https://free-online-app.com/faucet-for-eth-evm-chains/"
+        ],
+        "nativeCurrency": {
+            "name": "Fantom",
+            "symbol": "FTM",
+            "decimals": 18
+        },
+        "infoURL": "https://fantom.foundation",
+        "shortName": "ftm",
+        "chainId": 250,
+        "networkId": 250,
+        "icon": "fantom",
+        "explorers": [
+            {
+                "name": "ftmscan",
+                "url": "https://ftmscan.com",
+                "icon": "ftmscan",
+                "standard": "EIP3091"
+            }
+        ]
+    },
+    "288": {
+        "name": "Boba Network",
+        "chain": "ETH",
+        "rpc": [
+            "https://mainnet.boba.network/"
+        ],
+        "faucets": [],
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "infoURL": "https://boba.network",
+        "shortName": "Boba",
+        "chainId": 288,
+        "networkId": 288,
+        "explorers": [
+            {
+                "name": "Blockscout",
+                "url": "https://blockexplorer.boba.network",
+                "standard": "none"
+            }
+        ],
+        "parent": {
+            "type": "L2",
+            "chain": "eip155-1",
+            "bridges": [
+                {
+                    "url": "https://gateway.boba.network"
+                }
+            ]
+        }
+    },
+    "1088": {
+        "name": "Metis Andromeda Mainnet",
+        "chain": "ETH",
+        "rpc": [
+            "https://andromeda.metis.io/?owner=1088"
+        ],
+        "faucets": [],
+        "nativeCurrency": {
+            "name": "Metis",
+            "symbol": "METIS",
+            "decimals": 18
+        },
+        "infoURL": "https://www.metis.io",
+        "shortName": "metis-andromeda",
+        "chainId": 1088,
+        "networkId": 1088,
+        "explorers": [
+            {
+                "name": "blockscout",
+                "url": "https://andromeda-explorer.metis.io",
+                "standard": "EIP3091"
+            }
+        ],
+        "parent": {
+            "type": "L2",
+            "chain": "eip155-1",
+            "bridges": [
+                {
+                    "url": "https://bridge.metis.io"
+                }
+            ]
+        }
+    },
+    "1284": {
+        "name": "Moonbeam",
+        "chain": "MOON",
+        "rpc": [
+            "https://rpc.api.moonbeam.network",
+            "wss://wss.api.moonbeam.network"
+        ],
+        "faucets": [],
+        "nativeCurrency": {
+            "name": "Glimmer",
+            "symbol": "GLMR",
+            "decimals": 18
+        },
+        "infoURL": "https://moonbeam.network/networks/moonbeam/",
+        "shortName": "mbeam",
+        "chainId": 1284,
+        "networkId": 1284,
+        "explorers": [
+            {
+                "name": "moonscan",
+                "url": "https://moonbeam.moonscan.io",
+                "standard": "none"
+            }
+        ]
+    },
+    "1285": {
+        "name": "Moonriver",
+        "chain": "MOON",
+        "rpc": [
+            "https://rpc.api.moonriver.moonbeam.network",
+            "wss://wss.api.moonriver.moonbeam.network"
+        ],
+        "faucets": [],
+        "nativeCurrency": {
+            "name": "Moonriver",
+            "symbol": "MOVR",
+            "decimals": 18
+        },
+        "infoURL": "https://moonbeam.network/networks/moonriver/",
+        "shortName": "mriver",
+        "chainId": 1285,
+        "networkId": 1285,
+        "explorers": [
+            {
+                "name": "moonscan",
+                "url": "https://moonriver.moonscan.io",
+                "standard": "none"
+            }
+        ]
+    },
+    "42161": {
+        "name": "Arbitrum One",
+        "chainId": 42161,
+        "shortName": "arb1",
+        "chain": "ETH",
+        "networkId": 42161,
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "rpc": [
+            "https://arbitrum-mainnet.infura.io/v3/${INFURA_API_KEY}",
+            "https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}",
+            "https://arb1.arbitrum.io/rpc"
+        ],
+        "faucets": [],
+        "explorers": [
+            {
+                "name": "Arbiscan",
+                "url": "https://arbiscan.io",
+                "standard": "EIP3091"
+            },
+            {
+                "name": "Arbitrum Explorer",
+                "url": "https://explorer.arbitrum.io",
+                "standard": "EIP3091"
+            }
+        ],
+        "infoURL": "https://arbitrum.io",
+        "parent": {
+            "type": "L2",
+            "chain": "eip155-1",
+            "bridges": [
+                {
+                    "url": "https://bridge.arbitrum.io"
+                }
+            ]
+        }
+    },
+    "43114": {
+        "name": "Avalanche C-Chain",
+        "chain": "AVAX",
+        "rpc": [
+            "https://api.avax.network/ext/bc/C/rpc"
+        ],
+        "faucets": [
+            "https://free-online-app.com/faucet-for-eth-evm-chains/"
+        ],
+        "nativeCurrency": {
+            "name": "Avalanche",
+            "symbol": "AVAX",
+            "decimals": 18
+        },
+        "infoURL": "https://www.avax.network/",
+        "shortName": "Avalanche",
+        "chainId": 43114,
+        "networkId": 43114,
+        "slip44": 9005,
+        "explorers": [
+            {
+                "name": "snowtrace",
+                "url": "https://snowtrace.io",
+                "standard": "EIP3091"
+            }
+        ]
+    },
+    "53935": {
+        "name": "DFK Chain",
+        "chain": "DFK",
+        "icon": "dfk",
+        "network": "mainnet",
+        "rpc": [
+            "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc"
+        ],
+        "faucets": [],
+        "nativeCurrency": {
+            "name": "Jewel",
+            "symbol": "JEWEL",
+            "decimals": 18
+        },
+        "infoURL": "https://defikingdoms.com",
+        "shortName": "DFK",
+        "chainId": 53935,
+        "networkId": 53935,
+        "explorers": [
+            {
+                "name": "ethernal",
+                "url": "https://explorer.dfkchain.com",
+                "icon": "ethereum",
+                "standard": "none"
+            }
+        ]
+    },
+    "1313161554": {
+        "name": "Aurora Mainnet",
+        "chain": "NEAR",
+        "rpc": [
+            "https://mainnet.aurora.dev"
+        ],
+        "faucets": [],
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "infoURL": "https://aurora.dev",
+        "shortName": "aurora",
+        "chainId": 1313161554,
+        "networkId": 1313161554,
+        "explorers": [
+            {
+                "name": "aurorascan.dev",
+                "url": "https://aurorascan.dev",
+                "standard": "EIP3091"
+            }
+        ]
+    },
+    "1666600000": {
+        "name": "Harmony Mainnet Shard 0",
+        "chain": "Harmony",
+        "rpc": [
+            "https://api.harmony.one",
+            "https://api.s0.t.hmny.io"
+        ],
+        "faucets": [
+            "https://free-online-app.com/faucet-for-eth-evm-chains/"
+        ],
+        "nativeCurrency": {
+            "name": "ONE",
+            "symbol": "ONE",
+            "decimals": 18
+        },
+        "infoURL": "https://www.harmony.one/",
+        "shortName": "hmy-s0",
+        "chainId": 1666600000,
+        "networkId": 1666600000,
+        "explorers": [
+            {
+                "name": "Harmony Block Explorer",
+                "url": "https://explorer.harmony.one",
+                "standard": "EIP3091"
+            }
+        ]
+    }
+}
