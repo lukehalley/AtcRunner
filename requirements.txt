@@ -8,3 +8,4 @@ python-telegram-bot
 firebase-admin
 selenium~=3.141.0
 PyVirtualDisplay~=3.0
+simplejson
