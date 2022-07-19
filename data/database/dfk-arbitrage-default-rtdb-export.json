@@ -418,10 +418,6 @@
           "token": {
             "symbol": "AVAX",
             "isGas": "False"
-          },
-          "gas": {
-            "symbol": "ONE",
-            "isGas": "True"
           }
         },
         "chainTwo": {
@@ -439,10 +435,6 @@
           "token": {
             "symbol": "AVAX",
             "isGas": "False"
-          },
-          "gas": {
-            "symbol": "ONE",
-            "isGas": "True"
           }
         }
       },
@@ -468,10 +460,6 @@
           "token": {
             "symbol": "JEWEL",
             "isGas": "False"
-          },
-          "gas": {
-            "symbol": "JEWEL",
-            "isGas": "True"
           }
         },
         "chainTwo": {
@@ -489,10 +477,6 @@
           "token": {
             "symbol": "JEWEL",
             "isGas": "True"
-          },
-          "gas": {
-            "symbol": "JEWEL",
-            "isGas": "True"
           }
         }
       }
@@ -501,8 +485,8 @@
       "DFK_ALL": [
         "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/build/defikingdoms-community.tokenlist.json",
         "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/src/defikingdoms-default.tokenlist.json",
-        "https://raw.githubusercontent.com/tradescrow/token-lists/main/build/tradescrow-all.tokenlist.json",
-        "https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/pangolindex/tokenlists/main/pangolin.tokenlist.json"
+        "https://raw.githubusercontent.com/itslhk/token-lists/main/build/tradescrow-all.tokenlist.json",
+        "https://raw.githubusercontent.com/pangolindex/tokenlists/main/pangolin.tokenlist.json"
       ]
     }
   }
