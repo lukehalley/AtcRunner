@@ -9,6 +9,8 @@ from src.api.dexscreener import getTokenPriceByDexId
 from src.data.tokenLists import getTokenBySymbolAndChainID, parseTokenLists
 
 # Set up our logging
+from src.utils.general import strToBool
+
 logger = logging.getLogger("DFK-DEX")
 
 # Get the details of our recipe
@@ -21,14 +23,12 @@ def getRecipeDetails():
 
         dexId = recipeDetails["arbitrage"]["dexId"]
 
-        recipeToken = recipeDetails["arbitrage"]["token"]
-        recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
+
         tokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
         tokenList = recipeDetails["arbitrage"]["tokenList"]
 
-        if tokenRetrievalMethod == "tokenList":
-            tokenLists = fetchFromDatabase(reference="tokenLists")[tokenList]
-            masterTokenList = tokenListDataframe = parseTokenLists(urls=tokenLists)
+        tokenLists = fetchFromDatabase(reference="tokenLists")[tokenList]
+        masterTokenList = parseTokenLists(urls=tokenLists)
 
         for i in range(1, 3):
 
@@ -38,16 +38,43 @@ def getRecipeDetails():
 
             chainId = recipeDetails[f"chain{num}"]["chain"]["id"]
 
-            chainTokens = getBridgeableTokens(chainId)
-
-            toFill = {
-                "token": recipeToken,
-                "stablecoin": recipeStablecoin
-            }
-
             if tokenRetrievalMethod == "tokenList":
-                masterTokenList = tokenListDataframe = parseTokenLists(urls=tokenLists)
+
+                toFill = {
+                    "token": recipeDetails[f"chain{num}"]["token"],
+                    "stablecoin": recipeDetails[f"chain{num}"]["stablecoin"]
+                }
+
+                for tokenType, tokenDetails in toFill.items():
+                    if strToBool(tokenDetails["isGas"]):
+                        gasTokenDetails = {
+                            "address": recipeDetails[f"chain{num}"]["chain"]["gasDetails"]["address"],
+                            "chainId": chainId,
+                            "decimals": 18,
+                            "name": tokenDetails["symbol"],
+                            "symbol": None,
+                            "logoURI": None
+                        }
+                        recipeDetails[f"chain{num}"][tokenType] = recipeDetails[f"chain{num}"][tokenType] | gasTokenDetails
+                    else:
+                        tokenDetails = getTokenBySymbolAndChainID(
+                            tokenListDataframe=masterTokenList,
+                            tokenSymbol=tokenDetails["symbol"],
+                            tokenChainId=chainId
+                        )
+                        recipeDetails[f"chain{num}"][tokenType] = recipeDetails[f"chain{num}"][tokenType] | tokenDetails
+
             elif tokenRetrievalMethod == "api":
+
+                recipeToken = recipeDetails["arbitrage"]["token"]
+                recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
+
+                toFill = {
+                    "token": recipeToken,
+                    "stablecoin": recipeStablecoin
+                }
+
+                chainTokens = getBridgeableTokens(chainId)
                 for key, value in toFill.items():
 
                     for token in chainTokens:

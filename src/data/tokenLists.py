@@ -10,8 +10,10 @@ def parseTokenLists(urls):
     finalTokenList = []
 
     for url in urls:
-        data = getAuthRawGithubFile(url)
-        singleTokenListJSON = json.loads(data)["tokens"]
+        try:
+            singleTokenListJSON = getAuthRawGithubFile(url)["tokens"]
+        except:
+            x = 1
         finalTokenList = finalTokenList + singleTokenListJSON
     allKeys = list(set().union(*(d.keys() for d in finalTokenList)))
     keysToRemove = list(set(allKeys) - set(allowedKeys))
@@ -33,7 +35,7 @@ def parseDataframeResult(result):
     return results
 
 def getTokenBySymbolAndChainID(tokenListDataframe, tokenSymbol, tokenChainId):
-    result = tokenListDataframe.loc[(tokenListDataframe['symbol'] == tokenSymbol) & (tokenListDataframe['chainId'] == tokenChainId)]
+    result = tokenListDataframe.loc[(tokenListDataframe['symbol'] == tokenSymbol) & (tokenListDataframe['chainId'] == int(tokenChainId))]
     if len(result) > 0:
         resultDict = parseDataframeResult(result=result)
         return resultDict[0]
