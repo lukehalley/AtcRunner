@@ -59,9 +59,8 @@ def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountToBridge,
         x = decimalPlacesFrom
         decimalPlacesFrom = decimalPlacesTo
         decimalPlacesTo = x
-
     amountFromDecimal = getTokenDecimalValue(amountToBridge, decimalPlacesTo)
-    params = {"fromChain": fromChain, "toChain": toChain, "fromToken": fromToken, "toToken": toToken,
+    params = {"fromChain": int(fromChain), "toChain": int(toChain), "fromToken": fromToken, "toToken": toToken,
               "amountFrom": amountFromDecimal}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_ESTIMATE_BRIDGE_OUTPUT_ENDPOINT"))
     result = safeRequest(endpoint=endpoint, params=params)

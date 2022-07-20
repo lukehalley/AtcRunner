@@ -53,7 +53,7 @@ def getRecipeDetails():
                             "chainId": chainId,
                             "decimals": 18,
                             "name": tokenDetails["symbol"],
-                            "symbol": None,
+                            "symbol": tokenDetails["symbol"],
                             "logoURI": None
                         }
                         recipeDetails[f"chain{num}"][tokenType] = recipeDetails[f"chain{num}"][tokenType] | gasTokenDetails

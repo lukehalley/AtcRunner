@@ -171,7 +171,7 @@ def getRoutes(recipe, position, driver, currentFunds, toSwapFrom, toSwapTo):
             tokenSymbolOut=recipe[position][toSwapTo]["symbol"]
         )
     else:
-        routes = recipe[position]["routes"][f"{toSwapTo}-{toSwapFrom}"]
+        routes = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
 
     # if routes:
     #     routes.pop(0)
@@ -227,8 +227,8 @@ def simulateStep(recipe, stepSettings, currentFunds, driver=None):
         quote = estimateBridgeOutput(
                 fromChain=recipe[position]["chain"]["id"],
                 toChain=recipe[oppositePosition]["chain"]["id"],
-                fromToken=recipe[position][toSwapFrom]['symbol'],
-                toToken=recipe[oppositePosition][toSwapFrom]['symbol'],
+                fromToken=recipe[position][toSwapFrom]["address"],
+                toToken=recipe[oppositePosition][toSwapFrom]['address'],
                 amountToBridge=currentFunds[toSwapFrom],
                 decimalPlacesFrom=recipe[position][toSwapFrom]["decimals"],
                 decimalPlacesTo=recipe[oppositePosition][toSwapFrom]["decimals"],
@@ -483,11 +483,10 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                 bridgeResult = executeBridge(
                     amountToBridge=currentFunds[toSwapFrom],
                     fromChain=recipe[position]["chain"]["id"],
-                    fromTokenSymbol=recipe[position][toSwapFrom]['symbol'],
+                    fromTokenAddress=recipe[position][toSwapFrom]['address'],
                     fromTokenDecimals=recipe[position][toSwapFrom]["decimals"],
                     fromChainRPCURL=recipe[position]["chain"]["rpc"],
                     toChain=recipe[oppositePosition]["chain"]["id"],
-                    toTokenSymbol=recipe[oppositePosition][toSwapFrom]['symbol'],
                     toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
                     toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                     toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
