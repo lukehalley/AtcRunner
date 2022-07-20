@@ -1,16 +1,16 @@
 import logging, os, sys, json
+import time
 from decimal import Decimal
 from retry import retry
 from web3 import Web3
 
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
 from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
-from src.utils.general import getCurrentDateTime
+from src.utils.general import getCurrentDateTime, printSeperator
 from src.api.telegrambot import updatedStatusMessage
 from src.api.firebase import writeTransactionToDB
 from src.wallet.queries.network import getTokenBalance, getWalletsInformation
 from src.api.telegrambot import sendMessage, appendToMessage
-
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
@@ -26,9 +26,23 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
     walletAddress = w3.eth.account.privateKeyToAccount(privateKey).address
     w3.eth.default_account = walletAddress
 
-    tx["nonce"] = w3.eth.getTransactionCount(walletAddress, 'pending')
+    initNonce = w3.eth.getTransactionCount(walletAddress, 'pending')
+
+    tx["nonce"] = initNonce - 1
 
     telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
+
+    printSeperator()
+
+    logger.info(f'Transaction Details:')
+    logger.info(f'Value: {tx["value"]}')
+    logger.info(f'Chain ID: {tx["chainId"]}')
+    logger.info(f'Nonce: {tx["nonce"]}')
+    logger.info(f'To: {tx["to"]}')
+    logger.info(f'Gas Limit: {tx["gas"]}')
+    logger.info(f'Gas Price: {tx["gasPrice"]}')
+
+    printSeperator()
 
     logger.debug("Signing transaction...")
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=privateKey)
@@ -39,12 +53,21 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
         w3.eth.send_raw_transaction(signed_tx.rawTransaction)
     except Exception as e:
         isKnownTransactionError = "known transaction" in e.args[0]["message"]
+        isNonceTooLowError = "nonce too low" in e.args[0]["message"]
         if isKnownTransactionError:
             logger.warning("Hit isKnownTransactionError but going ahead...")
             pass
+        elif isNonceTooLowError:
+            logger.info(f"Nonce too low ({initNonce}) error caught...")
+            actualNonce = w3.eth.getTransactionCount(walletAddress, 'pending')
+            while actualNonce <= tx["nonce"]:
+                actualNonce = w3.eth.getTransactionCount(walletAddress, 'pending')
+            tx["nonce"] = actualNonce
+            signed_tx = w3.eth.account.sign_transaction(tx, private_key=privateKey)
+            logger.info("Nonce too low error solved - sending again...")
+            w3.eth.send_raw_transaction(signed_tx.rawTransaction)
         else:
             sys.exit(e.args[0]["message"])
-
     logger.info("Transaction successfully sent!")
 
     logger.info(f"Waiting for transaction to be mined...")

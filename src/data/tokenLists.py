@@ -10,22 +10,24 @@ def parseTokenLists(urls):
     finalTokenList = []
 
     for url in urls:
-        try:
-            singleTokenListJSON = getAuthRawGithubFile(url)["tokens"]
-        except:
-            x = 1
+        singleTokenListJSON = getAuthRawGithubFile(url)["tokens"]
         finalTokenList = finalTokenList + singleTokenListJSON
+
     allKeys = list(set().union(*(d.keys() for d in finalTokenList)))
     keysToRemove = list(set(allKeys) - set(allowedKeys))
 
-    with open(f'data/cache/masterTokenList.json', 'w') as cacheFile:
-        json.dump(finalTokenList, cacheFile, indent=4, use_decimal=True)
 
     for key in keysToRemove:
         for dict in finalTokenList:
             if key in dict:
                 del dict[key]
-    return pd.DataFrame(finalTokenList).drop_duplicates(subset=['chainId', 'symbol'], keep='last').sort_values('chainId')
+
+    tokenListDataframe = pd.DataFrame(finalTokenList).drop_duplicates(subset=['chainId', 'symbol'], keep='last').sort_values('chainId')
+
+    with open(f'data/cache/masterTokenList.json', 'w') as cacheFile:
+        json.dump(tokenListDataframe.to_dict('records'), cacheFile, indent=4, use_decimal=True)
+
+    return tokenListDataframe
 
 def parseDataframeResult(result):
     results = []

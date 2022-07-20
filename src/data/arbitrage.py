@@ -320,7 +320,6 @@ def checkArbitrageIsProfitable(recipe, originDriver, destinationDriver, printInf
 
             else:
 
-
                 arbitragePercentage = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
                 isOverPercentage = checkArbitrageIsWorthIt(difference=arbitragePercentage)
 
@@ -424,8 +423,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
             recipe = getWalletsInformation(recipe)
 
-            printSeperator()
-
             logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
             telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber}. Doing {position.title()} {stepType.title()} -> 📤")
@@ -434,13 +431,15 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
                 balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
 
+                swapRoute = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
+
                 amountOutQuoted = getSwapQuoteOut(
                     amountInNormal=currentFunds[toSwapFrom],
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                     rpcUrl=recipe[position]["chain"]["rpc"],
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
-                    routes=recipe[position]["route"]
+                    routes=swapRoute
                 )
 
                 amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
@@ -450,7 +449,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                     amountOutNormal=amountOutMinWithSlippage,
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
-                    tokenPath=recipe[position]["route"],
+                    tokenPath=swapRoute,
                     rpcURL=recipe[position]["chain"]["rpc"],
                     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_swap",

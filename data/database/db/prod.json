@@ -167,6 +167,11 @@
       },
       "id": "1666600000",
       "rpc": "https://harmony-0-rpc.gateway.pokt.network",
+      "tokenLists": [
+        "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/build/defikingdoms-community.tokenlist.json",
+        "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/src/defikingdoms-default.tokenlist.json",
+        "https://raw.githubusercontent.com/tradescrow/token-lists/main/build/tradescrow-all.tokenlist.json"
+      ],
       "uniswapFactory": "0x9014B937069918bd319f80e8B3BB4A2cf6FAA5F7",
       "uniswapRouter": "0x24ad62502d1C652Cc7684081169D04896aC20f30"
     }
@@ -176,8 +181,8 @@
       "arbitrage": {
         "dexId": "defikingdoms",
         "directionLock": "avalanchedfk,harmony",
-        "stablecoin": "USD Circle",
-        "token": "JEWEL"
+        "tokenList": "DFK_ALL",
+        "tokenRetrievalMethod": "tokenList"
       },
       "chainOne": {
         "chain": {
@@ -201,8 +206,8 @@
           "name": "avalanchedfk"
         },
         "routes": {
-          "stablecoin-token": "USDC,CRYSTAL,JEWEL",
-          "token-stablecoin": "JEWEL,CRYSTAL,USDC"
+          "stablecoin-token": "USDC,CRYSTAL,WJEWEL",
+          "token-stablecoin": "WJEWEL,CRYSTAL,USDC"
         },
         "stablecoin": {
           "isGas": "False",
@@ -210,9 +215,18 @@
         },
         "token": {
           "isGas": "True",
-          "symbol": "JEWEL"
+          "symbol": "WJEWEL"
         }
       }
     }
+  },
+  "tokenLists": {
+    "DFK_ALL": [
+      "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/build/defikingdoms-community.tokenlist.json",
+      "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/src/defikingdoms-default.tokenlist.json",
+      "https://raw.githubusercontent.com/tradescrow/token-lists/main/build/tradescrow-all.tokenlist.json",
+      "https://raw.githubusercontent.com/pangolindex/tokenlists/main/pangolin.tokenlist.json",
+      "https://raw.githubusercontent.com/itslhk/additional-tokens/master/lhk-additional-tokens.json"
+    ]
   }
 }
