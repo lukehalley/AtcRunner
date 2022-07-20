@@ -35,13 +35,15 @@ def determineArbitrageStrategy(recipe):
 
     recipe["arbitrage"]["currentRoundTripCount"] = getNextArbitrageNumber()
 
+    # TODO: Add routes to quotes
+
     chainOneTokenPrice = getSwapQuoteOut(
         amountInNormal=1.0,
         amountInDecimals=recipe["chainOne"]["token"]["decimals"],
         amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
         routerAddress=recipe["chainOne"]["chain"]["uniswapRouter"],
-        routes=[recipe["chainOne"]["token"]["address"], recipe["chainOne"]["stablecoin"]["address"]]
+        routes=recipe["chainOne"]["routes"]["token-stablecoin"]
     )
 
     chainTwoTokenPrice = getSwapQuoteOut(
@@ -50,7 +52,7 @@ def determineArbitrageStrategy(recipe):
         amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
         routerAddress=recipe["chainTwo"]["chain"]["uniswapRouter"],
-        routes=[recipe["chainTwo"]["token"]["address"], recipe["chainTwo"]["stablecoin"]["address"]]
+        routes=recipe["chainTwo"]["routes"]["token-stablecoin"]
     )
 
     chainOneGasPrice = getSwapQuoteOut(
@@ -169,35 +171,35 @@ def getRoutes(recipe, position, driver, currentFunds, toSwapFrom, toSwapTo):
             tokenSymbolOut=recipe[position][toSwapTo]["symbol"]
         )
     else:
-        routes = [x for x in recipe[position]["fallbackRoute"][f"{toSwapTo}-{toSwapFrom}"].split(",") if x]
+        routes = recipe[position]["routes"][f"{toSwapTo}-{toSwapFrom}"]
 
-    if routes:
-        routes.pop(0)
-        routes.pop(-1)
-        routeAddressList = [recipe[position][toSwapFrom]["address"]]
+    # if routes:
+    #     routes.pop(0)
+    #     routes.pop(-1)
+    #     routeAddressList = [recipe[position][toSwapFrom]["address"]]
+    #
+    #     for route in routes:
+    #
+    #         localCheck = ["stablecoin", "token", "gas"]
+    #
+    #         routeAddress = None
+    #
+    #         for localToken in localCheck:
+    #             if route == recipe[position][localToken]["symbol"]:
+    #                 routeAddress = recipe[position][localToken]["address"]
+    #
+    #         if not routeAddress:
+    #             routeAddress = getTokenAddressByDexId(route, recipe["arbitrage"]["dexId"])
+    #
+    #         routeAddressList.append(routeAddress)
+    #
+    #     routeAddressList.append(recipe[position][toSwapTo]["address"])
+    # else:
+    #     routeAddressList = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
+    #
+    # recipe[position]["route"] = routeAddressList
 
-        for route in routes:
-
-            localCheck = ["stablecoin", "token", "gas"]
-
-            routeAddress = None
-
-            for localToken in localCheck:
-                if route == recipe[position][localToken]["symbol"]:
-                    routeAddress = recipe[position][localToken]["address"]
-
-            if not routeAddress:
-                routeAddress = getTokenAddressByDexId(route, recipe["arbitrage"]["dexId"])
-
-            routeAddressList.append(routeAddress)
-
-        routeAddressList.append(recipe[position][toSwapTo]["address"])
-    else:
-        routeAddressList = [recipe[position][toSwapFrom]["address"], recipe[position][toSwapTo]["address"]]
-
-    recipe[position]["route"] = routeAddressList
-
-    return routeAddressList
+    return routes
 
 def simulateStep(recipe, stepSettings, currentFunds, driver=None):
 
