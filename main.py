@@ -96,6 +96,7 @@ while True:
         else:
             printSeperator()
             logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Trip Not Profitable')
-            logger.info(f'Waiting {pauseTime} seconds...')
+            if pauseTime > 0:
+                logger.info(f'Waiting {pauseTime} seconds...')
             printSeperator(True)
             time.sleep(pauseTime)
