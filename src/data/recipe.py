@@ -37,6 +37,7 @@ def getRecipeDetails():
             recipeDetails[f"chain{num}"]["chain"].update(chain)
 
             chainId = recipeDetails[f"chain{num}"]["chain"]["id"]
+            chainGasTokenDetails = recipeDetails[f"chain{num}"]["chain"]["gasDetails"]
 
             if tokenRetrievalMethod == "tokenList":
 
@@ -63,6 +64,38 @@ def getRecipeDetails():
                             tokenChainId=chainId
                         )
                         recipeDetails[f"chain{num}"][tokenType] = recipeDetails[f"chain{num}"][tokenType] | tokenDetails
+
+                x = 1
+
+                for routeDirection, routeContents in recipeDetails[f"chain{num}"]["routes"].items():
+
+                    routeFirst = routeDirection.split("-")[0]
+                    routeLast = routeDirection.split("-")[1]
+
+                    if routeContents != '':
+                        routeSymbols = routeContents.split(",")
+
+                        routeSymbols.pop(0)
+                        routeSymbols.pop(-1)
+                        routeAddressList = [recipeDetails[f"chain{num}"][routeFirst]["address"]]
+
+                        for routeSymbol in routeSymbols:
+
+                            if routeSymbol == chainGasTokenDetails["symbol"]:
+                                routeAddressList.append(chainGasTokenDetails["address"])
+                            else:
+                                tokenDetails = getTokenBySymbolAndChainID(
+                                    tokenListDataframe=masterTokenList,
+                                    tokenSymbol=routeSymbol,
+                                    tokenChainId=chainId
+                                )
+                                routeAddressList.append(tokenDetails["address"])
+
+                        routeAddressList.append(recipeDetails[f"chain{num}"][routeLast]["address"])
+                    else:
+                        routeAddressList = [recipeDetails[f"chain{num}"]["token"]["address"], recipeDetails[f"chain{num}"]["stablecoin"]["address"]]
+
+                    recipeDetails[f"chain{num}"]["routes"][routeDirection] = routeAddressList
 
             elif tokenRetrievalMethod == "api":
 

@@ -9,3 +9,11 @@ def buildApiURL(baseUrl, endpoint):
 def getAuthRawGithubFile(url):
     githubKey = getAWSSecret(key="GITHUB_KEY")
     return requests.get(url, headers={'Authorization': githubKey}).json()
+
+def safeRequest(endpoint, params):
+    request = requests.get(endpoint, params=params)
+    if request.ok:
+        return request.json()
+    else:
+        endpoint = endpoint.split('/')[-1]
+        raise Exception(f"{endpoint} returned status {request.status_code}: {request.json()['error']}")

@@ -13,7 +13,7 @@
           "symbol": "1USDC",
           "isGas": "False"
         },
-        "fallbackRoute": {
+        "routes": {
           "stablecoin-token": "",
           "token-stablecoin": ""
         }
@@ -30,7 +30,7 @@
           "symbol": "USDC",
           "isGas": "False"
         },
-        "fallbackRoute": {
+        "routes": {
           "stablecoin-token": "USDC,CRYSTAL,JEWEL",
           "token-stablecoin": "JEWEL,CRYSTAL,USDC"
         }

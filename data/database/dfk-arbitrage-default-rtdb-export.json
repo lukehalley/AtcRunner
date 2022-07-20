@@ -184,7 +184,7 @@
           "chain": {
             "name": "harmony"
           },
-          "fallbackRoute": {
+          "routes": {
             "stablecoin-token": "",
             "token-stablecoin": ""
           },
@@ -201,7 +201,7 @@
           "chain": {
             "name": "avalanchedfk"
           },
-          "fallbackRoute": {
+          "routes": {
             "stablecoin-token": "USDC,CRYSTAL,JEWEL",
             "token-stablecoin": "JEWEL,CRYSTAL,USDC"
           },
@@ -407,9 +407,9 @@
           "chain": {
             "name": "harmony"
           },
-          "fallbackRoute": {
-            "stablecoin-token": "",
-            "token-stablecoin": ""
+          "routes": {
+            "stablecoin-token": "1USDC,JEWEL,AVAX",
+            "token-stablecoin": "AVAX,JEWEL,ONE,1USDC"
           },
           "stablecoin": {
             "symbol": "1USDC",
@@ -424,7 +424,7 @@
           "chain": {
             "name": "avalanchedfk"
           },
-          "fallbackRoute": {
+          "routes": {
             "stablecoin-token": "USDC,CRYSTAL,AVAX",
             "token-stablecoin": "AVAX,CRYSTAL,USDC"
           },
@@ -449,7 +449,7 @@
           "chain": {
             "name": "harmony"
           },
-          "fallbackRoute": {
+          "routes": {
             "stablecoin-token": "",
             "token-stablecoin": ""
           },
@@ -466,7 +466,7 @@
           "chain": {
             "name": "avalanchedfk"
           },
-          "fallbackRoute": {
+          "routes": {
             "stablecoin-token": "USDC,CRYSTAL,JEWEL",
             "token-stablecoin": "JEWEL,CRYSTAL,USDC"
           },
