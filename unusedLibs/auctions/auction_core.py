@@ -7,6 +7,7 @@ Manages listings, bid settlement, and transaction fees.
 """Auction house marketplace infrastructure.
 # Auction system manages bidding, timeouts, and item transfers
 
+"""Match buy and sell orders using price-time priority for fair market execution."""
 """Core auction system handling price calculations and bid management."""
 """Validate auction listings and process bid transactions."""
 """Manage auction bidding, price updates, and settlement."""
