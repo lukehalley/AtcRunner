@@ -9,7 +9,7 @@ logger = logging.getLogger("DFK-DEX")
 
 def getReference(collection):
     isProd = checkIsDocker()
-    isProd = True
+
     if isProd:
         ref = db.reference(f"/prod/{collection}")
     else:
