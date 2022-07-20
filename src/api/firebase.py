@@ -2,14 +2,23 @@ import logging, os
 import sys
 from typing import Optional
 from firebase_admin import credentials, initialize_app, db
-from src.utils.general import getAWSSecret
+from src.utils.general import getAWSSecret, checkIsDocker
 
 # Setup logging
 logger = logging.getLogger("DFK-DEX")
 
+def getReference(collection):
+    isProd = checkIsDocker()
+
+    if isProd:
+        ref = db.reference(f"/prod/{collection}")
+    else:
+        ref = db.reference(f"/dev/{collection}")
+
+    return ref
+
 # Create a connection to Firebase
 def createDatabaseConnection():
-
     databaseURL = os.environ.get("DATABASE_URL")
 
     firebaseKey = getAWSSecret(key="FIREBASE_KEY").replace("\\n", "\n")
@@ -36,26 +45,25 @@ def createDatabaseConnection():
 
     logger.info(f"DB: Connection established to Firebase")
 
+
 # Fetch a collection from Firebase
 def fetchFromDatabase(reference, printInfo=False):
-
     if printInfo:
         logger.info(f"DB: Getting '{reference}' from Firebase")
 
-    db.reference()
+    ref = getReference(collection=reference)
 
-    queryResult = (db.reference(f"/{reference}/")).get()
+    queryResult = ref.get()
 
     return queryResult
 
-def writeTransactionToDB(transaction, arbitrageNumber, stepCategory):
 
+def writeTransactionToDB(transaction, arbitrageNumber, stepCategory):
     arbitrageTitle = f"arbitrage_{arbitrageNumber}"
 
     arbitrages = fetchFromDatabase("arbitrages")
 
     if not arbitrages:
-
         arbitrages = {}
 
     if arbitrageTitle not in arbitrages:
@@ -68,12 +76,12 @@ def writeTransactionToDB(transaction, arbitrageNumber, stepCategory):
 
         arbitrages[arbitrageTitle][stepCategory] = transaction
 
-    ref = db.reference("/arbitrages")
+    ref = getReference(collection="arbitrages")
 
     ref.set(arbitrages)
 
-def writeResultToDB(result, arbitrageNumber):
 
+def writeResultToDB(result, arbitrageNumber):
     arbitrageTitle = f"arbitrage_{arbitrageNumber}"
 
     arbitrages = fetchFromDatabase("arbitrages")
@@ -90,12 +98,11 @@ def writeResultToDB(result, arbitrageNumber):
 
             arbitrages[arbitrageTitle]["result"] = result
 
-            ref = db.reference("/arbitrages")
+            ref = getReference(collection="arbitrages")
 
             ref.set(arbitrages)
 
     else:
-       err = "Tried to write profit/loss to DB the arbitrages collection didn't exist!"
-       logger.error(err)
-       sys.exit(err)
-
+        err = "Tried to write profit/loss to DB the arbitrages collection didn't exist!"
+        logger.error(err)
+        sys.exit(err)

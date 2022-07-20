@@ -1,0 +1,110 @@
+{
+  "arbitrage_1": {
+    "1_swap": {
+      "dateTime": "19/07/2022 23:24:17",
+      "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x8a940ac7c70d939485048676ff300fe07b8238c48688111be5a857801a68b5d6",
+      "gasUsed": 218703,
+      "hash": "0x8a940ac7c70d939485048676ff300fe07b8238c48688111be5a857801a68b5d6",
+      "wasSuccessful": true
+    },
+    "2_bridge": {
+      "dateTime": "19/07/2022 23:24:28",
+      "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x4be564c136c4f7d06e624eabed4f12d1abd36c85fc9d5a9373887bbf860a8e21",
+      "gasUsed": 97249,
+      "hash": "0x4be564c136c4f7d06e624eabed4f12d1abd36c85fc9d5a9373887bbf860a8e21",
+      "wasSuccessful": true
+    },
+    "3_swap": {
+      "dateTime": "19/07/2022 23:24:52",
+      "explorerLink": "https://explorer.harmony.one/tx/0x69e5f8fe8bb323be9c9a7040e938c60ac20361b4e6977534f37bb67f804519d8",
+      "gasUsed": 119110,
+      "hash": "0x69e5f8fe8bb323be9c9a7040e938c60ac20361b4e6977534f37bb67f804519d8",
+      "wasSuccessful": true
+    },
+    "4_bridge": {
+      "dateTime": "19/07/2022 23:25:06",
+      "explorerLink": "https://explorer.harmony.one/tx/0xfe7dade568bee933f21e43d51965c92d06f0700cd4d13f6dbcdd9fe798c55eaf",
+      "gasUsed": 190420,
+      "hash": "0xfe7dade568bee933f21e43d51965c92d06f0700cd4d13f6dbcdd9fe798c55eaf",
+      "wasSuccessful": true
+    },
+    "result": {
+      "percentageDifference": 8.75,
+      "profitLoss": 9.008036192289238,
+      "timeTookSeconds": 89.28829211197444,
+      "wasProfitable": true
+    }
+  },
+  "arbitrage_2": {
+    "1_swap": {
+      "dateTime": "19/07/2022 23:25:58",
+      "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x0643f5ec3ad1856fca141b79f3033912f60351e1a62ec7ad9b954736016d9733",
+      "gasUsed": 218703,
+      "hash": "0x0643f5ec3ad1856fca141b79f3033912f60351e1a62ec7ad9b954736016d9733",
+      "wasSuccessful": true
+    },
+    "2_bridge": {
+      "dateTime": "19/07/2022 23:26:15",
+      "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0x10d5ba7deab5ca29d61e6626fc3d2d9dc4b46a435132ac75cd4697c444c008a2",
+      "gasUsed": 97249,
+      "hash": "0x10d5ba7deab5ca29d61e6626fc3d2d9dc4b46a435132ac75cd4697c444c008a2",
+      "wasSuccessful": true
+    },
+    "3_swap": {
+      "dateTime": "19/07/2022 23:26:38",
+      "explorerLink": "https://explorer.harmony.one/tx/0xe8cb33f9b038c2e717913c43d734f13085282cbbf9ba1b370bf3611a00765565",
+      "gasUsed": 119098,
+      "hash": "0xe8cb33f9b038c2e717913c43d734f13085282cbbf9ba1b370bf3611a00765565",
+      "wasSuccessful": true
+    },
+    "4_bridge": {
+      "dateTime": "19/07/2022 23:26:56",
+      "explorerLink": "https://explorer.harmony.one/tx/0x2e0bebade3600ec9201526209bc651a5bad09e2e575e5b81e2ea54c8517611fe",
+      "gasUsed": 190420,
+      "hash": "0x2e0bebade3600ec9201526209bc651a5bad09e2e575e5b81e2ea54c8517611fe",
+      "wasSuccessful": true
+    },
+    "result": {
+      "percentageDifference": 1.9,
+      "profitLoss": 2.1267332459389854,
+      "timeTookSeconds": 98.00105393101694,
+      "wasProfitable": true
+    }
+  },
+  "arbitrage_3": {
+    "1_swap": {
+      "dateTime": "20/07/2022 03:00:20",
+      "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0xcb573cec192c67def34ef8f315529ba2cdbbb176c5d83e7f1e4008793879fa55",
+      "gasUsed": 218703,
+      "hash": "0xcb573cec192c67def34ef8f315529ba2cdbbb176c5d83e7f1e4008793879fa55",
+      "wasSuccessful": true
+    },
+    "2_bridge": {
+      "dateTime": "20/07/2022 03:00:30",
+      "explorerLink": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx/0xe7263cf525542b27b19b11fd991ef306ede7228e8ec88047529039bf61f261e8",
+      "gasUsed": 97249,
+      "hash": "0xe7263cf525542b27b19b11fd991ef306ede7228e8ec88047529039bf61f261e8",
+      "wasSuccessful": true
+    },
+    "3_swap": {
+      "dateTime": "20/07/2022 03:01:06",
+      "explorerLink": "https://explorer.harmony.one/tx/0x72c3ec0181b88efd81770a0742060cf0c5700f183181911041607d70b84aeb4a",
+      "gasUsed": 119110,
+      "hash": "0x72c3ec0181b88efd81770a0742060cf0c5700f183181911041607d70b84aeb4a",
+      "wasSuccessful": true
+    },
+    "4_bridge": {
+      "dateTime": "20/07/2022 03:01:27",
+      "explorerLink": "https://explorer.harmony.one/tx/0x6607275c8f32d29c2cac8999b109ac02646abc93dd5951c70909ee3b23f7ba9f",
+      "gasUsed": 190420,
+      "hash": "0x6607275c8f32d29c2cac8999b109ac02646abc93dd5951c70909ee3b23f7ba9f",
+      "wasSuccessful": true
+    },
+    "result": {
+      "percentageDifference": 1.59,
+      "profitLoss": 1.813666281619393,
+      "timeTookSeconds": 107.14915256999666,
+      "wasProfitable": true
+    }
+  }
+}

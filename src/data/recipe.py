@@ -1,11 +1,16 @@
 import logging
+import sys
+
 from num2words import num2words
 
 from src.api.firebase import fetchFromDatabase
 from src.api.synapsebridge import getBridgeableTokens
-from src.api.dexscreener import getTokenPriceByDexId, doSearch
+from src.api.dexscreener import getTokenPriceByDexId
+from src.data.tokenLists import getTokenBySymbolAndChainID, parseTokenLists
 
 # Set up our logging
+from src.utils.general import strToBool
+
 logger = logging.getLogger("DFK-DEX")
 
 # Get the details of our recipe
@@ -18,8 +23,12 @@ def getRecipeDetails():
 
         dexId = recipeDetails["arbitrage"]["dexId"]
 
-        recipeToken = recipeDetails["arbitrage"]["token"]
-        recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
+
+        tokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
+        tokenList = recipeDetails["arbitrage"]["tokenList"]
+
+        tokenLists = fetchFromDatabase(reference="tokenLists")[tokenList]
+        masterTokenList = parseTokenLists(urls=tokenLists)
 
         for i in range(1, 3):
 
@@ -28,42 +37,106 @@ def getRecipeDetails():
             recipeDetails[f"chain{num}"]["chain"].update(chain)
 
             chainId = recipeDetails[f"chain{num}"]["chain"]["id"]
+            chainGasTokenDetails = recipeDetails[f"chain{num}"]["chain"]["gasDetails"]
 
-            chainTokens = getBridgeableTokens(chainId)
+            if tokenRetrievalMethod == "tokenList":
 
-            toFill = {
-                "token": recipeToken,
-                "stablecoin": recipeStablecoin
-            }
+                toFill = {
+                    "token": recipeDetails[f"chain{num}"]["token"],
+                    "stablecoin": recipeDetails[f"chain{num}"]["stablecoin"]
+                }
 
+                for tokenType, tokenDetails in toFill.items():
+                    if strToBool(tokenDetails["isGas"]):
+                        gasTokenDetails = {
+                            "address": recipeDetails[f"chain{num}"]["chain"]["gasDetails"]["address"],
+                            "chainId": chainId,
+                            "decimals": 18,
+                            "name": tokenDetails["symbol"],
+                            "symbol": tokenDetails["symbol"],
+                            "logoURI": None
+                        }
+                        recipeDetails[f"chain{num}"][tokenType] = recipeDetails[f"chain{num}"][tokenType] | gasTokenDetails
+                    else:
+                        tokenDetails = getTokenBySymbolAndChainID(
+                            tokenListDataframe=masterTokenList,
+                            tokenSymbol=tokenDetails["symbol"],
+                            tokenChainId=chainId
+                        )
+                        recipeDetails[f"chain{num}"][tokenType] = recipeDetails[f"chain{num}"][tokenType] | tokenDetails
 
-            for key, value in toFill.items():
+                x = 1
 
-                for token in chainTokens:
+                for routeDirection, routeContents in recipeDetails[f"chain{num}"]["routes"].items():
 
-                    if token["symbol"] == value or token["name"] == value:
+                    routeFirst = routeDirection.split("-")[0]
+                    routeLast = routeDirection.split("-")[1]
 
-                        tokenDetails = token
+                    if routeContents != '':
+                        routeSymbols = routeContents.split(",")
 
-                        if key == "chain":
-                            recipeDetails[f"chain{num}"][key]["isGas"] = True
-                        elif key in recipeDetails[f"chain{num}"]:
-                            recipeDetails[f"chain{num}"][key]["isGas"] = recipeDetails[f"chain{num}"][key]["isGas"]
-                        else:
-                            recipeDetails[f"chain{num}"][key] = {}
-                            recipeDetails[f"chain{num}"][key]["isGas"] = tokenDetails["isETH"]
+                        routeSymbols.pop(0)
+                        routeSymbols.pop(-1)
+                        routeAddressList = [recipeDetails[f"chain{num}"][routeFirst]["address"]]
 
-                        recipeDetails[f"chain{num}"][key]["name"] = tokenDetails["name"]
-                        recipeDetails[f"chain{num}"][key]["symbol"] = tokenDetails["symbol"]
+                        for routeSymbol in routeSymbols:
 
-                        if "decimals" in tokenDetails:
-                            recipeDetails[f"chain{num}"][key]["decimals"] = tokenDetails["decimals"][chainId]
-                        else:
-                            recipeDetails[f"chain{num}"][key]["decimals"] = None
+                            if routeSymbol == chainGasTokenDetails["symbol"]:
+                                routeAddressList.append(chainGasTokenDetails["address"])
+                            else:
+                                tokenDetails = getTokenBySymbolAndChainID(
+                                    tokenListDataframe=masterTokenList,
+                                    tokenSymbol=routeSymbol,
+                                    tokenChainId=chainId
+                                )
+                                routeAddressList.append(tokenDetails["address"])
 
-                        recipeDetails[f"chain{num}"][key]["address"] = tokenDetails["addresses"][chainId]
-                        recipeDetails[f"chain{num}"][key]["swapType"] = tokenDetails["swapType"]
-                        recipeDetails[f"chain{num}"][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
+                        routeAddressList.append(recipeDetails[f"chain{num}"][routeLast]["address"])
+                    else:
+                        routeAddressList = [recipeDetails[f"chain{num}"]["token"]["address"], recipeDetails[f"chain{num}"]["stablecoin"]["address"]]
+
+                    recipeDetails[f"chain{num}"]["routes"][routeDirection] = routeAddressList
+
+            elif tokenRetrievalMethod == "api":
+
+                recipeToken = recipeDetails["arbitrage"]["token"]
+                recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
+
+                toFill = {
+                    "token": recipeToken,
+                    "stablecoin": recipeStablecoin
+                }
+
+                chainTokens = getBridgeableTokens(chainId)
+                for key, value in toFill.items():
+
+                    for token in chainTokens:
+
+                        if token["symbol"] == value or token["name"] == value:
+
+                            tokenDetails = token
+
+                            if key == "chain":
+                                recipeDetails[f"chain{num}"][key]["isGas"] = True
+                            elif key in recipeDetails[f"chain{num}"]:
+                                recipeDetails[f"chain{num}"][key]["isGas"] = recipeDetails[f"chain{num}"][key]["isGas"]
+                            else:
+                                recipeDetails[f"chain{num}"][key] = {}
+                                recipeDetails[f"chain{num}"][key]["isGas"] = tokenDetails["isETH"]
+
+                            recipeDetails[f"chain{num}"][key]["name"] = tokenDetails["name"]
+                            recipeDetails[f"chain{num}"][key]["symbol"] = tokenDetails["symbol"]
+
+                            if "decimals" in tokenDetails:
+                                recipeDetails[f"chain{num}"][key]["decimals"] = tokenDetails["decimals"][chainId]
+                            else:
+                                recipeDetails[f"chain{num}"][key]["decimals"] = None
+
+                            recipeDetails[f"chain{num}"][key]["address"] = tokenDetails["addresses"][chainId]
+                            recipeDetails[f"chain{num}"][key]["swapType"] = tokenDetails["swapType"]
+                            recipeDetails[f"chain{num}"][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
+            else:
+                sys.exit(F"Invalid Token Retrieval Method: {tokenRetrievalMethod}")
 
             recipeDetails[f"chain{num}"]["gas"] = {}
             recipeDetails[f"chain{num}"]["gas"]["address"] = recipeDetails[f"chain{num}"]["chain"]["gasDetails"]["address"]
