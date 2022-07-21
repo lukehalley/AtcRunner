@@ -1,7 +1,12 @@
-import json, os, sys, logging, time
-from web3 import Web3
-from hexbytes import HexBytes
+import json
+import logging
+import os
+import time
 from decimal import Decimal
+
+from hexbytes import HexBytes
+from web3 import Web3
+
 from src.utils.general import getProjectRoot, percentage
 
 logger = logging.getLogger("DFK-DEX")

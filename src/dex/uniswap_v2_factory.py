@@ -3,6 +3,7 @@ https://docs.uniswap.org/protocol/V2/reference/smart-contracts/factory
 """
 
 from web3 import Web3
+
 from src.utils.chain import getABI
 
 ABI = getABI("IUniswapV2Factory.json")

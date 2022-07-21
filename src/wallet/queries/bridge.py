@@ -8,7 +8,6 @@ from src.api.synapsebridge import checkBridgeStatusAPI, checkBridgeStatusBalance
 from src.api.telegrambot import notifyHangingBridge, notifyUnstickedBridge
 from src.utils.general import getMinSecString
 
-
 logger = logging.getLogger("DFK-DEX")
 
 transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))

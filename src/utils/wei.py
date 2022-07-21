@@ -1,5 +1,7 @@
-from web3 import Web3
 from decimal import Decimal
+
+from web3 import Web3
+
 
 def getWeiFamily(decimal):
     decimal = int("1" + str("0" * decimal))

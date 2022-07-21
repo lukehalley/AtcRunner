@@ -1,16 +1,15 @@
-import logging, os
-import sys
-import time
+import logging
+import os
 from collections import OrderedDict
-from itertools import repeat
 from decimal import Decimal
+from itertools import repeat
 
-from src.api.dexscreener import getTokenAddressByDexId
 from src.api.firebase import fetchFromDatabase
 from src.api.synapsebridge import estimateBridgeOutput
 from src.api.telegrambot import appendToMessage, updatedStatusMessage
 from src.utils.chain import getOppositeDirection, getJSONFile, getValueWithSlippage
-from src.utils.general import strToBool, printSeperator, percentageDifference, prependToOrderedDict, printArbitrageResult, truncateDecimal
+from src.utils.general import strToBool, printSeperator, percentageDifference, prependToOrderedDict, \
+    printArbitrageResult, truncateDecimal
 from src.wallet.actions.bridge import executeBridge
 from src.wallet.actions.network import topUpWalletGas
 from src.wallet.actions.swap import swapToken
@@ -268,9 +267,7 @@ def checkArbitrageIsProfitable(recipe, originDriver, destinationDriver, printInf
         "token": startingTokens
     }
 
-    predictions = {}
-
-    predictions["steps"] = {}
+    predictions = {"steps": {}}
 
     for stepNumber, stepSettings in steps.items():
 

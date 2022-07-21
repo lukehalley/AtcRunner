@@ -1,7 +1,10 @@
-import logging, os
+import logging
+import os
+
 from dotenv import load_dotenv
 from retry import retry
 from telegram import Bot
+
 from src.utils.general import getAWSSecret
 
 load_dotenv()

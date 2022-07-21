@@ -3,6 +3,7 @@ import requests
 
 from src.utils.general import getAWSSecret
 
+
 def buildApiURL(baseUrl, endpoint):
     return f"{baseUrl}/{endpoint}"
 

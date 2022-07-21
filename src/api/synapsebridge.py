@@ -1,10 +1,12 @@
-import os, requests, logging
+import logging
+import os
 import sys
+from decimal import Decimal
 
 from retry import retry
-from decimal import Decimal
-from src.utils.general import percentage, isBetween
+
 from src.utils.api import buildApiURL, safeRequest
+from src.utils.general import percentage, isBetween
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
 
 # Setup logging

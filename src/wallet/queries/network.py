@@ -1,14 +1,14 @@
-import logging, os, json
+import logging
+import os
 from decimal import Decimal
+
 from retry import retry
 from web3 import Web3
 
-
-from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
-from src.utils.wei import getTokenNormalValue
-from src.utils.general import isBetween, percentage, strToBool, getAWSSecret
-
 from src.dex.erc20 import balance_of, wei2eth
+from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
+from src.utils.general import isBetween, percentage, strToBool, getAWSSecret
+from src.utils.wei import getTokenNormalValue
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")

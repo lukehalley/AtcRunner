@@ -1,4 +1,5 @@
 from web3 import Web3
+
 from .erc20 import balance_of as erc20_balance_of
 
 CONTRACT_ADDRESS = '0x72Cb10C6bfA5624dD07Ef608027E366bd690048F'

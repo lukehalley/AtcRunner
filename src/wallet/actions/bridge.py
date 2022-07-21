@@ -1,13 +1,13 @@
-import logging, os
+import logging
+import os
+
 from web3 import Web3
 
-from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
-
 from src.api.synapsebridge import generateUnsignedBridgeTransaction
-
-from src.wallet.queries.network import getWalletAddressFromPrivateKey, getTokenBalance
-from src.wallet.queries.bridge import waitForBridgeToComplete
+from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
 from src.wallet.actions.network import signAndSendTransaction
+from src.wallet.queries.bridge import waitForBridgeToComplete
+from src.wallet.queries.network import getWalletAddressFromPrivateKey, getTokenBalance
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -56,7 +56,6 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
 
     fundsBridged = waitForBridgeToComplete(
         transactionId=transactionResult["hash"],
-        toToken=toTokenSymbol,
         fromChain=fromChain,
         toChain=toChain,
         toChainRPCURL=toChainRPCURL,

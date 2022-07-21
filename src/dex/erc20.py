@@ -1,4 +1,7 @@
-import json, logging, pathlib, os
+import json
+import logging
+import os
+import pathlib
 
 from web3 import Web3
 

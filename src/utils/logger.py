@@ -1,6 +1,9 @@
-import logging, sys, os
+import logging
+import os
+import sys
 
 from src.utils.general import strToBool
+
 
 # Set up logging
 def setupLogging(isDocker):
