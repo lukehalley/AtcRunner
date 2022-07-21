@@ -24,6 +24,12 @@ buildAndPush:
 	make tag version=$(version)
 	make push version=$(version)
 
+zeroTask:
+	aws ecs update-service --cluster arb-botCluster --service arb-bot --desired-count 0
+
+oneTask:
+	aws ecs update-service --cluster arb-botCluster --service arb-bot --desired-count 1
+
 createStack:
 	aws cloudformation create-stack --template-body file://cloud/stack.json --stack-name arb-bot --capabilities CAPABILITY_NAMED_IAM
 
