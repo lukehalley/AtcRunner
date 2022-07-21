@@ -525,7 +525,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
         else:
 
-            recipe = getWalletsInformation(recipe)
+            recipe = getWalletsInformation(recipe, applyHardLimit=False)
 
             wasProfitable = recipe[position]["wallet"]["balances"]["stablecoin"] > startingStables
             profitLoss = abs(recipe[position]["wallet"]["balances"]["stablecoin"] - startingStables)

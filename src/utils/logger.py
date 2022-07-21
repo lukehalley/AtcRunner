@@ -13,7 +13,7 @@ def setupLogging(isDocker):
     log_format = '%(asctime)s | %(levelname)s | %(message)s'
     dateFormat = os.environ.get("DATE_FORMAT")
 
-    logEnabled = strToBool(os.getenv("ENABLE_LOG"))
+    logEnabled = strToBool(os.getenv("FORCE_FILE_LOG"))
 
     if isDocker and logEnabled:
         logFile = os.environ.get("LOG_FILE")
