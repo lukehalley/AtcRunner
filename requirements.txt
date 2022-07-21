@@ -9,3 +9,4 @@ firebase-admin
 selenium~=3.141.0
 PyVirtualDisplay~=3.0
 simplejson
+pandas

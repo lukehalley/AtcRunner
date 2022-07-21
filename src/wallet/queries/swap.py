@@ -1,4 +1,5 @@
-import logging, os
+import logging
+import os
 
 from retry import retry
 from web3 import Web3

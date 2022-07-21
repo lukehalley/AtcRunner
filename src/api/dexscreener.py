@@ -1,5 +1,8 @@
-import os, requests, logging
+import logging
+import os
+import requests
 from decimal import Decimal
+
 from retry import retry
 
 from src.utils.api import buildApiURL

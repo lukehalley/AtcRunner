@@ -1,4 +1,5 @@
-import logging, os
+import logging
+import os
 
 from pyvirtualdisplay import Display
 from retry import retry
@@ -8,9 +9,8 @@ from selenium.webdriver.common.keys import Keys
 
 from src.utils.general import checkIsDocker
 from src.web.automation import findWebElement, safeClick, selectTokenInDex, getRouteForSwap
-from src.web.tabs import openURL, getCurrentTabCount, closeLastTab, switchToTabByIndex
 from src.web.general import getMetamaskURL
-from src.web.general import getOppositeDirection
+from src.web.tabs import openURL, getCurrentTabCount, switchToTabByIndex
 
 logger = logging.getLogger("DFK-DEX")
 

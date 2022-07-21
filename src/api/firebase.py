@@ -1,7 +1,9 @@
-import logging, os
+import logging
+import os
 import sys
-from typing import Optional
+
 from firebase_admin import credentials, initialize_app, db
+
 from src.utils.general import getAWSSecret, checkIsDocker
 
 # Setup logging

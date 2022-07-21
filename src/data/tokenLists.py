@@ -1,6 +1,7 @@
 import sys
-import simplejson as json
+
 import pandas as pd
+import simplejson as json
 
 from src.utils.api import getAuthRawGithubFile
 

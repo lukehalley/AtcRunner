@@ -1,4 +1,4 @@
-import logging, sys
+import logging
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")

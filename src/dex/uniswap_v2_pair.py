@@ -1,7 +1,7 @@
 from web3 import Web3
-from .utils.utils import swap_expected_amount1
 
 from src.utils.chain import getABI
+from .utils.utils import swap_expected_amount1
 
 ABI = getABI("IUniswapV2Pair.json")
 

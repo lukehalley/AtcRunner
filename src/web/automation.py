@@ -1,8 +1,9 @@
 import logging
-import os, sys
-import time
+import os
+import sys
 
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, ElementClickInterceptedException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, \
+    ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait

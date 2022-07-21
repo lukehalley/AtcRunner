@@ -1,13 +1,12 @@
 import logging
-import sys, os
+import os
+import sys
 
 from retry import retry
+from web3 import Web3
 
 from src.utils.chain import getABI
 
-from web3 import Web3
-
-from web3.exceptions import ContractLogicError
 logger = logging.getLogger("DFK-DEX")
 ABI = getABI("IUniswapV2Router02.json")
 

@@ -1,16 +1,19 @@
-import logging, os, sys, json
-import time
+import logging
+import os
+import sys
 from decimal import Decimal
+
 from retry import retry
 from web3 import Web3
 
-from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
+from src.api.firebase import writeTransactionToDB
+from src.api.telegrambot import appendToMessage
+from src.api.telegrambot import updatedStatusMessage
 from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
 from src.utils.general import getCurrentDateTime, printSeperator
-from src.api.telegrambot import updatedStatusMessage
-from src.api.firebase import writeTransactionToDB
+from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
 from src.wallet.queries.network import getTokenBalance, getWalletsInformation
-from src.api.telegrambot import sendMessage, appendToMessage
+
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
@@ -28,7 +31,7 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
 
     initNonce = w3.eth.getTransactionCount(walletAddress, 'pending')
 
-    tx["nonce"] = initNonce - 1
+    tx["nonce"] = initNonce
 
     telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
 

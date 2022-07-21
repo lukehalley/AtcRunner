@@ -2,6 +2,7 @@ from json import JSONDecodeError
 from pathlib import Path
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from src.utils.general import getDictLength, getProjectRoot

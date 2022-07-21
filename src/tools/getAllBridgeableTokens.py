@@ -3,6 +3,7 @@ from json import JSONDecodeError
 from pathlib import Path
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from src.api.synapsebridge import getBridgeableTokens
@@ -11,7 +12,6 @@ import urllib.request, os
 import simplejson as json
 from src.wallet.queries.swap import getSwapQuoteOut
 from collections import OrderedDict
-from operator import getitem
 
 root = getProjectRoot().parent
 

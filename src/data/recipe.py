@@ -3,11 +3,10 @@ import sys
 
 from num2words import num2words
 
+from src.api.dexscreener import getTokenPriceByDexId
 from src.api.firebase import fetchFromDatabase
 from src.api.synapsebridge import getBridgeableTokens
-from src.api.dexscreener import getTokenPriceByDexId
 from src.data.tokenLists import getTokenBySymbolAndChainID, parseTokenLists
-
 # Set up our logging
 from src.utils.general import strToBool
 
