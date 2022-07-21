@@ -28,9 +28,7 @@ def strToBool(x):
 
 # Check if we are running in a docker container
 def checkIsDocker():
-    path = '/proc/self/cgroup'
-    result = os.path.exists('/.dockerenv') or os.path.isfile(path) and any('docker' in line for line in open(path))
-    return result
+    return True if os.environ.get("AWS_DEFAULT_REGION") else False
 
 # Print the current round trip count
 def printRoundtrip(count):
