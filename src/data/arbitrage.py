@@ -387,7 +387,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
     }
 
     stepCount = len(list(steps.values()))
-    secondLastStep = stepCount - 1
 
     for stepNumber, stepSettings in steps.items():
 
@@ -522,7 +521,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
             stepSettings["done"] = True
 
-            printSeperator()
+            printSeperator(True)
 
         else:
 
@@ -530,8 +529,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
             wasProfitable = recipe[position]["wallet"]["balances"]["stablecoin"] > startingStables
             profitLoss = abs(recipe[position]["wallet"]["balances"]["stablecoin"] - startingStables)
-
-            printSeperator(True)
 
             if wasProfitable:
                 arbitragePercentage = percentageDifference(recipe[position]["wallet"]["balances"]["stablecoin"], startingStables, 2)

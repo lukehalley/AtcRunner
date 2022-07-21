@@ -6,7 +6,7 @@ from retry import retry
 
 from src.api.synapsebridge import checkBridgeStatusAPI, checkBridgeStatusBalance
 from src.api.telegrambot import notifyHangingBridge, notifyUnstickedBridge
-from src.utils.general import getMinSecString
+from src.utils.general import getMinSecString, printSeperator
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -17,11 +17,13 @@ bridgeWaitTimeout = int(os.environ.get("BRIDGE_TIMEOUT_SECS"))
 bridgeStuckLimitMin = int(os.environ.get("BRIDGE_STUCK_MINS_LIMIT"))
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def waitForBridgeToComplete(transactionId, toToken, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals, predictions, stepNumber):
+def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals, predictions, stepNumber):
 
     timeout = bridgeWaitTimeout
 
     timeoutMins = int(timeout / 60)
+
+    printSeperator()
 
     logger.info(f"Waiting for bridge to complete with a timeout of {timeoutMins} minutes...")
 
@@ -68,7 +70,8 @@ def waitForBridgeToComplete(transactionId, toToken, fromChain, toChain, toChainR
             notifyUnstickedBridge(transactionId=transactionId)
 
         timerString = getMinSecString(time.time() - startingTime)
-        logger.info(f'✅ Bridging {toToken} successful, took {timerString}!')
+        logger.info(f'✅ Bridging successful, took {timerString}!')
+        printSeperator()
     elif bridgeTimedOut:
         errMsg = f'⛔️ Waiting for funds to bridge timed out - Bridging was unsuccessful!'
         logger.error(errMsg)
