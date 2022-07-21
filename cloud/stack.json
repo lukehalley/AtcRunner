@@ -16,7 +16,7 @@
     },
     "Image": {
       "Type": "String",
-      "Default": "538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot:0.01"
+      "Default": "538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot:0.02"
     },
     "ServiceName": {
       "Type": "String",

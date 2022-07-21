@@ -13,7 +13,7 @@ from src.utils.wei import getTokenNormalValue
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-# privateKey = json.loads(os.environ.get("ARB_KEY"))["ARB_KEY"]
+stablecoinHardLimit = Decimal(os.environ.get("STABLECOIN_HARDLIMIT"))
 privateKey = getAWSSecret(key="ARB_KEY")
 
 # Retry Envs
@@ -56,7 +56,7 @@ def getTokenBalance(rpcURL, tokenAddress, tokenDecimals):
     return Decimal(balance)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getWalletsInformation(recipe, printBalances=False):
+def getWalletsInformation(recipe, applyHardLimit=True, printBalances=False):
 
     directionList = ("origin", "destination")
 
@@ -76,11 +76,17 @@ def getWalletsInformation(recipe, printBalances=False):
             recipe[direction]["wallet"]["address"]
         )
 
-        recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
+        stablecoinBalance = getTokenBalance(
             rpcURL=recipe[direction]["chain"]["rpc"],
             tokenAddress=recipe[direction]["stablecoin"]["address"],
             tokenDecimals=recipe[direction]["stablecoin"]["decimals"]
         )
+
+        if stablecoinBalance > stablecoinHardLimit and direction == "origin" and applyHardLimit:
+            logger.info(f"Setting origin stablecoin balance to ({stablecoinHardLimit}) as actual balance ({stablecoinBalance}) exceeds hard limit")
+            stablecoinBalance = stablecoinHardLimit
+
+        recipe[direction]["wallet"]["balances"]["stablecoin"] = stablecoinBalance
 
         tokenIsGas = strToBool(recipe[direction]["token"]["isGas"])
 
