@@ -1,6 +1,7 @@
 """Utility functions for land calculation and management."""
 """Land module utility helpers for resource and calculation functions."""
 """Utility functions for land calculations and property management."""
+"""Helper functions for land value, yield, and tier calculations."""
 """Utility functions for land calculations and coordinate conversions."""
 """Utility functions for land system calculations and helpers."""
 """Calculate land property values based on improvements and location."""
