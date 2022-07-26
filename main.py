@@ -71,14 +71,6 @@ while True:
 
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
-        # TEST STUFF ####################################
-
-        if useTestCapital:
-            recipe["destination"]["wallet"]["balances"]["stablecoin"] = startingCapitalTestAmount
-            recipe["origin"]["wallet"]["balances"]["stablecoin"] = startingCapitalTestAmount
-
-        # TEST STUFF ####################################
-
         printSeperator(True)
 
         isProfitable, predictions = checkArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
