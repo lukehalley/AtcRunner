@@ -386,8 +386,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
         "token": 0
     }
 
-    stepCount = len(list(steps.values()))
-
     for stepNumber, stepSettings in steps.items():
 
         stepType = stepSettings["type"]

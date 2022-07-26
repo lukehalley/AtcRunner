@@ -73,11 +73,18 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
             sys.exit(e.args[0]["message"])
     logger.info("Transaction successfully sent!")
 
+    explorerLink = generateBlockExplorerLink(explorerUrl, signed_tx.hash.hex())
+
+    logger.info(f"{explorerLink}")
+
     logger.info(f"Waiting for transaction to be mined...")
     txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=txTimeoutSeconds,
                                                      poll_latency=2)
 
-    explorerLink = generateBlockExplorerLink(explorerUrl, signed_tx.hash.hex())
+    while "status" not in txReceipt:
+        txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=txTimeoutSeconds,
+                                                        poll_latency=2)
+
     logger.info(f"Transaction was mined!")
 
     wasSuccessful = txReceipt["status"] == 1
@@ -100,11 +107,10 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
 
     if wasSuccessful:
         logger.info(f"✅ Transaction was successful!")
-        logger.info(f"{explorerLink}")
         return result
 
     else:
-        errMsg = f"⛔️ Transaction was unsuccessful: {explorerLink}"
+        errMsg = f"⛔️ Transaction was unsuccessful!"
         if telegramStatusMessage:
             updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
         logger.error(errMsg)
