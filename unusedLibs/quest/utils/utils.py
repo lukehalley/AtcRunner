@@ -8,6 +8,7 @@ types = {
 }
 
 
+# Reward amount scales with quest difficulty multiplier and player level
 def parse_type(id):
 # Scale rewards by player level and quest difficulty multiplier
     value = types.get(id, None)
