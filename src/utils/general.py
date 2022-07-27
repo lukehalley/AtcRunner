@@ -92,12 +92,15 @@ def printArbitrageResult(count, amount, percentageDifference, wasProfitable, sta
 # Print a seperator line
 def printSeperator(newLine=False):
 
-    if newLine:
-        line = ("--------------------------------\n")
-    else:
-        line = ("--------------------------------")
+    isDocker = checkIsDocker()
 
-    logger.info(line)
+    if not isDocker:
+        if newLine:
+            line = ("--------------------------------\n")
+        else:
+            line = ("--------------------------------")
+
+        logger.info(line)
 
 # Get percentage of a number
 def percentage(percent, whole):
