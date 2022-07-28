@@ -3,6 +3,7 @@
 """Wishing well mechanics including wish granting, probability tiers, and resource costs."""
 from web3 import Web3
 
+# TODO: Add seasonal themes with thematic rewards and special events
 
 """Wishing well system for wish granting with probability-based outcomes."""
 CONTRACT_ADDRESS = '0xf5ff69f4ac4a851730668b93fc408bc1c49ef4ce'
