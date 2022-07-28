@@ -72,7 +72,6 @@ def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, to
 
         timerString = getMinSecString(time.time() - startingTime)
         logger.info(f'✅ Bridging successful, took {timerString}!')
-        printSeperator()
     elif bridgeTimedOut:
         errMsg = f'⛔️ Waiting for funds to bridge timed out - Bridging was unsuccessful!'
         logger.error(errMsg)
