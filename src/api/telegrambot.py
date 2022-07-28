@@ -5,11 +5,17 @@ from dotenv import load_dotenv
 from retry import retry
 from telegram import Bot
 
-from src.utils.general import getAWSSecret
+from src.utils.general import getAWSSecret, checkIsDocker
 
 load_dotenv()
 token = os.getenv("TELEGRAM_BOT_TOKEN")
-arbitrageNotificationID = os.getenv("TELEGRAM_ARBITRAGE_NOTIFICATION_CHANNEL_ID")
+
+telegramChannelEnv = "TELEGRAM_ARBITRAGE_NOTIFICATION_CHANNEL_ID"
+if checkIsDocker():
+    arbitrageNotificationID = os.getenv(f"{telegramChannelEnv}_PROD")
+else:
+    arbitrageNotificationID = os.getenv(f"{telegramChannelEnv}_DEV")
+
 arbitrageHangingBridgeID = os.getenv("TELEGRAM_ARBITRAGE_BRIDGE_CHANNEL_ID")
 
 logger = logging.getLogger("DFK-DEX")

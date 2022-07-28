@@ -1,33 +1,33 @@
 {
-    "stepOne": {
+    "1": {
         "from": "stablecoin",
         "to": "token",
         "position": "origin",
         "type": "swap",
         "done":false
     },
-    "stepTwo": {
+    "2": {
         "from": "token",
         "to": "token",
         "position": "origin",
         "type": "bridge",
         "done": false
     },
-    "stepThree": {
+    "3": {
         "from": "token",
         "to": "stablecoin",
         "position": "destination",
         "type": "swap",
         "done": false
     },
-    "stepFour": {
+    "4": {
         "from": "stablecoin",
         "to": "stablecoin",
         "position": "destination",
         "type": "bridge",
         "done": false
     },
-    "stepFive": {
+    "5": {
         "from": "stablecoin",
         "to": "done",
         "position": "origin",

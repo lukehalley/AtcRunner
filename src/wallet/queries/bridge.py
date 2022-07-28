@@ -10,14 +10,14 @@ from src.utils.general import getMinSecString, printSeperator
 
 logger = logging.getLogger("DFK-DEX")
 
-transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
-transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
+transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
+transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 
 bridgeWaitTimeout = int(os.environ.get("BRIDGE_TIMEOUT_SECS"))
 bridgeStuckLimitMin = int(os.environ.get("BRIDGE_STUCK_MINS_LIMIT"))
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals, predictions, stepNumber):
+def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals, stepNumber, predictions=None):
 
     timeout = bridgeWaitTimeout
 
@@ -60,7 +60,8 @@ def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, to
 
         fundsBridgedAPI = checkBridgeStatusAPI(toChain=toChain, fromChainTxnHash=transactionId)["isComplete"]
 
-        fundsBridgedBalance = checkBridgeStatusBalance(predictions=predictions, stepNumber=stepNumber, toChainRPCURL=toChainRPCURL, toTokenAddress=toTokenAddress, toTokenDecimals=toTokenDecimals)
+        if predictions:
+            fundsBridgedBalance = checkBridgeStatusBalance(predictions=predictions, stepNumber=stepNumber, toChainRPCURL=toChainRPCURL, toTokenAddress=toTokenAddress, toTokenDecimals=toTokenDecimals)
 
         time.sleep(0)
 
