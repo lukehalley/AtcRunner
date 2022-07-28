@@ -59,6 +59,10 @@ def fetchFromDatabase(reference, printInfo=False):
 
     return queryResult
 
+def fetchArbitrageStrategy(strategyName):
+    strategies = fetchFromDatabase("strategies")
+
+    return strategies[strategyName]
 
 def writeTransactionToDB(transaction, arbitrageNumber, stepCategory):
     arbitrageTitle = f"arbitrage_{arbitrageNumber}"

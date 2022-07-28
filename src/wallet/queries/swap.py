@@ -10,8 +10,8 @@ from src.dex.uniswap_v2_router import get_amounts_out, get_amounts_in
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
-transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
+transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
+transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 
 def normaliseSwapRoutes(routes):
     normalisedRoutes = []

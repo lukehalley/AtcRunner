@@ -17,8 +17,8 @@ from src.wallet.queries.network import getTokenBalance, getWalletsInformation
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
-transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
+transactionRetryLimit = int(os.environ.get("TRANSACTION_ACTION_RETRY_LIMIT"))
+transactionRetryDelay = int(os.environ.get("TRANSACTION_ACTION_RETRY_DELAY"))
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):

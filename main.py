@@ -77,7 +77,7 @@ while True:
 
         printSeperator(True)
 
-        if isProfitable:
+        if True:
 
             telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'], predictions)
 
