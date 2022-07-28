@@ -113,7 +113,6 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
         errMsg = f"⛔️ Transaction was unsuccessful!"
         if telegramStatusMessage:
             updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
-        logger.error(errMsg)
         raise Exception(errMsg)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)

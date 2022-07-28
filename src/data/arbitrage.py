@@ -34,8 +34,6 @@ def determineArbitrageStrategy(recipe):
 
     recipe["arbitrage"]["currentRoundTripCount"] = getNextArbitrageNumber()
 
-    # TODO: Add routes to quotes
-
     chainOneTokenPrice = getSwapQuoteOut(
         amountInNormal=1.0,
         amountInDecimals=recipe["chainOne"]["token"]["decimals"],
@@ -368,11 +366,13 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
         if stepNumber <= 1:
             logger.info(f'Starting Capital: {currentFunds["stablecoin"]} {recipe[position]["stablecoin"]["name"]}')
-            printSeperator()
+            printSeperator(True)
 
         if toSwapTo != "done":
 
             recipe = getWalletsInformation(recipe)
+
+            printSeperator()
 
             logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
@@ -441,9 +441,9 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                         telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                                 messageToAppend=f"Rolling Back Arbitrage #{recipe['arbitrage']['currentRoundTripCount']} ‍⏮")
 
-                        rollbackArbitrage(recipe=recipe, startingStables=startingStables, currentFunds=currentFunds, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+                        wasProfitable = rollbackArbitrage(recipe=recipe, startingStables=startingStables, currentFunds=currentFunds, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
-                        break
+                        return wasProfitable
 
                 bridgeResult = executeBridge(
                     amountToBridge=currentFunds[toSwapFrom],
@@ -662,6 +662,8 @@ def rollbackArbitrage(recipe, startingStables, currentFunds, startingTime, teleg
                 arbitragePercentage = percentageDifference(startingStables, recipe[position]["wallet"]["balances"]["stablecoin"], 2)
 
             printArbitrageRollbackComplete(count=recipe["arbitrage"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=arbitragePercentage, wasProfitable=wasProfitable, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+
+            return wasProfitable
 
 # Predict our potential profit/loss
 def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
