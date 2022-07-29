@@ -407,7 +407,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     explorerUrl=recipe[position]["chain"]["blockExplorer"],
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
                     telegramStatusMessage=telegramStatusMessage,
-                    txDeadline=300,
+                    swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
                     swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
                 )
 
@@ -581,7 +581,7 @@ def rollbackArbitrage(recipe, startingStables, currentFunds, startingTime, teleg
                     explorerUrl=recipe[position]["chain"]["blockExplorer"],
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
                     telegramStatusMessage=telegramStatusMessage,
-                    txDeadline=300,
+                    swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
                     swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
                 )
 

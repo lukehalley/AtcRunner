@@ -177,7 +177,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 telegramStatusMessage=telegramStatusMessage,
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"],
                 routerAddress=recipe[direction]["chain"]["uniswapRouter"],
-                txDeadline=300,
+                swappingFromGas=False,
                 swappingToGas=True
             )
 

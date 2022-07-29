@@ -20,6 +20,7 @@ from src.data.recipe import getRecipeDetails
 from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfitable, executeArbitrage
 
 # Wallet modules
+from src.wallet.actions.swap import setupWallet
 from src.wallet.queries.network import getWalletsInformation
 
 # General Init
@@ -71,13 +72,15 @@ while True:
 
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
+        setupWallet(recipe=recipe)
+
         printSeperator(True)
 
         isProfitable, predictions = checkArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
 
         printSeperator(True)
 
-        if isProfitable:
+        if True:
 
             telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'], predictions)
 
