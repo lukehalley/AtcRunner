@@ -17,11 +17,12 @@ from src.wallet.queries.network import getTokenBalance, getWalletsInformation
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
+transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
 transactionRetryLimit = int(os.environ.get("TRANSACTION_ACTION_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_ACTION_RETRY_DELAY"))
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):
+def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):
 
     # Setup our web3 object
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -70,7 +71,7 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
             logger.info("Nonce too low error solved - sending again...")
             w3.eth.send_raw_transaction(signed_tx.rawTransaction)
         else:
-            sys.exit(e.args[0]["message"])
+             raise Exception(e.args[0]["message"])
     logger.info("Transaction successfully sent!")
 
     explorerLink = generateBlockExplorerLink(explorerUrl, signed_tx.hash.hex())
@@ -78,12 +79,7 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
     logger.info(f"{explorerLink}")
 
     logger.info(f"Waiting for transaction to be mined...")
-    txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=txTimeoutSeconds,
-                                                     poll_latency=2)
-
-    while "status" not in txReceipt:
-        txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=txTimeoutSeconds,
-                                                        poll_latency=2)
+    txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=0.1, timeout=transactionTimeout)
 
     logger.info(f"Transaction was mined!")
 
@@ -182,7 +178,6 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"],
                 routerAddress=recipe[direction]["chain"]["uniswapRouter"],
                 txDeadline=300,
-                txTimeoutSeconds=150,
                 swappingToGas=True
             )
 

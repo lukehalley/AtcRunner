@@ -408,7 +408,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
                     telegramStatusMessage=telegramStatusMessage,
                     txDeadline=300,
-                    txTimeoutSeconds=150,
                     swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
                 )
 
@@ -432,12 +431,11 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
                 if stepName == "destinationBridge":
 
-                    x = 1
-
                     quote = simulateStep(recipe=recipe, stepSettings=stepSettings, currentFunds=currentFunds,
                                          driver=None)
 
                     if quote < startingStables:
+
                         telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                                 messageToAppend=f"Rolling Back Arbitrage #{recipe['arbitrage']['currentRoundTripCount']} ‍⏮")
 
@@ -516,10 +514,11 @@ def rollbackArbitrage(recipe, startingStables, currentFunds, startingTime, teleg
     printSeperator()
     logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
                 f"Rolling Back Arbitrage")
-    printSeperator()
+    printSeperator(True)
 
     for stepSettings in steps:
 
+        stepName = stepSettings["name"]
         stepType = stepSettings["type"]
         stepNumber = steps.index(stepSettings) + 1
 
@@ -555,6 +554,10 @@ def rollbackArbitrage(recipe, startingStables, currentFunds, startingTime, teleg
 
                 swapRoute = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
 
+                if stepName == "originCompletion":
+                    maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
+                    currentFunds[toSwapFrom] = currentFunds[toSwapFrom] - maximumGasBalance
+
                 amountOutQuoted = getSwapQuoteOut(
                     amountInNormal=currentFunds[toSwapFrom],
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
@@ -579,7 +582,6 @@ def rollbackArbitrage(recipe, startingStables, currentFunds, startingTime, teleg
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
                     telegramStatusMessage=telegramStatusMessage,
                     txDeadline=300,
-                    txTimeoutSeconds=150,
                     swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
                 )
 
