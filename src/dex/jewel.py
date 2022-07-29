@@ -1,5 +1,5 @@
 from web3 import Web3
-
+import os
 from .erc20 import balance_of as erc20_balance_of
 
 CONTRACT_ADDRESS = '0x72Cb10C6bfA5624dD07Ef608027E366bd690048F'
@@ -31,7 +31,8 @@ def lock_of(address, rpc_address):
     return contract.functions.lockOf(Web3.toChecksumAddress(address)).call()
 
 
-def transfer_all(destination, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, logger):
+def transfer_all(destination, private_key, nonce, gas_price_gwei, rpc_address, logger):
+    transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
 
     w3 = Web3(Web3.HTTPProvider(rpc_address))
     account = w3.eth.account.privateKeyToAccount(private_key)
@@ -49,8 +50,7 @@ def transfer_all(destination, private_key, nonce, gas_price_gwei, tx_timeout_sec
     ret = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
     logger.debug("Transaction successfully sent !")
     logger.info("Waiting for transaction " + block_explorer_link(signed_tx.hash.hex()) + " to be mined")
-    tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=tx_timeout_seconds,
-                                                     poll_latency=2)
+    tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=0.1, timeout=transactionTimeout)
     logger.info("Transaction mined !")
 
     return tx_receipt

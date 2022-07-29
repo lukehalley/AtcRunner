@@ -40,11 +40,18 @@ def appendToMessage(originalMessage, messageToAppend):
 
     newText = f"{originalText}\n{messageToAppend}"
 
-    updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
-                          message_id=originalMessage.message_id,
-                          text=newText)
+    try:
+        updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
+                                               message_id=originalMessage.message_id,
+                                               text=newText)
+        return updatedMessage
+    except Exception as e:
+        isKnownTransactionError = "specified new message content and reply markup are exactly the same" in str(e)
+        if isKnownTransactionError:
+            pass
+        else:
+            raise Exception(str(e))
 
-    return updatedMessage
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def updatedStatusMessage(originalMessage, newStatus):
@@ -55,11 +62,18 @@ def updatedStatusMessage(originalMessage, newStatus):
         statusText = originalText[:-1]
         newText = statusText + newStatus
 
-        updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
-                              message_id=originalMessage.message_id,
-                              text=newText)
+        try:
+            updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
+                                                   message_id=originalMessage.message_id,
+                                                   text=newText)
+            return updatedMessage
+        except Exception as e:
+            isKnownTransactionError = "specified new message content and reply markup are exactly the same" in str(e)
+            if isKnownTransactionError:
+                pass
+            else:
+                raise Exception(str(e))
 
-        return updatedMessage
     else:
         logger.info("Telegram message same as before - not updating.")
         return

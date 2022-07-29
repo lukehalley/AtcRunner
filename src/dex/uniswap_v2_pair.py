@@ -1,5 +1,5 @@
 from web3 import Web3
-
+import os
 from src.utils.chain import getABI
 from .utils.utils import swap_expected_amount1
 
@@ -9,7 +9,9 @@ def block_explorer_link(txid):
     return 'https://explorer.harmony.one/tx/' + str(txid)
 
 
-def swap(pool_address, amount0_out, amount1_out, to, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, logger):
+def swap(pool_address, amount0_out, amount1_out, to, private_key, nonce, gas_price_gwei, rpc_address, logger):
+    transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
+
     w3 = Web3(Web3.HTTPProvider(rpc_address))
     account = w3.eth.account.privateKeyToAccount(private_key)
     w3.eth.default_account = account.address
@@ -28,8 +30,7 @@ def swap(pool_address, amount0_out, amount1_out, to, private_key, nonce, gas_pri
     logger.info(
         "Waiting for transaction " + block_explorer_link(signed_tx.hash.hex()) + " to be mined")
 
-    tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=tx_timeout_seconds,
-                                                     poll_latency=2)
+    tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=0.1, timeout=transactionTimeout)
     logger.info("Transaction mined !")
 
     return tx_receipt
