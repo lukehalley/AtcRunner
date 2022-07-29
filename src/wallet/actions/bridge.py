@@ -48,7 +48,6 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
     transactionResult = signAndSendTransaction(
         tx=tx,
         rpcURL=fromChainRPCURL,
-        txTimeoutSeconds=txTimeoutSeconds,
         explorerUrl=explorerUrl,
         arbitrageNumber=arbitrageNumber,
         stepCategory=stepCategory,
