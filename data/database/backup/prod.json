@@ -146,18 +146,6 @@
     }
   },
   "chains": {
-    "avalanche": {
-      "blockExplorer": "https://snowtrace.io/tx",
-      "frontendUrl": "https://app.pangolin.exchange",
-      "gasDetails": {
-        "address": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-        "symbol": "WAVAX"
-      },
-      "id": "43114",
-      "rpc": "https://api.avax.network/ext/bc/C/rpc",
-      "uniswapFactory": "0xefa94DE7a4656D787667C749f7E1223D71E9FD88",
-      "uniswapRouter": "0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106"
-    },
     "avalanchedfk": {
       "blockExplorer": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx",
       "frontendUrl": "https://game.defikingdoms.com/#/marketplace",
@@ -233,66 +221,71 @@
     }
   },
   "strategies": {
-    "networkBridge": [
-      {
-        "done": false,
+    "networkBridge": {
+      "originSwap": {
+        "number": "1",
         "from": "stablecoin",
-        "name": "originSwap",
-        "position": "origin",
         "to": "token",
-        "type": "swap"
-      },
-      {
-        "done": false,
-        "from": "token",
-        "name": "originBridge",
         "position": "origin",
+        "type": "swap",
+        "done": false
+      },
+      "originBridge": {
+        "number": "2",
+        "from": "token",
         "to": "token",
-        "type": "bridge"
-      },
-      {
-        "done": false,
-        "from": "token",
-        "name": "destinationSwap",
-        "position": "destination",
-        "to": "stablecoin",
-        "type": "swap"
-      },
-      {
-        "done": false,
-        "from": "stablecoin",
-        "name": "destinationBridge",
-        "position": "destination",
-        "to": "stablecoin",
-        "type": "bridge"
-      },
-      {
-        "done": false,
-        "from": "stablecoin",
-        "name": "originCompletion",
         "position": "origin",
+        "type": "bridge",
+        "done": false
+      },
+      "destinationSwap": {
+        "number": "3",
+        "from": "token",
+        "to": "stablecoin",
+        "position": "destination",
+        "type": "swap",
+        "done": false
+      },
+      "destinationBridge": {
+        "number": "4",
+        "from": "stablecoin",
+        "to": "stablecoin",
+        "position": "destination",
+        "type": "bridge",
+        "done": false
+      },
+      "originCompletion": {
+        "number": "5",
+        "from": "stablecoin",
         "to": "done",
-        "type": "swap"
+        "position": "origin",
+        "type": "swap",
+        "done": false
       }
-    ],
-    "networkBridgeRollback": [
-      {
-        "done": false,
+    },
+    "networkBridgeRollback": {
+      "destinationSwap": {
         "from": "stablecoin",
-        "name": "destinationSwap",
-        "position": "destination",
         "to": "token",
-        "type": "swap"
+        "position": "destination",
+        "type": "swap",
+        "done": false
       },
-      {
-        "done": false,
+      "destinationBridge": {
         "from": "token",
-        "name": "destinationBridge",
-        "position": "destination",
         "to": "token",
-        "type": "bridge"
+        "position": "origin",
+        "type": "bridge",
+        "done": true
+      },
+      "originCompletion": {
+        "from": "stablecoin",
+        "to": "token",
+        "position": "origin",
+        "type": "swap",
+        "done": true
       }
-    ]
+    }
   },
   "tokenLists": {
     "DFK_ALL": [
