@@ -288,9 +288,17 @@
         "done": false,
         "from": "token",
         "name": "destinationBridge",
-        "position": "destination",
+        "position": "origin",
         "to": "token",
         "type": "bridge"
+      },
+      {
+        "done": false,
+        "from": "stablecoin",
+        "name": "originCompletion",
+        "position": "origin",
+        "to": "token",
+        "type": "swap"
       }
     ]
   },
