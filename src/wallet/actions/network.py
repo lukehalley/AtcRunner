@@ -14,6 +14,8 @@ from src.utils.general import getCurrentDateTime, printSeperator
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
 from src.wallet.queries.network import getTokenBalance, getWalletsInformation
 
+from web3 import exceptions
+
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
@@ -79,8 +81,30 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
     logger.info(f"{explorerLink}")
 
     logger.info(f"Waiting for transaction to be mined...")
-    txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=0.1, timeout=transactionTimeout)
 
+    try:
+        txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=2,
+                                                        timeout=transactionTimeout)
+    except exceptions.TimeExhausted:
+        raise Exception("Wait for transaction receipt timed out!")
+    except Exception as error:
+        errorText = error.args[0]["message"]
+        isBadResponseError = "The response was in an unexpected format and unable to be parsed" in errorText
+        if isBadResponseError:
+            retryLimit = 10
+            retryCount = 0
+            txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=2,
+                                                            timeout=transactionTimeout)
+            while "status" not in txReceipt:
+                if retryCount <= retryLimit:
+                    txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash,
+                                                                    timeout=transactionTimeout,
+                                                                    poll_latency=2)
+                    retryCount = retryCount + 1
+                else:
+                    raise Exception(f"Unable to get a valid transaction receipt after {retryCount} tries: {errorText}")
+        else:
+            raise Exception(f"Unknown error while trying to get valid transaction receipt: {errorText}")
     logger.info(f"Transaction was mined!")
 
     wasSuccessful = txReceipt["status"] == 1

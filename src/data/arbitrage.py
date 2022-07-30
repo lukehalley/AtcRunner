@@ -12,7 +12,7 @@ from src.utils.chain import getOppositeDirection, getValueWithSlippage
 from src.utils.general import strToBool, printSeperator, percentageDifference, printArbitrageRollbackComplete, printArbitrageResult, truncateDecimal
 from src.wallet.actions.bridge import executeBridge
 from src.wallet.actions.network import topUpWalletGas
-from src.wallet.actions.swap import swapToken
+from src.wallet.actions.swap import swapToken, setupWallet
 from src.wallet.queries.network import getWalletsInformation
 from src.wallet.queries.swap import getSwapQuoteOut
 from src.web.actions import getRoutesFromFrontend
@@ -439,9 +439,9 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                         telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                                 messageToAppend=f"Rolling Back Arbitrage #{recipe['arbitrage']['currentRoundTripCount']} ‍⏮")
 
-                        wasProfitable = rollbackArbitrage(recipe=recipe, startingStables=startingStables, currentFunds=currentFunds, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+                        rollbackArbitrage(recipe=recipe, currentFunds=currentFunds, startingStables=startingStables, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
-                        return wasProfitable
+                        return False
 
                 bridgeResult = executeBridge(
                     amountToBridge=currentFunds[toSwapFrom],
@@ -503,13 +503,13 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
             else:
                 arbitragePercentage = percentageDifference(startingStables, recipe[position]["wallet"]["balances"]["stablecoin"], 2)
 
-            printArbitrageResult(count=recipe["arbitrage"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=arbitragePercentage, wasProfitable=wasProfitable, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
-            return wasProfitable
 
-def rollbackArbitrage(recipe, startingStables, currentFunds, startingTime, telegramStatusMessage):
+def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, telegramStatusMessage):
 
     steps = fetchArbitrageStrategy(strategyName="networkBridgeRollback")
+
+    printSeperator(True)
 
     printSeperator()
     logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
@@ -518,7 +518,8 @@ def rollbackArbitrage(recipe, startingStables, currentFunds, startingTime, teleg
 
     for stepSettings in steps:
 
-        stepName = stepSettings["name"]
+        printSeperator()
+
         stepType = stepSettings["type"]
         stepNumber = steps.index(stepSettings) + 1
 
@@ -540,132 +541,129 @@ def rollbackArbitrage(recipe, startingStables, currentFunds, startingTime, teleg
 
         recipe = getWalletsInformation(recipe)
 
-        if toSwapTo != "done":
+        recipe = getWalletsInformation(recipe)
+
+        logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+
+        telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber}. RBack {position.title()} {stepType.title()} -> 📤")
+
+        if stepType == "swap":
+
+            balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+
+            swapRoute = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
+
+            amountOutQuoted = getSwapQuoteOut(
+                amountInNormal=currentFunds[toSwapFrom],
+                amountInDecimals=recipe[position][toSwapFrom]["decimals"],
+                amountOutDecimals=recipe[position][toSwapTo]["decimals"],
+                rpcUrl=recipe[position]["chain"]["rpc"],
+                routerAddress=recipe[position]["chain"]["uniswapRouter"],
+                routes=swapRoute
+            )
+
+            amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
+
+            swapResult = swapToken(
+                amountInNormal=currentFunds[toSwapFrom],
+                amountInDecimals=recipe[position][toSwapFrom]["decimals"],
+                amountOutNormal=amountOutMinWithSlippage,
+                amountOutDecimals=recipe[position][toSwapTo]["decimals"],
+                tokenPath=swapRoute,
+                rpcURL=recipe[position]["chain"]["rpc"],
+                arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+                stepCategory=f"{stepNumber}_swap",
+                explorerUrl=recipe[position]["chain"]["blockExplorer"],
+                routerAddress=recipe[position]["chain"]["uniswapRouter"],
+                telegramStatusMessage=telegramStatusMessage,
+                swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
+                swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
+            )
 
             recipe = getWalletsInformation(recipe)
 
-            logger.info(f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+            balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
 
-            telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber}. RBack {position.title()} {stepType.title()} -> 📤")
-
-            if stepType == "swap":
-
-                balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
-
-                swapRoute = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
-
-                if stepName == "originCompletion":
-                    maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
-                    currentFunds[toSwapFrom] = currentFunds[toSwapFrom] - maximumGasBalance
-
-                amountOutQuoted = getSwapQuoteOut(
-                    amountInNormal=currentFunds[toSwapFrom],
-                    amountInDecimals=recipe[position][toSwapFrom]["decimals"],
-                    amountOutDecimals=recipe[position][toSwapTo]["decimals"],
-                    rpcUrl=recipe[position]["chain"]["rpc"],
-                    routerAddress=recipe[position]["chain"]["uniswapRouter"],
-                    routes=swapRoute
-                )
-
-                amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
-
-                swapResult = swapToken(
-                    amountInNormal=currentFunds[toSwapFrom],
-                    amountInDecimals=recipe[position][toSwapFrom]["decimals"],
-                    amountOutNormal=amountOutMinWithSlippage,
-                    amountOutDecimals=recipe[position][toSwapTo]["decimals"],
-                    tokenPath=swapRoute,
-                    rpcURL=recipe[position]["chain"]["rpc"],
-                    arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
-                    stepCategory=f"{stepNumber}_swap",
-                    explorerUrl=recipe[position]["chain"]["blockExplorer"],
-                    routerAddress=recipe[position]["chain"]["uniswapRouter"],
-                    telegramStatusMessage=telegramStatusMessage,
-                    swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
-                    swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
-                )
-
+            while balanceAfterSwap == balanceBeforeSwap:
                 recipe = getWalletsInformation(recipe)
-
                 balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
 
-                while balanceAfterSwap == balanceBeforeSwap:
-                    recipe = getWalletsInformation(recipe)
-                    balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+            result = balanceAfterSwap - balanceBeforeSwap
 
-                result = balanceAfterSwap - balanceBeforeSwap
+            currentFunds[toSwapTo] = result
 
-                currentFunds[toSwapTo] = result
+            telegramStatusMessage = swapResult["telegramStatusMessage"]
 
-                telegramStatusMessage = swapResult["telegramStatusMessage"]
+        elif stepType == "bridge":
 
-            elif stepType == "bridge":
+            balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
 
-                balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+            bridgeResult = executeBridge(
+                amountToBridge=currentFunds[toSwapFrom],
+                fromChain=recipe[position]["chain"]["id"],
+                fromTokenAddress=recipe[position][toSwapFrom]['address'],
+                fromTokenDecimals=recipe[position][toSwapFrom]["decimals"],
+                fromChainRPCURL=recipe[position]["chain"]["rpc"],
+                toChain=recipe[oppositePosition]["chain"]["id"],
+                toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
+                toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
+                toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
+                arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+                stepCategory=f"{stepNumber}_bridge",
+                explorerUrl=recipe[position]["chain"]["blockExplorer"],
+                telegramStatusMessage=telegramStatusMessage,
+                predictions=None,
+                stepNumber=stepNumber
+            )
 
-                bridgeResult = executeBridge(
-                    amountToBridge=currentFunds[toSwapFrom],
-                    fromChain=recipe[position]["chain"]["id"],
-                    fromTokenAddress=recipe[position][toSwapFrom]['address'],
-                    fromTokenDecimals=recipe[position][toSwapFrom]["decimals"],
-                    fromChainRPCURL=recipe[position]["chain"]["rpc"],
-                    toChain=recipe[oppositePosition]["chain"]["id"],
-                    toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
-                    toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
-                    toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
-                    arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
-                    stepCategory=f"{stepNumber}_bridge",
-                    explorerUrl=recipe[position]["chain"]["blockExplorer"],
-                    telegramStatusMessage=telegramStatusMessage,
-                    predictions=None,
-                    stepNumber=stepNumber
-                )
+            recipe = getWalletsInformation(recipe)
+            balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
 
+            while balanceAfterBridge == balanceBeforeBridge:
                 recipe = getWalletsInformation(recipe)
                 balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
 
-                while balanceAfterBridge == balanceBeforeBridge:
-                    recipe = getWalletsInformation(recipe)
-                    balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+            result = balanceAfterBridge - balanceBeforeBridge
 
-                result = balanceAfterBridge - balanceBeforeBridge
+            currentFunds[toSwapFrom] = result
 
-                currentFunds[toSwapFrom] = result
-
-                telegramStatusMessage = bridgeResult["telegramStatusMessage"]
-
-            else:
-                updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
-                errMsg = f'Invalid Arbitrage execution type: {stepType}'
-                logger.error(errMsg)
-                raise Exception(errMsg)
-
-            recipe = getWalletsInformation(recipe)
-
-            printSeperator()
-
-            logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[position][toSwapTo]["name"]}')
-            telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
-
-            stepSettings["done"] = True
-
-            printSeperator(True)
+            telegramStatusMessage = bridgeResult["telegramStatusMessage"]
 
         else:
+            updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
+            errMsg = f'Invalid Arbitrage execution type: {stepType}'
+            logger.error(errMsg)
+            raise Exception(errMsg)
 
-            recipe = getWalletsInformation(recipe)
+        recipe = getWalletsInformation(recipe)
 
-            wasProfitable = recipe[position]["wallet"]["balances"]["stablecoin"] > startingStables
-            profitLoss = abs(recipe[position]["wallet"]["balances"]["stablecoin"] - startingStables)
+        printSeperator()
 
-            if wasProfitable:
-                arbitragePercentage = percentageDifference(recipe[position]["wallet"]["balances"]["stablecoin"], startingStables, 2)
-            else:
-                arbitragePercentage = percentageDifference(startingStables, recipe[position]["wallet"]["balances"]["stablecoin"], 2)
+        logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[position][toSwapTo]["name"]}')
+        telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
-            printArbitrageRollbackComplete(count=recipe["arbitrage"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=arbitragePercentage, wasProfitable=wasProfitable, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+        stepSettings["done"] = True
 
-            return wasProfitable
+        printSeperator(True)
+
+    setupWallet(recipe=recipe)
+
+    printSeperator(True)
+
+    recipe = getWalletsInformation(recipe)
+
+    wasProfitable = recipe["origin"]["wallet"]["balances"]["stablecoin"] > startingStables
+    profitLoss = abs(recipe["origin"]["wallet"]["balances"]["stablecoin"] - startingStables)
+
+    if wasProfitable:
+        arbitragePercentage = percentageDifference(recipe["origin"]["wallet"]["balances"]["stablecoin"],
+                                                   startingStables, 2)
+    else:
+        arbitragePercentage = percentageDifference(startingStables,
+                                                   recipe["origin"]["wallet"]["balances"]["stablecoin"], 2)
+
+    printArbitrageRollbackComplete(count=recipe["arbitrage"]["currentRoundTripCount"], wasProfitable=wasProfitable,
+                                   profitLoss=profitLoss, arbitragePercentage=arbitragePercentage, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
 # Predict our potential profit/loss
 def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
