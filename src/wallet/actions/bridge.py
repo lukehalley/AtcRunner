@@ -12,7 +12,7 @@ from src.wallet.queries.network import getWalletAddressFromPrivateKey, getTokenB
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, predictions, stepNumber, txTimeoutSeconds=150):
+def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, stepNumber, predictions=None):
     walletAddress = getWalletAddressFromPrivateKey(fromChainRPCURL)
 
     amountToBridgeWei = getTokenDecimalValue(amountToBridge, fromTokenDecimals)
@@ -48,7 +48,6 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
     transactionResult = signAndSendTransaction(
         tx=tx,
         rpcURL=fromChainRPCURL,
-        txTimeoutSeconds=txTimeoutSeconds,
         explorerUrl=explorerUrl,
         arbitrageNumber=arbitrageNumber,
         stepCategory=stepCategory,
