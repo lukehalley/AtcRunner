@@ -19,7 +19,7 @@ logger = logging.getLogger("DFK-DEX")
 transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
 
 def setupWallet(recipe):
-    originHasStablecoins = recipe["origin"]["wallet"]["balances"]["stablecoin"] > 0
+    originHasStablecoins = recipe["origin"]["wallet"]["balances"]["stablecoin"] > 0.1
     originHasTokens = recipe["origin"]["wallet"]["balances"]["token"] > 0
 
     if not originHasTokens and not originHasStablecoins:

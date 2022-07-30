@@ -74,19 +74,17 @@ while True:
 
         setupWallet(recipe=recipe)
 
-        printSeperator(True)
-
         isProfitable, predictions = checkArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
 
         printSeperator(True)
 
-        if True:
+        if isProfitable:
 
             telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'], predictions)
 
             startingTime = time.perf_counter()
 
-            outcome = executeArbitrage(recipe=recipe, predictions=predictions, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+            executeArbitrage(recipe=recipe, predictions=predictions, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
         else:
             printSeperator()

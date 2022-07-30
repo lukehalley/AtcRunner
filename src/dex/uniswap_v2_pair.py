@@ -30,7 +30,7 @@ def swap(pool_address, amount0_out, amount1_out, to, private_key, nonce, gas_pri
     logger.info(
         "Waiting for transaction " + block_explorer_link(signed_tx.hash.hex()) + " to be mined")
 
-    tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=0.1, timeout=transactionTimeout)
+    tx_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=2, timeout=transactionTimeout)
     logger.info("Transaction mined !")
 
     return tx_receipt
