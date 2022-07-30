@@ -92,7 +92,7 @@ def getRecipeDetails():
 
                         routeAddressList.append(recipeDetails[f"chain{num}"][routeLast]["address"])
                     else:
-                        routeAddressList = [recipeDetails[f"chain{num}"]["token"]["address"], recipeDetails[f"chain{num}"]["stablecoin"]["address"]]
+                        routeAddressList = [recipeDetails[f"chain{num}"][routeFirst]["address"], recipeDetails[f"chain{num}"][routeLast]["address"]]
 
                     recipeDetails[f"chain{num}"]["routes"][routeDirection] = routeAddressList
 

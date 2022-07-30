@@ -17,8 +17,8 @@ logger = logging.getLogger("DFK-DEX")
 privateKey = getAWSSecret(key="ARB_KEY")
 
 # Retry Envs
-transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
-transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
+transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
+transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 
 def getPrivateKey():
     return privateKey

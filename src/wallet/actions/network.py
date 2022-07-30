@@ -14,14 +14,17 @@ from src.utils.general import getCurrentDateTime, printSeperator
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
 from src.wallet.queries.network import getTokenBalance, getWalletsInformation
 
+from web3 import exceptions
+
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-transactionRetryLimit = int(os.environ.get("TRANSACTION_RETRY_LIMIT"))
-transactionRetryDelay = int(os.environ.get("TRANSACTION_RETRY_DELAY"))
+transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
+transactionRetryLimit = int(os.environ.get("TRANSACTION_ACTION_RETRY_LIMIT"))
+transactionRetryDelay = int(os.environ.get("TRANSACTION_ACTION_RETRY_DELAY"))
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):
+def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):
 
     # Setup our web3 object
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -70,7 +73,7 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
             logger.info("Nonce too low error solved - sending again...")
             w3.eth.send_raw_transaction(signed_tx.rawTransaction)
         else:
-            sys.exit(e.args[0]["message"])
+             raise Exception(e.args[0]["message"])
     logger.info("Transaction successfully sent!")
 
     explorerLink = generateBlockExplorerLink(explorerUrl, signed_tx.hash.hex())
@@ -78,13 +81,30 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
     logger.info(f"{explorerLink}")
 
     logger.info(f"Waiting for transaction to be mined...")
-    txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=txTimeoutSeconds,
-                                                     poll_latency=2)
 
-    while "status" not in txReceipt:
-        txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, timeout=txTimeoutSeconds,
-                                                        poll_latency=2)
-
+    try:
+        txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=2,
+                                                        timeout=transactionTimeout)
+    except exceptions.TimeExhausted:
+        raise Exception("Wait for transaction receipt timed out!")
+    except Exception as error:
+        errorText = error.args[0]["message"]
+        isBadResponseError = "The response was in an unexpected format and unable to be parsed" in errorText
+        if isBadResponseError:
+            retryLimit = 10
+            retryCount = 0
+            txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=2,
+                                                            timeout=transactionTimeout)
+            while "status" not in txReceipt:
+                if retryCount <= retryLimit:
+                    txReceipt = w3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash,
+                                                                    timeout=transactionTimeout,
+                                                                    poll_latency=2)
+                    retryCount = retryCount + 1
+                else:
+                    raise Exception(f"Unable to get a valid transaction receipt after {retryCount} tries: {errorText}")
+        else:
+            raise Exception(f"Unknown error while trying to get valid transaction receipt: {errorText}")
     logger.info(f"Transaction was mined!")
 
     wasSuccessful = txReceipt["status"] == 1
@@ -113,7 +133,6 @@ def signAndSendTransaction(tx, rpcURL, txTimeoutSeconds, explorerUrl, arbitrageN
         errMsg = f"⛔️ Transaction was unsuccessful!"
         if telegramStatusMessage:
             updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
-        logger.error(errMsg)
         raise Exception(errMsg)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
@@ -182,8 +201,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 telegramStatusMessage=telegramStatusMessage,
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"],
                 routerAddress=recipe[direction]["chain"]["uniswapRouter"],
-                txDeadline=300,
-                txTimeoutSeconds=150,
+                swappingFromGas=False,
                 swappingToGas=True
             )
 

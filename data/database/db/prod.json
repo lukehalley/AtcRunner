@@ -220,6 +220,73 @@
       }
     }
   },
+  "strategies": {
+    "networkBridge": {
+      "originSwap": {
+        "number": "1",
+        "from": "stablecoin",
+        "to": "token",
+        "position": "origin",
+        "type": "swap",
+        "done": false
+      },
+      "originBridge": {
+        "number": "2",
+        "from": "token",
+        "to": "token",
+        "position": "origin",
+        "type": "bridge",
+        "done": false
+      },
+      "destinationSwap": {
+        "number": "3",
+        "from": "token",
+        "to": "stablecoin",
+        "position": "destination",
+        "type": "swap",
+        "done": false
+      },
+      "destinationBridge": {
+        "number": "4",
+        "from": "stablecoin",
+        "to": "stablecoin",
+        "position": "destination",
+        "type": "bridge",
+        "done": false
+      },
+      "originCompletion": {
+        "number": "5",
+        "from": "stablecoin",
+        "to": "done",
+        "position": "origin",
+        "type": "swap",
+        "done": false
+      }
+    },
+    "networkBridgeRollback": {
+      "destinationSwap": {
+        "from": "stablecoin",
+        "to": "token",
+        "position": "destination",
+        "type": "swap",
+        "done": false
+      },
+      "destinationBridge": {
+        "from": "token",
+        "to": "token",
+        "position": "origin",
+        "type": "bridge",
+        "done": true
+      },
+      "originCompletion": {
+        "from": "stablecoin",
+        "to": "token",
+        "position": "origin",
+        "type": "swap",
+        "done": true
+      }
+    }
+  },
   "tokenLists": {
     "DFK_ALL": [
       "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/build/defikingdoms-community.tokenlist.json",
