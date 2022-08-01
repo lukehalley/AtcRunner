@@ -439,9 +439,9 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                         telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                                 messageToAppend=f"Rolling Back Arbitrage #{recipe['arbitrage']['currentRoundTripCount']} ‍⏮")
 
-                        rollbackArbitrage(recipe=recipe, currentFunds=currentFunds, startingStables=startingStables, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+                        wasProfitable = rollbackArbitrage(recipe=recipe, currentFunds=currentFunds, startingStables=startingStables, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
-                        return False
+                        return wasProfitable
 
                 bridgeResult = executeBridge(
                     amountToBridge=currentFunds[toSwapFrom],
@@ -503,6 +503,9 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
             else:
                 arbitragePercentage = percentageDifference(startingStables, recipe[position]["wallet"]["balances"]["stablecoin"], 2)
 
+            printArbitrageResult(count=recipe["arbitrage"]["currentRoundTripCount"], amount=profitLoss, percentageDifference=arbitragePercentage, wasProfitable=wasProfitable, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+
+            return wasProfitable
 
 
 def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, telegramStatusMessage):
@@ -664,6 +667,8 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
     printArbitrageRollbackComplete(count=recipe["arbitrage"]["currentRoundTripCount"], wasProfitable=wasProfitable,
                                    profitLoss=profitLoss, arbitragePercentage=arbitragePercentage, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+
+    return wasProfitable
 
 # Predict our potential profit/loss
 def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
