@@ -47,9 +47,9 @@ def getTokenBySymbolAndChainID(tokenListDataframe, tokenSymbol, tokenChainId):
         resultDict = parseDataframeResult(result=result)
         return resultDict[0]
     if len(result) > 1:
-        sys.exit(f"More than one token found for\nSymbol: {tokenSymbol}\nChain Id: {tokenChainId}")
+        raise Exception(f"More than one token found for\nSymbol: {tokenSymbol}\nChain Id: {tokenChainId}")
     else:
-        sys.exit(f"Couldn't find a token with\nSymbol: {tokenSymbol}\nChain Id: {tokenChainId}")
+        raise Exception(f"Couldn't find a token with\nSymbol: {tokenSymbol}\nChain Id: {tokenChainId}")
 
 def getTokensBySymbol(tokenListDataframe, tokenSymbol):
     result = tokenListDataframe.loc[(tokenListDataframe['symbol'] == tokenSymbol)]
@@ -57,7 +57,7 @@ def getTokensBySymbol(tokenListDataframe, tokenSymbol):
         resultDict = parseDataframeResult(result=result)
         return resultDict
     else:
-        sys.exit(f"Couldn't find token(s) with\nSymbol: {tokenSymbol}")
+        raise Exception(f"Couldn't find token(s) with\nSymbol: {tokenSymbol}")
 
 def getTokensByChainId(tokenListDataframe, tokenChainId):
     result = tokenListDataframe.loc[(tokenListDataframe['chainId'] == tokenChainId)]
@@ -65,7 +65,7 @@ def getTokensByChainId(tokenListDataframe, tokenChainId):
         resultDict = parseDataframeResult(result=result)
         return resultDict
     else:
-        sys.exit(f"Couldn't find token(s) with\nChain Id: {tokenChainId}")
+        raise Exception(f"Couldn't find token(s) with\nChain Id: {tokenChainId}")
 
 def getTokensByAddress(tokenListDataframe, tokenAddress):
     result = tokenListDataframe.loc[(tokenListDataframe['address'] == tokenAddress)]
@@ -73,7 +73,7 @@ def getTokensByAddress(tokenListDataframe, tokenAddress):
         resultDict = parseDataframeResult(result=result)
         return resultDict
     else:
-        sys.exit(f"Couldn't find token(s) with\nToken Address: {tokenAddress}")
+        raise Exception(f"Couldn't find token(s) with\nToken Address: {tokenAddress}")
 
 # tokenLists = [
 #     "https://raw.githubusercontent.com/DefiKingdoms/community-token-list/main/build/defikingdoms-community.tokenlist.json",

@@ -135,7 +135,7 @@ def getRecipeDetails():
                             recipeDetails[f"chain{num}"][key]["swapType"] = tokenDetails["swapType"]
                             recipeDetails[f"chain{num}"][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
             else:
-                sys.exit(F"Invalid Token Retrieval Method: {tokenRetrievalMethod}")
+                raise Exception(F"Invalid Token Retrieval Method: {tokenRetrievalMethod}")
 
             recipeDetails[f"chain{num}"]["gas"] = {}
             recipeDetails[f"chain{num}"]["gas"]["address"] = recipeDetails[f"chain{num}"]["chain"]["gasDetails"]["address"]

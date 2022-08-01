@@ -408,7 +408,9 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     routerAddress=recipe[position]["chain"]["uniswapRouter"],
                     telegramStatusMessage=telegramStatusMessage,
                     swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
-                    swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
+                    swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"]),
+                    predictions=predictions,
+                    stepNumber=stepNumber
                 )
 
                 recipe = getWalletsInformation(recipe)
@@ -439,7 +441,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                         telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                                 messageToAppend=f"Rolling Back Arbitrage #{recipe['arbitrage']['currentRoundTripCount']} ‍⏮")
 
-                        wasProfitable = rollbackArbitrage(recipe=recipe, currentFunds=currentFunds, startingStables=startingStables, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+                        wasProfitable = rollbackArbitrage(recipe=recipe, currentFunds=currentFunds, startingStables=startingStables, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage, predictions=predictions)
 
                         return wasProfitable
 
@@ -508,7 +510,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
             return wasProfitable
 
 
-def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, telegramStatusMessage):
+def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, telegramStatusMessage, predictions):
 
     steps = fetchArbitrageStrategy(strategyName="networkBridgeRollback")
 
@@ -580,7 +582,9 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 routerAddress=recipe[position]["chain"]["uniswapRouter"],
                 telegramStatusMessage=telegramStatusMessage,
                 swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
-                swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
+                swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"]),
+                stepNumber=stepNumber,
+                predictions=predictions
             )
 
             recipe = getWalletsInformation(recipe)

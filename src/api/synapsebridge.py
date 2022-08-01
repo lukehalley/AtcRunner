@@ -44,7 +44,7 @@ def checkBridgeStatusBalance(predictions, stepNumber, toChainRPCURL, toTokenAddr
 
         return isBetween(lowerLimit=lowerLimit, middleNumber=currentBalance, upperLimit=upperLimit)
     else:
-        sys.exit("Prediction not a bridge type!")
+        raise Exception("Prediction not a bridge type!")
 
 # Check if a swap is supported
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
