@@ -13,7 +13,7 @@ from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
 from src.utils.general import getCurrentDateTime, printSeperator
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
 from src.wallet.queries.network import getTokenBalance, getWalletsInformation
-
+from src.wallet.queries.swap import checkSwapWorkedByBalance
 from web3 import exceptions
 
 # Set up our logging
@@ -24,7 +24,7 @@ transactionRetryLimit = int(os.environ.get("TRANSACTION_ACTION_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_ACTION_RETRY_DELAY"))
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):
+def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, predictions, isSwap, stepNumber, toTokenAddress, toTokenDecimals):
 
     # Setup our web3 object
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -130,6 +130,12 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
         return result
 
     else:
+
+        if isSwap:
+            transactionFailedButSwapWorked = checkSwapWorkedByBalance(predictions=predictions, stepNumber=stepNumber,
+                                                           toChainRPCURL=rpcURL, toTokenAddress=toTokenAddress,
+                                                           toTokenDecimals=toTokenDecimals)
+        
         errMsg = f"⛔️ Transaction was unsuccessful!"
         if telegramStatusMessage:
             updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
@@ -210,7 +216,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
         except Exception as err:
             errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
             logger.error(errMsg)
-            sys.exit(err)
+            raise Exception(err)
 
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
             recipe[direction]["chain"]["rpc"],

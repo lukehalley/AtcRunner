@@ -18,14 +18,14 @@ from src.wallet.queries.swap import getSwapQuoteOut
 logger = logging.getLogger("DFK-DEX")
 transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
 
-def setupWallet(recipe):
+def setupWallet(recipe, stepNumber):
     originHasStablecoins = recipe["origin"]["wallet"]["balances"]["stablecoin"] > 0.1
     originHasTokens = recipe["origin"]["wallet"]["balances"]["token"] > 0
 
     if not originHasTokens and not originHasStablecoins:
         errMsg = f'Origin wallet has neither Tokens or Stablecoins!'
         logger.error(errMsg)
-        sys.exit(errMsg)
+        raise Exception(errMsg)
     elif not originHasStablecoins:
 
         telegramStatusMessage = printSettingUpWallet(recipe['arbitrage']['currentRoundTripCount'])
@@ -65,7 +65,8 @@ def setupWallet(recipe):
             routerAddress=recipe[position]["chain"]["uniswapRouter"],
             telegramStatusMessage=telegramStatusMessage,
             swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
-            swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
+            swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"]),
+            stepNumber=stepNumber
         )
 
         recipe = getWalletsInformation(recipe)
@@ -90,7 +91,7 @@ def setupWallet(recipe):
 
         printSeperator(True)
 
-def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, arbitrageNumber, stepCategory, explorerUrl, telegramStatusMessage=None, swappingFromGas=False, swappingToGas=False):
+def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, arbitrageNumber, stepCategory, explorerUrl, predictions, stepNumber, telegramStatusMessage=None, swappingFromGas=False, swappingToGas=False):
     from src.wallet.queries.network import getPrivateKey
 
     # Setup our web3 object
@@ -142,7 +143,12 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
         explorerUrl=explorerUrl,
         arbitrageNumber=arbitrageNumber,
         stepCategory=stepCategory,
-        telegramStatusMessage=telegramStatusMessage
+        telegramStatusMessage=telegramStatusMessage,
+        predictions=predictions,
+        isSwap=True,
+        stepNumber=stepNumber,
+        toTokenAddress=normalisedRoutes[-1],
+        toTokenDecimals=amountOutDecimals
     )
 
     balanceAfterSwap = balanceBeforeSwap

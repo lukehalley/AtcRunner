@@ -63,6 +63,22 @@ def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,
 
     return quote
 
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def checkSwapWorkedByBalance(predictions, stepNumber, chainRPCURL, toTokenAddress, toTokenDecimals):
+    from src.wallet.queries.network import getTokenBalance
+    if predictions["steps"][stepNumber]["stepType"] == "swap":
+        bridgePredictions = predictions["steps"][stepNumber]["amountOut"]
+
+        percentageDifference = percentage(percent=10, whole=predictions["steps"][2]["amountOut"])
+        lowerLimit = bridgePredictions - percentageDifference
+        upperLimit = bridgePredictions + percentageDifference
+
+        currentBalance = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress,
+                                         tokenDecimals=toTokenDecimals)
+
+        return isBetween(lowerLimit=lowerLimit, middleNumber=currentBalance, upperLimit=upperLimit)
+    else:
+        raise Exception("Prediction not a swap type!")
 
 
 

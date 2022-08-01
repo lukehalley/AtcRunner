@@ -131,7 +131,7 @@ def selectTokenInDex(driver, direction, tokenSymbol):
                     tokenFound = True
                 else:
                     x = 1
-                    sys.exit("Couldnt find token in search")
+                    raise Exception("Couldnt find token in search")
 
             except StaleElementReferenceException:
                 pass
