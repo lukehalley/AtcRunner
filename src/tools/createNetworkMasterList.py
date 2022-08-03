@@ -6,6 +6,13 @@ def saveToCache(fileName, fileData):
     with open(f'../../data/cache/done/{fileName}.json', 'w') as cacheFile:
         json.dump(fileData, cacheFile, indent=4, use_decimal=True)
 
+def buildAPIUrl(dex, contract, masterChainList, chainId):
+    apiBase = (masterChainList[chainId]["blockExplorer"]["url"]).split("//")[1]
+    apiPrefix = masterChainList[chainId]["blockExplorer"]["apiPrefix"]
+    if "{URL}" in apiPrefix:
+        apiPrefix = apiPrefix.replace("{URL}", apiBase)
+    return f"https://{apiPrefix}/api?module=contract&action=getabi&address={address}&format=raw&apikey={apiKey}"
+
 with open(f'../../data/cache/done/chainMasterList.json', 'r') as cacheFile:
     outputMasterList = json.load(cacheFile)
 
@@ -40,6 +47,9 @@ for chainId, chainDetails in chains.items():
             },
         }
 
+    if chainId == "25":
+        x = 1
+
     if chainId in dexs.keys():
         masterChainList[chainId]["dexs"] = dexs[chainId]
     else:
@@ -67,14 +77,33 @@ for chainId, chainDetails in chains.items():
 
             for contract in contractsToGet:
 
-                # If ABI is already present don't overwrite it
-                if "abi" not in outputMasterList[chainId]["dexs"][index][contract]:
+                if chainId == "25":
+                    x = 1
 
+                if outputMasterList[chainId]["dexs"]:
+                    # If ABI is already present don't overwrite it
+                    if "abi" not in outputMasterList[chainId]["dexs"][index][contract]:
+
+                        if contract in dex:
+                            address = dex[contract]
+                            apiUrl = buildAPIUrl(dex=dex, contract=contract, masterChainList=masterChainList,
+                                                 chainId=chainId)
+                            try:
+                                abi = requests.get(apiUrl).json()
+                                dex[contract] = {"address": address, "abi": abi}
+                                print(f"   {contract} ✅")
+                            except:
+                                print(f"   {contract} ⛔️")
+                        else:
+
+                            print(f"Missing {contract} for {dex['name']}")
+                    else:
+                        dex[contract] = outputMasterList[chainId]["dexs"][index][contract]
+                        print(f"   {contract} ✅")
+                else:
                     if contract in dex:
                         address = dex[contract]
-                        apiBase = (masterChainList[chainId]["blockExplorer"]["url"]).split("//")[1]
-                        apiPrefix = masterChainList[chainId]["blockExplorer"]["apiPrefix"]
-                        apiUrl = f"https://{apiPrefix}{apiBase}/api?module=contract&action=getabi&address={address}&format=raw&apikey={apiKey}"
+                        apiUrl = buildAPIUrl(dex=dex, contract=contract, masterChainList=masterChainList, chainId=chainId)
                         try:
                             abi = requests.get(apiUrl).json()
                             dex[contract] = {"address": address, "abi": abi}
@@ -82,11 +111,9 @@ for chainId, chainDetails in chains.items():
                         except:
                             print(f"   {contract} ⛔️")
                     else:
-
                         print(f"Missing {contract} for {dex['name']}")
-                else:
-                    dex[contract] = outputMasterList[chainId]["dexs"][index][contract]
-                    print(f"   {contract} ✅")
+
+                    x = 1
     elif not masterChainList[chainId]["dexs"] and not masterChainList[chainId]["blockExplorer"]["apiKey"]:
         print(f"Missing API Key ⛔")
         print(f"Missing Dex List ⛔")
