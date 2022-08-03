@@ -18,7 +18,7 @@
         "name": "etherscan",
         "url": "https://optimistic.etherscan.io",
         "standard": "EIP3091",
-        "apiPrefix": "api-"
+        "apiPrefix": "api-{URL}"
       }
     ]
   },
@@ -39,9 +39,9 @@
     "explorers": [
       {
         "name": "Cronos Explorer",
-        "url": "https://cronos.org/explorer",
+        "url": "https://cronoscan.com",
         "standard": "none",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ]
   },
@@ -79,7 +79,7 @@
         "name": "bscscan",
         "url": "https://bscscan.com",
         "standard": "EIP3091",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ]
   },
@@ -110,7 +110,7 @@
         "name": "polygonscan",
         "url": "https://polygonscan.com",
         "standard": "EIP3091",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ]
   },
@@ -135,7 +135,7 @@
         "url": "https://ftmscan.com",
         "icon": "ftmscan",
         "standard": "EIP3091",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ]
   },
@@ -158,7 +158,7 @@
         "name": "Blockscout",
         "url": "https://blockexplorer.boba.network",
         "standard": "none",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ],
     "parent": {
@@ -193,7 +193,7 @@
         "name": "moonscan",
         "url": "https://moonbeam.moonscan.io",
         "standard": "none",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ]
   },
@@ -219,7 +219,7 @@
         "name": "moonscan",
         "url": "https://moonriver.moonscan.io",
         "standard": "none",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ]
   },
@@ -245,13 +245,13 @@
         "name": "Arbiscan",
         "url": "https://arbiscan.io",
         "standard": "EIP3091",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       },
       {
         "name": "Arbitrum Explorer",
         "url": "https://explorer.arbitrum.io",
         "standard": "EIP3091",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ],
     "infoURL": "https://arbitrum.io",
@@ -285,7 +285,7 @@
         "name": "snowtrace",
         "url": "https://snowtrace.io",
         "standard": "EIP3091",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ]
   },
@@ -311,7 +311,7 @@
         "url": "https://explorer.dfkchain.com",
         "icon": "ethereum",
         "standard": "none",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ]
   },
@@ -334,7 +334,7 @@
         "name": "aurorascan.dev",
         "url": "https://aurorascan.dev",
         "standard": "EIP3091",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ]
   },
@@ -357,7 +357,7 @@
         "name": "Harmony Block Explorer",
         "url": "https://explorer.harmony.one",
         "standard": "EIP3091",
-        "apiPrefix": "api."
+        "apiPrefix": "api.{URL}"
       }
     ]
   }

@@ -22,7 +22,7 @@
     }
   ],
   "10": [
-        {
+    {
       "description": "Uniswap Dex",
       "factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
       "name": "Uniswap Dex",
@@ -33,6 +33,14 @@
       "factory": "0x25CbdDb98b35ab1FF77413456B31EC81A6B6B746",
       "name": "Velodrome Finance",
       "router": "0xa132DAB612dB5cB9fC9Ac426A0Cc215A3423F9c9"
+    }
+  ],
+  "25": [
+    {
+      "description": "VVS Finance",
+      "factory": "0x3b44b2a187a7b3824131f8db5a74194d0a42fc15",
+      "name": "VVS Finance",
+      "router": "0x145863eb42cf62847a6ca784e6416c1682b1b2ae"
     }
   ],
   "56": [
