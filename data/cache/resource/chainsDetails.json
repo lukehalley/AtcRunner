@@ -20,7 +20,8 @@
         "standard": "EIP3091",
         "apiPrefix": "api-{URL}"
       }
-    ]
+    ],
+    "skip": false
   },
   "25": {
     "name": "Cronos Mainnet Beta",
@@ -43,7 +44,8 @@
         "standard": "none",
         "apiPrefix": "api.{URL}"
       }
-    ]
+    ],
+    "skip": false
   },
   "56": {
     "name": "Binance Smart Chain Mainnet",
@@ -81,7 +83,8 @@
         "standard": "EIP3091",
         "apiPrefix": "api.{URL}"
       }
-    ]
+    ],
+    "skip": false
   },
   "137": {
     "name": "Polygon Mainnet",
@@ -112,7 +115,8 @@
         "standard": "EIP3091",
         "apiPrefix": "api.{URL}"
       }
-    ]
+    ],
+    "skip": false
   },
   "250": {
     "name": "Fantom Opera",
@@ -137,7 +141,8 @@
         "standard": "EIP3091",
         "apiPrefix": "api.{URL}"
       }
-    ]
+    ],
+    "skip": false
   },
   "288": {
     "name": "Boba Network",
@@ -169,7 +174,8 @@
           "url": "https://gateway.boba.network"
         }
       ]
-    }
+    },
+    "skip": true
   },
   "1284": {
     "name": "Moonbeam",
@@ -193,9 +199,10 @@
         "name": "moonscan",
         "url": "https://moonbeam.moonscan.io",
         "standard": "none",
-        "apiPrefix": "api.{URL}"
+        "apiPrefix": "api-{URL}"
       }
-    ]
+    ],
+    "skip": false
   },
   "1285": {
     "name": "Moonriver",
@@ -219,9 +226,10 @@
         "name": "moonscan",
         "url": "https://moonriver.moonscan.io",
         "standard": "none",
-        "apiPrefix": "api.{URL}"
+        "apiPrefix": "api-{URL}"
       }
-    ]
+    ],
+    "skip": false
   },
   "42161": {
     "name": "Arbitrum One",
@@ -263,7 +271,8 @@
           "url": "https://bridge.arbitrum.io"
         }
       ]
-    }
+    },
+    "skip": false
   },
   "43114": {
     "name": "Avalanche C-Chain",
@@ -287,7 +296,8 @@
         "standard": "EIP3091",
         "apiPrefix": "api.{URL}"
       }
-    ]
+    ],
+    "skip": false
   },
   "53935": {
     "name": "DFK Chain",
@@ -307,13 +317,14 @@
     "networkId": 53935,
     "explorers": [
       {
-        "name": "ethernal",
+        "name": "dfkchain explorer",
         "url": "https://explorer.dfkchain.com",
         "icon": "ethereum",
         "standard": "none",
         "apiPrefix": "api.{URL}"
       }
-    ]
+    ],
+    "skip": false
   },
   "1313161554": {
     "name": "Aurora Mainnet",
@@ -336,7 +347,8 @@
         "standard": "EIP3091",
         "apiPrefix": "api.{URL}"
       }
-    ]
+    ],
+    "skip": false
   },
   "1666600000": {
     "name": "Harmony Mainnet Shard 0",
@@ -359,6 +371,7 @@
         "standard": "EIP3091",
         "apiPrefix": "api.{URL}"
       }
-    ]
+    ],
+    "skip": false
   }
 }
