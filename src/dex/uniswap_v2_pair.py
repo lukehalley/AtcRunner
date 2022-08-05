@@ -1,15 +1,15 @@
 from web3 import Web3
 import os
-from src.utils.chain import getABI
+# from src.utils.chain import getABI
 from .utils.utils import swap_expected_amount1
 
-ABI = getABI("IUniswapV2Pair.json")
+# ABI = getABI("IUniswapV2Pair.json")
 
 def block_explorer_link(txid):
     return 'https://explorer.harmony.one/tx/' + str(txid)
 
 
-def swap(pool_address, amount0_out, amount1_out, to, private_key, nonce, gas_price_gwei, rpc_address, logger):
+def swap(pool_address, abi, amount0_out, amount1_out, to, private_key, nonce, gas_price_gwei, rpc_address, logger):
     transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
 
     w3 = Web3(Web3.HTTPProvider(rpc_address))
@@ -17,7 +17,7 @@ def swap(pool_address, amount0_out, amount1_out, to, private_key, nonce, gas_pri
     w3.eth.default_account = account.address
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = w3.eth.contract(contract_address, abi=abi)
 
     tx = contract.functions.startQuestWithData(amount0_out, amount1_out, to, None).buildTransaction(
         {'gasPrice': w3.toWei(gas_price_gwei, 'gwei'), 'nonce': nonce})

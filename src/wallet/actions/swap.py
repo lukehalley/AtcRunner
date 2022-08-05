@@ -6,7 +6,7 @@ from decimal import Decimal
 from web3 import Web3
 
 from src.api.telegrambot import updatedStatusMessage
-from src.utils.chain import getABI, getTransactionDeadline, getValueWithSlippage
+from src.utils.chain import getTransactionDeadline, getValueWithSlippage
 from src.utils.general import printSettingUpWallet, strToBool, printSeperator, truncateDecimal
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
 from src.wallet.actions.network import signAndSendTransaction
@@ -47,6 +47,7 @@ def setupWallet(recipe):
             amountOutDecimals=recipe[position][toSwapTo]["decimals"],
             rpcUrl=recipe[position]["chain"]["rpc"],
             routerAddress=recipe[position]["chain"]["uniswapRouter"],
+            abi=recipe[position]["chain"]["abi"],
             routes=swapRoute
         )
 
@@ -90,7 +91,7 @@ def setupWallet(recipe):
 
         printSeperator(True)
 
-def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, arbitrageNumber, stepCategory, explorerUrl, telegramStatusMessage=None, swappingFromGas=False, swappingToGas=False):
+def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, abi, arbitrageNumber, stepCategory, explorerUrl, telegramStatusMessage=None, swappingFromGas=False, swappingToGas=False):
     from src.wallet.queries.network import getPrivateKey
 
     # Setup our web3 object
@@ -104,8 +105,8 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
     gasPriceWei = w3.fromWei(w3.eth.gas_price, 'gwei')
 
     # Get properties for our swap contract
-    ABI = getABI("IUniswapV2Router02.json")
-    contract = w3.eth.contract(routerAddress, abi=ABI)
+    # ABI = getABI("IUniswapV2Router02.json")
+    contract = w3.eth.contract(routerAddress, abi=abi)
 
     txParams = {
         'gasPrice': w3.toWei(gasPriceWei, 'gwei'),

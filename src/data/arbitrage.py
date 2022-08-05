@@ -40,6 +40,7 @@ def determineArbitrageStrategy(recipe):
         amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
         routerAddress=recipe["chainOne"]["chain"]["uniswapRouter"],
+        abi=recipe["chainOne"]["chain"]["abi"],
         routes=recipe["chainOne"]["routes"]["token-stablecoin"]
     )
 
@@ -49,6 +50,7 @@ def determineArbitrageStrategy(recipe):
         amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
         routerAddress=recipe["chainTwo"]["chain"]["uniswapRouter"],
+        abi=recipe["chainTwo"]["chain"]["abi"],
         routes=recipe["chainTwo"]["routes"]["token-stablecoin"]
     )
 
@@ -58,6 +60,7 @@ def determineArbitrageStrategy(recipe):
         amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
         routerAddress=recipe["chainOne"]["chain"]["uniswapRouter"],
+        abi=recipe["chainOne"]["chain"]["abi"],
         routes=[recipe["chainOne"]["gas"]["address"], recipe["chainOne"]["stablecoin"]["address"]]
     )
 
@@ -67,6 +70,7 @@ def determineArbitrageStrategy(recipe):
         amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
         routerAddress=recipe["chainTwo"]["chain"]["uniswapRouter"],
+        abi=recipe["chainTwo"]["chain"]["abi"],
         routes=[recipe["chainTwo"]["gas"]["address"], recipe["chainTwo"]["stablecoin"]["address"]]
     )
 
