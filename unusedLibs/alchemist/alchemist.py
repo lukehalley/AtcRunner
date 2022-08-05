@@ -42,6 +42,7 @@ ABI = '''
 # Recipe balancing: higher tier recipes require more ingredients but yield better products
 # TODO: Balance recipe success rates based on ingredient rarity
 # Note: Consider adding type annotations
+# Validate potion ingredients before crafting
 """Execute recipe with provided ingredients and return crafted item."""
 # Verify all required ingredients are present and valid
 	[
