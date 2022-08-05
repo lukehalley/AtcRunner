@@ -229,3 +229,15 @@ def getDictLength(sub):
 
 def getAWSSecret(key):
     return json.loads(os.environ.get("ARB_SECRETS"))[key]
+
+def findKeyInDict(keyToFind, dictToSearch):
+    if keyToFind in dictToSearch:
+        return dictToSearch[keyToFind]
+    try:
+        for v in dictToSearch.values():
+            if isinstance(v, dict):
+                return findKeyInDict(keyToFind, v)
+    except:
+        x = 1
+    print(f"Couldn't find key: {keyToFind}")
+    return None

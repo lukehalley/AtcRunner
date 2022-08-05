@@ -26,24 +26,28 @@ def normaliseSwapRoutes(routes):
 
 
 # @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress):
+def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress, abi):
 
-    normalisedRoutes = normaliseSwapRoutes(routes)
+    try:
+        normalisedRoutes = normaliseSwapRoutes(routes)
+    except:
+        x = 1
 
     amountInWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
 
-    out = get_amounts_out(
+    out, outcome = get_amounts_out(
         amount_in=amountInWei,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,
-        routerAddress=routerAddress
+        routerAddress=routerAddress,
+        abi=abi
     )
 
     amountOutWei = out[-1]
 
     quote = getTokenNormalValue(amountOutWei, amountOutDecimals)
 
-    return quote
+    return quote, outcome
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,  rpcUrl, routerAddress):

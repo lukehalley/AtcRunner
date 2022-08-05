@@ -4,6 +4,7 @@ import pandas as pd
 import simplejson as json
 
 from src.utils.api import getAuthRawGithubFile
+from src.utils.general import findKeyInDict
 
 allowedKeys = ['chainId', 'address', 'symbol', 'name', 'decimals', 'logoURI']
 
@@ -11,12 +12,24 @@ def parseTokenLists(urls):
     finalTokenList = []
 
     for url in urls:
-        singleTokenListJSON = getAuthRawGithubFile(url)["tokens"]
-        finalTokenList = finalTokenList + singleTokenListJSON
+        rawTokenList = getAuthRawGithubFile(url)
+
+        if type(rawTokenList) is list:
+            tokens = rawTokenList
+        else:
+            tokens = findKeyInDict(keyToFind="tokens", dictToSearch=rawTokenList)
+
+        if tokens:
+
+            for token in tokens:
+                if token not in finalTokenList:
+                    finalTokenList.append(token)
+
+        else:
+            raise Exception(f"Invalid token list: {url}")
 
     allKeys = list(set().union(*(d.keys() for d in finalTokenList)))
     keysToRemove = list(set(allKeys) - set(allowedKeys))
-
 
     for key in keysToRemove:
         for dict in finalTokenList:
@@ -25,7 +38,7 @@ def parseTokenLists(urls):
 
     tokenListDataframe = pd.DataFrame(finalTokenList).drop_duplicates(subset=['chainId', 'symbol'], keep='last').sort_values('chainId')
 
-    with open(f'data/cache/masterTokenList.json', 'w') as cacheFile:
+    with open(f'data/cache/done/kitchenTokenList.json', 'w') as cacheFile:
         json.dump(tokenListDataframe.to_dict('records'), cacheFile, indent=4, use_decimal=True)
 
     return tokenListDataframe
