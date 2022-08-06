@@ -746,7 +746,7 @@
     }
   },
   "recipes": {
-    "JEWEL_Harmony_DFKChain": {
+    "AVAX_Harmony_DFKChain": {
       "arbitrage": {
         "dexId": "defikingdoms",
         "directionLock": "avalanchedfk,harmony",
@@ -758,8 +758,8 @@
           "name": "harmony"
         },
         "routes": {
-          "stablecoin-token": "",
-          "token-stablecoin": ""
+          "stablecoin-token": "1USDC,JEWEL,WAVAX",
+          "token-stablecoin": "WAVAX,JEWEL,1USDC"
         },
         "stablecoin": {
           "isGas": "False",
@@ -767,7 +767,7 @@
         },
         "token": {
           "isGas": "False",
-          "symbol": "JEWEL"
+          "symbol": "WAVAX"
         }
       },
       "chainTwo": {
@@ -775,16 +775,16 @@
           "name": "avalanchedfk"
         },
         "routes": {
-          "stablecoin-token": "USDC,CRYSTAL,WJEWEL",
-          "token-stablecoin": "WJEWEL,CRYSTAL,USDC"
+          "stablecoin-token": "USDC,CRYSTAL,AVAX",
+          "token-stablecoin": "AVAX,CRYSTAL,USDC"
         },
         "stablecoin": {
           "isGas": "False",
           "symbol": "USDC"
         },
         "token": {
-          "isGas": "True",
-          "symbol": "WJEWEL"
+          "isGas": "False",
+          "symbol": "AVAX"
         }
       }
     },
@@ -827,6 +827,48 @@
         "token": {
           "isGas": "False",
           "symbol": "ETH"
+        }
+      }
+    },
+    "JEWEL_Harmony_DFKChain": {
+      "arbitrage": {
+        "dexId": "defikingdoms",
+        "directionLock": "avalanchedfk,harmony",
+        "tokenList": "DFK_ALL",
+        "tokenRetrievalMethod": "tokenList"
+      },
+      "chainOne": {
+        "chain": {
+          "name": "harmony"
+        },
+        "routes": {
+          "stablecoin-token": "",
+          "token-stablecoin": ""
+        },
+        "stablecoin": {
+          "isGas": "False",
+          "symbol": "1USDC"
+        },
+        "token": {
+          "isGas": "False",
+          "symbol": "JEWEL"
+        }
+      },
+      "chainTwo": {
+        "chain": {
+          "name": "avalanchedfk"
+        },
+        "routes": {
+          "stablecoin-token": "USDC,CRYSTAL,WJEWEL",
+          "token-stablecoin": "WJEWEL,CRYSTAL,USDC"
+        },
+        "stablecoin": {
+          "isGas": "False",
+          "symbol": "USDC"
+        },
+        "token": {
+          "isGas": "True",
+          "symbol": "WJEWEL"
         }
       }
     }
