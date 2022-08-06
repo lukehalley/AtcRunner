@@ -80,7 +80,7 @@ while True:
 
         if isProfitable:
 
-            telegramStatusMessage = printArbitrageProfitable(recipe['arbitrage']['currentRoundTripCount'], predictions)
+            telegramStatusMessage = printArbitrageProfitable(recipe, predictions)
 
             startingTime = time.perf_counter()
 

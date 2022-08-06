@@ -52,8 +52,13 @@ def printSettingUpWallet(count):
     return sentMessage
 
 # Print the Arbitrage is profitable alert
-def printArbitrageProfitable(count, predictions):
+def printArbitrageProfitable(recipe, predictions):
     from src.api.telegrambot import sendMessage
+
+    count = recipe['arbitrage']['currentRoundTripCount']
+    networkPath = f'{recipe["origin"]["chain"]["name"]} -> {recipe["destination"]["chain"]["name"]}'
+    tokenPath = f'{recipe["origin"]["token"]["symbol"]} -> {recipe["destination"]["token"]["symbol"]}'
+
     logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     logger.info(f"ARBITRAGE #{count} PROFITABLE")
     logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
@@ -61,6 +66,8 @@ def printArbitrageProfitable(count, predictions):
     sentMessage = sendMessage(
         msg=
             f"Arbitrage #{count} Profitable 🤑\n"
+            f"{networkPath}\n"
+            f"{tokenPath}\n"
             f"${predictions['startingStables']} -> ${predictions['outStables']}\n"
             f"Profit: ${predictions['profitLoss']} | {predictions['arbitragePercentage']}%"
     )
