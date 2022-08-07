@@ -1892,6 +1892,7 @@
             }
           ],
           "mapping": {
+            "WETH": "WAVAX",
             "swapExactETHForTokens": "swapExactAVAXForTokens",
             "swapExactTokensForETH": "swapExactTokensForAVAX",
             "swapETHForExactTokens": "swapAVAXForExactTokens",
@@ -3054,7 +3055,14 @@
               "stateMutability": "nonpayable",
               "type": "function"
             }
-          ]
+          ],
+          "mapping": {
+            "WETH": "WETH",
+            "swapExactETHForTokens": "swapExactETHForTokens",
+            "swapExactTokensForETH": "swapExactTokensForETH",
+            "swapETHForExactTokens": "swapETHForExactTokens",
+            "swapTokensForExactETH": "swapTokensForExactETH"
+          }
         }
       }
     },
@@ -4212,7 +4220,14 @@
               "stateMutability": "nonpayable",
               "type": "function"
             }
-          ]
+          ],
+          "mapping": {
+            "WETH": "WETH",
+            "swapExactETHForTokens": "swapExactETHForTokens",
+            "swapExactTokensForETH": "swapExactTokensForETH",
+            "swapETHForExactTokens": "swapETHForExactTokens",
+            "swapTokensForExactETH": "swapTokensForExactETH"
+          }
         }
       }
     }

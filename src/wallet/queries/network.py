@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 from decimal import Decimal
 
 from retry import retry
@@ -20,19 +21,54 @@ privateKey = getAWSSecret(key="ARB_KEY")
 transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 
+
 def getPrivateKey():
     return privateKey
 
+def callMappedContractFunction(contract, functionName, abiMapping):
+
+    if functionName in abiMapping.keys():
+        functionToCall = abiMapping[functionName]
+        return getattr(contract.functions, functionToCall)().call()
+    else:
+        sys.exit(f"No mapping for {functionName}!")
+
+def fillEmptyABIParams(abi, contractFunctionName):
+    contractFunctionFields = {"inputs": [],
+                              "name": "",
+                              "outputs": [],
+                              "stateMutability": "",
+                              "type": ""}
+
+    functionIndex = next((index for (index, d) in enumerate(abi) if d["name"] == contractFunctionName), None)
+    functionToFix = abi[functionIndex]
+
+    for fieldName, fieldReplacement in contractFunctionFields.items():
+        if fieldName not in functionToFix.keys():
+            functionToFix[fieldName] = fieldReplacement
+
+    return abi
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def getNetworkWETH(rpcUrl, functionName, routerAddress, routerABI, routerABIMappings):
+    w3 = Web3(Web3.HTTPProvider(rpcUrl))
+
+    routerABI = fillEmptyABIParams(abi=routerABI, contractFunctionName=functionName)
+
+    contract_address = Web3.toChecksumAddress(routerAddress)
+    contract = w3.eth.contract(contract_address, abi=routerABI)
+
+    return callMappedContractFunction(contract=contract, functionName=functionName, abiMapping=routerABIMappings)
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcURL):
-
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
     return w3.eth.account.privateKeyToAccount(privateKey).address
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getGasPrice(rpcURL):
-
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
@@ -40,24 +76,24 @@ def getGasPrice(rpcURL):
 
     return gasPrice
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getTokenBalance(rpcURL, tokenAddress, tokenDecimals):
-
     walletAddress = getWalletAddressFromPrivateKey(rpcURL=rpcURL)
 
-    balanceWei = balance_of (
-                rpc_address=rpcURL,
-                address=walletAddress,
-                token_address=tokenAddress
-        )
+    balanceWei = balance_of(
+        rpc_address=rpcURL,
+        address=walletAddress,
+        token_address=tokenAddress
+    )
 
     balance = getTokenNormalValue(amount=balanceWei, decimalPlaces=tokenDecimals)
 
     return Decimal(balance)
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletsInformation(recipe, printBalances=False):
-
     directionList = ("origin", "destination")
 
     if not "status" in recipe:
@@ -107,9 +143,9 @@ def getWalletsInformation(recipe, printBalances=False):
 
     return recipe
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletGasBalance(rpcURL, walletAddress):
-
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
     balance = wei2eth(w3, balance_of(address=walletAddress, rpc_address=rpcURL, getGasTokenBalance=True))
@@ -119,8 +155,8 @@ def getWalletGasBalance(rpcURL, walletAddress):
 
     return Decimal(balance)
 
-def compareBalance(expected, actual, feeAllowancePercentage=10):
 
+def compareBalance(expected, actual, feeAllowancePercentage=10):
     feeAllowance = percentage(feeAllowancePercentage, expected)
 
     expectedLower = expected - feeAllowance
