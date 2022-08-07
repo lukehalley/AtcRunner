@@ -39,7 +39,7 @@ def determineArbitrageStrategy(recipe):
         amountInDecimals=recipe["chainOne"]["token"]["decimals"],
         amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
-        routerAddress=recipe["chainOne"]["chain"]["uniswapRouter"],
+        routerAddress=recipe["chainOne"]["chain"]["contracts"]["router"]["address"],
         routes=recipe["chainOne"]["routes"]["token-stablecoin"]
     )
 
@@ -48,7 +48,7 @@ def determineArbitrageStrategy(recipe):
         amountInDecimals=recipe["chainTwo"]["token"]["decimals"],
         amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
-        routerAddress=recipe["chainTwo"]["chain"]["uniswapRouter"],
+        routerAddress=recipe["chainTwo"]["chain"]["contracts"]["router"]["address"],
         routes=recipe["chainTwo"]["routes"]["token-stablecoin"]
     )
 
@@ -57,7 +57,7 @@ def determineArbitrageStrategy(recipe):
         amountInDecimals=18,
         amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
-        routerAddress=recipe["chainOne"]["chain"]["uniswapRouter"],
+        routerAddress=recipe["chainOne"]["chain"]["contracts"]["router"]["address"],
         routes=[recipe["chainOne"]["gas"]["address"], recipe["chainOne"]["stablecoin"]["address"]]
     )
 
@@ -66,7 +66,7 @@ def determineArbitrageStrategy(recipe):
         amountInDecimals=18,
         amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
-        routerAddress=recipe["chainTwo"]["chain"]["uniswapRouter"],
+        routerAddress=recipe["chainTwo"]["chain"]["contracts"]["router"]["address"],
         routes=[recipe["chainTwo"]["gas"]["address"], recipe["chainTwo"]["stablecoin"]["address"]]
     )
 
@@ -190,7 +190,7 @@ def simulateStep(recipe, stepSettings, currentFunds, driver=None):
             amountInDecimals=recipe[position][toSwapFrom]["decimals"],
             amountOutDecimals=recipe[position][toSwapTo]["decimals"],
             rpcUrl=recipe[position]["chain"]["rpc"],
-            routerAddress=recipe[position]["chain"]["uniswapRouter"],
+            routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
             routes=routeAddressList
         )
 
@@ -389,7 +389,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                     rpcUrl=recipe[position]["chain"]["rpc"],
-                    routerAddress=recipe[position]["chain"]["uniswapRouter"],
+                    routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
                     routes=swapRoute
                 )
 
@@ -405,7 +405,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_swap",
                     explorerUrl=recipe[position]["chain"]["blockExplorer"],
-                    routerAddress=recipe[position]["chain"]["uniswapRouter"],
+                    routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
                     telegramStatusMessage=telegramStatusMessage,
                     swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
                     swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
@@ -561,7 +561,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                 amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                 rpcUrl=recipe[position]["chain"]["rpc"],
-                routerAddress=recipe[position]["chain"]["uniswapRouter"],
+                routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
                 routes=swapRoute
             )
 
@@ -577,7 +577,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=f"{stepNumber}_swap",
                 explorerUrl=recipe[position]["chain"]["blockExplorer"],
-                routerAddress=recipe[position]["chain"]["uniswapRouter"],
+                routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
                 telegramStatusMessage=telegramStatusMessage,
                 swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
                 swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
