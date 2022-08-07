@@ -708,7 +708,7 @@
       "rpc": "https://api.avax.network/ext/bc/C/rpc",
       "blockExplorer": {
         "txBaseURL": "https://snowtrace.io/tx",
-        "apiKey" : "5IW5QBE9QMQM3IJRHPKUTB4CWZ1JU1FS8R"
+        "apiKey": "5IW5QBE9QMQM3IJRHPKUTB4CWZ1JU1FS8R"
       },
       "gasDetails": {
         "address": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
@@ -1890,7 +1890,13 @@
               "stateMutability": "payable",
               "type": "receive"
             }
-          ]
+          ],
+          "mapping": {
+            "swapExactETHForTokens": "swapExactAVAXForTokens",
+            "swapExactTokensForETH": "swapExactTokensForAVAX",
+            "swapETHForExactTokens": "swapAVAXForExactTokens",
+            "swapTokensForExactETH": "swapTokensForExactAVAX"
+          }
         }
       }
     },
@@ -1899,7 +1905,7 @@
       "rpc": "https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc",
       "blockExplorer": {
         "txBaseURL": "https://subnets.avax.network/defi-kingdoms/dfk-chain/explorer/tx",
-        "apiKey" : "0000000000000000000000000000000000"
+        "apiKey": "0000000000000000000000000000000000"
       },
       "gasDetails": {
         "address": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
@@ -3057,7 +3063,7 @@
       "rpc": "https://harmony-0-rpc.gateway.pokt.network",
       "blockExplorer": {
         "txBaseURL": "https://explorer.harmony.one/tx",
-        "apiKey" : "0000000000000000000000000000000000"
+        "apiKey": "0000000000000000000000000000000000"
       },
       "gasDetails": {
         "address": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a",
