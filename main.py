@@ -21,7 +21,7 @@ from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfi
 
 # Wallet modules
 from src.wallet.actions.swap import setupWallet
-from src.wallet.queries.network import getWalletsInformation
+from src.wallet.queries.network import getWalletsInformation, getNetworkWETH
 
 # General Init
 isDocker = checkIsDocker()
@@ -61,6 +61,13 @@ while True:
     for recipesTitle, recipesDetails in recipes.items():
 
         recipe = recipesDetails.copy()
+
+        WETH = getNetworkWETH(
+            rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
+            functionName="WETH", routerAddress=recipe["chainTwo"]["chain"]["contracts"]["router"]["address"],
+            routerABI=recipe["chainTwo"]["chain"]["contracts"]["router"]["abi"],
+            routerABIMappings=recipe["chainTwo"]["chain"]["contracts"]["router"]["mapping"]
+        )
 
         recipe = determineArbitrageStrategy(recipe)
 
