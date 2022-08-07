@@ -25,13 +25,16 @@ transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 def getPrivateKey():
     return privateKey
 
-def callMappedContractFunction(contract, functionName, abiMapping):
+def getMappedContractFunction(functionName, abiMapping):
 
     if functionName in abiMapping.keys():
-        functionToCall = abiMapping[functionName]
-        return getattr(contract.functions, functionToCall)().call()
+        return abiMapping[functionName]
     else:
         sys.exit(f"No mapping for {functionName}!")
+
+def callMappedContractFunction(contract, functionToCall):
+
+    return getattr(contract.functions, functionToCall)().call()
 
 def fillEmptyABIParams(abi, contractFunctionName):
     contractFunctionFields = {"inputs": [],
@@ -40,25 +43,29 @@ def fillEmptyABIParams(abi, contractFunctionName):
                               "stateMutability": "",
                               "type": ""}
 
-    functionIndex = next((index for (index, d) in enumerate(abi) if d["name"] == contractFunctionName), None)
-    functionToFix = abi[functionIndex]
-
-    for fieldName, fieldReplacement in contractFunctionFields.items():
-        if fieldName not in functionToFix.keys():
-            functionToFix[fieldName] = fieldReplacement
+    for abiFunction in abi:
+        if "name" in abiFunction.keys():
+            if abiFunction["name"] == contractFunctionName:
+                functionToFix = abiFunction
+                for fieldName, fieldReplacement in contractFunctionFields.items():
+                    if fieldName not in functionToFix.keys():
+                        functionToFix[fieldName] = fieldReplacement
+                        break
+                break
 
     return abi
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getNetworkWETH(rpcUrl, functionName, routerAddress, routerABI, routerABIMappings):
+def getNetworkWETH(rpcUrl, routerAddress, routerABI, routerABIMappings):
     w3 = Web3(Web3.HTTPProvider(rpcUrl))
 
-    routerABI = fillEmptyABIParams(abi=routerABI, contractFunctionName=functionName)
+    wethFunctionName = getMappedContractFunction(functionName="WETH", abiMapping=routerABIMappings)
+    routerABI = fillEmptyABIParams(abi=routerABI, contractFunctionName=wethFunctionName)
 
     contract_address = Web3.toChecksumAddress(routerAddress)
     contract = w3.eth.contract(contract_address, abi=routerABI)
 
-    return callMappedContractFunction(contract=contract, functionName=functionName, abiMapping=routerABIMappings)
+    return callMappedContractFunction(contract=contract, functionToCall=wethFunctionName)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcURL):
