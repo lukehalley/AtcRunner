@@ -150,7 +150,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
     balanceBeforeBridge = getTokenBalance(
         rpcURL=recipe[direction]["chain"]["rpc"],
         tokenAddress=recipe[direction][toSwapFrom]["address"],
-        tokenDecimals=recipe[direction][toSwapFrom]["decimals"]
+        tokenDecimals=recipe[direction][toSwapFrom]["decimals"],
+        wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
     )
 
     if direction == "origin":
@@ -169,7 +170,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
             amountOutDecimals=recipe[direction][toSwapFrom]["decimals"],
             amountInDecimals=recipe[direction][toSwapFrom]["decimals"],
             rpcUrl=recipe[direction]["chain"]["rpc"],
-            routerAddress=recipe[direction]["chain"]["uniswapRouter"],
+            routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
+            routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
             routes=routes
         )
 
@@ -200,7 +202,9 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 stepCategory=gasTopUpCategory,
                 telegramStatusMessage=telegramStatusMessage,
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"],
-                routerAddress=recipe[direction]["chain"]["uniswapRouter"],
+                routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
+                routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
+                wethContractABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
                 swappingFromGas=False,
                 swappingToGas=True
             )
@@ -213,8 +217,9 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
             sys.exit(err)
 
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
-            recipe[direction]["chain"]["rpc"],
-            recipe[direction]["wallet"]["address"]
+            rpcURL=recipe[direction]["chain"]["rpc"],
+            walletAddress=recipe[direction]["wallet"]["address"],
+            wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
         recipe = getWalletsInformation(recipe)
@@ -222,3 +227,6 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
         logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up successful - new balance is {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]}')
 
     return recipe, needsGas, telegramStatusMessage
+
+def callMappedContractFunction(contract, functionToCall):
+    return getattr(contract.functions, functionToCall)().call()

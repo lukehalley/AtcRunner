@@ -5,7 +5,7 @@ from retry import retry
 from web3 import Web3
 
 from src.api.synapsebridge import getTokenDecimalValue, getTokenNormalValue
-from src.dex.uniswap_v2_router import get_amounts_out, get_amounts_in
+from src.wallet.contracts.uniswap_v2_router import get_amounts_out, get_amounts_in
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -26,7 +26,7 @@ def normaliseSwapRoutes(routes):
 
 
 # @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress):
+def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress, routerABI):
 
     normalisedRoutes = normaliseSwapRoutes(routes)
 
@@ -36,7 +36,8 @@ def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,
         amount_in=amountInWei,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,
-        routerAddress=routerAddress
+        routerAddress=routerAddress,
+        routerABI=routerABI
     )
 
     amountOutWei = out[-1]
@@ -46,7 +47,7 @@ def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,
     return quote
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,  rpcUrl, routerAddress):
+def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,  rpcUrl, routerAddress, routerABI):
 
     normalisedRoutes = normaliseSwapRoutes(routes)
 
@@ -56,7 +57,8 @@ def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,
         amount_out=amountWei,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,
-        routerAddress=routerAddress
+        routerAddress=routerAddress,
+        routerABI=routerABI
     )
 
     quote = getTokenNormalValue(out[0], amountInDecimals)

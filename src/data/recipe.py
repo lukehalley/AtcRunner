@@ -149,6 +149,8 @@ def getRecipeDetails():
             recipeDetails[chainNumber]["gas"]["symbol"] = recipeDetails[chainNumber]["chain"]["gasDetails"]["symbol"]
             recipeDetails[chainNumber]["gas"]["address"] = chainWrappedGasTokenAddress
 
+            recipeDetails[chainNumber]["chain"]["contracts"]["weth"]["address"] = chainWrappedGasTokenAddress
+
             recipeDetails[chainNumber]["stablecoin"]["price"] = \
                 getTokenPriceByDexId(
                     chainName=recipeDetails[chainNumber]["chain"]["name"],
