@@ -4,21 +4,16 @@ https://docs.uniswap.org/protocol/V2/reference/smart-contracts/factory
 
 from web3 import Web3
 
-from src.utils.chain import getABI
-
-ABI = getABI("IUniswapV2Factory.json")
-
-def all_pairs_length(rpc_address, factoryAddress):
+def all_pairs_length(rpc_address, factoryAddress, factoryABI):
 
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(factoryAddress)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = w3.eth.contract(contract_address, abi=factoryABI)
 
     return contract.functions.allPairsLength().call()
 
-
-def all_pairs(index, rpc_address, factoryAddress):
+def all_pairs(index, rpc_address, factoryAddress, factoryABI):
     '''
     Return the address of the liquidity pair at index
     :param index:
@@ -28,16 +23,15 @@ def all_pairs(index, rpc_address, factoryAddress):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(factoryAddress)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = w3.eth.contract(contract_address, abi=factoryABI)
 
     return contract.functions.allPairs(index).call()
 
-
-def get_pair(token_address_1, token_address_2, rpc_address, factoryAddress):
+def get_pair(token_address_1, token_address_2, rpc_address, factoryAddress, factoryABI):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(factoryAddress)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = w3.eth.contract(contract_address, abi=factoryABI)
 
     pairAddress = contract.functions.getPair(token_address_1, token_address_2).call()
 

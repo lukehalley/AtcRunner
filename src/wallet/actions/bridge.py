@@ -12,7 +12,7 @@ from src.wallet.queries.network import getWalletAddressFromPrivateKey, getTokenB
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
-def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, stepNumber, predictions=None):
+def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, stepNumber, wethContractABI, predictions=None):
     walletAddress = getWalletAddressFromPrivateKey(fromChainRPCURL)
 
     amountToBridgeWei = getTokenDecimalValue(amountToBridge, fromTokenDecimals)
@@ -43,7 +43,7 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
         'value': int(bridgeTransaction["value"])
     }
 
-    balanceBeforeBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals)
+    balanceBeforeBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
     transactionResult = signAndSendTransaction(
         tx=tx,
@@ -64,7 +64,7 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
         stepNumber=stepNumber
     )
 
-    balanceAfterBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals)
+    balanceAfterBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
     actualBridgedAmount = balanceAfterBridge - balanceBeforeBridge
 
