@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 from decimal import Decimal
 
 from retry import retry
@@ -189,7 +188,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
         try:
 
             telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
-                                                    messageToAppend=f"⛽️. Topping Up {direction.title()} Wallet -> 📤")
+                                                    messageToAppend=f"⛽️ Topping Up {direction.title()} Wallet -> 📤")
 
             result = swapToken(
                 amountInNormal=amountInQuoted,
@@ -201,10 +200,10 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=gasTopUpCategory,
                 telegramStatusMessage=telegramStatusMessage,
-                explorerUrl=recipe[direction]["chain"]["blockExplorer"],
+                explorerUrl=recipe[direction]["chain"]["blockExplorer"]["txBaseURL"],
                 routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
                 routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
-                wethContractABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
+                wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"],
                 swappingFromGas=False,
                 swappingToGas=True
             )
@@ -214,7 +213,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
         except Exception as err:
             errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
             logger.error(errMsg)
-            sys.exit(err)
+            raise Exception(err)
 
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
             rpcURL=recipe[direction]["chain"]["rpc"],

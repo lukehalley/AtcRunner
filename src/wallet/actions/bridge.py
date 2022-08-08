@@ -60,6 +60,7 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
         toChainRPCURL=toChainRPCURL,
         toTokenAddress=toTokenAddress,
         toTokenDecimals=toTokenDecimals,
+        wethContractABI=wethContractABI,
         predictions=predictions,
         stepNumber=stepNumber
     )

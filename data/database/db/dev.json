@@ -5169,6 +5169,7 @@
   },
   "recipes": {
     "AVAX_DFKChain_Avalanche": {
+      "enabled": false,
       "arbitrage": {
         "dexId": "defikingdoms",
         "directionLock": "avalanchedfk,avalanche",
@@ -5211,6 +5212,7 @@
       }
     },
     "JEWEL_Harmony_DFKChain": {
+      "enabled": true,
       "arbitrage": {
         "dexId": "defikingdoms",
         "directionLock": "avalanchedfk,harmony",
@@ -5253,6 +5255,7 @@
       }
     },
     "ETH_Harmony_DFKChain": {
+      "enabled": false,
       "arbitrage": {
         "dexId": "defikingdoms",
         "directionLock": "avalanchedfk,harmony",

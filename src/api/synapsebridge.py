@@ -30,7 +30,7 @@ def checkBridgeStatusAPI(toChain, fromChainTxnHash):
 
 # Check what is the status of our bridge transaction using the API
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def checkBridgeStatusBalance(predictions, stepNumber, toChainRPCURL, toTokenAddress, toTokenDecimals):
+def checkBridgeStatusBalance(predictions, stepNumber, toChainRPCURL, toTokenAddress, toTokenDecimals, wethContractABI):
     from src.wallet.queries.network import getTokenBalance
     if predictions["steps"][stepNumber]["stepType"] == "bridge":
         bridgePredictions = predictions["steps"][stepNumber]["amountOut"]
@@ -40,11 +40,11 @@ def checkBridgeStatusBalance(predictions, stepNumber, toChainRPCURL, toTokenAddr
         upperLimit = bridgePredictions + percentageDifference
 
         currentBalance = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress,
-                                         tokenDecimals=toTokenDecimals)
+                                         tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
         return isBetween(lowerLimit=lowerLimit, middleNumber=currentBalance, upperLimit=upperLimit)
     else:
-        sys.exit("Prediction not a bridge type!")
+        raise Exception("Prediction not a bridge type!")
 
 # Check if a swap is supported
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)

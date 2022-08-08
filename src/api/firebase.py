@@ -98,7 +98,7 @@ def writeResultToDB(result, arbitrageNumber):
 
             err = f"Tried to write profit/loss to DB but {arbitrageTitle} didn't exist!"
             logger.error(err)
-            sys.exit(err)
+            raise Exception(err)
 
         else:
 
@@ -111,4 +111,4 @@ def writeResultToDB(result, arbitrageNumber):
     else:
         err = "Tried to write profit/loss to DB the arbitrages collection didn't exist!"
         logger.error(err)
-        sys.exit(err)
+        raise Exception(err)
