@@ -139,8 +139,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
     from src.wallet.queries.swap import getSwapQuoteIn
     from src.wallet.actions.swap import swapToken
 
-    minimumGasBalance = Decimal(os.environ.get("MIN_GAS_BALANCE"))
-    maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
+    minimumGasBalance = Decimal(recipe[direction]["chain"]["gasDetails"]["gasLimits"]["minGas"])
+    maximumGasBalance = Decimal(recipe[direction]["chain"]["gasDetails"]["gasLimits"]["maxGas"])
 
     gasBalance = recipe[direction]["wallet"]["balances"]["gas"]
 

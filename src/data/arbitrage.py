@@ -534,12 +534,14 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 f"Rolling Back Arbitrage")
     printSeperator(True)
 
+    normalStepCount = 4
+
     for stepSettings in steps:
 
         printSeperator()
 
         stepType = stepSettings["type"]
-        stepNumber = steps.index(stepSettings) + 1
+        stepNumber = steps.index(stepSettings) + 1 + normalStepCount
 
         position = stepSettings["position"]
         oppositePosition = getOppositeDirection(position)
