@@ -713,8 +713,8 @@
       "gasDetails": {
         "symbol": "WAVAX",
         "gasLimits": {
-          "minGas": 1,
-          "maxGas": 5
+          "minGas": 0.01,
+          "maxGas": 0.1
         }
       },
       "contracts": {
@@ -5169,7 +5169,7 @@
   },
   "recipes": {
     "AVAX_DFKChain_Avalanche": {
-      "enabled": false,
+      "enabled": true,
       "arbitrage": {
         "dexId": "defikingdoms",
         "directionLock": "avalanchedfk,avalanche",
@@ -5212,7 +5212,7 @@
       }
     },
     "JEWEL_Harmony_DFKChain": {
-      "enabled": true,
+      "enabled": false,
       "arbitrage": {
         "dexId": "defikingdoms",
         "directionLock": "avalanchedfk,harmony",
