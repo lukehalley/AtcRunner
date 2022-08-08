@@ -113,8 +113,9 @@ def getWalletsInformation(recipe, printBalances=False):
         recipe[direction]["wallet"]["balances"] = {}
 
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
-            recipe[direction]["chain"]["rpc"],
-            recipe[direction]["wallet"]["address"]
+            rpcURL=recipe[direction]["chain"]["rpc"],
+            walletAddress=recipe[direction]["wallet"]["address"],
+            wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
         recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
