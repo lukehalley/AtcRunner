@@ -26,7 +26,7 @@ def setupWallet(recipe):
     if not originHasTokens and not originHasStablecoins:
         errMsg = f'Origin wallet has neither Tokens or Stablecoins!'
         logger.error(errMsg)
-        sys.exit(errMsg)
+        raise Exception(errMsg)
     elif not originHasStablecoins:
 
         telegramStatusMessage = printSettingUpWallet(recipe['arbitrage']['currentRoundTripCount'])
@@ -63,7 +63,7 @@ def setupWallet(recipe):
             rpcURL=recipe[position]["chain"]["rpc"],
             arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
             stepCategory=f"0_setup",
-            explorerUrl=recipe[position]["chain"]["blockExplorer"],
+            explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
             routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
             routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
             wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
@@ -144,7 +144,7 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
         balanceBeforeSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress,
                                                 wethContractABI=wethContractABI)
     else:
-        balanceBeforeSwap = getTokenBalance(rpcURL=rpcURL, tokenAddress=tokenPath[-1], tokenDecimals=amountOutDecimals)
+        balanceBeforeSwap = getTokenBalance(rpcURL=rpcURL, tokenAddress=tokenPath[-1], tokenDecimals=amountOutDecimals, wethContractABI=wethContractABI)
 
     transactionResult = signAndSendTransaction(
         tx=tx,
@@ -159,10 +159,10 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
 
     while balanceAfterSwap <= balanceBeforeSwap:
         if swappingToGas:
-            balanceAfterSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress)
+            balanceAfterSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress, wethContractABI=wethContractABI)
         else:
             balanceAfterSwap = getTokenBalance(rpcURL=rpcURL, tokenAddress=tokenPath[-1],
-                                               tokenDecimals=amountOutDecimals)
+                                               tokenDecimals=amountOutDecimals, wethContractABI=wethContractABI)
 
     actualSwapAmount = balanceAfterSwap - balanceBeforeSwap
 

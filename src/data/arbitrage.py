@@ -1,6 +1,5 @@
 import logging
 import os
-from collections import OrderedDict
 from decimal import Decimal
 from itertools import repeat
 
@@ -28,7 +27,6 @@ def getNextArbitrageNumber():
         return sorted([int(w.replace('arbitrage_', '')) for w in list(arbitrages.keys())])[-1] + 1
     else:
         return 1
-
 
 # Determine our arbitrage strategy
 def determineArbitrageStrategy(recipe):
@@ -164,7 +162,6 @@ def determineArbitrageStrategy(recipe):
 
     return recipe
 
-
 def getRoutes(recipe, position, driver, currentFunds, toSwapFrom, toSwapTo):
     if driver:
         routes = getRoutesFromFrontend(
@@ -179,7 +176,6 @@ def getRoutes(recipe, position, driver, currentFunds, toSwapFrom, toSwapTo):
         routes = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
 
     return routes
-
 
 def simulateStep(recipe, stepSettings, currentFunds, driver=None):
     stepType = stepSettings["type"]
@@ -219,7 +215,6 @@ def simulateStep(recipe, stepSettings, currentFunds, driver=None):
         raise Exception(errMsg)
 
     return quote
-
 
 def checkArbitrageIsProfitable(recipe, originDriver, destinationDriver, printInfo=True, position="origin"):
     steps = fetchArbitrageStrategy(strategyName="networkBridge")
@@ -331,7 +326,6 @@ def checkArbitrageIsProfitable(recipe, originDriver, destinationDriver, printInf
 
     return isProfitable, predictions
 
-
 def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
     steps = fetchArbitrageStrategy(strategyName="networkBridge")
 
@@ -418,10 +412,10 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     rpcURL=recipe[position]["chain"]["rpc"],
                     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_swap",
-                    explorerUrl=recipe[position]["chain"]["blockExplorer"],
+                    explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                     routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
                     routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-                    wethContractABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+                    wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                     telegramStatusMessage=telegramStatusMessage,
                     swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
                     swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"]),
@@ -471,9 +465,10 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
                     toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                     toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
+                    wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_bridge",
-                    explorerUrl=recipe[position]["chain"]["blockExplorer"],
+                    explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                     telegramStatusMessage=telegramStatusMessage,
                     predictions=predictions,
                     stepNumber=stepNumber
@@ -528,7 +523,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                                  startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
             return wasProfitable
-
 
 def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, telegramStatusMessage):
     steps = fetchArbitrageStrategy(strategyName="networkBridgeRollback")
@@ -600,10 +594,10 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 rpcURL=recipe[position]["chain"]["rpc"],
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=f"{stepNumber}_swap",
-                explorerUrl=recipe[position]["chain"]["blockExplorer"],
+                explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                 routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
                 routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-                wethContractABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+                wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                 telegramStatusMessage=telegramStatusMessage,
                 swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
                 swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
@@ -637,9 +631,10 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
                 toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                 toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
+                wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=f"{stepNumber}_bridge",
-                explorerUrl=recipe[position]["chain"]["blockExplorer"],
+                explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                 telegramStatusMessage=telegramStatusMessage,
                 predictions=None,
                 stepNumber=stepNumber
@@ -697,7 +692,6 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
     return wasProfitable
 
-
 # Predict our potential profit/loss
 def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
     logger.debug(f"Calculating potential profit")
@@ -740,7 +734,6 @@ def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
 
     return tripIsProfitible
 
-
 # Calculate the difference between two tokens
 def calculateDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")
@@ -748,7 +741,6 @@ def calculateDifference(pairOne, pairTwo):
     ans = ((pairOne - pairTwo) / ((pairOne + pairTwo) / 2)) * 100
 
     return round(ans, 6)
-
 
 # Determine which token is the origin and destination
 def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
@@ -758,7 +750,6 @@ def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
         return n2Name, n1Name
     else:
         return None, None
-
 
 # Check if arbitrage is worth it
 def checkArbitrageIsWorthIt(difference):

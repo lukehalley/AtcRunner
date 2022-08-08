@@ -53,7 +53,7 @@ def get_amounts_in(amount_out, addresses, rpc_address, routerAddress, routerABI)
 
     else:
 
-        sys.exit(f"getAmountsIn - has duplicate addresses: {addresses}")
+        raise Exception(f"getAmountsIn - has duplicate addresses: {addresses}")
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def get_amount_out(amount_out, reserve_in, reserve_out, rpc_address, routerAddress, routerABI):
@@ -79,7 +79,7 @@ def get_amounts_out(amount_in, addresses, rpc_address, routerAddress, routerABI)
 
     else:
 
-        sys.exit(f"get_amounts_out - has duplicate addresses: {addresses}")
+        raise Exception(f"get_amounts_out - has duplicate addresses: {addresses}")
 
 
 

@@ -31,7 +31,7 @@ def getMappedContractFunction(functionName, abiMapping):
     if functionName in abiMapping.keys():
         return abiMapping[functionName]
     else:
-        sys.exit(f"No mapping for {functionName}!")
+        raise Exception(f"No mapping for {functionName}!")
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def fillEmptyABIParams(abi, contractFunctionName):

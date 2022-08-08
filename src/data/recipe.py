@@ -143,7 +143,7 @@ def getRecipeDetails():
                             recipeDetails[chainNumber][key]["swapType"] = tokenDetails["swapType"]
                             recipeDetails[chainNumber][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
             else:
-                sys.exit(F"Invalid Token Retrieval Method: {tokenRetrievalMethod}")
+                raise Exception(F"Invalid Token Retrieval Method: {tokenRetrievalMethod}")
 
             recipeDetails[chainNumber]["gas"] = {}
             recipeDetails[chainNumber]["gas"]["symbol"] = recipeDetails[chainNumber]["chain"]["gasDetails"]["symbol"]
@@ -160,5 +160,7 @@ def getRecipeDetails():
 
             if recipeDetails[chainNumber]["stablecoin"]["price"] is None:
                 recipeDetails[chainNumber]["stablecoin"]["price"] = 1.0
+
+    recipes = {recipeName:recipeDetail for recipeName, recipeDetail in recipes.items() if recipeDetail["enabled"]}
 
     return recipes

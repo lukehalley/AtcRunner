@@ -17,7 +17,7 @@ bridgeWaitTimeout = int(os.environ.get("BRIDGE_TIMEOUT_SECS"))
 bridgeStuckLimitMin = int(os.environ.get("BRIDGE_STUCK_MINS_LIMIT"))
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals, stepNumber, predictions=None):
+def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals, stepNumber, wethContractABI, predictions=None):
 
     timeout = bridgeWaitTimeout
 
@@ -61,7 +61,7 @@ def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, to
         fundsBridgedAPI = checkBridgeStatusAPI(toChain=toChain, fromChainTxnHash=transactionId)["isComplete"]
 
         if predictions:
-            fundsBridgedBalance = checkBridgeStatusBalance(predictions=predictions, stepNumber=stepNumber, toChainRPCURL=toChainRPCURL, toTokenAddress=toTokenAddress, toTokenDecimals=toTokenDecimals)
+            fundsBridgedBalance = checkBridgeStatusBalance(predictions=predictions, stepNumber=stepNumber, toChainRPCURL=toChainRPCURL, toTokenAddress=toTokenAddress, toTokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
         time.sleep(0)
 
