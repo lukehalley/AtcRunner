@@ -4,7 +4,7 @@ import time
 
 from retry import retry
 
-from src.api.synapsebridge import checkBridgeStatusAPI, checkBridgeStatusBalance
+from src.api.synapsebridge import checkBridgeStatusAPI, checkBridgeStatusBalance, generateUnsignedBridgeApprovalTransaction
 from src.api.telegrambot import notifyHangingBridge, notifyUnstickedBridge
 from src.utils.general import getMinSecString, printSeperator
 

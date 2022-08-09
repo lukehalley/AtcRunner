@@ -21,7 +21,7 @@ from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfi
 
 # Wallet modules
 from src.wallet.actions.swap import setupWallet
-from src.wallet.queries.network import getWalletsInformation
+from src.wallet.queries.network import getWalletsInformation, getTokenApprovalStatus
 
 # General Init
 isDocker = checkIsDocker()
@@ -72,19 +72,30 @@ while True:
 
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
-        setupWallet(recipe=recipe)
+        canBridge = getTokenApprovalStatus(rpcUrl=recipe["origin"]["chain"]["rpc"],
+                               walletAddress=recipe["origin"]["wallet"]["address"],
+                               tokenAddress=recipe["origin"]["token"]["address"],
+                               spenderAddress=recipe["origin"]["chain"]["contracts"]["bridges"]["synapse"]["address"],
+                               wethAbi=recipe["origin"]["chain"]["contracts"]["weth"]["abi"])
 
-        isProfitable, predictions = checkArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
+        canSwap = getTokenApprovalStatus(rpcUrl=recipe["origin"]["chain"]["rpc"],
+                               walletAddress=recipe["origin"]["wallet"]["address"],
+                               tokenAddress=recipe["origin"]["token"]["address"],
+                               spenderAddress=recipe["origin"]["chain"]["contracts"]["router"]["address"],
+                               wethAbi=recipe["origin"]["chain"]["contracts"]["weth"]["abi"])
+
+        # setupWallet(recipe=recipe)
 
         printSeperator(True)
 
-        if True:
+        if False:
 
             telegramStatusMessage = printArbitrageProfitable(recipe, predictions)
 
             startingTime = time.perf_counter()
 
-            executeArbitrage(recipe=recipe, predictions=predictions, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+            executeArbitrage(recipe=recipe, predictions=predictions, startingTime=startingTime,
+                             telegramStatusMessage=telegramStatusMessage)
 
         else:
             printSeperator()
