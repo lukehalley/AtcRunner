@@ -171,3 +171,19 @@ def compareBalance(expected, actual, feeAllowancePercentage=10):
         return True
     else:
         return False
+
+def getTokenApprovalStatus(rpcUrl, walletAddress, tokenAddress, spenderAddress, wethAbi):
+    web3 = Web3(Web3.HTTPProvider(rpcUrl))
+
+    contract = tokenAddress
+    contract = web3.toChecksumAddress(contract)
+
+    contract = web3.eth.contract(address=contract, abi=wethAbi)
+
+    _owner = web3.toChecksumAddress(walletAddress)
+    _spender = web3.toChecksumAddress(spenderAddress)
+
+    isApproved = contract.functions.allowance(_owner, _spender).call()
+    isApprovedBool = bool(isApproved)
+
+    return isApprovedBool

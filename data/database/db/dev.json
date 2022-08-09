@@ -2209,6 +2209,11 @@
             }
           ],
           "mapping": {}
+        },
+        "bridges": {
+          "synapse": {
+            "address": "0x0EF812f4c68DC84c22A4821EF30ba2ffAB9C2f3A"
+          }
         }
       }
     },
@@ -3686,6 +3691,11 @@
             }
           ],
           "mapping": {}
+        },
+        "bridges": {
+          "synapse": {
+            "address": "0x75224b0f245Fe51d5bf47A898DbB6720D4150BA7"
+          }
         }
       }
     },
@@ -5163,6 +5173,11 @@
             }
           ],
           "mapping": {}
+        },
+        "bridges": {
+          "synapse": {
+            "address": "0xb003e75f7e0b5365e814302192e99b4ee08c0ded"
+          }
         }
       }
     }

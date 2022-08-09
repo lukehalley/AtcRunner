@@ -13,6 +13,7 @@ logger = logging.getLogger("DFK-DEX")
 transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def normaliseSwapRoutes(routes):
     normalisedRoutes = []
 
@@ -24,8 +25,7 @@ def normaliseSwapRoutes(routes):
 
     return normalisedRoutes
 
-
-# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress, routerABI):
 
     normalisedRoutes = normaliseSwapRoutes(routes)
