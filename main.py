@@ -74,7 +74,7 @@ while True:
 
         canBridge = getTokenApprovalStatus(rpcUrl=recipe["origin"]["chain"]["rpc"],
                                walletAddress=recipe["origin"]["wallet"]["address"],
-                               tokenAddress=recipe["origin"]["token"]["address"],
+                               tokenAddress=recipe["origin"]["stablecoin"]["address"],
                                spenderAddress=recipe["origin"]["chain"]["contracts"]["bridges"]["synapse"]["address"],
                                wethAbi=recipe["origin"]["chain"]["contracts"]["weth"]["abi"])
 
