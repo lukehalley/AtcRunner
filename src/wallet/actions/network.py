@@ -232,14 +232,13 @@ def callMappedContractFunction(contract, functionToCall):
     return getattr(contract.functions, functionToCall)().call()
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, routerAddress, wethAbi, arbitrageNumber, stepCategory, telegramStatusMessage):
+def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddress, wethAbi, arbitrageNumber, stepCategory, telegramStatusMessage):
 
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
 
     tokenAddressCS = web3.toChecksumAddress(tokenAddress)
     tokenToApproveContract = web3.eth.contract(address=tokenAddressCS, abi=wethAbi)
 
-    spenderAddress = routerAddress
     amountToApprove = web3.toWei(2 ** 64 - 1, 'ether')
     nonce = web3.eth.getTransactionCount(tokenToApproveContract)
 
@@ -249,5 +248,3 @@ def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, routerAddress
     })
 
     signAndSendTransaction(tx=tx, rpcURL=rpcUrl, explorerUrl=explorerUrl, arbitrageNumber=arbitrageNumber, stepCategory=stepCategory, telegramStatusMessage=telegramStatusMessage)
-
-    x = 1
