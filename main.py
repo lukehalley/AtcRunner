@@ -72,30 +72,19 @@ while True:
 
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
-        canBridge = getTokenApprovalStatus(rpcUrl=recipe["origin"]["chain"]["rpc"],
-                               walletAddress=recipe["origin"]["wallet"]["address"],
-                               tokenAddress=recipe["origin"]["stablecoin"]["address"],
-                               spenderAddress=recipe["origin"]["chain"]["contracts"]["bridges"]["synapse"]["address"],
-                               wethAbi=recipe["origin"]["chain"]["contracts"]["weth"]["abi"])
-
-        canSwap = getTokenApprovalStatus(rpcUrl=recipe["origin"]["chain"]["rpc"],
-                               walletAddress=recipe["origin"]["wallet"]["address"],
-                               tokenAddress=recipe["origin"]["token"]["address"],
-                               spenderAddress=recipe["origin"]["chain"]["contracts"]["router"]["address"],
-                               wethAbi=recipe["origin"]["chain"]["contracts"]["weth"]["abi"])
-
         # setupWallet(recipe=recipe)
+
+        isProfitable, predictions = checkArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
 
         printSeperator(True)
 
-        if False:
+        if True:
 
             telegramStatusMessage = printArbitrageProfitable(recipe, predictions)
 
             startingTime = time.perf_counter()
 
-            executeArbitrage(recipe=recipe, predictions=predictions, startingTime=startingTime,
-                             telegramStatusMessage=telegramStatusMessage)
+            executeArbitrage(recipe=recipe, predictions=predictions, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
         else:
             printSeperator()
