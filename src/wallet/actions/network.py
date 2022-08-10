@@ -14,6 +14,7 @@ from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
 from src.wallet.queries.network import getTokenBalance, getWalletsInformation
 
 from web3 import exceptions
+from web3.middleware import geth_poa_middleware
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -235,16 +236,18 @@ def callMappedContractFunction(contract, functionToCall):
 def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddress, wethAbi, arbitrageNumber, stepCategory, telegramStatusMessage):
 
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
+    web3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
     tokenAddressCS = web3.toChecksumAddress(tokenAddress)
     tokenToApproveContract = web3.eth.contract(address=tokenAddressCS, abi=wethAbi)
 
     amountToApprove = web3.toWei(2 ** 64 - 1, 'ether')
-    nonce = web3.eth.getTransactionCount(tokenToApproveContract)
+    nonce = web3.eth.getTransactionCount(walletAddress, 'pending')
 
     tx = tokenToApproveContract.functions.approve(spenderAddress, amountToApprove).buildTransaction({
         'from': walletAddress,
-        'nonce': nonce
+        'nonce': nonce,
+        'gasPrice': web3.eth.gas_price,
     })
 
-    signAndSendTransaction(tx=tx, rpcURL=rpcUrl, explorerUrl=explorerUrl, arbitrageNumber=arbitrageNumber, stepCategory=stepCategory, telegramStatusMessage=telegramStatusMessage)
+    transactionResult = signAndSendTransaction(tx=tx, rpcURL=rpcUrl, explorerUrl=explorerUrl, arbitrageNumber=arbitrageNumber, stepCategory=stepCategory, telegramStatusMessage=telegramStatusMessage)
