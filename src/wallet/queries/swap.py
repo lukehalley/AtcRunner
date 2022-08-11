@@ -5,7 +5,7 @@ from retry import retry
 from web3 import Web3
 
 from src.api.synapsebridge import getTokenDecimalValue, getTokenNormalValue
-from src.wallet.contracts.uniswap_v2_router import get_amounts_out, get_amounts_in
+from src.wallet.contracts.uniswap_v2_router import getAmountsOut, getAmountsIn
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -32,7 +32,7 @@ def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,
 
     amountInWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
 
-    out = get_amounts_out(
+    out = getAmountsOut(
         amount_in=amountInWei,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,
@@ -54,7 +54,7 @@ def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,
 
     amountWei = int(getTokenDecimalValue(amountOutNormal, amountOutDecimals))
 
-    out = get_amounts_in(
+    out = getAmountsIn(
         amount_out=amountWei,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,

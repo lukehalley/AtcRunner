@@ -204,6 +204,7 @@ def simulateStep(recipe, stepSettings, currentFunds, driver=None):
             rpcUrl=recipe[position]["chain"]["rpc"],
             routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
             routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+            routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
             routes=routeAddressList
         )
 
@@ -459,6 +460,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                     routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
                     routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+                    routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
                     wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                     telegramStatusMessage=telegramStatusMessage,
                     swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
@@ -651,6 +653,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 rpcUrl=recipe[position]["chain"]["rpc"],
                 routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
                 routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+                routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
                 routes=swapRoute
             )
 
@@ -698,6 +701,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                 routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
                 routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+                routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
                 wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                 telegramStatusMessage=telegramStatusMessage,
                 swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),

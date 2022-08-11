@@ -645,6 +645,13 @@
         "gasUsed": 106042,
         "hash": "0x594fd2dc7378623ba6bb5d9f7330fe997a33b68cc59a45a65ed8ca57abceceaf",
         "wasSuccessful": true
+      },
+      "3_5_swap": {
+        "dateTime": "10/08/2022 18:10:30",
+        "explorerLink": "https://snowtrace.io/tx/0x8aaf2f2e0c6c8c5d800a573ac955d465bd6bf8d9cedc9b36dd3776e4cda38de5",
+        "gasUsed": 46219,
+        "hash": "0x8aaf2f2e0c6c8c5d800a573ac955d465bd6bf8d9cedc9b36dd3776e4cda38de5",
+        "wasSuccessful": true
       }
     },
     "arbitrage_5": {
@@ -5210,7 +5217,7 @@
           "symbol": "USDC.e"
         },
         "token": {
-          "isGas": "False",
+          "isGas": "True",
           "symbol": "WAVAX"
         }
       },
@@ -5227,7 +5234,7 @@
           "symbol": "USDC"
         },
         "token": {
-          "isGas": "True",
+          "isGas": "False",
           "symbol": "AVAX"
         }
       },
