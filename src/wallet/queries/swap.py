@@ -26,7 +26,7 @@ def normaliseSwapRoutes(routes):
     return normalisedRoutes
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress, routerABI):
+def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress, routerABI, routerABIMappings):
 
     normalisedRoutes = normaliseSwapRoutes(routes)
 
@@ -37,7 +37,8 @@ def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,
         routerAddress=routerAddress,
-        routerABI=routerABI
+        routerABI=routerABI,
+        routerABIMappings=routerABIMappings
     )
 
     amountOutWei = out[-1]

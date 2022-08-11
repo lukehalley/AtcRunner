@@ -5,6 +5,9 @@ import sys
 from retry import retry
 from web3 import Web3
 
+from src.wallet.actions.network import callMappedContractFunction
+from src.wallet.queries.network import getMappedContractFunction
+
 logger = logging.getLogger("DFK-DEX")
 
 # Retry Envs
@@ -65,17 +68,26 @@ def get_amount_out(amount_out, reserve_in, reserve_out, rpc_address, routerAddre
     return contract.functions.getAmountOut(amount_out, reserve_in, reserve_out).call()
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def get_amounts_out(amount_in, addresses, rpc_address, routerAddress, routerABI):
+def get_amounts_out(amount_in, addresses, rpc_address, routerAddress, routerABI, routerABIMappings):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     hasDuplicateAddresses = len(addresses) != len(set(addresses))
 
     if not hasDuplicateAddresses:
 
+        getAmountsOutFunctionName = getMappedContractFunction(functionName="getAmountsOut", abiMapping=routerABIMappings)
+
         contract_address = Web3.toChecksumAddress(routerAddress)
         contract = w3.eth.contract(contract_address, abi=routerABI)
 
-        return contract.functions.getAmountsOut(amount_in, addresses).call()
+        # return contract.functions.getAmountsOut(amount_in, addresses).call()
+
+        params = [
+            amount_in,
+            addresses
+        ]
+
+        return callMappedContractFunction(contract=contract, functionToCall=getAmountsOutFunctionName, functionParams=params)
 
     else:
 
