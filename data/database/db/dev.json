@@ -5200,7 +5200,10 @@
     "AVAX_DFKChain_Avalanche": {
       "arbitrage": {
         "dexId": "defikingdoms",
-        "directionLock": "avalanchedfk,avalanche",
+        "directionLock": {
+          "direction": "avalanchedfk,avalanche",
+          "lockEnabled": "false"
+        },
         "tokenList": "DFK_ALL",
         "tokenRetrievalMethod": "tokenList"
       },
@@ -5243,7 +5246,10 @@
     "ETH_Harmony_DFKChain": {
       "arbitrage": {
         "dexId": "defikingdoms",
-        "directionLock": "avalanchedfk,harmony",
+        "directionLock": {
+          "direction": "avalanchedfk,harmony",
+          "lockEnabled": "false"
+        },
         "tokenList": "DFK_ALL",
         "tokenRetrievalMethod": "tokenList"
       },
@@ -5286,7 +5292,10 @@
     "JEWEL_Harmony_DFKChain": {
       "arbitrage": {
         "dexId": "defikingdoms",
-        "directionLock": "avalanchedfk,harmony",
+        "directionLock": {
+          "direction": "avalanchedfk,harmony",
+          "lockEnabled": "false"
+        },
         "tokenList": "DFK_ALL",
         "tokenRetrievalMethod": "tokenList"
       },

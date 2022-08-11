@@ -86,10 +86,10 @@ def determineArbitrageStrategy(recipe):
                                                      chainTwoTokenPrice, recipe["chainTwo"]["chain"]["name"])
     logger.debug(f"Calculating data origin and destination")
 
-    recipe["arbitrage"]["directionLockEnabled"] = strToBool(os.getenv("DIRECTION_LOCK_ENABLED"))
+    directionLockEnabled = strToBool(recipe["arbitrage"]["directionLock"]["lockEnabled"])
 
-    if recipe["arbitrage"]["directionLockEnabled"] and "directionLock" in recipe["arbitrage"]:
-        directionlock = recipe["arbitrage"]["directionLock"].split(",")
+    if directionLockEnabled:
+        directionlock = recipe["arbitrage"]["directionLock"]["direction"].split(",")
 
         originLock = directionlock[0]
         destinationLock = directionlock[1]
@@ -141,7 +141,7 @@ def determineArbitrageStrategy(recipe):
 
     printSeperator()
 
-    if recipe["arbitrage"]["directionLockEnabled"]:
+    if directionLockEnabled:
         logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Locked Arbitrage Opportunity Identified')
     else:
         logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Arbitrage Opportunity Identified')
