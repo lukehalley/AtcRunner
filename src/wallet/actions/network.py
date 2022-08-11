@@ -229,8 +229,14 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
     return recipe, needsGas, telegramStatusMessage
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def callMappedContractFunction(contract, functionToCall):
-    return getattr(contract.functions, functionToCall)().call()
+def callMappedContractFunction(contract, functionToCall, functionParams=None):
+
+    if functionParams:
+        result = getattr(contract.functions, functionToCall)(*functionParams).call()
+    else:
+        result = getattr(contract.functions, functionToCall)().call()
+
+    return result
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddress, wethAbi, arbitrageNumber, stepCategory, telegramStatusMessage):

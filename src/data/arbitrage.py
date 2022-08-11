@@ -43,6 +43,7 @@ def determineArbitrageStrategy(recipe):
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
         routerAddress=recipe["chainOne"]["chain"]["contracts"]["router"]["address"],
         routerABI=recipe["chainOne"]["chain"]["contracts"]["router"]["abi"],
+        routerABIMappings=recipe["chainOne"]["chain"]["contracts"]["router"]["mapping"],
         routes=recipe["chainOne"]["routes"]["token-stablecoin"]
     )
 
@@ -53,6 +54,7 @@ def determineArbitrageStrategy(recipe):
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
         routerAddress=recipe["chainTwo"]["chain"]["contracts"]["router"]["address"],
         routerABI=recipe["chainTwo"]["chain"]["contracts"]["router"]["abi"],
+        routerABIMappings=recipe["chainTwo"]["chain"]["contracts"]["router"]["mapping"],
         routes=recipe["chainTwo"]["routes"]["token-stablecoin"]
     )
 
@@ -63,6 +65,7 @@ def determineArbitrageStrategy(recipe):
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
         routerAddress=recipe["chainOne"]["chain"]["contracts"]["router"]["address"],
         routerABI=recipe["chainOne"]["chain"]["contracts"]["router"]["abi"],
+        routerABIMappings=recipe["chainOne"]["chain"]["contracts"]["router"]["mapping"],
         routes=[recipe["chainOne"]["gas"]["address"], recipe["chainOne"]["stablecoin"]["address"]]
     )
 
@@ -73,6 +76,7 @@ def determineArbitrageStrategy(recipe):
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
         routerAddress=recipe["chainTwo"]["chain"]["contracts"]["router"]["address"],
         routerABI=recipe["chainTwo"]["chain"]["contracts"]["router"]["abi"],
+        routerABIMappings=recipe["chainTwo"]["chain"]["contracts"]["router"]["mapping"],
         routes=[recipe["chainTwo"]["gas"]["address"], recipe["chainTwo"]["stablecoin"]["address"]]
     )
 
@@ -404,6 +408,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     rpcUrl=recipe[position]["chain"]["rpc"],
                     routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
                     routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+                    routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
                     routes=swapRoute
                 )
 
