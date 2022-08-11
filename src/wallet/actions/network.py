@@ -239,6 +239,16 @@ def callMappedContractFunction(contract, functionToCall, functionParams=None):
     return result
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def buildMappedContractFunction(contract, functionToCall, txParams, functionParams=None):
+
+    if functionParams:
+        result = getattr(contract.functions, functionToCall)(*functionParams).buildTransaction(txParams)
+    else:
+        result = getattr(contract.functions, functionToCall)().buildTransaction(txParams)
+
+    return result
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddress, wethAbi, arbitrageNumber, stepCategory, telegramStatusMessage):
 
     web3 = Web3(Web3.HTTPProvider(rpcUrl))

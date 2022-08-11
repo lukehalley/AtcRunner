@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import warnings
 from decimal import Decimal
 
 from retry import retry
@@ -31,6 +32,7 @@ def getMappedContractFunction(functionName, abiMapping):
     if functionName in abiMapping.keys():
         return abiMapping[functionName]
     else:
+        warnings.warn(f"No Contract Mapping For {functionName}")
         return functionName
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)

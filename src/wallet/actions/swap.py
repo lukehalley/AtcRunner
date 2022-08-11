@@ -9,8 +9,9 @@ from src.api.telegrambot import updatedStatusMessage
 from src.utils.chain import getABI, getTransactionDeadline, getValueWithSlippage
 from src.utils.general import printSettingUpWallet, strToBool, printSeperator, truncateDecimal
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
-from src.wallet.actions.network import signAndSendTransaction
-from src.wallet.queries.network import getTokenBalance, getWalletGasBalance, getWalletsInformation
+from src.wallet.actions.network import signAndSendTransaction, callMappedContractFunction, buildMappedContractFunction
+from src.wallet.queries.network import getTokenBalance, getWalletGasBalance, getWalletsInformation, \
+    getMappedContractFunction
 
 # Set up our logging
 from src.wallet.queries.swap import getSwapQuoteOut
@@ -95,7 +96,7 @@ def setupWallet(recipe):
         printSeperator(True)
 
 
-def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, routerABI,
+def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, routerABI, routerABIMappings,
               arbitrageNumber, stepCategory, explorerUrl, wethContractABI, telegramStatusMessage=None,
               swappingFromGas=False, swappingToGas=False):
     from src.wallet.queries.network import getPrivateKey
@@ -129,16 +130,33 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
 
     transactionDeadline = getTransactionDeadline(timeInSeconds=transactionTimeout)
 
+    params = [
+        amountInWei,
+        amountOutWei,
+        normalisedRoutes,
+        walletAddress,
+        transactionDeadline
+    ]
+
     if swappingToGas:
-        tx = contract.functions.swapExactTokensForETH(amountInWei, amountOutWei, normalisedRoutes, walletAddress,
-                                                      transactionDeadline).buildTransaction(txParams)
+
+        swapExactTokensForETHFunctionName = getMappedContractFunction(functionName="swapExactTokensForETH", abiMapping=routerABIMappings)
+
+        tx = buildMappedContractFunction(contract=contract, functionToCall=swapExactTokensForETHFunctionName, txParams=txParams, functionParams=params)
+
     elif swappingFromGas:
-        tx = contract.functions.swapExactETHForTokens(amountOutWei, normalisedRoutes, walletAddress,
-                                                      transactionDeadline).buildTransaction(txParams)
+
+        swapExactETHForTokensFunctionName = getMappedContractFunction(functionName="swapExactETHForTokens", abiMapping=routerABIMappings)
+
+        tx = buildMappedContractFunction(contract=contract, functionToCall=swapExactETHForTokensFunctionName, txParams=txParams, functionParams=params)
+
         tx["value"] = amountInWei
+
     else:
-        tx = contract.functions.swapExactTokensForTokens(amountInWei, amountOutWei, normalisedRoutes, walletAddress,
-                                                         transactionDeadline).buildTransaction(txParams)
+
+        swapExactTokensForTokensFunctionName = getMappedContractFunction(functionName="swapExactTokensForTokens", abiMapping=routerABIMappings)
+
+        tx = buildMappedContractFunction(contract=contract, functionToCall=swapExactTokensForTokensFunctionName, txParams=txParams, functionParams=params)
 
     if swappingToGas:
         balanceBeforeSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress,

@@ -33,7 +33,7 @@ def quote(amount_a, reserve_a, reserve_b, rpc_address, routerAddress, routerABI)
     return contract.functions.quote(amount_a, reserve_a, reserve_b).call()
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def get_amount_in(amount_out, reserve_in, reserve_out, rpc_address, routerAddress, routerABI):
+def getAmountIn(amount_out, reserve_in, reserve_out, rpc_address, routerAddress, routerABI):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(routerAddress)
@@ -42,7 +42,7 @@ def get_amount_in(amount_out, reserve_in, reserve_out, rpc_address, routerAddres
     return contract.functions.getAmountIn(amount_out, reserve_in, reserve_out).call()
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def get_amounts_in(amount_out, addresses, rpc_address, routerAddress, routerABI):
+def getAmountsIn(amount_out, addresses, rpc_address, routerAddress, routerABI):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     hasDuplicateAddresses = len(addresses) != len(set(addresses))
@@ -59,7 +59,7 @@ def get_amounts_in(amount_out, addresses, rpc_address, routerAddress, routerABI)
         raise Exception(f"getAmountsIn - has duplicate addresses: {addresses}")
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def get_amount_out(amount_out, reserve_in, reserve_out, rpc_address, routerAddress, routerABI):
+def getAmountOut(amount_out, reserve_in, reserve_out, rpc_address, routerAddress, routerABI):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(routerAddress)
@@ -68,19 +68,17 @@ def get_amount_out(amount_out, reserve_in, reserve_out, rpc_address, routerAddre
     return contract.functions.getAmountOut(amount_out, reserve_in, reserve_out).call()
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def get_amounts_out(amount_in, addresses, rpc_address, routerAddress, routerABI, routerABIMappings):
+def getAmountsOut(amount_in, addresses, rpc_address, routerAddress, routerABI, routerABIMappings):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     hasDuplicateAddresses = len(addresses) != len(set(addresses))
 
     if not hasDuplicateAddresses:
 
-        getAmountsOutFunctionName = getMappedContractFunction(functionName="getAmountsOut", abiMapping=routerABIMappings)
-
         contract_address = Web3.toChecksumAddress(routerAddress)
         contract = w3.eth.contract(contract_address, abi=routerABI)
 
-        # return contract.functions.getAmountsOut(amount_in, addresses).call()
+        getAmountsOutFunctionName = getMappedContractFunction(functionName="getAmountsOut", abiMapping=routerABIMappings)
 
         params = [
             amount_in,
@@ -91,7 +89,7 @@ def get_amounts_out(amount_in, addresses, rpc_address, routerAddress, routerABI,
 
     else:
 
-        raise Exception(f"get_amounts_out - has duplicate addresses: {addresses}")
+        raise Exception(f"getAmountsOut - has duplicate addresses: {addresses}")
 
 
 
