@@ -668,9 +668,10 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
             )
 
             if not swapApproved:
-                logger.info(f'{stepNumber}.5 Approving {recipe[position][toSwapFrom]["symbol"]} Swap')
 
                 printSeperator()
+
+                logger.info(f'{stepNumber}.5 Approving {recipe[position][toSwapFrom]["symbol"]} Swap')
 
                 telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                         messageToAppend=f"{stepNumber}.5 Approving {recipe[position][toSwapFrom]['symbol']} Swap 💸")
@@ -686,8 +687,6 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                     stepCategory=f"{stepNumber}_5_swap",
                     telegramStatusMessage=telegramStatusMessage
                 )
-
-                printSeperator()
 
             swapResult = swapToken(
                 amountInNormal=currentFunds[toSwapFrom],
