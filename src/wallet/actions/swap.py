@@ -130,21 +130,28 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
 
     transactionDeadline = getTransactionDeadline(timeInSeconds=transactionTimeout)
 
-    params = [
-        amountInWei,
-        amountOutWei,
-        normalisedRoutes,
-        walletAddress,
-        transactionDeadline
-    ]
-
     if swappingToGas:
+
+        params = [
+            amountInWei,
+            amountOutWei,
+            normalisedRoutes,
+            walletAddress,
+            transactionDeadline
+        ]
 
         swapExactTokensForETHFunctionName = getMappedContractFunction(functionName="swapExactTokensForETH", abiMapping=routerABIMappings)
 
         tx = buildMappedContractFunction(contract=contract, functionToCall=swapExactTokensForETHFunctionName, txParams=txParams, functionParams=params)
 
     elif swappingFromGas:
+
+        params = [
+            amountOutWei,
+            normalisedRoutes,
+            walletAddress,
+            transactionDeadline
+        ]
 
         swapExactETHForTokensFunctionName = getMappedContractFunction(functionName="swapExactETHForTokens", abiMapping=routerABIMappings)
 
@@ -153,6 +160,14 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
         tx["value"] = amountInWei
 
     else:
+
+        params = [
+            amountInWei,
+            amountOutWei,
+            normalisedRoutes,
+            walletAddress,
+            transactionDeadline
+        ]
 
         swapExactTokensForTokensFunctionName = getMappedContractFunction(functionName="swapExactTokensForTokens", abiMapping=routerABIMappings)
 

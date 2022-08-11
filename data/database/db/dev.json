@@ -5202,7 +5202,7 @@
         "dexId": "defikingdoms",
         "directionLock": {
           "direction": "avalanchedfk,avalanche",
-          "lockEnabled": "false"
+          "lockEnabled": "true"
         },
         "tokenList": "DFK_ALL",
         "tokenRetrievalMethod": "tokenList"
@@ -5248,7 +5248,7 @@
         "dexId": "defikingdoms",
         "directionLock": {
           "direction": "avalanchedfk,harmony",
-          "lockEnabled": "false"
+          "lockEnabled": "true"
         },
         "tokenList": "DFK_ALL",
         "tokenRetrievalMethod": "tokenList"
@@ -5294,7 +5294,7 @@
         "dexId": "defikingdoms",
         "directionLock": {
           "direction": "avalanchedfk,harmony",
-          "lockEnabled": "false"
+          "lockEnabled": "true"
         },
         "tokenList": "DFK_ALL",
         "tokenRetrievalMethod": "tokenList"

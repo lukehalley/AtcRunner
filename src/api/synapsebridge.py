@@ -52,7 +52,7 @@ def checkSwapSupported(fromChain, toChain, fromToken, toToken):
     params = {"fromChain": fromChain, "toChain": toChain, "fromToken": fromToken, "toToken": toToken}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_CHECK_SWAP_SUPPORTED_ENDPOINT"))
 
-    return safeRequest(endpoint=endpoint, params=params)
+    return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
 # Estimate the output of a bridge
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -67,21 +67,7 @@ def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountToBridge,
 
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_ESTIMATE_BRIDGE_OUTPUT_ENDPOINT"))
 
-    try:
-        result = safeRequest(endpoint=endpoint, params=params)
-    except:
-        # If we fail, try and lower the fromToken
-        lowerFrom = fromToken.lower()
-        params = {"fromChain": int(fromChain), "toChain": int(toChain), "fromToken": lowerFrom, "toToken": toToken,
-                  "amountFrom": amountFromDecimal}
-        try:
-            result = safeRequest(endpoint=endpoint, params=params)
-        except:
-            # If we fail again, try and lower the toToken
-            lowerTo = toToken.lower()
-            params = {"fromChain": int(fromChain), "toChain": int(toChain), "fromToken": fromToken, "toToken": lowerTo,
-                      "amountFrom": amountFromDecimal}
-            result = safeRequest(endpoint=endpoint, params=params)
+    result = callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
     amountToReceive = Decimal(getTokenNormalValue(result["amountToReceive"], decimalPlacesFrom))
     return amountToReceive
@@ -92,7 +78,7 @@ def estimateSwapOutput(chain, fromToken, toToken, amountIn):
     params = {"chain": chain, "fromToken": fromToken, "toToken": toToken, "amountIn": amountIn}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_ESTIMATE_SWAP_OUTPUT_ENDPOINT"))
 
-    return safeRequest(endpoint=endpoint, params=params)
+    return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
 # Generate a skeleton swap transaction
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -100,7 +86,7 @@ def generateSwapTransaction(chain, fromToken, toToken, amountIn):
     params = {"chain": chain, "fromToken": fromToken, "toToken": toToken, "amountIn": amountIn}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_GENERATE_SWAP_TRANSACTION_ENDPOINT"))
 
-    return safeRequest(endpoint=endpoint, params=params)
+    return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
 # Generate a skeleton approval bridge transaction
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -108,7 +94,7 @@ def generateUnsignedBridgeApprovalTransaction(fromChain, fromToken):
     params = {"fromChain": fromChain, "fromToken": fromToken}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_GENERATE_UNSIGNED_BRIDGE_APPROVAL_TRANSACTION_ENDPOINT"))
 
-    return safeRequest(endpoint=endpoint, params=params)
+    return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
 # Generate a skeleton bridge transaction
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -117,7 +103,7 @@ def generateUnsignedBridgeTransaction(fromChain, toChain, fromToken, toToken, am
               "amountFrom": amountFrom, "addressTo": addressTo}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_GENERATE_UNSIGNED_BRIDGE_TRANSACTION_ENDPOINT"))
 
-    return safeRequest(endpoint=endpoint, params=params)
+    return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
 # Get bridgeable tokens for a given chain
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -151,3 +137,26 @@ def getSwappableTokensForNetwork(chainFrom, toChain):
 
     return safeRequest(endpoint=endpoint, params=params)
 
+def callSynapseTokenCaseRetry(endpoint, params):
+
+    lowerFrom = params["fromToken"].lower()
+    lowerTo = params["toToken"].lower()
+
+    try:
+        result = safeRequest(endpoint=endpoint, params=params)
+    except:
+
+        # If we fail, try and lower the fromToken
+        lowerFromParams = params.copy()
+        lowerFromParams["fromToken"] = lowerFrom
+
+        try:
+            result = safeRequest(endpoint=endpoint, params=lowerFromParams)
+        except:
+            # If we fail again, try and lower the toToken
+            lowerToParams = params.copy()
+            lowerToParams["toToken"] = lowerTo
+
+            result = safeRequest(endpoint=endpoint, params=lowerToParams)
+
+    return result
