@@ -5,13 +5,14 @@ from decimal import Decimal
 
 from web3 import Web3
 
-from src.api.telegrambot import updatedStatusMessage
+from src.api.telegrambot import updatedStatusMessage, appendToMessage
 from src.utils.chain import getABI, getTransactionDeadline, getValueWithSlippage
 from src.utils.general import printSettingUpWallet, strToBool, printSeperator, truncateDecimal
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
-from src.wallet.actions.network import signAndSendTransaction, callMappedContractFunction, buildMappedContractFunction
+from src.wallet.actions.network import signAndSendTransaction, callMappedContractFunction, buildMappedContractFunction, \
+    approveToken
 from src.wallet.queries.network import getTokenBalance, getWalletGasBalance, getWalletsInformation, \
-    getMappedContractFunction
+    getMappedContractFunction, getTokenApprovalStatus
 
 # Set up our logging
 from src.wallet.queries.swap import getSwapQuoteOut
@@ -50,10 +51,43 @@ def setupWallet(recipe):
             rpcUrl=recipe[position]["chain"]["rpc"],
             routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
             routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+            routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
             routes=swapRoute
         )
 
         amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
+
+        swapApproved = getTokenApprovalStatus(
+            rpcUrl=recipe[position]["chain"]["rpc"],
+            walletAddress=recipe[position]["wallet"]["address"],
+            tokenAddress=recipe[position][toSwapFrom]["address"],
+            spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
+            wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"]
+        )
+
+        if not swapApproved:
+            printSeperator()
+
+            logger.info(f'Approving {recipe[position][toSwapFrom]["symbol"]} Swap')
+
+            printSeperator()
+
+            telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
+                                                    messageToAppend=f"Approving {recipe[position][toSwapFrom]['symbol']} Swap 💸")
+
+            approveToken(
+                rpcUrl=recipe[position]["chain"]["rpc"],
+                explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
+                walletAddress=recipe[position]["wallet"]["address"],
+                tokenAddress=recipe[position][toSwapFrom]["address"],
+                spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
+                wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
+                arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+                stepCategory=f"0_5_swap",
+                telegramStatusMessage=telegramStatusMessage
+            )
+
+            printSeperator()
 
         swapResult = swapToken(
             amountInNormal=amountInNormal,
@@ -67,10 +101,11 @@ def setupWallet(recipe):
             explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
             routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
             routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+            routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
             wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
             telegramStatusMessage=telegramStatusMessage,
-            swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
-            swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
+            swappingFromGas=recipe[position][toSwapFrom]["isGas"],
+            swappingToGas=recipe[position][toSwapTo]["isGas"]
         )
 
         recipe = getWalletsInformation(recipe)

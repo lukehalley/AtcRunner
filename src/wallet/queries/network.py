@@ -32,7 +32,6 @@ def getMappedContractFunction(functionName, abiMapping):
     if functionName in abiMapping.keys():
         return abiMapping[functionName]
     else:
-        warnings.warn(f"No Contract Mapping For {functionName}")
         return functionName
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
@@ -127,7 +126,7 @@ def getWalletsInformation(recipe, printBalances=False):
             wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
-        tokenIsGas = strToBool(recipe[direction]["token"]["isGas"])
+        tokenIsGas = recipe[direction]["token"]["isGas"]
 
         if tokenIsGas:
             recipe[direction]["wallet"]["balances"]["token"] = recipe[direction]["wallet"]["balances"]["gas"]

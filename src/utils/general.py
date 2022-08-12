@@ -24,7 +24,7 @@ def strToBool(x):
     if type(x)==bool:
         return x
     else:
-        return util.strtobool(x)
+        return bool(util.strtobool(x))
 
 # Check if we are running in a docker container
 def checkIsDocker():
