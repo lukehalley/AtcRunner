@@ -1,38 +1,81 @@
 import logging
 import os
+import sys
+import warnings
 from decimal import Decimal
 
 from retry import retry
 from web3 import Web3
 
-from src.dex.erc20 import balance_of, wei2eth
 from src.utils.chain import checkIfStablesAreOnOrigin, checkWalletsMatch
 from src.utils.general import isBetween, percentage, strToBool, getAWSSecret
 from src.utils.wei import getTokenNormalValue
 
 # Set up our logging
+from src.wallet.contracts.erc20 import wei2eth, balance_of
+
 logger = logging.getLogger("DFK-DEX")
 
-# privateKey = json.loads(os.environ.get("ARB_KEY"))["ARB_KEY"]
 privateKey = getAWSSecret(key="ARB_KEY")
 
 # Retry Envs
 transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getPrivateKey():
     return privateKey
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getWalletAddressFromPrivateKey(rpcURL):
+def getMappedContractFunction(functionName, abiMapping):
 
+    if functionName in abiMapping.keys():
+        return abiMapping[functionName]
+    else:
+        return functionName
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def fillEmptyABIParams(abi, contractFunctionName):
+    contractFunctionFields = {"inputs": [],
+                              "name": "",
+                              "outputs": [],
+                              "statexMutability": "",
+                              "type": ""}
+
+    for abiFunction in abi:
+        if "name" in abiFunction.keys():
+            if abiFunction["name"] == contractFunctionName:
+                functionToFix = abiFunction
+                for fieldName, fieldReplacement in contractFunctionFields.items():
+                    if fieldName not in functionToFix.keys():
+                        functionToFix[fieldName] = fieldReplacement
+                        break
+                break
+
+    return abi
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def getNetworkWETH(rpcUrl, routerAddress, routerABI, routerABIMappings):
+    from src.wallet.actions.network import callMappedContractFunction
+
+    w3 = Web3(Web3.HTTPProvider(rpcUrl))
+
+    wethFunctionName = getMappedContractFunction(functionName="WETH", abiMapping=routerABIMappings)
+    routerABI = fillEmptyABIParams(abi=routerABI, contractFunctionName=wethFunctionName)
+
+    contract_address = Web3.toChecksumAddress(routerAddress)
+    contract = w3.eth.contract(contract_address, abi=routerABI)
+
+    return callMappedContractFunction(contract=contract, functionToCall=wethFunctionName)
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def getWalletAddressFromPrivateKey(rpcURL):
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
     return w3.eth.account.privateKeyToAccount(privateKey).address
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getGasPrice(rpcURL):
-
     # Connect to our RPC.
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
@@ -41,15 +84,15 @@ def getGasPrice(rpcURL):
     return gasPrice
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getTokenBalance(rpcURL, tokenAddress, tokenDecimals):
-
+def getTokenBalance(rpcURL, tokenAddress, tokenDecimals, wethContractABI):
     walletAddress = getWalletAddressFromPrivateKey(rpcURL=rpcURL)
 
-    balanceWei = balance_of (
-                rpc_address=rpcURL,
-                address=walletAddress,
-                token_address=tokenAddress
-        )
+    balanceWei = balance_of(
+        rpc_address=rpcURL,
+        address=walletAddress,
+        token_address=tokenAddress,
+        wethContractABI=wethContractABI
+    )
 
     balance = getTokenNormalValue(amount=balanceWei, decimalPlaces=tokenDecimals)
 
@@ -57,7 +100,6 @@ def getTokenBalance(rpcURL, tokenAddress, tokenDecimals):
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletsInformation(recipe, printBalances=False):
-
     directionList = ("origin", "destination")
 
     if not "status" in recipe:
@@ -72,17 +114,19 @@ def getWalletsInformation(recipe, printBalances=False):
         recipe[direction]["wallet"]["balances"] = {}
 
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
-            recipe[direction]["chain"]["rpc"],
-            recipe[direction]["wallet"]["address"]
+            rpcURL=recipe[direction]["chain"]["rpc"],
+            walletAddress=recipe[direction]["wallet"]["address"],
+            wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
         recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
             rpcURL=recipe[direction]["chain"]["rpc"],
             tokenAddress=recipe[direction]["stablecoin"]["address"],
-            tokenDecimals=recipe[direction]["stablecoin"]["decimals"]
+            tokenDecimals=recipe[direction]["stablecoin"]["decimals"],
+            wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
-        tokenIsGas = strToBool(recipe[direction]["token"]["isGas"])
+        tokenIsGas = recipe[direction]["token"]["isGas"]
 
         if tokenIsGas:
             recipe[direction]["wallet"]["balances"]["token"] = recipe[direction]["wallet"]["balances"]["gas"]
@@ -90,7 +134,8 @@ def getWalletsInformation(recipe, printBalances=False):
             recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
                 rpcURL=recipe[direction]["chain"]["rpc"],
                 tokenAddress=recipe[direction]["token"]["address"],
-                tokenDecimals=recipe[direction]["token"]["decimals"]
+                tokenDecimals=recipe[direction]["token"]["decimals"],
+                wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
             )
 
         if printBalances:
@@ -108,19 +153,15 @@ def getWalletsInformation(recipe, printBalances=False):
     return recipe
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getWalletGasBalance(rpcURL, walletAddress):
-
+def getWalletGasBalance(rpcURL, walletAddress, wethContractABI):
     w3 = Web3(Web3.HTTPProvider(rpcURL))
 
-    balance = wei2eth(w3, balance_of(address=walletAddress, rpc_address=rpcURL, getGasTokenBalance=True))
-
-    # if printBalance:
-    #     logger.info(f"Wallet {walletAddress} has {balance} {gasSymbol}")
+    balance = wei2eth(w3, balance_of(address=walletAddress, rpc_address=rpcURL, wethContractABI=wethContractABI, getGasTokenBalance=True))
 
     return Decimal(balance)
 
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def compareBalance(expected, actual, feeAllowancePercentage=10):
-
     feeAllowance = percentage(feeAllowancePercentage, expected)
 
     expectedLower = expected - feeAllowance
@@ -131,3 +172,19 @@ def compareBalance(expected, actual, feeAllowancePercentage=10):
         return True
     else:
         return False
+
+def getTokenApprovalStatus(rpcUrl, walletAddress, tokenAddress, spenderAddress, wethAbi):
+    web3 = Web3(Web3.HTTPProvider(rpcUrl))
+
+    contract = tokenAddress
+    contract = web3.toChecksumAddress(contract)
+
+    contract = web3.eth.contract(address=contract, abi=wethAbi)
+
+    _owner = web3.toChecksumAddress(walletAddress)
+    _spender = web3.toChecksumAddress(spenderAddress)
+
+    isApproved = contract.functions.allowance(_owner, _spender).call()
+    isApprovedBool = bool(isApproved)
+
+    return isApprovedBool

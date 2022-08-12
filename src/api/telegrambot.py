@@ -54,7 +54,7 @@ def appendToMessage(originalMessage, messageToAppend):
 
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def updatedStatusMessage(originalMessage, newStatus):
+def updateStatusMessage(originalMessage, newStatus):
 
     originalText = originalMessage["text"]
 

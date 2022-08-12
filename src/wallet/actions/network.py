@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 from decimal import Decimal
 
 from retry import retry
@@ -8,13 +7,14 @@ from web3 import Web3
 
 from src.api.firebase import writeTransactionToDB
 from src.api.telegrambot import appendToMessage
-from src.api.telegrambot import updatedStatusMessage
+from src.api.telegrambot import updateStatusMessage
 from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
 from src.utils.general import getCurrentDateTime, printSeperator
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
 from src.wallet.queries.network import getTokenBalance, getWalletsInformation
 
 from web3 import exceptions
+from web3.middleware import geth_poa_middleware
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -36,7 +36,7 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
 
     tx["nonce"] = initNonce
 
-    telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
+    telegramStatusMessage = updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
 
     printSeperator()
 
@@ -132,7 +132,7 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
     else:
         errMsg = f"⛔️ Transaction was unsuccessful!"
         if telegramStatusMessage:
-            updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
+            updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
         raise Exception(errMsg)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
@@ -140,8 +140,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
     from src.wallet.queries.swap import getSwapQuoteIn
     from src.wallet.actions.swap import swapToken
 
-    minimumGasBalance = Decimal(os.environ.get("MIN_GAS_BALANCE"))
-    maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
+    minimumGasBalance = Decimal(recipe[direction]["chain"]["gasDetails"]["gasLimits"]["minGas"])
+    maximumGasBalance = Decimal(recipe[direction]["chain"]["gasDetails"]["gasLimits"]["maxGas"])
 
     gasBalance = recipe[direction]["wallet"]["balances"]["gas"]
 
@@ -150,7 +150,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
     balanceBeforeBridge = getTokenBalance(
         rpcURL=recipe[direction]["chain"]["rpc"],
         tokenAddress=recipe[direction][toSwapFrom]["address"],
-        tokenDecimals=recipe[direction][toSwapFrom]["decimals"]
+        tokenDecimals=recipe[direction][toSwapFrom]["decimals"],
+        wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
     )
 
     if direction == "origin":
@@ -169,7 +170,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
             amountOutDecimals=recipe[direction][toSwapFrom]["decimals"],
             amountInDecimals=recipe[direction][toSwapFrom]["decimals"],
             rpcUrl=recipe[direction]["chain"]["rpc"],
-            routerAddress=recipe[direction]["chain"]["uniswapRouter"],
+            routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
+            routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
             routes=routes
         )
 
@@ -187,7 +189,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
         try:
 
             telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
-                                                    messageToAppend=f"⛽️. Topping Up {direction.title()} Wallet -> 📤")
+                                                    messageToAppend=f"⛽️ Topping Up {direction.title()} Wallet -> 📤")
 
             result = swapToken(
                 amountInNormal=amountInQuoted,
@@ -199,22 +201,25 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=gasTopUpCategory,
                 telegramStatusMessage=telegramStatusMessage,
-                explorerUrl=recipe[direction]["chain"]["blockExplorer"],
-                routerAddress=recipe[direction]["chain"]["uniswapRouter"],
+                explorerUrl=recipe[direction]["chain"]["blockExplorer"]["txBaseURL"],
+                routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
+                routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
+                wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"],
                 swappingFromGas=False,
                 swappingToGas=True
             )
 
-            updatedStatusMessage(originalMessage=result["telegramStatusMessage"], newStatus="✅")
+            updateStatusMessage(originalMessage=result["telegramStatusMessage"], newStatus="✅")
 
         except Exception as err:
             errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
             logger.error(errMsg)
-            sys.exit(err)
+            raise Exception(err)
 
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
-            recipe[direction]["chain"]["rpc"],
-            recipe[direction]["wallet"]["address"]
+            rpcURL=recipe[direction]["chain"]["rpc"],
+            walletAddress=recipe[direction]["wallet"]["address"],
+            wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
         recipe = getWalletsInformation(recipe)
@@ -222,3 +227,46 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
         logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up successful - new balance is {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]}')
 
     return recipe, needsGas, telegramStatusMessage
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def callMappedContractFunction(contract, functionToCall, functionParams=None):
+
+    if functionParams:
+        result = getattr(contract.functions, functionToCall)(*functionParams).call()
+    else:
+        result = getattr(contract.functions, functionToCall)().call()
+
+    return result
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def buildMappedContractFunction(contract, functionToCall, txParams, functionParams=None):
+
+    if functionParams:
+        result = getattr(contract.functions, functionToCall)(*functionParams).buildTransaction(txParams)
+    else:
+        result = getattr(contract.functions, functionToCall)().buildTransaction(txParams)
+
+    return result
+
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddress, wethAbi, arbitrageNumber, stepCategory, telegramStatusMessage):
+
+    web3 = Web3(Web3.HTTPProvider(rpcUrl))
+    web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+
+    tokenAddressCS = web3.toChecksumAddress(tokenAddress)
+    tokenToApproveContract = web3.eth.contract(address=tokenAddressCS, abi=wethAbi)
+
+    amountToApprove = web3.toWei(2 ** 64 - 1, 'ether')
+    nonce = web3.eth.getTransactionCount(walletAddress, 'pending')
+
+    tx = tokenToApproveContract.functions.approve(spenderAddress, amountToApprove).buildTransaction({
+        'from': walletAddress,
+        'nonce': nonce,
+        'gasPrice': web3.eth.gas_price,
+    })
+
+    signAndSendTransaction(tx=tx, rpcURL=rpcUrl, explorerUrl=explorerUrl, arbitrageNumber=arbitrageNumber, stepCategory=stepCategory, telegramStatusMessage=telegramStatusMessage)
+
+    return telegramStatusMessage
+
