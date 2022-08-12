@@ -5,7 +5,7 @@ from retry import retry
 from web3 import Web3
 
 from src.api.synapsebridge import getTokenDecimalValue, getTokenNormalValue
-from src.dex.uniswap_v2_router import get_amounts_out, get_amounts_in
+from src.wallet.contracts.uniswap_v2_router import getAmountsOut, getAmountsIn
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
@@ -13,6 +13,7 @@ logger = logging.getLogger("DFK-DEX")
 transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def normaliseSwapRoutes(routes):
     normalisedRoutes = []
 
@@ -24,19 +25,20 @@ def normaliseSwapRoutes(routes):
 
     return normalisedRoutes
 
-
-# @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress):
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress, routerABI, routerABIMappings):
 
     normalisedRoutes = normaliseSwapRoutes(routes)
 
     amountInWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
 
-    out = get_amounts_out(
+    out = getAmountsOut(
         amount_in=amountInWei,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,
-        routerAddress=routerAddress
+        routerAddress=routerAddress,
+        routerABI=routerABI,
+        routerABIMappings=routerABIMappings
     )
 
     amountOutWei = out[-1]
@@ -46,17 +48,18 @@ def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,
     return quote
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,  rpcUrl, routerAddress):
+def getSwapQuoteIn(amountOutNormal, amountOutDecimals, amountInDecimals, routes,  rpcUrl, routerAddress, routerABI):
 
     normalisedRoutes = normaliseSwapRoutes(routes)
 
     amountWei = int(getTokenDecimalValue(amountOutNormal, amountOutDecimals))
 
-    out = get_amounts_in(
+    out = getAmountsIn(
         amount_out=amountWei,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,
-        routerAddress=routerAddress
+        routerAddress=routerAddress,
+        routerABI=routerABI
     )
 
     quote = getTokenNormalValue(out[0], amountInDecimals)

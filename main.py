@@ -21,7 +21,7 @@ from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfi
 
 # Wallet modules
 from src.wallet.actions.swap import setupWallet
-from src.wallet.queries.network import getWalletsInformation
+from src.wallet.queries.network import getWalletsInformation, getTokenApprovalStatus
 
 # General Init
 isDocker = checkIsDocker()

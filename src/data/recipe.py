@@ -9,6 +9,7 @@ from src.api.synapsebridge import getBridgeableTokens
 from src.data.tokenLists import getTokenBySymbolAndChainID, parseTokenLists
 # Set up our logging
 from src.utils.general import strToBool
+from src.wallet.queries.network import getNetworkWETH
 
 logger = logging.getLogger("DFK-DEX")
 
@@ -22,7 +23,6 @@ def getRecipeDetails():
 
         dexId = recipeDetails["arbitrage"]["dexId"]
 
-
         tokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
         tokenList = recipeDetails["arbitrage"]["tokenList"]
 
@@ -32,41 +32,48 @@ def getRecipeDetails():
         for i in range(1, 3):
 
             num = num2words(i).title()
-            chain = chains[recipeDetails[f"chain{num}"]["chain"]["name"]]
-            recipeDetails[f"chain{num}"]["chain"].update(chain)
+            chainNumber = f"chain{num}"
+            
+            chain = chains[recipeDetails[chainNumber]["chain"]["name"]]
+            recipeDetails[chainNumber]["chain"].update(chain)
 
-            chainId = recipeDetails[f"chain{num}"]["chain"]["id"]
-            chainGasTokenDetails = recipeDetails[f"chain{num}"]["chain"]["gasDetails"]
+            chainId = recipeDetails[chainNumber]["chain"]["id"]
+            
+            chainWrappedGasTokenAddress = getNetworkWETH(
+                rpcUrl=recipeDetails[chainNumber]["chain"]["rpc"],
+                routerAddress=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["address"],
+                routerABI=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["abi"],
+                routerABIMappings=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["mapping"]
+            )
 
             if tokenRetrievalMethod == "tokenList":
 
                 toFill = {
-                    "token": recipeDetails[f"chain{num}"]["token"],
-                    "stablecoin": recipeDetails[f"chain{num}"]["stablecoin"]
+                    "token": recipeDetails[chainNumber]["token"],
+                    "stablecoin": recipeDetails[chainNumber]["stablecoin"]
                 }
 
                 for tokenType, tokenDetails in toFill.items():
-                    if strToBool(tokenDetails["isGas"]):
+                    tokenDetails["isGas"] = strToBool(tokenDetails["isGas"])
+                    if tokenDetails["isGas"]:
                         gasTokenDetails = {
-                            "address": recipeDetails[f"chain{num}"]["chain"]["gasDetails"]["address"],
+                            "address": chainWrappedGasTokenAddress,
                             "chainId": chainId,
                             "decimals": 18,
                             "name": tokenDetails["symbol"],
                             "symbol": tokenDetails["symbol"],
                             "logoURI": None
                         }
-                        recipeDetails[f"chain{num}"][tokenType] = recipeDetails[f"chain{num}"][tokenType] | gasTokenDetails
+                        recipeDetails[chainNumber][tokenType] = recipeDetails[chainNumber][tokenType] | gasTokenDetails
                     else:
                         tokenDetails = getTokenBySymbolAndChainID(
                             tokenListDataframe=masterTokenList,
                             tokenSymbol=tokenDetails["symbol"],
                             tokenChainId=chainId
                         )
-                        recipeDetails[f"chain{num}"][tokenType] = recipeDetails[f"chain{num}"][tokenType] | tokenDetails
+                        recipeDetails[chainNumber][tokenType] = recipeDetails[chainNumber][tokenType] | tokenDetails
 
-                x = 1
-
-                for routeDirection, routeContents in recipeDetails[f"chain{num}"]["routes"].items():
+                for routeDirection, routeContents in recipeDetails[chainNumber]["routes"].items():
 
                     routeFirst = routeDirection.split("-")[0]
                     routeLast = routeDirection.split("-")[1]
@@ -76,12 +83,12 @@ def getRecipeDetails():
 
                         routeSymbols.pop(0)
                         routeSymbols.pop(-1)
-                        routeAddressList = [recipeDetails[f"chain{num}"][routeFirst]["address"]]
+                        routeAddressList = [recipeDetails[chainNumber][routeFirst]["address"]]
 
                         for routeSymbol in routeSymbols:
 
-                            if routeSymbol == chainGasTokenDetails["symbol"]:
-                                routeAddressList.append(chainGasTokenDetails["address"])
+                            if routeSymbol == "{NETWORK_GAS_TOKEN}":
+                                routeAddressList.append(chainWrappedGasTokenAddress)
                             else:
                                 tokenDetails = getTokenBySymbolAndChainID(
                                     tokenListDataframe=masterTokenList,
@@ -90,11 +97,11 @@ def getRecipeDetails():
                                 )
                                 routeAddressList.append(tokenDetails["address"])
 
-                        routeAddressList.append(recipeDetails[f"chain{num}"][routeLast]["address"])
+                        routeAddressList.append(recipeDetails[chainNumber][routeLast]["address"])
                     else:
-                        routeAddressList = [recipeDetails[f"chain{num}"][routeFirst]["address"], recipeDetails[f"chain{num}"][routeLast]["address"]]
+                        routeAddressList = [recipeDetails[chainNumber][routeFirst]["address"], recipeDetails[chainNumber][routeLast]["address"]]
 
-                    recipeDetails[f"chain{num}"]["routes"][routeDirection] = routeAddressList
+                    recipeDetails[chainNumber]["routes"][routeDirection] = routeAddressList
 
             elif tokenRetrievalMethod == "api":
 
@@ -116,39 +123,43 @@ def getRecipeDetails():
                             tokenDetails = token
 
                             if key == "chain":
-                                recipeDetails[f"chain{num}"][key]["isGas"] = True
-                            elif key in recipeDetails[f"chain{num}"]:
-                                recipeDetails[f"chain{num}"][key]["isGas"] = recipeDetails[f"chain{num}"][key]["isGas"]
+                                recipeDetails[chainNumber][key]["isGas"] = True
+                            elif key in recipeDetails[chainNumber]:
+                                recipeDetails[chainNumber][key]["isGas"] = recipeDetails[chainNumber][key]["isGas"]
                             else:
-                                recipeDetails[f"chain{num}"][key] = {}
-                                recipeDetails[f"chain{num}"][key]["isGas"] = tokenDetails["isETH"]
+                                recipeDetails[chainNumber][key] = {}
+                                recipeDetails[chainNumber][key]["isGas"] = tokenDetails["isETH"]
 
-                            recipeDetails[f"chain{num}"][key]["name"] = tokenDetails["name"]
-                            recipeDetails[f"chain{num}"][key]["symbol"] = tokenDetails["symbol"]
+                            recipeDetails[chainNumber][key]["name"] = tokenDetails["name"]
+                            recipeDetails[chainNumber][key]["symbol"] = tokenDetails["symbol"]
 
                             if "decimals" in tokenDetails:
-                                recipeDetails[f"chain{num}"][key]["decimals"] = tokenDetails["decimals"][chainId]
+                                recipeDetails[chainNumber][key]["decimals"] = tokenDetails["decimals"][chainId]
                             else:
-                                recipeDetails[f"chain{num}"][key]["decimals"] = None
+                                recipeDetails[chainNumber][key]["decimals"] = None
 
-                            recipeDetails[f"chain{num}"][key]["address"] = tokenDetails["addresses"][chainId]
-                            recipeDetails[f"chain{num}"][key]["swapType"] = tokenDetails["swapType"]
-                            recipeDetails[f"chain{num}"][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
+                            recipeDetails[chainNumber][key]["address"] = tokenDetails["addresses"][chainId]
+                            recipeDetails[chainNumber][key]["swapType"] = tokenDetails["swapType"]
+                            recipeDetails[chainNumber][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
             else:
-                sys.exit(F"Invalid Token Retrieval Method: {tokenRetrievalMethod}")
+                raise Exception(F"Invalid Token Retrieval Method: {tokenRetrievalMethod}")
 
-            recipeDetails[f"chain{num}"]["gas"] = {}
-            recipeDetails[f"chain{num}"]["gas"]["address"] = recipeDetails[f"chain{num}"]["chain"]["gasDetails"]["address"]
-            recipeDetails[f"chain{num}"]["gas"]["symbol"] = recipeDetails[f"chain{num}"]["chain"]["gasDetails"]["symbol"]
+            recipeDetails[chainNumber]["gas"] = {}
+            recipeDetails[chainNumber]["gas"]["symbol"] = recipeDetails[chainNumber]["chain"]["gasDetails"]["symbol"]
+            recipeDetails[chainNumber]["gas"]["address"] = chainWrappedGasTokenAddress
 
-            recipeDetails[f"chain{num}"]["stablecoin"]["price"] = \
+            recipeDetails[chainNumber]["chain"]["contracts"]["weth"]["address"] = chainWrappedGasTokenAddress
+
+            recipeDetails[chainNumber]["stablecoin"]["price"] = \
                 getTokenPriceByDexId(
-                    chainName=recipeDetails[f"chain{num}"]["chain"]["name"],
-                    tokenAddress=recipeDetails[f"chain{num}"]["stablecoin"]["address"],
+                    chainName=recipeDetails[chainNumber]["chain"]["name"],
+                    tokenAddress=recipeDetails[chainNumber]["stablecoin"]["address"],
                     dexId=dexId
                 )
 
-            if recipeDetails[f"chain{num}"]["stablecoin"]["price"] is None:
-                recipeDetails[f"chain{num}"]["stablecoin"]["price"] = 1.0
+            if recipeDetails[chainNumber]["stablecoin"]["price"] is None:
+                recipeDetails[chainNumber]["stablecoin"]["price"] = 1.0
+
+    recipes = {recipeName:recipeDetail for recipeName, recipeDetail in recipes.items() if recipeDetail["enabled"]}
 
     return recipes

@@ -30,7 +30,7 @@ def checkBridgeStatusAPI(toChain, fromChainTxnHash):
 
 # Check what is the status of our bridge transaction using the API
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def checkBridgeStatusBalance(predictions, stepNumber, toChainRPCURL, toTokenAddress, toTokenDecimals):
+def checkBridgeStatusBalance(predictions, stepNumber, toChainRPCURL, toTokenAddress, toTokenDecimals, wethContractABI):
     from src.wallet.queries.network import getTokenBalance
     if predictions["steps"][stepNumber]["stepType"] == "bridge":
         bridgePredictions = predictions["steps"][stepNumber]["amountOut"]
@@ -40,11 +40,11 @@ def checkBridgeStatusBalance(predictions, stepNumber, toChainRPCURL, toTokenAddr
         upperLimit = bridgePredictions + percentageDifference
 
         currentBalance = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress,
-                                         tokenDecimals=toTokenDecimals)
+                                         tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
         return isBetween(lowerLimit=lowerLimit, middleNumber=currentBalance, upperLimit=upperLimit)
     else:
-        sys.exit("Prediction not a bridge type!")
+        raise Exception("Prediction not a bridge type!")
 
 # Check if a swap is supported
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -52,7 +52,7 @@ def checkSwapSupported(fromChain, toChain, fromToken, toToken):
     params = {"fromChain": fromChain, "toChain": toChain, "fromToken": fromToken, "toToken": toToken}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_CHECK_SWAP_SUPPORTED_ENDPOINT"))
 
-    return safeRequest(endpoint=endpoint, params=params)
+    return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
 # Estimate the output of a bridge
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -64,15 +64,11 @@ def estimateBridgeOutput(fromChain, toChain, fromToken, toToken, amountToBridge,
     amountFromDecimal = getTokenDecimalValue(amountToBridge, decimalPlacesTo)
     params = {"fromChain": int(fromChain), "toChain": int(toChain), "fromToken": fromToken, "toToken": toToken,
               "amountFrom": amountFromDecimal}
-    # fromChain=1666600000
-    # toChain=53935
-    # fromToken=0x6983d1e6def3690c4d616b13597a09e6193ea013
-    # toToken=0xfBDF0E31808d0aa7b9509AA6aBC9754E48C58852
-
-    # http://localhost:8080/v1/estimate_bridge_output?fromChain=53935&toChain=1666600000&fromToken=0xfBDF0E31808d0aa7b9509AA6aBC9754E48C58852&toToken=0x6983d1e6def3690c4d616b13597a09e6193ea013&amountFrom=100000000000000000000
 
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_ESTIMATE_BRIDGE_OUTPUT_ENDPOINT"))
-    result = safeRequest(endpoint=endpoint, params=params)
+
+    result = callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
+
     amountToReceive = Decimal(getTokenNormalValue(result["amountToReceive"], decimalPlacesFrom))
     return amountToReceive
 
@@ -82,7 +78,7 @@ def estimateSwapOutput(chain, fromToken, toToken, amountIn):
     params = {"chain": chain, "fromToken": fromToken, "toToken": toToken, "amountIn": amountIn}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_ESTIMATE_SWAP_OUTPUT_ENDPOINT"))
 
-    return safeRequest(endpoint=endpoint, params=params)
+    return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
 # Generate a skeleton swap transaction
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -90,7 +86,7 @@ def generateSwapTransaction(chain, fromToken, toToken, amountIn):
     params = {"chain": chain, "fromToken": fromToken, "toToken": toToken, "amountIn": amountIn}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_GENERATE_SWAP_TRANSACTION_ENDPOINT"))
 
-    return safeRequest(endpoint=endpoint, params=params)
+    return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
 # Generate a skeleton approval bridge transaction
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -98,7 +94,7 @@ def generateUnsignedBridgeApprovalTransaction(fromChain, fromToken):
     params = {"fromChain": fromChain, "fromToken": fromToken}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_GENERATE_UNSIGNED_BRIDGE_APPROVAL_TRANSACTION_ENDPOINT"))
 
-    return safeRequest(endpoint=endpoint, params=params)
+    return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
 # Generate a skeleton bridge transaction
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -107,7 +103,7 @@ def generateUnsignedBridgeTransaction(fromChain, toChain, fromToken, toToken, am
               "amountFrom": amountFrom, "addressTo": addressTo}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_GENERATE_UNSIGNED_BRIDGE_TRANSACTION_ENDPOINT"))
 
-    return safeRequest(endpoint=endpoint, params=params)
+    return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
 # Get bridgeable tokens for a given chain
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
@@ -141,3 +137,26 @@ def getSwappableTokensForNetwork(chainFrom, toChain):
 
     return safeRequest(endpoint=endpoint, params=params)
 
+def callSynapseTokenCaseRetry(endpoint, params):
+
+    lowerFrom = params["fromToken"].lower()
+    lowerTo = params["toToken"].lower()
+
+    try:
+        result = safeRequest(endpoint=endpoint, params=params)
+    except:
+
+        # If we fail, try and lower the fromToken
+        lowerFromParams = params.copy()
+        lowerFromParams["fromToken"] = lowerFrom
+
+        try:
+            result = safeRequest(endpoint=endpoint, params=lowerFromParams)
+        except:
+            # If we fail again, try and lower the toToken
+            lowerToParams = params.copy()
+            lowerToParams["toToken"] = lowerTo
+
+            result = safeRequest(endpoint=endpoint, params=lowerToParams)
+
+    return result

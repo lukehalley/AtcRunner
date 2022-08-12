@@ -230,48 +230,6 @@
           "symbol": "WJEWEL"
         }
       }
-    },
-    "ETH_Harmony_DFKChain": {
-      "arbitrage": {
-        "dexId": "defikingdoms",
-        "directionLock": "avalanchedfk,harmony",
-        "tokenList": "DFK_ALL",
-        "tokenRetrievalMethod": "tokenList"
-      },
-      "chainOne": {
-        "chain": {
-          "name": "harmony"
-        },
-        "routes": {
-          "stablecoin-token": "1USDC,WONE,1ETH",
-          "token-stablecoin": "1ETH,WONE,1USDC"
-        },
-        "stablecoin": {
-          "isGas": "False",
-          "symbol": "1USDC"
-        },
-        "token": {
-          "isGas": "False",
-          "symbol": "1ETH"
-        }
-      },
-      "chainTwo": {
-        "chain": {
-          "name": "avalanchedfk"
-        },
-        "routes": {
-          "stablecoin-token": "USDC,CRYSTAL,ETH",
-          "token-stablecoin": "ETH,USDC"
-        },
-        "stablecoin": {
-          "isGas": "False",
-          "symbol": "USDC"
-        },
-        "token": {
-          "isGas": "False",
-          "symbol": "ETH"
-        }
-      }
     }
   },
   "strategies": {
