@@ -867,7 +867,7 @@ def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
 def calculateDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")
 
-    ans = ((pairOne - pairTwo) / ((pairOne + pairTwo) / 2)) * 100
+    ans = abs(((pairOne - pairTwo) / ((pairOne + pairTwo) / 2)) * 100)
 
     return round(ans, 6)
 

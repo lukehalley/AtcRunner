@@ -60,7 +60,7 @@ while True:
 
     for recipesTitle, recipesDetails in recipes.items():
 
-        recipe = recipesDetails
+        recipe = recipesDetails.copy()
 
         recipe = determineArbitrageStrategy(recipe)
 
@@ -78,7 +78,7 @@ while True:
 
         printSeperator(True)
 
-        if True:
+        if isProfitable:
 
             telegramStatusMessage = printArbitrageProfitable(recipe, predictions)
 
