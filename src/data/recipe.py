@@ -54,7 +54,8 @@ def getRecipeDetails():
                 }
 
                 for tokenType, tokenDetails in toFill.items():
-                    if strToBool(tokenDetails["isGas"]):
+                    tokenDetails["isGas"] = strToBool(tokenDetails["isGas"])
+                    if tokenDetails["isGas"]:
                         gasTokenDetails = {
                             "address": chainWrappedGasTokenAddress,
                             "chainId": chainId,
@@ -71,8 +72,6 @@ def getRecipeDetails():
                             tokenChainId=chainId
                         )
                         recipeDetails[chainNumber][tokenType] = recipeDetails[chainNumber][tokenType] | tokenDetails
-
-                x = 1
 
                 for routeDirection, routeContents in recipeDetails[chainNumber]["routes"].items():
 

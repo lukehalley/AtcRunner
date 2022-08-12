@@ -463,9 +463,8 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
                     wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                     telegramStatusMessage=telegramStatusMessage,
-                    swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
-                    swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"]),
-
+                    swappingFromGas=recipe[position][toSwapFrom]["isGas"],
+                    swappingToGas=recipe[position][toSwapTo]["isGas"]
                 )
 
                 recipe = getWalletsInformation(recipe)
@@ -703,8 +702,8 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
                 wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                 telegramStatusMessage=telegramStatusMessage,
-                swappingFromGas=strToBool(recipe[position][toSwapFrom]["isGas"]),
-                swappingToGas=strToBool(recipe[position][toSwapTo]["isGas"])
+                swappingFromGas=recipe[position][toSwapFrom]["isGas"],
+                swappingToGas=recipe[position][toSwapTo]["isGas"]
             )
 
             recipe = getWalletsInformation(recipe)

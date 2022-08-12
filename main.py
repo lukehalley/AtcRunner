@@ -72,7 +72,7 @@ while True:
 
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
-        # setupWallet(recipe=recipe)
+        setupWallet(recipe=recipe)
 
         isProfitable, predictions = checkArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
 
