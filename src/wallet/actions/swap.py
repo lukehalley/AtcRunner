@@ -33,55 +33,58 @@ def setupWallet(recipe):
 
         telegramStatusMessage = printSettingUpWallet(recipe['arbitrage']['currentRoundTripCount'])
 
-        position = "origin"
+        positionToSetup = "origin"
         toSwapFrom = "token"
         toSwapTo = "stablecoin"
 
-        maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
-        amountInNormal = abs(recipe["origin"]["wallet"]["balances"][toSwapFrom] - maximumGasBalance)
+        if recipe[positionToSetup][toSwapFrom]["isGas"]:
+            maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
+            amountInNormal = abs(recipe[positionToSetup]["wallet"]["balances"][toSwapFrom] - maximumGasBalance)
+        else:
+            amountInNormal = recipe[positionToSetup]["wallet"]["balances"][toSwapFrom]
 
-        balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+        balanceBeforeSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
 
-        swapRoute = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
+        swapRoute = recipe[positionToSetup]["routes"][f"{toSwapFrom}-{toSwapTo}"]
 
         amountOutQuoted = getSwapQuoteOut(
             amountInNormal=amountInNormal,
-            amountInDecimals=recipe[position][toSwapFrom]["decimals"],
-            amountOutDecimals=recipe[position][toSwapTo]["decimals"],
-            rpcUrl=recipe[position]["chain"]["rpc"],
-            routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-            routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
+            amountInDecimals=recipe[positionToSetup][toSwapFrom]["decimals"],
+            amountOutDecimals=recipe[positionToSetup][toSwapTo]["decimals"],
+            rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
+            routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
+            routerABI=recipe[positionToSetup]["chain"]["contracts"]["router"]["abi"],
+            routerABIMappings=recipe[positionToSetup]["chain"]["contracts"]["router"]["mapping"],
             routes=swapRoute
         )
 
         amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
         swapApproved = getTokenApprovalStatus(
-            rpcUrl=recipe[position]["chain"]["rpc"],
-            walletAddress=recipe[position]["wallet"]["address"],
-            tokenAddress=recipe[position][toSwapFrom]["address"],
-            spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-            wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"]
+            rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
+            walletAddress=recipe[positionToSetup]["wallet"]["address"],
+            tokenAddress=recipe[positionToSetup][toSwapFrom]["address"],
+            spenderAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
+            wethAbi=recipe[positionToSetup]["chain"]["contracts"]["weth"]["abi"]
         )
 
         if not swapApproved:
             printSeperator()
 
-            logger.info(f'Approving {recipe[position][toSwapFrom]["symbol"]} Swap')
+            logger.info(f'Approving {recipe[positionToSetup][toSwapFrom]["symbol"]} Swap')
 
             printSeperator()
 
             telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
-                                                    messageToAppend=f"Approving {recipe[position][toSwapFrom]['symbol']} Swap 💸")
+                                                    messageToAppend=f"Approving {recipe[positionToSetup][toSwapFrom]['symbol']} Swap 💸")
 
             approveToken(
-                rpcUrl=recipe[position]["chain"]["rpc"],
-                explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-                walletAddress=recipe[position]["wallet"]["address"],
-                tokenAddress=recipe[position][toSwapFrom]["address"],
-                spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
+                rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
+                explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
+                walletAddress=recipe[positionToSetup]["wallet"]["address"],
+                tokenAddress=recipe[positionToSetup][toSwapFrom]["address"],
+                spenderAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
+                wethAbi=recipe[positionToSetup]["chain"]["contracts"]["weth"]["abi"],
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=f"0_5_swap",
                 telegramStatusMessage=telegramStatusMessage
@@ -91,30 +94,30 @@ def setupWallet(recipe):
 
         swapResult = swapToken(
             amountInNormal=amountInNormal,
-            amountInDecimals=recipe[position][toSwapFrom]["decimals"],
+            amountInDecimals=recipe[positionToSetup][toSwapFrom]["decimals"],
             amountOutNormal=amountOutMinWithSlippage,
-            amountOutDecimals=recipe[position][toSwapTo]["decimals"],
+            amountOutDecimals=recipe[positionToSetup][toSwapTo]["decimals"],
             tokenPath=swapRoute,
-            rpcURL=recipe[position]["chain"]["rpc"],
+            rpcURL=recipe[positionToSetup]["chain"]["rpc"],
             arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
             stepCategory=f"0_setup",
-            explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-            routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-            routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
-            wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
+            explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
+            routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
+            routerABI=recipe[positionToSetup]["chain"]["contracts"]["router"]["abi"],
+            routerABIMappings=recipe[positionToSetup]["chain"]["contracts"]["router"]["mapping"],
+            wethContractABI=recipe[positionToSetup]["chain"]["contracts"]["weth"]["abi"],
             telegramStatusMessage=telegramStatusMessage,
-            swappingFromGas=recipe[position][toSwapFrom]["isGas"],
-            swappingToGas=recipe[position][toSwapTo]["isGas"]
+            swappingFromGas=recipe[positionToSetup][toSwapFrom]["isGas"],
+            swappingToGas=recipe[positionToSetup][toSwapTo]["isGas"]
         )
 
         recipe = getWalletsInformation(recipe)
 
-        balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+        balanceAfterSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
 
         while balanceAfterSwap == balanceBeforeSwap:
             recipe = getWalletsInformation(recipe)
-            balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+            balanceAfterSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
 
         result = balanceAfterSwap - balanceBeforeSwap
 
@@ -124,7 +127,7 @@ def setupWallet(recipe):
 
         printSeperator()
 
-        logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[position][toSwapTo]["name"]}')
+        logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[positionToSetup][toSwapTo]["name"]}')
 
         updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
