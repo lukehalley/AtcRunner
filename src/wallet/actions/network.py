@@ -7,7 +7,7 @@ from web3 import Web3
 
 from src.api.firebase import writeTransactionToDB
 from src.api.telegrambot import appendToMessage
-from src.api.telegrambot import updatedStatusMessage
+from src.api.telegrambot import updateStatusMessage
 from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
 from src.utils.general import getCurrentDateTime, printSeperator
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
@@ -36,7 +36,7 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
 
     tx["nonce"] = initNonce
 
-    telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
+    telegramStatusMessage = updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
 
     printSeperator()
 
@@ -132,7 +132,7 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
     else:
         errMsg = f"⛔️ Transaction was unsuccessful!"
         if telegramStatusMessage:
-            updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
+            updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
         raise Exception(errMsg)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
@@ -209,7 +209,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 swappingToGas=True
             )
 
-            updatedStatusMessage(originalMessage=result["telegramStatusMessage"], newStatus="✅")
+            updateStatusMessage(originalMessage=result["telegramStatusMessage"], newStatus="✅")
 
         except Exception as err:
             errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
@@ -266,4 +266,7 @@ def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddres
         'gasPrice': web3.eth.gas_price,
     })
 
-    transactionResult = signAndSendTransaction(tx=tx, rpcURL=rpcUrl, explorerUrl=explorerUrl, arbitrageNumber=arbitrageNumber, stepCategory=stepCategory, telegramStatusMessage=telegramStatusMessage)
+    signAndSendTransaction(tx=tx, rpcURL=rpcUrl, explorerUrl=explorerUrl, arbitrageNumber=arbitrageNumber, stepCategory=stepCategory, telegramStatusMessage=telegramStatusMessage)
+
+    return telegramStatusMessage
+

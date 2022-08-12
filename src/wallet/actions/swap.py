@@ -5,12 +5,11 @@ from decimal import Decimal
 
 from web3 import Web3
 
-from src.api.telegrambot import updatedStatusMessage, appendToMessage
+from src.api.telegrambot import updateStatusMessage, appendToMessage
 from src.utils.chain import getABI, getTransactionDeadline, getValueWithSlippage
 from src.utils.general import printSettingUpWallet, strToBool, printSeperator, truncateDecimal
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
-from src.wallet.actions.network import signAndSendTransaction, callMappedContractFunction, buildMappedContractFunction, \
-    approveToken
+from src.wallet.actions.network import signAndSendTransaction, callMappedContractFunction, buildMappedContractFunction, approveToken
 from src.wallet.queries.network import getTokenBalance, getWalletGasBalance, getWalletsInformation, \
     getMappedContractFunction, getTokenApprovalStatus
 
@@ -78,7 +77,7 @@ def setupWallet(recipe):
             telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                     messageToAppend=f"Approving {recipe[positionToSetup][toSwapFrom]['symbol']} Swap 💸")
 
-            approveToken(
+            telegramStatusMessage = approveToken(
                 rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
                 explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
                 walletAddress=recipe[positionToSetup]["wallet"]["address"],
@@ -129,7 +128,7 @@ def setupWallet(recipe):
 
         logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[positionToSetup][toSwapTo]["name"]}')
 
-        updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
+        updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
         printSeperator(True)
 

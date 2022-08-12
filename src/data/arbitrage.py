@@ -6,7 +6,7 @@ from itertools import repeat
 
 from src.api.firebase import fetchFromDatabase
 from src.api.synapsebridge import estimateBridgeOutput
-from src.api.telegrambot import appendToMessage, updatedStatusMessage
+from src.api.telegrambot import appendToMessage, updateStatusMessage
 from src.api.firebase import fetchArbitrageStrategy
 from src.utils.chain import getOppositeDirection, getValueWithSlippage
 from src.utils.general import strToBool, printSeperator, percentageDifference, printArbitrageRollbackComplete, \
@@ -434,7 +434,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                             messageToAppend=f"{stepNumber} Approving {recipe[position][toSwapFrom]['symbol']} Swap 💸")
 
-                    approveToken(
+                    telegramStatusMessage = approveToken(
                         rpcUrl=recipe[position]["chain"]["rpc"],
                         explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                         walletAddress=recipe[position]["wallet"]["address"],
@@ -494,7 +494,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                         telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                                 messageToAppend=f"Rolling Back Arbitrage #{recipe['arbitrage']['currentRoundTripCount']} ‍⏮")
 
-                        wasProfitable = rollbackArbitrage(recipe=recipe, currentFunds=currentFunds,
+                        wasProfitable, telegramStatusMessage = rollbackArbitrage(recipe=recipe, currentFunds=currentFunds,
                                                           startingStables=startingStables, startingTime=startingTime,
                                                           telegramStatusMessage=telegramStatusMessage)
 
@@ -512,7 +512,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
                     telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber} Approving {recipe[position][toSwapFrom]['symbol']} Bridge 💸")
 
-                    approveToken(
+                    telegramStatusMessage = approveToken(
                         rpcUrl=recipe[position]["chain"]["rpc"],
                         explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                         walletAddress=recipe[position]["wallet"]["address"],
@@ -557,7 +557,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                 telegramStatusMessage = bridgeResult["telegramStatusMessage"]
 
             else:
-                updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
+                updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
                 errMsg = f'Invalid Arbitrage execution type: {stepType}'
                 logger.error(errMsg)
                 raise Exception(errMsg)
@@ -567,7 +567,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
             printSeperator()
 
             logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[position][toSwapTo]["name"]}')
-            telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
+            telegramStatusMessage = updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
             stepSettings["done"] = True
 
@@ -675,7 +675,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                         messageToAppend=f"{stepNumber}.5 Approving {recipe[position][toSwapFrom]['symbol']} Swap 💸")
 
-                approveToken(
+                telegramStatusMessage = approveToken(
                     rpcUrl=recipe[position]["chain"]["rpc"],
                     explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                     walletAddress=recipe[position]["wallet"]["address"],
@@ -736,7 +736,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                         messageToAppend=f"{stepNumber}.5 Approving {recipe[position][toSwapFrom]['symbol']} Bridge 💸")
 
-                approveToken(
+                telegramStatusMessage = approveToken(
                     rpcUrl=recipe[position]["chain"]["rpc"],
                     explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                     walletAddress=recipe[position]["wallet"]["address"],
@@ -781,7 +781,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
             telegramStatusMessage = bridgeResult["telegramStatusMessage"]
 
         else:
-            updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
+            updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
             errMsg = f'Invalid Arbitrage execution type: {stepType}'
             logger.error(errMsg)
             raise Exception(errMsg)
@@ -791,7 +791,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
         printSeperator()
 
         logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[position][toSwapTo]["name"]}')
-        telegramStatusMessage = updatedStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
+        telegramStatusMessage = updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
         stepSettings["done"] = True
 
@@ -817,7 +817,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                                    profitLoss=profitLoss, arbitragePercentage=arbitragePercentage,
                                    startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
-    return wasProfitable
+    return wasProfitable, telegramStatusMessage
 
 
 # Predict our potential profit/loss
