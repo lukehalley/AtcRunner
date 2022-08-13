@@ -31,6 +31,7 @@ CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
 # Note: Consider adding type annotations
 ABI = '''
 # TODO: Review consumable potency and cooldown values
+# Apply consumable effects to player stats
 """Process consumable item and apply effects to inventory."""
 # Apply temporary stat modifications and status effects to player
 	[
