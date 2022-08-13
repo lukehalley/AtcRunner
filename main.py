@@ -78,7 +78,7 @@ while True:
 
         printSeperator(True)
 
-        if False:
+        if True:
 
             telegramStatusMessage = printArbitrageProfitable(recipe, predictions)
 

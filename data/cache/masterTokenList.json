@@ -1913,19 +1913,27 @@
     },
     {
         "chainId": 43114,
+        "address": "0xB00F1ad977a949a3CCc389Ca1D1282A2946963b0",
+        "symbol": "BOOFI",
+        "name": "Boo Finance Token",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0xB00F1ad977a949a3CCc389Ca1D1282A2946963b0/logo.png"
+    },
+    {
+        "chainId": 43114,
+        "address": "0x544c42fBB96B39B21DF61cf322b5EDC285EE7429",
+        "symbol": "INSUR",
+        "name": "INSUR Token",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x544c42fBB96B39B21DF61cf322b5EDC285EE7429/logo.png"
+    },
+    {
+        "chainId": 43114,
         "address": "0x8B1d98A91F853218ddbb066F20b8c63E782e2430",
         "symbol": "ORCA",
         "name": "OrcaDAO",
         "decimals": 18,
         "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x8B1d98A91F853218ddbb066F20b8c63E782e2430/logo.png"
-    },
-    {
-        "chainId": 43114,
-        "address": "0x027dbcA046ca156De9622cD1e2D907d375e53aa7",
-        "symbol": "AMPL",
-        "name": "Ampleforth",
-        "decimals": 9,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x027dbcA046ca156De9622cD1e2D907d375e53aa7/logo.png"
     },
     {
         "chainId": 43114,
@@ -1977,35 +1985,11 @@
     },
     {
         "chainId": 43114,
-        "address": "0x0ebd9537A25f56713E34c45b38F421A1e7191469",
-        "symbol": "OOE",
-        "name": "OpenOcean",
-        "decimals": 18,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x0ebd9537A25f56713E34c45b38F421A1e7191469/logo.png"
-    },
-    {
-        "chainId": 43114,
-        "address": "0x544c42fBB96B39B21DF61cf322b5EDC285EE7429",
-        "symbol": "INSUR",
-        "name": "INSUR Token",
-        "decimals": 18,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x544c42fBB96B39B21DF61cf322b5EDC285EE7429/logo.png"
-    },
-    {
-        "chainId": 43114,
-        "address": "0xb54f16fB19478766A268F172C9480f8da1a7c9C3",
-        "symbol": "TIME",
-        "name": "Time",
+        "address": "0x027dbcA046ca156De9622cD1e2D907d375e53aa7",
+        "symbol": "AMPL",
+        "name": "Ampleforth",
         "decimals": 9,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0xb54f16fB19478766A268F172C9480f8da1a7c9C3/logo.png"
-    },
-    {
-        "chainId": 43114,
-        "address": "0x094bd7B2D99711A1486FB94d4395801C6d0fdDcC",
-        "symbol": "TEDDY",
-        "name": "TEDDY",
-        "decimals": 18,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x094bd7B2D99711A1486FB94d4395801C6d0fdDcC/logo.png"
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x027dbcA046ca156De9622cD1e2D907d375e53aa7/logo.png"
     },
     {
         "chainId": 43114,
@@ -2017,43 +2001,11 @@
     },
     {
         "chainId": 43114,
-        "address": "0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd",
-        "symbol": "JOE",
-        "name": "JoeToken",
-        "decimals": 18,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd/logo.png"
-    },
-    {
-        "chainId": 43114,
-        "address": "0x9Fda7cEeC4c18008096C2fE2B85F05dc300F94d0",
-        "symbol": "MFI",
-        "name": "MarginSwap",
-        "decimals": 18,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x9Fda7cEeC4c18008096C2fE2B85F05dc300F94d0/logo.png"
-    },
-    {
-        "chainId": 43114,
-        "address": "0xB00F1ad977a949a3CCc389Ca1D1282A2946963b0",
-        "symbol": "BOOFI",
-        "name": "Boo Finance Token",
-        "decimals": 18,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0xB00F1ad977a949a3CCc389Ca1D1282A2946963b0/logo.png"
-    },
-    {
-        "chainId": 43114,
-        "address": "0xc12e249FaBe1c5Eb7C558E5F50D187687a244E31",
-        "symbol": "BLUE",
-        "name": "Blue Token",
-        "decimals": 18,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0xc12e249FaBe1c5Eb7C558E5F50D187687a244E31/logo.png"
-    },
-    {
-        "chainId": 43114,
-        "address": "0x01C2086faCFD7aA38f69A6Bd8C91BEF3BB5adFCa",
-        "symbol": "YAY",
-        "name": "YAY Games",
-        "decimals": 18,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x01C2086faCFD7aA38f69A6Bd8C91BEF3BB5adFCa/logo.png"
+        "address": "0xb54f16fB19478766A268F172C9480f8da1a7c9C3",
+        "symbol": "TIME",
+        "name": "Time",
+        "decimals": 9,
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0xb54f16fB19478766A268F172C9480f8da1a7c9C3/logo.png"
     },
     {
         "chainId": 43114,
@@ -2065,6 +2017,30 @@
     },
     {
         "chainId": 43114,
+        "address": "0x397bBd6A0E41bdF4C3F971731E180Db8Ad06eBc1",
+        "symbol": "AVXT",
+        "name": "Avaxtars Token",
+        "decimals": 6,
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x397bBd6A0E41bdF4C3F971731E180Db8Ad06eBc1/logo.png"
+    },
+    {
+        "chainId": 43114,
+        "address": "0x01C2086faCFD7aA38f69A6Bd8C91BEF3BB5adFCa",
+        "symbol": "YAY",
+        "name": "YAY Games",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x01C2086faCFD7aA38f69A6Bd8C91BEF3BB5adFCa/logo.png"
+    },
+    {
+        "chainId": 43114,
+        "address": "0xc12e249FaBe1c5Eb7C558E5F50D187687a244E31",
+        "symbol": "BLUE",
+        "name": "Blue Token",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0xc12e249FaBe1c5Eb7C558E5F50D187687a244E31/logo.png"
+    },
+    {
+        "chainId": 43114,
         "address": "0x440aBbf18c54b2782A4917b80a1746d3A2c2Cce1",
         "symbol": "SHIBX",
         "name": "SHIBAVAX",
@@ -2073,11 +2049,51 @@
     },
     {
         "chainId": 43114,
-        "address": "0x397bBd6A0E41bdF4C3F971731E180Db8Ad06eBc1",
-        "symbol": "AVXT",
-        "name": "Avaxtars Token",
-        "decimals": 6,
-        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x397bBd6A0E41bdF4C3F971731E180Db8Ad06eBc1/logo.png"
+        "address": "0x9Fda7cEeC4c18008096C2fE2B85F05dc300F94d0",
+        "symbol": "MFI",
+        "name": "MarginSwap",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x9Fda7cEeC4c18008096C2fE2B85F05dc300F94d0/logo.png"
+    },
+    {
+        "chainId": 43114,
+        "address": "0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd",
+        "symbol": "JOE",
+        "name": "JoeToken",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd/logo.png"
+    },
+    {
+        "chainId": 43114,
+        "address": "0x094bd7B2D99711A1486FB94d4395801C6d0fdDcC",
+        "symbol": "TEDDY",
+        "name": "TEDDY",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x094bd7B2D99711A1486FB94d4395801C6d0fdDcC/logo.png"
+    },
+    {
+        "chainId": 43114,
+        "address": "0x0ebd9537A25f56713E34c45b38F421A1e7191469",
+        "symbol": "OOE",
+        "name": "OpenOcean",
+        "decimals": 18,
+        "logoURI": "https://raw.githubusercontent.com/pangolindex/tokens/main/assets/0x0ebd9537A25f56713E34c45b38F421A1e7191469/logo.png"
+    },
+    {
+        "chainId": 53935,
+        "address": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
+        "symbol": "WJEWEL",
+        "name": "Wrapped JEWEL",
+        "decimals": 18,
+        "logoURI": "https://beta.defikingdoms.com/static/media/jewel-logo.88468185.png"
+    },
+    {
+        "chainId": 53935,
+        "address": "0xA11f52cd55900e7faf0daca7F2BA1DF8df30AdDd",
+        "symbol": "xCRYSTAL",
+        "name": "xCrystals",
+        "decimals": 18,
+        "logoURI": "https://beta.defikingdoms.com/static/media/crystal-logo.b0ad245d.png"
     },
     {
         "chainId": 53935,
@@ -2089,27 +2105,35 @@
     },
     {
         "chainId": 53935,
-        "address": "0x6AC38A4C112F125eac0eBDbaDBed0BC8F4575d0d",
-        "symbol": "JEWEL-xJEWEL",
-        "name": "JEWEL-xJEWEL LP",
-        "decimals": 18,
-        "logoURI": "https://beta.defikingdoms.com/static/media/jewel-logo.88468185.png"
-    },
-    {
-        "chainId": 53935,
-        "address": "0x48658E69D741024b4686C8f7b236D3F1D291f386",
-        "symbol": "JEWEL-CRYSTAL",
-        "name": "JEWEL-CRYSTAL LP",
-        "decimals": 18,
-        "logoURI": "https://beta.defikingdoms.com/static/media/jewel-logo.88468185.png"
-    },
-    {
-        "chainId": 53935,
         "address": "0xF3EabeD6Bd905e0FcD68FC3dBCd6e3A4aEE55E98",
         "symbol": "JEWEL-AVAX",
         "name": "JEWEL-AVAX LP",
         "decimals": 18,
         "logoURI": "https://beta.defikingdoms.com/static/media/jewel-logo.88468185.png"
+    },
+    {
+        "chainId": 53935,
+        "address": "0x9f378F48d0c1328fd0C80d7Ae544C6CadB5Ba99E",
+        "symbol": "CRYSTAL-AVAX",
+        "name": "CRYSTAL-AVAX LP",
+        "decimals": 18,
+        "logoURI": "https://beta.defikingdoms.com/static/media/crystal-logo.b0ad245d.png"
+    },
+    {
+        "chainId": 53935,
+        "address": "0x79fE1fCF16Cc0F7E28b4d7B97387452E3084b6dA",
+        "symbol": "DFKTEARS",
+        "name": "DFKTEARS",
+        "decimals": 0,
+        "logoURI": "https://game.defikingdoms.com/static/media/ethereum-logo.67332c97.png"
+    },
+    {
+        "chainId": 53935,
+        "address": "0x04b9dA42306B023f3572e106B11D82aAd9D32EBb",
+        "symbol": "CRYSTAL",
+        "name": "Crystals",
+        "decimals": 18,
+        "logoURI": "https://beta.defikingdoms.com/static/media/crystal-logo.b0ad245d.png"
     },
     {
         "chainId": 53935,
@@ -2129,22 +2153,6 @@
     },
     {
         "chainId": 53935,
-        "address": "0x9f378F48d0c1328fd0C80d7Ae544C6CadB5Ba99E",
-        "symbol": "CRYSTAL-AVAX",
-        "name": "CRYSTAL-AVAX LP",
-        "decimals": 18,
-        "logoURI": "https://beta.defikingdoms.com/static/media/crystal-logo.b0ad245d.png"
-    },
-    {
-        "chainId": 53935,
-        "address": "0x04b9dA42306B023f3572e106B11D82aAd9D32EBb",
-        "symbol": "CRYSTAL",
-        "name": "Crystals",
-        "decimals": 18,
-        "logoURI": "https://beta.defikingdoms.com/static/media/crystal-logo.b0ad245d.png"
-    },
-    {
-        "chainId": 53935,
         "address": "0xB57B60DeBDB0b8172bb6316a9164bd3C695F133a",
         "symbol": "AVAX",
         "name": "Avalanche",
@@ -2153,17 +2161,17 @@
     },
     {
         "chainId": 53935,
-        "address": "0xA11f52cd55900e7faf0daca7F2BA1DF8df30AdDd",
-        "symbol": "xCRYSTAL",
-        "name": "xCrystals",
+        "address": "0x6AC38A4C112F125eac0eBDbaDBed0BC8F4575d0d",
+        "symbol": "JEWEL-xJEWEL",
+        "name": "JEWEL-xJEWEL LP",
         "decimals": 18,
-        "logoURI": "https://beta.defikingdoms.com/static/media/crystal-logo.b0ad245d.png"
+        "logoURI": "https://beta.defikingdoms.com/static/media/jewel-logo.88468185.png"
     },
     {
         "chainId": 53935,
-        "address": "0xCCb93dABD71c8Dad03Fc4CE5559dC3D89F67a260",
-        "symbol": "WJEWEL",
-        "name": "Wrapped JEWEL",
+        "address": "0x48658E69D741024b4686C8f7b236D3F1D291f386",
+        "symbol": "JEWEL-CRYSTAL",
+        "name": "JEWEL-CRYSTAL LP",
         "decimals": 18,
         "logoURI": "https://beta.defikingdoms.com/static/media/jewel-logo.88468185.png"
     },
@@ -2185,11 +2193,27 @@
     },
     {
         "chainId": 1666600000,
+        "address": "0x1771dEc8D9A29F30d82443dE0a69e7b6824e2F53",
+        "symbol": "DFKANTBLND",
+        "name": "Anti-blinding Potion",
+        "decimals": 0,
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/blindness-potion.png"
+    },
+    {
+        "chainId": 1666600000,
         "address": "0x9678518e04Fe02FB30b55e2D0e554E26306d0892",
         "symbol": "DFKBLUEEGG",
         "name": "Blue Pet Egg",
         "decimals": 0,
         "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/pet-egg-blue.png"
+    },
+    {
+        "chainId": 1666600000,
+        "address": "0x78aED65A2Cc40C7D8B0dF1554Da60b38AD351432",
+        "symbol": "DFKBLOATER",
+        "name": "Bloater",
+        "decimals": 0,
+        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/bloater.png"
     },
     {
         "chainId": 1666600000,
@@ -2209,22 +2233,6 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x1771dEc8D9A29F30d82443dE0a69e7b6824e2F53",
-        "symbol": "DFKANTBLND",
-        "name": "Anti-blinding Potion",
-        "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/blindness-potion.png"
-    },
-    {
-        "chainId": 1666600000,
-        "address": "0x3633F956410163A98D58D2D928B38C64A488654e",
-        "symbol": "DFKCHSST",
-        "name": "Chaos Stone",
-        "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/chaos-stone.gif"
-    },
-    {
-        "chainId": 1666600000,
         "address": "0x6e1bC01Cc52D165B357c42042cF608159A2B81c1",
         "symbol": "DFKAMBRTFY",
         "name": "Ambertaffy",
@@ -2241,11 +2249,11 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x78aED65A2Cc40C7D8B0dF1554Da60b38AD351432",
-        "symbol": "DFKBLOATER",
-        "name": "Bloater",
+        "address": "0x3633F956410163A98D58D2D928B38C64A488654e",
+        "symbol": "DFKCHSST",
+        "name": "Chaos Stone",
         "decimals": 0,
-        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/bloater.png"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/chaos-stone.gif"
     },
     {
         "chainId": 1666600000,
@@ -2270,14 +2278,6 @@
         "name": "Cosmic",
         "decimals": 9,
         "logoURI": "https://legacy.lootswap.finance/tokens/COSMIC.png"
-    },
-    {
-        "chainId": 1666600000,
-        "address": "0x8Bf4A0888451C6b5412bCaD3D9dA3DCf5c6CA7BE",
-        "symbol": "DFKLANTERNEYE",
-        "name": "Lantern-Eye",
-        "decimals": 0,
-        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/lanterneye.png"
     },
     {
         "chainId": 1666600000,
@@ -2329,19 +2329,19 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x68EA4640C5ce6cC0c9A1F17B7b882cB1cBEACcd7",
-        "symbol": "DFKDRKWD",
-        "name": "Darkweed",
-        "decimals": 0,
-        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/darkweed.png"
-    },
-    {
-        "chainId": 1666600000,
         "address": "0x9edb3Da18be4B03857f3d39F83e5C6AAD67bc148",
         "symbol": "DFKGOLDEGG",
         "name": "Golden Egg",
         "decimals": 0,
         "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/pet-egg-golden.gif"
+    },
+    {
+        "chainId": 1666600000,
+        "address": "0x600541aD6Ce0a8b5dae68f086D46361534D20E80",
+        "symbol": "DFKGLDVN",
+        "name": "Goldvein",
+        "decimals": 0,
+        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/goldvein.png"
     },
     {
         "chainId": 1666600000,
@@ -2409,11 +2409,11 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x600541aD6Ce0a8b5dae68f086D46361534D20E80",
-        "symbol": "DFKGLDVN",
-        "name": "Goldvein",
+        "address": "0x68EA4640C5ce6cC0c9A1F17B7b882cB1cBEACcd7",
+        "symbol": "DFKDRKWD",
+        "name": "Darkweed",
         "decimals": 0,
-        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/goldvein.png"
+        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/darkweed.png"
     },
     {
         "chainId": 1666600000,
@@ -2425,11 +2425,11 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0xc5843b3Dd9b912fd5958e5b1d1f27189eF7189Da",
-        "symbol": "KNIGHT",
-        "name": "Knight",
+        "address": "0x5DCE7A3E8B53387A9Ee1cE0d855b7A8d948100A3",
+        "symbol": "GRAV",
+        "name": "Gravity",
         "decimals": 18,
-        "logoURI": "https://www.knightsandpeasants.one/images/iconLogo.webp"
+        "logoURI": "https://cdn.discordapp.com/attachments/931088719107215400/947942804498309170/Asset_6.png"
     },
     {
         "chainId": 1666600000,
@@ -2537,19 +2537,19 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x5DCE7A3E8B53387A9Ee1cE0d855b7A8d948100A3",
-        "symbol": "GRAV",
-        "name": "Gravity",
-        "decimals": 18,
-        "logoURI": "https://cdn.discordapp.com/attachments/931088719107215400/947942804498309170/Asset_6.png"
+        "address": "0x8Bf4A0888451C6b5412bCaD3D9dA3DCf5c6CA7BE",
+        "symbol": "DFKLANTERNEYE",
+        "name": "Lantern-Eye",
+        "decimals": 0,
+        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/lanterneye.png"
     },
     {
         "chainId": 1666600000,
-        "address": "0x1f3F655079b70190cb79cE5bc5AE5F19dAf2A6Cf",
-        "symbol": "DFKLATONECR",
-        "name": "Lesser Atonement Crystal",
-        "decimals": 0,
-        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/atonement-crystal-lesser.gif"
+        "address": "0xc5843b3Dd9b912fd5958e5b1d1f27189eF7189Da",
+        "symbol": "KNIGHT",
+        "name": "Knight",
+        "decimals": 18,
+        "logoURI": "https://www.knightsandpeasants.one/images/iconLogo.webp"
     },
     {
         "chainId": 1666600000,
@@ -2697,11 +2697,11 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0xa509c34306AdF6168268A213Cc47D336630bf101",
-        "symbol": "DFKLCHSCR",
-        "name": "Lesser Chaos Crystal",
+        "address": "0x1f3F655079b70190cb79cE5bc5AE5F19dAf2A6Cf",
+        "symbol": "DFKLATONECR",
+        "name": "Lesser Atonement Crystal",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/chaos-crystal-lesser.gif"
+        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/atonement-crystal-lesser.gif"
     },
     {
         "chainId": 1666600000,
@@ -2713,19 +2713,11 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x39927A2CEE5580d63A163bc402946C7600300373",
-        "symbol": "DFKLFINCR",
-        "name": "Lesser Finesse Crystal",
+        "address": "0x6D4f4bC32df561a35C05866051CbE9C92759Da29",
+        "symbol": "DFKLCHSST",
+        "name": "Lesser Chaos Stone",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/finesse-crystal-lesser.gif"
-    },
-    {
-        "chainId": 1666600000,
-        "address": "0x2daE9aC8E3195715F308B59e7E9326F115Ab4D98",
-        "symbol": "SPEED",
-        "name": "Speed",
-        "decimals": 18,
-        "logoURI": "https://cdn.speedstargame.com/images/speed-token.png"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/chaos-stone-lesser.gif"
     },
     {
         "chainId": 1666600000,
@@ -2769,14 +2761,6 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0xB914e7A183AbCD46300584DA828f62A39516F33b",
-        "symbol": "STAR",
-        "name": "Star",
-        "decimals": 18,
-        "logoURI": "https://cdn.speedstargame.com/images/star-token.png"
-    },
-    {
-        "chainId": 1666600000,
         "address": "0xF9565E8c4E13862f677F144B3cdC8700D9c4BA31",
         "symbol": "HVILLE",
         "name": "Harmonyville",
@@ -2785,11 +2769,19 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x735aBE48e8782948a37C7765ECb76b98CdE97B0F",
-        "symbol": "FTM",
-        "name": "Fantom",
+        "address": "0x2daE9aC8E3195715F308B59e7E9326F115Ab4D98",
+        "symbol": "SPEED",
+        "name": "Speed",
         "decimals": 18,
-        "logoURI": "https://cryptologos.cc/logos/fantom-ftm-logo.png?v=014"
+        "logoURI": "https://cdn.speedstargame.com/images/speed-token.png"
+    },
+    {
+        "chainId": 1666600000,
+        "address": "0x66CF8375fd083E7d103D69378e9AF20F1b46DC59",
+        "symbol": "HPLAY",
+        "name": "Harmony Play",
+        "decimals": 18,
+        "logoURI": "https://d1xrz6ki9z98vb.cloudfront.net/venomswap/tokens/HPLAY.png"
     },
     {
         "chainId": 1666600000,
@@ -2825,19 +2817,11 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x6D4f4bC32df561a35C05866051CbE9C92759Da29",
-        "symbol": "DFKLCHSST",
-        "name": "Lesser Chaos Stone",
+        "address": "0xa509c34306AdF6168268A213Cc47D336630bf101",
+        "symbol": "DFKLCHSCR",
+        "name": "Lesser Chaos Crystal",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/chaos-stone-lesser.gif"
-    },
-    {
-        "chainId": 1666600000,
-        "address": "0x66CF8375fd083E7d103D69378e9AF20F1b46DC59",
-        "symbol": "HPLAY",
-        "name": "Harmony Play",
-        "decimals": 18,
-        "logoURI": "https://d1xrz6ki9z98vb.cloudfront.net/venomswap/tokens/HPLAY.png"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/chaos-crystal-lesser.gif"
     },
     {
         "chainId": 1666600000,
@@ -2849,6 +2833,22 @@
     },
     {
         "chainId": 1666600000,
+        "address": "0x735aBE48e8782948a37C7765ECb76b98CdE97B0F",
+        "symbol": "FTM",
+        "name": "Fantom",
+        "decimals": 18,
+        "logoURI": "https://cryptologos.cc/logos/fantom-ftm-logo.png?v=014"
+    },
+    {
+        "chainId": 1666600000,
+        "address": "0xB914e7A183AbCD46300584DA828f62A39516F33b",
+        "symbol": "STAR",
+        "name": "Star",
+        "decimals": 18,
+        "logoURI": "https://cdn.speedstargame.com/images/star-token.png"
+    },
+    {
+        "chainId": 1666600000,
         "address": "0x22D62b19b7039333ad773b7185BB61294F3AdC19",
         "symbol": "stONE",
         "name": "Staked One",
@@ -2857,10 +2857,10 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0xCa3e902eFdb2a410C952Fd3e4ac38d7DBDCB8E96",
-        "symbol": "tq1USDC",
-        "name": "Full Health Potion",
-        "decimals": 0,
+        "address": "0xc63AB8c72e636C9961c5e9288b697eC5F0B8E1F7",
+        "symbol": "tq1ETH",
+        "name": "Tranquil 1ETH",
+        "decimals": 8,
         "logoURI": "https://assets.coingecko.com/coins/images/21848/large/7zRXwiV.png?1640132557"
     },
     {
@@ -2913,19 +2913,19 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0xc63AB8c72e636C9961c5e9288b697eC5F0B8E1F7",
-        "symbol": "tq1ETH",
-        "name": "Tranquil 1ETH",
-        "decimals": 8,
-        "logoURI": "https://assets.coingecko.com/coins/images/21848/large/7zRXwiV.png?1640132557"
-    },
-    {
-        "chainId": 1666600000,
         "address": "0x10ca212A896fB50c9b7E6C29A58754818Ce536A4",
         "symbol": "xDG",
         "name": "xDingo",
         "decimals": 18,
         "logoURI": "https://dingos.one/images/mugshot.png"
+    },
+    {
+        "chainId": 1666600000,
+        "address": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a",
+        "symbol": "WONE",
+        "name": "Wrapped ONE",
+        "decimals": 18,
+        "logoURI": "https://assets.coingecko.com/coins/images/4344/small/Y88JAze.png"
     },
     {
         "chainId": 1666600000,
@@ -2977,11 +2977,11 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a",
-        "symbol": "WONE",
-        "name": "Wrapped ONE",
-        "decimals": 18,
-        "logoURI": "https://assets.coingecko.com/coins/images/4344/small/Y88JAze.png"
+        "address": "0xCa3e902eFdb2a410C952Fd3e4ac38d7DBDCB8E96",
+        "symbol": "tq1USDC",
+        "name": "Full Health Potion",
+        "decimals": 0,
+        "logoURI": "https://assets.coingecko.com/coins/images/21848/large/7zRXwiV.png?1640132557"
     },
     {
         "chainId": 1666600000,
@@ -2993,22 +2993,6 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x9df75917aC9747B4A70fa033E4b0182d85B62857",
-        "symbol": "DFKVGRST",
-        "name": "Vigor Stone",
-        "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/vigor-stone.gif"
-    },
-    {
-        "chainId": 1666600000,
-        "address": "0x08f362517aD4119d93bBCd20825c2E4119abB495",
-        "symbol": "DFKSWFTST",
-        "name": "Swiftness Stone",
-        "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/swiftness-stone.gif"
-    },
-    {
-        "chainId": 1666600000,
         "address": "0x24eA0D436d3c2602fbfEfBe6a16bBc304C963D04",
         "symbol": "DFKTEARS",
         "name": "Gaia's Tears",
@@ -3017,11 +3001,27 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0xB00CbF5Cd5e7b321436C2D3d8078773522D2F073",
-        "symbol": "DFKLVGRST",
-        "name": "Lesser Vigor Stone",
+        "address": "0x9df75917aC9747B4A70fa033E4b0182d85B62857",
+        "symbol": "DFKVGRST",
+        "name": "Vigor Stone",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/vigor-stone-lesser.gif"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/vigor-stone.gif"
+    },
+    {
+        "chainId": 1666600000,
+        "address": "0x872dD1595544CE22ad1e0174449C7ECE6F0bb01b",
+        "symbol": "DFKSWFTPTN",
+        "name": "Swiftness Potion",
+        "decimals": 0,
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/swiftness-potion.png"
+    },
+    {
+        "chainId": 1666600000,
+        "address": "0x08f362517aD4119d93bBCd20825c2E4119abB495",
+        "symbol": "DFKSWFTST",
+        "name": "Swiftness Stone",
+        "decimals": 0,
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/swiftness-stone.gif"
     },
     {
         "chainId": 1666600000,
@@ -3057,14 +3057,6 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x4Ff7A020ec1100D36d5C81F3D4815F2e9C704b59",
-        "symbol": "DFKLWITST",
-        "name": "Lesser Wit Stone",
-        "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/wit-stone-lesser.gif"
-    },
-    {
-        "chainId": 1666600000,
         "address": "0xaB464901AFBc61bAC440a97Fa568aC42885Da58B",
         "symbol": "DFKLMGHTCR",
         "name": "Lesser Might Crystal",
@@ -3073,11 +3065,19 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0xc63b76f710e9973b8989678eb16234CfADc8D9DB",
-        "symbol": "DFKLINSCR",
-        "name": "Lesser Insight Crystal",
+        "address": "0x17ff2016c9ecCFBF4Fc4DA6EF95Fe646D2c9104F",
+        "symbol": "DFKLWITCR",
+        "name": "Lesser Wit Crystal",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/insight-crystal-lesser.gif"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/wit-crystal-lesser.gif"
+    },
+    {
+        "chainId": 1666600000,
+        "address": "0x762b98B3758d0A5Eb95B3E4A1E2914Ce0A80D99c",
+        "symbol": "DFKLINSST",
+        "name": "Lesser Insight Stone",
+        "decimals": 0,
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/insight-stone-lesser.gif"
     },
     {
         "chainId": 1666600000,
@@ -3121,43 +3121,43 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x762b98B3758d0A5Eb95B3E4A1E2914Ce0A80D99c",
-        "symbol": "DFKLINSST",
-        "name": "Lesser Insight Stone",
+        "address": "0x39927A2CEE5580d63A163bc402946C7600300373",
+        "symbol": "DFKLFINCR",
+        "name": "Lesser Finesse Crystal",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/insight-stone-lesser.gif"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/finesse-crystal-lesser.gif"
     },
     {
         "chainId": 1666600000,
-        "address": "0x7e120334D9AFFc0982719A4eacC045F78BF41C68",
-        "symbol": "DFKMGCRSPTN",
-        "name": "Magic Resistance Potion",
+        "address": "0xc63b76f710e9973b8989678eb16234CfADc8D9DB",
+        "symbol": "DFKLINSCR",
+        "name": "Lesser Insight Crystal",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/magic-resist-potion.png"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/insight-crystal-lesser.gif"
     },
     {
         "chainId": 1666600000,
-        "address": "0x17ff2016c9ecCFBF4Fc4DA6EF95Fe646D2c9104F",
-        "symbol": "DFKLWITCR",
-        "name": "Lesser Wit Crystal",
+        "address": "0x4Ff7A020ec1100D36d5C81F3D4815F2e9C704b59",
+        "symbol": "DFKLWITST",
+        "name": "Lesser Wit Stone",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/wit-crystal-lesser.gif"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/wit-stone-lesser.gif"
     },
     {
         "chainId": 1666600000,
-        "address": "0xE7F6ea1cE7BbEbC9F2Cf080010dd938d2D8D8B1b",
-        "symbol": "DFKMGHTST",
-        "name": "Might Stone",
+        "address": "0xB00CbF5Cd5e7b321436C2D3d8078773522D2F073",
+        "symbol": "DFKLVGRST",
+        "name": "Lesser Vigor Stone",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/might-stone.gif"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/vigor-stone-lesser.gif"
     },
     {
         "chainId": 1666600000,
-        "address": "0x872dD1595544CE22ad1e0174449C7ECE6F0bb01b",
-        "symbol": "DFKSWFTPTN",
-        "name": "Swiftness Potion",
+        "address": "0xb368f69bE6eDa74700763672AEB2Ae63f3d20AE6",
+        "symbol": "DFKMGHTCR",
+        "name": "Might Crystal",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/swiftness-potion.png"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/might-crystal.gif"
     },
     {
         "chainId": 1666600000,
@@ -3185,19 +3185,19 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0xb368f69bE6eDa74700763672AEB2Ae63f3d20AE6",
-        "symbol": "DFKMGHTCR",
-        "name": "Might Crystal",
+        "address": "0x19B9F05cdE7A61ab7aae5b0ed91aA62FF51CF881",
+        "symbol": "DFKSPIDRFRT",
+        "name": "Spider Fruit",
         "decimals": 0,
-        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/might-crystal.gif"
+        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/spider-fruit.png"
     },
     {
         "chainId": 1666600000,
-        "address": "0x2493cfDAcc0f9c07240B5B1C4BE08c62b8eEff69",
-        "symbol": "DFKSILVERFIN",
-        "name": "Silverfin",
+        "address": "0x7e120334D9AFFc0982719A4eacC045F78BF41C68",
+        "symbol": "DFKMGCRSPTN",
+        "name": "Magic Resistance Potion",
         "decimals": 0,
-        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/silverfin.png"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/magic-resist-potion.png"
     },
     {
         "chainId": 1666600000,
@@ -3209,19 +3209,19 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x19B9F05cdE7A61ab7aae5b0ed91aA62FF51CF881",
-        "symbol": "DFKSPIDRFRT",
-        "name": "Spider Fruit",
+        "address": "0x372CaF681353758f985597A35266f7b330a2A44D",
+        "symbol": "DFKSHIMMERSKIN",
+        "name": "ShimmerSkin",
         "decimals": 0,
-        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/spider-fruit.png"
+        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/shimmerskin.png"
     },
     {
         "chainId": 1666600000,
-        "address": "0xb80A07e13240C31ec6dc0B5D72Af79d461dA3A70",
-        "symbol": "DFKSAILFISH",
-        "name": "Sailfish",
+        "address": "0x2493cfDAcc0f9c07240B5B1C4BE08c62b8eEff69",
+        "symbol": "DFKSILVERFIN",
+        "name": "Silverfin",
         "decimals": 0,
-        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/sailfish.png"
+        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/silverfin.png"
     },
     {
         "chainId": 1666600000,
@@ -3273,11 +3273,19 @@
     },
     {
         "chainId": 1666600000,
-        "address": "0x372CaF681353758f985597A35266f7b330a2A44D",
-        "symbol": "DFKSHIMMERSKIN",
-        "name": "ShimmerSkin",
+        "address": "0xE7F6ea1cE7BbEbC9F2Cf080010dd938d2D8D8B1b",
+        "symbol": "DFKMGHTST",
+        "name": "Might Stone",
         "decimals": 0,
-        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/shimmerskin.png"
+        "logoURI": "https://defi-kingdoms.b-cdn.net/art-assets/items/might-stone.gif"
+    },
+    {
+        "chainId": 1666600000,
+        "address": "0xb80A07e13240C31ec6dc0B5D72Af79d461dA3A70",
+        "symbol": "DFKSAILFISH",
+        "name": "Sailfish",
+        "decimals": 0,
+        "logoURI": "https://dfk-hv.b-cdn.net/art-assets/items/sailfish.png"
     },
     {
         "chainId": 1666600000,

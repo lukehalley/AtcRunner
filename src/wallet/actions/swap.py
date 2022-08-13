@@ -59,38 +59,6 @@ def setupWallet(recipe):
 
         amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
-        swapApproved = getTokenApprovalStatus(
-            rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
-            walletAddress=recipe[positionToSetup]["wallet"]["address"],
-            tokenAddress=recipe[positionToSetup][toSwapFrom]["address"],
-            spenderAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
-            wethAbi=recipe[positionToSetup]["chain"]["contracts"]["weth"]["abi"]
-        )
-
-        if not swapApproved:
-            printSeperator()
-
-            logger.info(f'Approving {recipe[positionToSetup][toSwapFrom]["symbol"]} Swap')
-
-            printSeperator()
-
-            telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
-                                                    messageToAppend=f"Approving {recipe[positionToSetup][toSwapFrom]['symbol']} Swap 💸")
-
-            telegramStatusMessage = approveToken(
-                rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
-                explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
-                walletAddress=recipe[positionToSetup]["wallet"]["address"],
-                tokenAddress=recipe[positionToSetup][toSwapFrom]["address"],
-                spenderAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
-                wethAbi=recipe[positionToSetup]["chain"]["contracts"]["weth"]["abi"],
-                arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
-                stepCategory=f"0_5_swap",
-                telegramStatusMessage=telegramStatusMessage
-            )
-
-            printSeperator()
-
         swapResult = swapToken(
             amountInNormal=amountInNormal,
             amountInDecimals=recipe[positionToSetup][toSwapFrom]["decimals"],
