@@ -10,7 +10,7 @@ from src.api.telegrambot import appendToMessage
 from src.api.telegrambot import updateStatusMessage
 from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
 from src.utils.general import getCurrentDateTime, printSeperator
-from src.wallet.queries.network import getPrivateKey, getWalletGasBalance
+from src.wallet.queries.network import getPrivateKey, getWalletGasBalance, getTokenApprovalStatus
 from src.wallet.queries.network import getTokenBalance, getWalletsInformation
 
 from web3 import exceptions
@@ -270,3 +270,44 @@ def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddres
 
     return telegramStatusMessage
 
+def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, telegramStatusMessage):
+
+    if isSwap:
+        typeText = "Swap"
+        spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"]
+    else:
+        typeText = "Bridge"
+        spenderAddress=recipe[position]["chain"]["contracts"]["bridges"]["synapse"]["address"]
+
+    isApproved = getTokenApprovalStatus(
+        rpcUrl=recipe[position]["chain"]["rpc"],
+        walletAddress=recipe[position]["wallet"]["address"],
+        tokenAddress=recipe[position][toSwapFrom]["address"],
+        spenderAddress=spenderAddress,
+        wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"]
+    )
+
+    if not isApproved:
+        printSeperator()
+
+        logger.info(f'{stepNumber}.5 Approving {recipe[position][toSwapFrom]["symbol"]} {typeText}')
+        telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
+                                                messageToAppend=f"{stepNumber} Approving {recipe[position][toSwapFrom]['symbol']} {typeText} 💸")
+
+        printSeperator()
+
+        telegramStatusMessage = approveToken(
+            rpcUrl=recipe[position]["chain"]["rpc"],
+            explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
+            walletAddress=recipe[position]["wallet"]["address"],
+            tokenAddress=recipe[position][toSwapFrom]["address"],
+            spenderAddress=spenderAddress,
+            wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
+            arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+            stepCategory=f"{stepNumber}_5_{typeText.lower()}",
+            telegramStatusMessage=telegramStatusMessage
+        )
+
+        printSeperator()
+        
+    return telegramStatusMessage

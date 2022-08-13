@@ -12,7 +12,7 @@ from src.utils.chain import getOppositeDirection, getValueWithSlippage
 from src.utils.general import strToBool, printSeperator, percentageDifference, printArbitrageRollbackComplete, \
     printArbitrageResult, truncateDecimal
 from src.wallet.actions.bridge import executeBridge
-from src.wallet.actions.network import topUpWalletGas, approveToken
+from src.wallet.actions.network import topUpWalletGas, approveToken, checkAndApproveToken
 from src.wallet.actions.swap import swapToken, setupWallet
 from src.wallet.queries.network import getWalletsInformation, getTokenApprovalStatus
 from src.wallet.queries.swap import getSwapQuoteOut
@@ -398,8 +398,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
             if stepType == "swap":
 
-                balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
-
                 swapRoute = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
 
                 amountOutQuoted = getSwapQuoteOut(
@@ -415,38 +413,16 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
                 amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
-                swapApproved = getTokenApprovalStatus(
-                    rpcUrl=recipe[position]["chain"]["rpc"],
-                    walletAddress=recipe[position]["wallet"]["address"],
-                    tokenAddress=recipe[position][toSwapFrom]["address"],
-                    spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                    wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"]
-                )
+                if not recipe[position][toSwapFrom]["isGas"]:
 
-                if not swapApproved:
-
-                    printSeperator()
-
-                    logger.info(f'{stepNumber}.5 Approving {recipe[position][toSwapFrom]["symbol"]} Swap')
-
-                    printSeperator()
-
-                    telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
-                                                            messageToAppend=f"{stepNumber} Approving {recipe[position][toSwapFrom]['symbol']} Swap 💸")
-
-                    telegramStatusMessage = approveToken(
-                        rpcUrl=recipe[position]["chain"]["rpc"],
-                        explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-                        walletAddress=recipe[position]["wallet"]["address"],
-                        tokenAddress=recipe[position][toSwapFrom]["address"],
-                        spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                        wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
-                        arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
-                        stepCategory=f"{stepNumber}_5_swap",
-                        telegramStatusMessage=telegramStatusMessage
+                    telegramStatusMessage = checkAndApproveToken(
+                        recipe=recipe, position=position, toSwapFrom=toSwapFrom, stepNumber=stepNumber,
+                        isSwap=True, telegramStatusMessage=telegramStatusMessage
                     )
 
-                    printSeperator()
+                recipe = getWalletsInformation(recipe)
+
+                balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
 
                 swapResult = swapToken(
                     amountInNormal=currentFunds[toSwapFrom],
@@ -483,8 +459,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
             elif stepType == "bridge":
 
-                balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
-
                 if stepName == "destinationBridge":
 
                     quote = simulateStep(recipe=recipe, stepSettings=stepSettings, currentFunds=currentFunds,
@@ -494,35 +468,23 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                         telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
                                                                 messageToAppend=f"Rolling Back Arbitrage #{recipe['arbitrage']['currentRoundTripCount']} ‍⏮")
 
-                        wasProfitable, telegramStatusMessage = rollbackArbitrage(recipe=recipe, currentFunds=currentFunds,
-                                                          startingStables=startingStables, startingTime=startingTime,
-                                                          telegramStatusMessage=telegramStatusMessage)
+                        wasProfitable, telegramStatusMessage = rollbackArbitrage(recipe=recipe,
+                                                                                 currentFunds=currentFunds,
+                                                                                 startingStables=startingStables,
+                                                                                 startingTime=startingTime,
+                                                                                 telegramStatusMessage=telegramStatusMessage)
 
                         return wasProfitable
 
-                bridgeApproved = getTokenApprovalStatus(
-                    rpcUrl=recipe[position]["chain"]["rpc"],
-                    walletAddress=recipe[position]["wallet"]["address"],
-                    tokenAddress=recipe[position][toSwapFrom]["address"],
-                    spenderAddress=recipe[position]["chain"]["contracts"]["bridges"]["synapse"]["address"],
-                    wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"]
-                )
-
-                if not bridgeApproved:
-
-                    telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"{stepNumber} Approving {recipe[position][toSwapFrom]['symbol']} Bridge 💸")
-
-                    telegramStatusMessage = approveToken(
-                        rpcUrl=recipe[position]["chain"]["rpc"],
-                        explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-                        walletAddress=recipe[position]["wallet"]["address"],
-                        tokenAddress=recipe[position][toSwapFrom]["address"],
-                        spenderAddress=recipe[position]["chain"]["contracts"]["bridges"]["synapse"]["address"],
-                        wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
-                        arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
-                        stepCategory=f"{stepNumber}_5_bridge",
-                        telegramStatusMessage=telegramStatusMessage
+                if not recipe[position][toSwapFrom]["isGas"]:
+                    telegramStatusMessage = checkAndApproveToken(
+                        recipe=recipe, position=position, toSwapFrom=toSwapFrom, stepNumber=stepNumber,
+                        isSwap=False, telegramStatusMessage=telegramStatusMessage
                     )
+
+                recipe = getWalletsInformation(recipe)
+
+                balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
 
                 bridgeResult = executeBridge(
                     amountToBridge=currentFunds[toSwapFrom],
@@ -658,34 +620,10 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
             amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
-            swapApproved = getTokenApprovalStatus(
-                rpcUrl=recipe[position]["chain"]["rpc"],
-                walletAddress=recipe[position]["wallet"]["address"],
-                tokenAddress=recipe[position][toSwapFrom]["address"],
-                spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"]
+            telegramStatusMessage = checkAndApproveToken(
+                recipe=recipe, position=position, toSwapFrom=toSwapFrom, stepNumber=stepNumber,
+                isSwap=True, telegramStatusMessage=telegramStatusMessage
             )
-
-            if not swapApproved:
-
-                printSeperator()
-
-                logger.info(f'{stepNumber}.5 Approving {recipe[position][toSwapFrom]["symbol"]} Swap')
-
-                telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
-                                                        messageToAppend=f"{stepNumber}.5 Approving {recipe[position][toSwapFrom]['symbol']} Swap 💸")
-
-                telegramStatusMessage = approveToken(
-                    rpcUrl=recipe[position]["chain"]["rpc"],
-                    explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-                    walletAddress=recipe[position]["wallet"]["address"],
-                    tokenAddress=recipe[position][toSwapFrom]["address"],
-                    spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                    wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
-                    arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
-                    stepCategory=f"{stepNumber}_5_swap",
-                    telegramStatusMessage=telegramStatusMessage
-                )
 
             swapResult = swapToken(
                 amountInNormal=currentFunds[toSwapFrom],
@@ -724,29 +662,10 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
             balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
 
-            bridgeApproved = getTokenApprovalStatus(
-                rpcUrl=recipe[position]["chain"]["rpc"],
-                walletAddress=recipe[position]["wallet"]["address"],
-                tokenAddress=recipe[position][toSwapFrom]["address"],
-                spenderAddress=recipe[position]["chain"]["contracts"]["bridges"]["synapse"]["address"],
-                wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"]
+            telegramStatusMessage = checkAndApproveToken(
+                recipe=recipe, position=position, toSwapFrom=toSwapFrom, stepNumber=stepNumber,
+                isSwap=False, telegramStatusMessage=telegramStatusMessage
             )
-
-            if not bridgeApproved:
-                telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
-                                                        messageToAppend=f"{stepNumber}.5 Approving {recipe[position][toSwapFrom]['symbol']} Bridge 💸")
-
-                telegramStatusMessage = approveToken(
-                    rpcUrl=recipe[position]["chain"]["rpc"],
-                    explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-                    walletAddress=recipe[position]["wallet"]["address"],
-                    tokenAddress=recipe[position][toSwapFrom]["address"],
-                    spenderAddress=recipe[position]["chain"]["contracts"]["bridges"]["synapse"]["address"],
-                    wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
-                    arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
-                    stepCategory=f"{stepNumber}_5_bridge",
-                    telegramStatusMessage=telegramStatusMessage
-                )
 
             bridgeResult = executeBridge(
                 amountToBridge=currentFunds[toSwapFrom],
