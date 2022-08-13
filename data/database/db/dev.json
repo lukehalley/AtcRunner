@@ -6749,7 +6749,7 @@
         "symbol": "FTM"
       },
       "id": "250",
-      "rpc": "https://rpc.fantom.network"
+      "rpc": "https://rpc.ankr.com/fantom"
     }
   },
   "recipes": {
@@ -6797,7 +6797,53 @@
           "symbol": "WJEWEL"
         }
       },
-      "enabled": false
+      "enabled": true
+    },
+    "xJEWEL_Harmony_DFKChain": {
+      "arbitrage": {
+        "dexId": "defikingdoms",
+        "directionLock": {
+          "direction": "avalanchedfk,harmony",
+          "lockEnabled": "true"
+        },
+        "tokenList": "DFK_ALL",
+        "tokenRetrievalMethod": "tokenList"
+      },
+      "chainOne": {
+        "chain": {
+          "name": "harmony"
+        },
+        "routes": {
+          "stablecoin-token": "1USDC,JEWEL,xJEWEL",
+          "token-stablecoin": "xJEWEL,JEWEL,1USDC"
+        },
+        "stablecoin": {
+          "isGas": "False",
+          "symbol": "1USDC"
+        },
+        "token": {
+          "isGas": "False",
+          "symbol": "xJEWEL"
+        }
+      },
+      "chainTwo": {
+        "chain": {
+          "name": "avalanchedfk"
+        },
+        "routes": {
+          "stablecoin-token": "USDC,WJEWEL,xJEWEL",
+          "token-stablecoin": "xJEWEL,WJEWEL,USDC"
+        },
+        "stablecoin": {
+          "isGas": "False",
+          "symbol": "USDC"
+        },
+        "token": {
+          "isGas": "False",
+          "symbol": "xJEWEL"
+        }
+      },
+      "enabled": true
     },
     "JEWEL_Harmony_FTM": {
       "arbitrage": {
@@ -6889,7 +6935,7 @@
           "symbol": "WJEWEL"
         }
       },
-      "enabled": true
+      "enabled": false
     },
     "AVAX_DFKChain_Avalanche": {
       "arbitrage": {
@@ -6935,7 +6981,7 @@
           "symbol": "AVAX"
         }
       },
-      "enabled": true
+      "enabled": false
     },
     "ETH_DFKChain_Avalanche": {
       "arbitrage": {
