@@ -1,21 +1,3 @@
-#variables:
-#  DOCKER_REGISTRY: 538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot
-#
-#publish:
-#  image:
-#    name: amazon/aws-cli
-#    entrypoint: [""]
-#  before_script:
-#    - aws --version
-#  script:
-#    - aws ecr get-login-password | docker login --username AWS --password-stdin $DOCKER_REGISTRY
-
-variables:
-  DOCKER_REGISTRY: 538602529242.dkr.ecr.eu-west-1.amazonaws.com
-  AWS_DEFAULT_REGION: eu-west-1
-  APP_NAME: arb-bot
-  DOCKER_HOST: tcp://docker:2375
-
 publish:
   image:
     name: amazon/aws-cli
@@ -27,6 +9,7 @@ publish:
     - aws --version
     - docker --version
   script:
-    - docker build -t $DOCKER_REGISTRY/$APP_NAME:$CI_PIPELINE_IID .
-    - aws ecr get-login-password | docker login --username AWS --password-stdin $DOCKER_REGISTRY
-    - docker push $DOCKER_REGISTRY/$APP_NAME:$CI_PIPELINE_IID
+    - docker build -t $AWS_ACCOUNT/$ECR_REPO:$CI_PIPELINE_IID .
+    - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ACCOUNT
+    - docker push $AWS_ACCOUNT/$ECR_REPO:$CI_PIPELINE_IID
+    - aws cloudformation update-stack --stack-name $AWS_STACK_NAME --use-previous-template --parameters ParameterKey=Image,ParameterValue=$AWS_ACCOUNT/$ECR_REPO:$CI_PIPELINE_IID
