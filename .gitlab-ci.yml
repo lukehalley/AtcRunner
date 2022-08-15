@@ -1,0 +1,11 @@
+variables:
+  DOCKER_REGISTRY: 538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot
+
+publish:
+  image:
+    name: amazon/aws-cli
+    entrypoint: [""]
+  before_script:
+    - aws --version
+  script:
+    - aws ecr get-login-password | docker login --username AWS --password-stdin $DOCKER_REGISTRY
