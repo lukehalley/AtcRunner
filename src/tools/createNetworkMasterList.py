@@ -13,7 +13,7 @@ def getABIFromAPIUrl(masterChainList, chainId):
     apiPrefix = masterChainList[chainId]["blockExplorer"]["apiPrefix"]
     if "{URL}" in apiPrefix:
         apiPrefix = apiPrefix.replace("{URL}", apiBase)
-    url = f"https://{apiPrefix}/api?module=contract&action=getabi&address={address}&format=raw&apikey={apiKey}"
+    url = f"https://{apiPrefix}/apis?module=contract&action=getabi&address={address}&format=raw&apikey={apiKey}"
     print(url)
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}

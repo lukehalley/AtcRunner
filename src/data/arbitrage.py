@@ -1,20 +1,19 @@
 import logging
 import os
-import sys
 from decimal import Decimal
 from itertools import repeat
 
-from src.api.firebase import fetchFromDatabase
-from src.api.synapsebridge import estimateBridgeOutput
-from src.api.telegrambot import appendToMessage, updateStatusMessage
-from src.api.firebase import fetchArbitrageStrategy
+from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
+from src.apis.synapseBridge.synapseBridge_Estimate import estimateBridgeOutput
+from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatusMessage
+from src.apis.firebaseDB.firebaseDB_Querys import fetchArbitrageStrategy
 from src.utils.chain import getOppositeDirection, getValueWithSlippage
 from src.utils.general import strToBool, printSeperator, percentageDifference, printArbitrageRollbackComplete, \
     printArbitrageResult, truncateDecimal
 from src.wallet.actions.bridge import executeBridge
-from src.wallet.actions.network import topUpWalletGas, approveToken, checkAndApproveToken
+from src.wallet.actions.network import topUpWalletGas, checkAndApproveToken
 from src.wallet.actions.swap import swapToken, setupWallet
-from src.wallet.queries.network import getWalletsInformation, getTokenApprovalStatus
+from src.wallet.queries.network import getWalletsInformation
 from src.wallet.queries.swap import getSwapQuoteOut
 from src.web.actions import getRoutesFromFrontend
 

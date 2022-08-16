@@ -4,7 +4,7 @@ import os
 from retry import retry
 from web3 import Web3
 
-from src.api.synapsebridge import getTokenDecimalValue, getTokenNormalValue
+from src.apis.synapseBridge.synapseBridge_Estimate import getTokenDecimalValue, getTokenNormalValue
 from src.wallet.contracts.uniswap_v2_router import getAmountsOut, getAmountsIn
 
 # Set up our logging

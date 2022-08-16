@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from src.api.synapsebridge import getBridgeableTokens
+from src.apis.synapseBridge.synapseBridge_Estimate import getBridgeableTokens
 from src.utils.general import getDictLength, getProjectRoot, printSeperator
 import urllib.request, os
 import simplejson as json

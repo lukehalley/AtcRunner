@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from src.utils.general import getDictLength, getProjectRoot
-from src.api.synapsebridge import getBridgeableTokens
+from src.apis.synapseBridge.synapseBridge_Estimate import getBridgeableTokens
 from src.wallet.queries.swap import getSwapQuoteOut
 import urllib.request, json, os
 

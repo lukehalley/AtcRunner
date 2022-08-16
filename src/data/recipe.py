@@ -1,11 +1,10 @@
 import logging
-import sys
 
 from num2words import num2words
 
-from src.api.dexscreener import getTokenPriceByDexId
-from src.api.firebase import fetchFromDatabase
-from src.api.synapsebridge import getBridgeableTokens
+from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
+from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
+from src.apis.synapseBridge.synapseBridge_Estimate import getBridgeableTokens
 from src.data.tokenLists import getTokenBySymbolAndChainID, parseTokenLists
 # Set up our logging
 from src.utils.general import strToBool
@@ -21,7 +20,7 @@ def getRecipeDetails():
 
     for recipesTitle, recipeDetails in recipes.items():
 
-        dexId = recipeDetails["arbitrage"]["dexId"]
+        dexId = recipeDetails["arbitrage"]["dexName"]
 
         tokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
         tokenList = recipeDetails["arbitrage"]["tokenList"]
@@ -103,7 +102,7 @@ def getRecipeDetails():
 
                     recipeDetails[chainNumber]["routes"][routeDirection] = routeAddressList
 
-            elif tokenRetrievalMethod == "api":
+            elif tokenRetrievalMethod == "apis":
 
                 recipeToken = recipeDetails["arbitrage"]["token"]
                 recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
@@ -154,7 +153,7 @@ def getRecipeDetails():
                 getTokenPriceByDexId(
                     chainName=recipeDetails[chainNumber]["chain"]["name"],
                     tokenAddress=recipeDetails[chainNumber]["stablecoin"]["address"],
-                    dexId=dexId
+                    dexName=dexId
                 )
 
             if recipeDetails[chainNumber]["stablecoin"]["price"] is None:

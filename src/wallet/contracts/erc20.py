@@ -1,8 +1,5 @@
-import json
 import logging
 from web3 import Web3
-
-from src.api.firebase import fetchFromDatabase
 
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
