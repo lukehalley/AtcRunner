@@ -1,17 +1,16 @@
 import logging
 import os
-import sys
 from decimal import Decimal
 
 from web3 import Web3
 
-from src.api.telegrambot import updateStatusMessage, appendToMessage
-from src.utils.chain import getABI, getTransactionDeadline, getValueWithSlippage
-from src.utils.general import printSettingUpWallet, strToBool, printSeperator, truncateDecimal
+from src.apis.telegramBot.telegramBot_Action import updateStatusMessage
+from src.utils.chain import getTransactionDeadline, getValueWithSlippage
+from src.utils.general import printSettingUpWallet, printSeperator, truncateDecimal
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
-from src.wallet.actions.network import signAndSendTransaction, callMappedContractFunction, buildMappedContractFunction, approveToken
+from src.wallet.actions.network import signAndSendTransaction, buildMappedContractFunction
 from src.wallet.queries.network import getTokenBalance, getWalletGasBalance, getWalletsInformation, \
-    getMappedContractFunction, getTokenApprovalStatus
+    getMappedContractFunction
 
 # Set up our logging
 from src.wallet.queries.swap import getSwapQuoteOut

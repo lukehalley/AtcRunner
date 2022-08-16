@@ -5,9 +5,9 @@ from decimal import Decimal
 from retry import retry
 from web3 import Web3
 
-from src.api.firebase import writeTransactionToDB
-from src.api.telegrambot import appendToMessage
-from src.api.telegrambot import updateStatusMessage
+from src.apis.firebaseDB.firebaseDB_Querys import writeTransactionToDB
+from src.apis.telegramBot.telegramBot_Action import appendToMessage
+from src.apis.telegramBot.telegramBot_Action import updateStatusMessage
 from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
 from src.utils.general import getCurrentDateTime, printSeperator
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance, getTokenApprovalStatus

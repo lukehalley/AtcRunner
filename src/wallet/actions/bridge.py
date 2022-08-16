@@ -3,7 +3,7 @@ import os
 
 from web3 import Web3
 
-from src.api.synapsebridge import generateUnsignedBridgeTransaction
+from src.apis.synapseBridge.synapseBridge_Estimate import generateUnsignedBridgeTransaction
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
 from src.wallet.actions.network import signAndSendTransaction
 from src.wallet.queries.bridge import waitForBridgeToComplete

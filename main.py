@@ -13,7 +13,7 @@ from src.utils.logger import setupLogging
 from src.web.actions import initBrowser
 
 # API modules
-from src.api.firebase import createDatabaseConnection
+from src.apis.firebaseDB.firebaseDB_Querys import createDatabaseConnection
 
 # Data modules
 from src.data.recipe import getRecipeDetails
@@ -21,7 +21,7 @@ from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfi
 
 # Wallet modules
 from src.wallet.actions.swap import setupWallet
-from src.wallet.queries.network import getWalletsInformation, getTokenApprovalStatus
+from src.wallet.queries.network import getWalletsInformation
 
 # General Init
 isDocker = checkIsDocker()

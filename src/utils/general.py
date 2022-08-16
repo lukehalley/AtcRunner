@@ -1,6 +1,8 @@
 import functools
 import json
 import logging
+import sys
+
 import math
 import os
 import re
@@ -13,7 +15,23 @@ from math import log10, floor
 from pathlib import Path
 from time import strftime, gmtime
 
-logger = logging.getLogger("DFK-DEX")
+def getProjectLogger():
+    return logging.getLogger("DFK-DEX")
+
+logger = getProjectLogger()
+
+def getRetryParams(retryType: str):
+
+    if type == "http":
+        # Get the setting envs for the retry events
+        httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))
+        httpRetryDelay = int(os.environ.get("HTTP_RETRY_DELAY"))
+
+        return httpRetryLimit, httpRetryDelay
+
+    else:
+
+        sys.exit(f"Invalid Retry param type {retryType}")
 
 # Get the root of the python project
 def getProjectRoot() -> Path:
@@ -38,7 +56,7 @@ def printRoundtrip(count):
 
 # Print the Arbitrage is profitable alert
 def printSettingUpWallet(count):
-    from src.api.telegrambot import sendMessage
+    from src.apis.telegramBot.telegramBot_Action import sendMessage
 
     logger.info("--------------------------------")
     logger.info(f" Correcting Wallet Setup State ")
@@ -53,7 +71,7 @@ def printSettingUpWallet(count):
 
 # Print the Arbitrage is profitable alert
 def printArbitrageProfitable(recipe, predictions):
-    from src.api.telegrambot import sendMessage
+    from src.apis.telegramBot.telegramBot_Action import sendMessage
 
     count = recipe['arbitrage']['currentRoundTripCount']
     networkPath = f'{recipe["origin"]["chain"]["name"]} -> {recipe["destination"]["chain"]["name"]}'
@@ -76,8 +94,8 @@ def printArbitrageProfitable(recipe, predictions):
 
 # Print the Arbitrage is profitable alert
 def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePercentage, startingTime, telegramStatusMessage):
-    from src.api.telegrambot import appendToMessage, sendMessage
-    from src.api.firebase import writeResultToDB
+    from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
+    from src.apis.firebaseDB.firebaseDB_Querys import writeResultToDB
 
     finishingTime = time.perf_counter()
     timeTook = finishingTime - startingTime
@@ -116,8 +134,8 @@ def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePe
 
 # Print the Arbitrage is profitable alert
 def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime, telegramStatusMessage):
-    from src.api.telegrambot import appendToMessage, sendMessage
-    from src.api.firebase import writeResultToDB
+    from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
+    from src.apis.firebaseDB.firebaseDB_Querys import writeResultToDB
 
     finishingTime = time.perf_counter()
     timeTook = finishingTime - startingTime

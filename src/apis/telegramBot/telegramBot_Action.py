@@ -1,39 +1,27 @@
-import logging
-import os
-
-from dotenv import load_dotenv
 from retry import retry
-from telegram import Bot
 
-from src.utils.general import getAWSSecret, checkIsDocker
+from src.apis.telegramBot.telegramBot_Utils import getTelegramBot, getTelegramChannelID, getTelegramStuckMentions, \
+    getTelegramHangingChannelID
+from src.utils.general import getRetryParams, getProjectLogger
 
-load_dotenv()
-token = os.getenv("TELEGRAM_BOT_TOKEN")
+logger = getProjectLogger()
 
-telegramChannelEnv = "TELEGRAM_ARBITRAGE_NOTIFICATION_CHANNEL_ID"
-if checkIsDocker():
-    arbitrageNotificationID = os.getenv(f"{telegramChannelEnv}_PROD")
-else:
-    arbitrageNotificationID = os.getenv(f"{telegramChannelEnv}_DEV")
+httpRetryLimit, httpRetryDelay = getRetryParams(retryType="http")
 
-arbitrageHangingBridgeID = os.getenv("TELEGRAM_ARBITRAGE_BRIDGE_CHANNEL_ID")
+bot = getTelegramBot()
 
-logger = logging.getLogger("DFK-DEX")
+telegramChannelID = getTelegramChannelID()
+hangingTelegramChannelID = getTelegramHangingChannelID()
 
-bot = Bot(getAWSSecret(key="TELEGRAM_BOT_TOKEN"))
+usernames, mentionStr = getTelegramStuckMentions()
 
-# Retry Envs
-httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))
-httpRetryDelay = int(os.environ.get("HTTP_RETRY_DELAY"))
-
-usernames = ["Parsa2400", "TomyLBT"]
-mentionStr = " ".join(["@" + s for s in usernames])
-
+# Send a message to a Telegram channel
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def sendMessage(msg, channelId=arbitrageNotificationID):
+def sendMessage(msg, channelId=telegramChannelID):
     result = bot.send_message(channelId, msg)
     return result
 
+# Add another line to a message
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def appendToMessage(originalMessage, messageToAppend):
     originalText = originalMessage["text"]
@@ -53,6 +41,7 @@ def appendToMessage(originalMessage, messageToAppend):
             raise Exception(str(e))
 
 
+# Update the emoji at the end of a message
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def updateStatusMessage(originalMessage, newStatus):
 
@@ -78,18 +67,20 @@ def updateStatusMessage(originalMessage, newStatus):
         logger.info("Telegram message same as before - not updating.")
         return
 
+# Send a alert of a stuck bridge into the Synapse bridge support chat
 def notifyHangingBridge(fromChainId, transactionId):
 
     msg = \
         f"!unsticktx {transactionId} {fromChainId}\n" \
         f"{mentionStr}"
 
-    sendMessage(msg, channelId=arbitrageHangingBridgeID)
+    sendMessage(msg, channelId=hangingTelegramChannelID)
 
+# Send a alert of a now un-stuck bridge into the Synapse bridge support chat
 def notifyUnstickedBridge(transactionId):
 
     msg = \
         f"{transactionId} unstuck ✅\n" \
         f"{mentionStr}"
 
-    sendMessage(msg, channelId=arbitrageHangingBridgeID)
+    sendMessage(msg, channelId=hangingTelegramChannelID)
