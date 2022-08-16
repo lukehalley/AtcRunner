@@ -8,7 +8,7 @@ build:
     - docker build -t $AWS_ACCOUNT/$ECR_REPO:$CI_PIPELINE_IID .
   only:
     variables:
-      - $CI_COMMIT_BRANCH == "master"
+      - $CI_COMMIT_BRANCH != "master"
 
 publish:
   image:
