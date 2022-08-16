@@ -8,7 +8,7 @@ from web3 import Web3
 from src.wallet.actions.network import callMappedContractFunction
 from src.wallet.queries.network import getMappedContractFunction
 
-logger = logging.getLogger("DFK-DEX")
+logger = getProjectLogger()
 
 # Retry Envs
 httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))

@@ -4,11 +4,11 @@ import os
 from retry import retry
 from web3 import Web3
 
-from src.apis.synapseBridge.synapseBridge_Estimate import getTokenDecimalValue, getTokenNormalValue
+from src.apis import getTokenDecimalValue, getTokenNormalValue
 from src.wallet.contracts.uniswap_v2_router import getAmountsOut, getAmountsIn
 
 # Set up our logging
-logger = logging.getLogger("DFK-DEX")
+logger = getProjectLogger()
 
 transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))

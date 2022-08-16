@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from web3 import Web3
 
-from src.apis.telegramBot.telegramBot_Action import updateStatusMessage
+from src.apis import updateStatusMessage
 from src.utils.chain import getTransactionDeadline, getValueWithSlippage
 from src.utils.general import printSettingUpWallet, printSeperator, truncateDecimal
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
@@ -15,7 +15,7 @@ from src.wallet.queries.network import getTokenBalance, getWalletGasBalance, get
 # Set up our logging
 from src.wallet.queries.swap import getSwapQuoteOut
 
-logger = logging.getLogger("DFK-DEX")
+logger = getProjectLogger()
 transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
 
 

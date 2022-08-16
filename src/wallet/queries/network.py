@@ -14,7 +14,7 @@ from src.utils.wei import getTokenNormalValue
 # Set up our logging
 from src.wallet.contracts.erc20 import wei2eth, balance_of
 
-logger = logging.getLogger("DFK-DEX")
+logger = getProjectLogger()
 
 privateKey = getAWSSecret(key="ARB_KEY")
 

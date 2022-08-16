@@ -56,7 +56,7 @@ def printRoundtrip(count):
 
 # Print the Arbitrage is profitable alert
 def printSettingUpWallet(count):
-    from src.apis.telegramBot.telegramBot_Action import sendMessage
+    from src.apis import sendMessage
 
     logger.info("--------------------------------")
     logger.info(f" Correcting Wallet Setup State ")
@@ -71,7 +71,7 @@ def printSettingUpWallet(count):
 
 # Print the Arbitrage is profitable alert
 def printArbitrageProfitable(recipe, predictions):
-    from src.apis.telegramBot.telegramBot_Action import sendMessage
+    from src.apis import sendMessage
 
     count = recipe['arbitrage']['currentRoundTripCount']
     networkPath = f'{recipe["origin"]["chain"]["name"]} -> {recipe["destination"]["chain"]["name"]}'
@@ -94,8 +94,8 @@ def printArbitrageProfitable(recipe, predictions):
 
 # Print the Arbitrage is profitable alert
 def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePercentage, startingTime, telegramStatusMessage):
-    from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
-    from src.apis.firebaseDB.firebaseDB_Querys import writeResultToDB
+    from src.apis import appendToMessage, sendMessage
+    from src.apis import writeResultToDB
 
     finishingTime = time.perf_counter()
     timeTook = finishingTime - startingTime
@@ -134,8 +134,8 @@ def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePe
 
 # Print the Arbitrage is profitable alert
 def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime, telegramStatusMessage):
-    from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
-    from src.apis.firebaseDB.firebaseDB_Querys import writeResultToDB
+    from src.apis import appendToMessage, sendMessage
+    from src.apis import writeResultToDB
 
     finishingTime = time.perf_counter()
     timeTook = finishingTime - startingTime
