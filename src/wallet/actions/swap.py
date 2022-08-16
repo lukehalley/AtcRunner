@@ -104,6 +104,7 @@ def setupWallet(recipe):
 def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, routerABI, routerABIMappings,
               arbitrageNumber, stepCategory, explorerUrl, wethContractABI, telegramStatusMessage=None,
               swappingFromGas=False, swappingToGas=False):
+
     from src.wallet.queries.network import getPrivateKey
 
     # Setup our web3 object

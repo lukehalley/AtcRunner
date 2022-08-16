@@ -21,7 +21,7 @@ from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfi
 
 # Wallet modules
 from src.wallet.actions.swap import setupWallet
-from src.wallet.queries.network import getWalletsInformation, getTokenApprovalStatus
+from src.wallet.queries.network import getWalletsInformation
 
 # General Init
 isDocker = checkIsDocker()
@@ -78,7 +78,7 @@ while True:
 
         printSeperator(True)
 
-        if isProfitable:
+        if True:
 
             telegramStatusMessage = printArbitrageProfitable(recipe, predictions)
 

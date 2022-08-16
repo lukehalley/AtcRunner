@@ -16,6 +16,8 @@ from src.wallet.queries.network import getTokenBalance, getWalletsInformation
 from web3 import exceptions
 from web3.middleware import geth_poa_middleware
 
+from eth_defi.revert_reason import fetch_transaction_revert_reason
+
 # Set up our logging
 logger = logging.getLogger("DFK-DEX")
 
@@ -49,6 +51,9 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
     logger.info(f'Gas Price: {tx["gasPrice"]}')
 
     printSeperator()
+
+    # estimate gas
+    estimatedGas = w3.eth.estimate_gas(transaction=tx)
 
     logger.debug("Signing transaction...")
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=privateKey)
@@ -130,9 +135,10 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
         return result
 
     else:
-        errMsg = f"⛔️ Transaction was unsuccessful!"
+        failureReason = fetch_transaction_revert_reason(web3=w3, tx_hash=signed_tx.hash.hex())
+        errMsg = f"⛔️ Transaction was unsuccessful: {failureReason}"
         if telegramStatusMessage:
-            updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
+            updateStatusMessage(originalMessage=telegramStatusMessage, newStatus=f"{failureReason} ⛔️")
         raise Exception(errMsg)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
@@ -204,6 +210,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"]["txBaseURL"],
                 routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
                 routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
+                routerABIMappings=recipe[direction]["chain"]["contracts"]["router"]["mappings"],
                 wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"],
                 swappingFromGas=False,
                 swappingToGas=True

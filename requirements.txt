@@ -10,3 +10,4 @@ selenium~=3.141.0
 PyVirtualDisplay~=3.0
 simplejson
 pandas
+web3-ethereum-defi
