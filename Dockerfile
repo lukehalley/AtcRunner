@@ -10,7 +10,6 @@ RUN mkdir -p /$HOME_DIR
 WORKDIR /$HOME_DIR
 
 # Move and setup files in container.
-COPY data/ /$HOME_DIR/data/
 COPY src/ /$HOME_DIR/src/
 RUN mkdir -p /$HOME_DIR/log
 
