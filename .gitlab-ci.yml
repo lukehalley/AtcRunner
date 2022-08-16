@@ -1,3 +1,14 @@
+build:
+  image:
+    name: docker
+    entrypoint: [""]
+  services:
+    - docker:dind
+  script:
+    - docker build -t $AWS_ACCOUNT/$ECR_REPO:$CI_PIPELINE_IID .
+  rules:
+    - if: CI_COMMIT_BRANCH != "master"
+
 publish:
   image:
     name: amazon/aws-cli
