@@ -14,12 +14,7 @@ def all_pairs_length(rpc_address, factoryAddress, factoryABI):
     return contract.functions.allPairsLength().call()
 
 def all_pairs(index, rpc_address, factoryAddress, factoryABI):
-    '''
-    Return the address of the liquidity pair at index
-    :param index:
-    :param rpc_address:
-    :return:
-    '''
+
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(factoryAddress)

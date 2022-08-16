@@ -413,7 +413,6 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
                 amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
-                # if not recipe[position][toSwapFrom]["isGas"]:
                 telegramStatusMessage = checkAndApproveToken(
                     recipe=recipe, position=position, toSwapFrom=toSwapFrom, stepNumber=stepNumber,
                     isSwap=True, telegramStatusMessage=telegramStatusMessage
@@ -422,6 +421,9 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                 recipe = getWalletsInformation(recipe)
 
                 balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+
+                # REMOVE - TESTING
+                currentFunds[toSwapFrom] = currentFunds[toSwapFrom] * 2
 
                 swapResult = swapToken(
                     amountInNormal=currentFunds[toSwapFrom],
