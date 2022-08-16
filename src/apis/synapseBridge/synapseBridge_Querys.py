@@ -2,7 +2,7 @@ import os
 
 from retry import retry
 
-from src.apis.synapseBridge.synapseBridge_Utils import callSynapseTokenCaseRetry, buildSynapseAPIBaseURL
+from src.apis import callSynapseTokenCaseRetry, buildSynapseAPIBaseURL
 from src.utils.api import buildApiURL, safeRequest
 from src.utils.general import percentage, isBetween, getProjectLogger, getRetryParams
 
@@ -45,7 +45,7 @@ def querySwapSupported(fromChain: int, toChain: int, fromToken: str, toToken: st
 
     return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
-# Get bridgeable tokens for a given chain
+# Get bridgeable tokenlist for a given chain
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def queryBridgeableTokens(chain: int):
     params = {"chain": chain}
@@ -69,7 +69,7 @@ def queryStableswapPools(chain: int):
 
     return safeRequest(endpoint=endpoint, params=params)
 
-# Get all swappable tokens for a given network
+# Get all swappable tokenlist for a given network
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def querySwappableTokensForNetwork(chainFrom: int, toChain: int):
     params = {"chainFrom": chainFrom, "toChain": toChain}

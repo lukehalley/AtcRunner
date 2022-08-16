@@ -2,7 +2,7 @@ import logging
 from web3 import Web3
 
 # Set up our logging
-logger = logging.getLogger("DFK-DEX")
+logger = getProjectLogger()
 
 def wei2eth(w3, wei):
     return w3.fromWei(wei, 'ether')

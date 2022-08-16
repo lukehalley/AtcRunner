@@ -4,11 +4,11 @@ import time
 
 from retry import retry
 
-from src.apis.synapseBridge.synapseBridge_Estimate import checkBridgeStatusAPI, checkBridgeStatusBalance
-from src.apis.telegramBot.telegramBot_Action import notifyHangingBridge, notifyUnstickedBridge
+from src.apis import checkBridgeStatusAPI, checkBridgeStatusBalance
+from src.apis import notifyHangingBridge, notifyUnstickedBridge
 from src.utils.general import getMinSecString, printSeperator
 
-logger = logging.getLogger("DFK-DEX")
+logger = getProjectLogger()
 
 transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))

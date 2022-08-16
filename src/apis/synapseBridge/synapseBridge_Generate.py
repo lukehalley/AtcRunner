@@ -2,7 +2,7 @@ import os
 
 from retry import retry
 
-from src.apis.synapseBridge.synapseBridge_Utils import callSynapseTokenCaseRetry, buildSynapseAPIBaseURL
+from src.apis import callSynapseTokenCaseRetry, buildSynapseAPIBaseURL
 from src.utils.api import buildApiURL
 from src.utils.general import getProjectLogger, getRetryParams
 

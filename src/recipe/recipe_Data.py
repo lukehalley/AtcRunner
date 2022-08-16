@@ -1,16 +1,15 @@
-import logging
 
 from num2words import num2words
 
 from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
 from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
-from src.apis.synapseBridge.synapseBridge_Estimate import getBridgeableTokens
-from src.data.tokenLists import getTokenBySymbolAndChainID, parseTokenLists
-# Set up our logging
-from src.utils.general import strToBool
+from src.tokens.tokens_Parse import getTokenBySymbolAndChainID, parseTokenLists
+
+from src.utils.general import strToBool, getProjectLogger
 from src.wallet.queries.network import getNetworkWETH
 
-logger = logging.getLogger("DFK-DEX")
+# Set up our logging
+logger = getProjectLogger()
 
 # Get the details of our recipe
 def getRecipeDetails():

@@ -9,7 +9,7 @@ from web3 import Web3
 
 from src.utils.general import getProjectRoot, percentage
 
-logger = logging.getLogger("DFK-DEX")
+logger = getProjectLogger()
 
 # Get the wei amount of a value from int value
 def getTokenDecimalValue(amount, decimalPlaces=18):

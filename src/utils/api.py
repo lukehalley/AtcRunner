@@ -5,7 +5,7 @@ from retry import retry
 from src.utils.general import getAWSSecret
 
 # Setup logging
-logger = logging.getLogger("DFK-DEX")
+logger = getProjectLogger()
 
 # Retry Envs
 httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))

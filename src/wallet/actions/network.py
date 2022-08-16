@@ -5,9 +5,9 @@ from decimal import Decimal
 from retry import retry
 from web3 import Web3
 
-from src.apis.firebaseDB.firebaseDB_Querys import writeTransactionToDB
-from src.apis.telegramBot.telegramBot_Action import appendToMessage
-from src.apis.telegramBot.telegramBot_Action import updateStatusMessage
+from src.apis import writeTransactionToDB
+from src.apis import appendToMessage
+from src.apis import updateStatusMessage
 from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
 from src.utils.general import getCurrentDateTime, printSeperator
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance, getTokenApprovalStatus
@@ -17,7 +17,7 @@ from web3 import exceptions
 from web3.middleware import geth_poa_middleware
 
 # Set up our logging
-logger = logging.getLogger("DFK-DEX")
+logger = getProjectLogger()
 
 transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
 transactionRetryLimit = int(os.environ.get("TRANSACTION_ACTION_RETRY_LIMIT"))

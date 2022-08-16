@@ -1,4 +1,4 @@
-from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase, fetchEnvCollection
+from src.apis import fetchFromDatabase, fetchEnvCollection
 from src.utils.general import getProjectLogger
 
 logger = getProjectLogger()

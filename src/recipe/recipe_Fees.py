@@ -1,7 +1,7 @@
-import logging
-
 # Set up our logging
-logger = logging.getLogger("DFK-DEX")
+from src.utils.general import getProjectLogger
+
+logger = getProjectLogger()
 
 # Add a fee to our recipe dict and add up the current sub-totals and totals
 def addFee(recipe, fee, section):

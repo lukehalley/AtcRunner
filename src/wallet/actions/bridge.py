@@ -3,14 +3,14 @@ import os
 
 from web3 import Web3
 
-from src.apis.synapseBridge.synapseBridge_Estimate import generateUnsignedBridgeTransaction
+from src.apis import generateUnsignedBridgeTransaction
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
 from src.wallet.actions.network import signAndSendTransaction
 from src.wallet.queries.bridge import waitForBridgeToComplete
 from src.wallet.queries.network import getWalletAddressFromPrivateKey, getTokenBalance
 
 # Set up our logging
-logger = logging.getLogger("DFK-DEX")
+logger = getProjectLogger()
 
 def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, stepNumber, wethContractABI, predictions=None):
     walletAddress = getWalletAddressFromPrivateKey(fromChainRPCURL)

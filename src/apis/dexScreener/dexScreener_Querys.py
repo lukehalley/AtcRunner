@@ -44,7 +44,7 @@ def getTokenPrice(chainName: str, tokenAddress: str):
         if token["chainId"] == chainName:
             return Decimal(token["priceUsd"])
 
-# Get token address by tokens symbol and dex name
+# Get token address by tokenlist symbol and dex name
 def getTokenAddressByDexId(query: str, dexName: str):
     tokens = getTokensByQuery(query)
 

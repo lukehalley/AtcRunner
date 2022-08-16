@@ -13,11 +13,11 @@ from src.utils.logger import setupLogging
 from src.web.actions import initBrowser
 
 # API modules
-from src.apis.firebaseDB.firebaseDB_Querys import createDatabaseConnection
+from src.apis import createDatabaseConnection
 
 # Data modules
-from src.data.recipe import getRecipeDetails
-from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfitable, executeArbitrage
+from src.recipe.recipe_Data import getRecipeDetails
+from src.arbitrage.arbitrage_Calculate import calculateArbitrageStrategy, calculateArbitrageIsProfitable, executeArbitrage
 
 # Wallet modules
 from src.wallet.actions.swap import setupWallet
@@ -62,7 +62,7 @@ while True:
 
         recipe = recipesDetails.copy()
 
-        recipe = determineArbitrageStrategy(recipe)
+        recipe = calculateArbitrageStrategy(recipe)
 
         printRoundtrip(recipe["arbitrage"]["currentRoundTripCount"])
 
@@ -74,7 +74,7 @@ while True:
 
         setupWallet(recipe=recipe)
 
-        isProfitable, predictions = checkArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
+        isProfitable, predictions = calculateArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
 
         printSeperator(True)
 
