@@ -1,7 +1,7 @@
 import os
 
 from firebase_admin import credentials, initialize_app
-from src.utils.general import getAWSSecret, getProjectLogger
+from src.utils.files.files_Directory import getAWSSecret, getProjectLogger
 
 logger = getProjectLogger()
 

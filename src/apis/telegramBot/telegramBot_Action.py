@@ -2,7 +2,7 @@ from retry import retry
 
 from src.apis.telegramBot.telegramBot_Utils import getTelegramBot, getTelegramChannelID, getTelegramStuckMentions, \
     getTelegramHangingChannelID
-from src.utils.general import getRetryParams, getProjectLogger
+from src.utils.files.files_Directory import getRetryParams, getProjectLogger
 
 logger = getProjectLogger()
 

@@ -5,7 +5,7 @@ from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
 from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
 from src.tokens.tokens_Parse import getTokenBySymbolAndChainID, parseTokenLists
 
-from src.utils.general import strToBool, getProjectLogger
+from src.utils.files.files_Directory import strToBool, getProjectLogger
 from src.wallet.queries.network import getNetworkWETH
 
 # Set up our logging

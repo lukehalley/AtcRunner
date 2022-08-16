@@ -1,52 +1,9 @@
-import functools
-import json
-import logging
-import sys
-
-import math
-import os
-import re
+# Set up our logging
 import time
-from collections import OrderedDict
-from datetime import datetime
-from decimal import Decimal
-from distutils import util
-from math import log10, floor
-from pathlib import Path
-from time import strftime, gmtime
 
-def getProjectLogger():
-    return logging.getLogger("DFK-DEX")
+from src.utils.files.files_Directory import getProjectLogger, getMinSecString
 
 logger = getProjectLogger()
-
-def getRetryParams(retryType: str):
-
-    if type == "http":
-        # Get the setting envs for the retry events
-        httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))
-        httpRetryDelay = int(os.environ.get("HTTP_RETRY_DELAY"))
-
-        return httpRetryLimit, httpRetryDelay
-
-    else:
-
-        sys.exit(f"Invalid Retry param type {retryType}")
-
-# Get the root of the python project
-def getProjectRoot() -> Path:
-    return Path(__file__).parent.parent
-
-# Convert a str to a bool
-def strToBool(x):
-    if type(x)==bool:
-        return x
-    else:
-        return bool(util.strtobool(x))
-
-# Check if we are running in a docker container
-def checkIsDocker():
-    return True if os.environ.get("AWS_DEFAULT_REGION") else False
 
 # Print the current round trip count
 def printRoundtrip(count):
@@ -56,7 +13,7 @@ def printRoundtrip(count):
 
 # Print the Arbitrage is profitable alert
 def printSettingUpWallet(count):
-    from src.apis import sendMessage
+    from src.apis.telegramBot.telegramBot_Action import sendMessage
 
     logger.info("--------------------------------")
     logger.info(f" Correcting Wallet Setup State ")
@@ -71,7 +28,7 @@ def printSettingUpWallet(count):
 
 # Print the Arbitrage is profitable alert
 def printArbitrageProfitable(recipe, predictions):
-    from src.apis import sendMessage
+    from src.apis.telegramBot.telegramBot_Action import sendMessage
 
     count = recipe['arbitrage']['currentRoundTripCount']
     networkPath = f'{recipe["origin"]["chain"]["name"]} -> {recipe["destination"]["chain"]["name"]}'
@@ -94,8 +51,8 @@ def printArbitrageProfitable(recipe, predictions):
 
 # Print the Arbitrage is profitable alert
 def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePercentage, startingTime, telegramStatusMessage):
-    from src.apis import appendToMessage, sendMessage
-    from src.apis import writeResultToDB
+    from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
+    from src.apis.firebaseDB.firebaseDB_Actions import writeResultToDB
 
     finishingTime = time.perf_counter()
     timeTook = finishingTime - startingTime
@@ -134,8 +91,8 @@ def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePe
 
 # Print the Arbitrage is profitable alert
 def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime, telegramStatusMessage):
-    from src.apis import appendToMessage, sendMessage
-    from src.apis import writeResultToDB
+    from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
+    from src.apis.firebaseDB.firebaseDB_Actions import writeResultToDB
 
     finishingTime = time.perf_counter()
     timeTook = finishingTime - startingTime
@@ -179,78 +136,3 @@ def printSeperator(newLine=False):
         line = ("--------------------------------")
 
     logger.info(line)
-
-# Get percentage of a number
-def percentage(percent, whole):
-  return (Decimal(percent) * Decimal(whole)) / Decimal(100.0)
-
-def percentageDifference(a, b, rnd=6):
-    return round((((a - b) * 100) / b), rnd)
-
-# Check what percentage a number is of another number
-def percentageOf(part, whole):
-  return 100 * Decimal(part)/Decimal(whole)
-
-# Get current date time
-def getCurrentDateTime():
-    return datetime.now().strftime(os.environ.get("DATE_FORMAT"))
-
-# Get time in min and sec format
-def getMinSecString(time):
-    format = os.getenv("TIMER_STR_FORMAT")
-    return strftime(format, gmtime(time))
-
-# Split by camelcase
-def camelCaseSplit(identifier):
-    matches = re.finditer('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', identifier)
-    return [m.group(0) for m in matches]
-
-# Check if number is between two value
-def isBetween(lowerLimit, middleNumber, upperLimit):
-    return min(lowerLimit, upperLimit) < middleNumber < max(lowerLimit, upperLimit)
-
-# Replace a value in all values in a dict
-def replace_all(text, dictionary):
-    return functools.reduce(lambda a, kv: a.replace(*kv), dictionary.items(), text)
-
-# Find exponent of a number
-def find_exp(number) -> int:
-    base10 = log10(abs(number))
-    return abs(floor(base10))
-
-# Move a decimal point for a float
-def moveDecimalPoint(num, decimal_places):
-    num = Decimal(num)
-
-    for _ in range(abs(decimal_places)):
-
-        if decimal_places > 0:
-            num *= 10
-        else:
-            num /= 10.
-
-    return Decimal(num)
-
-# Calculate how many times we can query
-def calculateQueryInterval(recipeCount):
-    requestLimit = Decimal(os.environ.get("REQUEST_LIMIT"))
-    return 60 / (requestLimit / recipeCount)
-
-def prependToOrderedDict(dictOriginal, dictAdd):
-    arr = dictOriginal
-    arr = OrderedDict(arr)
-    new = dictAdd
-    items = list(arr.items())
-    items.append(new)
-    arr = OrderedDict(items)
-    arr.move_to_end(dictAdd[0], last=False)
-    return arr
-
-def truncateDecimal(f, n):
-    return math.floor(f * 10 ** n) / 10 ** n
-
-def getDictLength(sub):
-    return len(sub)
-
-def getAWSSecret(key):
-    return json.loads(os.environ.get("ARB_SECRETS"))[key]

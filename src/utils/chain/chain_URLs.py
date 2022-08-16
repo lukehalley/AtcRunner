@@ -1,13 +1,10 @@
-import json
-import logging
-import os
-import time
+import json, os, time
 from decimal import Decimal
 
 from hexbytes import HexBytes
 from web3 import Web3
 
-from src.utils.general import getProjectRoot, percentage
+from src.utils.files.files_Directory import getProjectRoot, percentage, getProjectLogger
 
 logger = getProjectLogger()
 
@@ -39,22 +36,6 @@ def getJSONFile(folder, file, section=None, asStr=False):
             return (json.load(jsonFile))[section]
         else:
             return json.load(jsonFile)
-
-# Get the opposite arb direction
-def getOppositeDirection(direction):
-
-    if direction == "origin":
-        return "destination"
-    else:
-        return "origin"
-
-# Get the opposite arb direction
-def getOppositeToken(token):
-
-    if token == "token":
-        return "stablecoin"
-    else:
-        return "token"
 
 # Get a value with a percentage of slippage
 def getValueWithSlippage(amount, slippage=0.5):

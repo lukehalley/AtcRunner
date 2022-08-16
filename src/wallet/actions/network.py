@@ -1,4 +1,3 @@
-import logging
 import os
 from decimal import Decimal
 
@@ -8,8 +7,8 @@ from web3 import Web3
 from src.apis import writeTransactionToDB
 from src.apis import appendToMessage
 from src.apis import updateStatusMessage
-from src.utils.chain import generateBlockExplorerLink, getValueWithSlippage
-from src.utils.general import getCurrentDateTime, printSeperator
+from src.utils.chain.chain_Calculations import generateBlockExplorerLink, getValueWithSlippage
+from src.utils.files.files_Directory import getCurrentDateTime, printSeperator
 from src.wallet.queries.network import getPrivateKey, getWalletGasBalance, getTokenApprovalStatus
 from src.wallet.queries.network import getTokenBalance, getWalletsInformation
 

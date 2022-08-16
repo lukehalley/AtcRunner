@@ -1,9 +1,6 @@
-import logging
-import os
-import sys
+import logging, os, sys
 
-from src.utils.general import strToBool
-
+from src.utils.files.files_Directory import strToBool
 
 # Set up logging
 def setupLogging(isDocker):
@@ -25,3 +22,7 @@ def setupLogging(isDocker):
                             stream=sys.stdout, datefmt=dateFormat)
 
     return logger
+
+# Get the project logger
+def getProjectLogger():
+    return logging.getLogger("DFK-DEX")

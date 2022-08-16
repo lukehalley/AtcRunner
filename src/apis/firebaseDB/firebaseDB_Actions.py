@@ -1,5 +1,5 @@
 from src.apis import fetchFromDatabase, fetchEnvCollection
-from src.utils.general import getProjectLogger
+from src.utils.files.files_Directory import getProjectLogger
 
 logger = getProjectLogger()
 

@@ -1,4 +1,3 @@
-import logging
 import os
 import time
 
@@ -6,7 +5,7 @@ from retry import retry
 
 from src.apis import checkBridgeStatusAPI, checkBridgeStatusBalance
 from src.apis import notifyHangingBridge, notifyUnstickedBridge
-from src.utils.general import getMinSecString, printSeperator
+from src.utils.files.files_Directory import getMinSecString, printSeperator
 
 logger = getProjectLogger()
 

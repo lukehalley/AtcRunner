@@ -2,8 +2,8 @@ from src.apis.firebaseDB.firebaseDB_Querys import fetchArbitrageStrategy
 from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatusMessage
 from src.arbitrage.arbitrage_Simulate import simulateStep
 
-from src.utils.chain import getOppositeDirection, getValueWithSlippage
-from src.utils.general import printSeperator, percentageDifference, printArbitrageRollbackComplete, printArbitrageResult, truncateDecimal, getProjectLogger
+from src.utils.chain.chain_Calculations import getOppositeDirection, getValueWithSlippage
+from src.utils.files.files_Directory import printSeperator, percentageDifference, printArbitrageRollbackComplete, printArbitrageResult, truncateDecimal, getProjectLogger
 from src.wallet.actions.bridge import executeBridge
 from src.wallet.actions.network import topUpWalletGas, checkAndApproveToken
 from src.wallet.actions.swap import swapToken, setupWallet
