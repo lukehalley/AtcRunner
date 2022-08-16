@@ -1,8 +1,6 @@
-import os
+from firebase_admin import db
 
-from firebase_admin import credentials, initialize_app, db
-
-from src.utils.general import getAWSSecret, checkIsDocker, getProjectLogger
+from src.utils.files.files_Directory import checkIsDocker, getProjectLogger
 
 logger = getProjectLogger()
 

@@ -1,7 +1,7 @@
 from src.apis.synapseBridge.synapseBridge_Estimate import estimateBridgeOutput
 from src.arbitrage.arbitrage_Utils import getRoutes
-from src.utils.chain import getOppositeDirection
-from src.utils.general import getProjectLogger
+from src.utils.chain.chain_Calculations import getOppositeDirection
+from src.utils.files.files_Directory import getProjectLogger
 from src.wallet.queries.swap import getSwapQuoteOut
 
 # Set up our logging

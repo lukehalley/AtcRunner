@@ -3,8 +3,8 @@ import os
 from retry import retry
 
 from src.apis import callSynapseTokenCaseRetry, buildSynapseAPIBaseURL
-from src.utils.api import buildApiURL
-from src.utils.general import getProjectLogger, getRetryParams
+from src.utils.web.web_Requests import buildApiURL
+from src.utils.files.files_Directory import getProjectLogger, getRetryParams
 
 logger = getProjectLogger()
 

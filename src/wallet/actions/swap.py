@@ -1,12 +1,11 @@
-import logging
 import os
 from decimal import Decimal
 
 from web3 import Web3
 
 from src.apis import updateStatusMessage
-from src.utils.chain import getTransactionDeadline, getValueWithSlippage
-from src.utils.general import printSettingUpWallet, printSeperator, truncateDecimal
+from src.utils.chain.chain_Calculations import getTransactionDeadline, getValueWithSlippage
+from src.utils.files.files_Directory import printSettingUpWallet, printSeperator, truncateDecimal
 from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
 from src.wallet.actions.network import signAndSendTransaction, buildMappedContractFunction
 from src.wallet.queries.network import getTokenBalance, getWalletGasBalance, getWalletsInformation, \

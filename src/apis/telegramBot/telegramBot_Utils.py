@@ -2,7 +2,7 @@ import os
 
 from telegram import Bot
 
-from src.utils.general import getAWSSecret, checkIsDocker, getProjectLogger, getRetryParams
+from src.utils.files.files_Directory import getAWSSecret, checkIsDocker, getProjectLogger, getRetryParams
 
 logger = getProjectLogger()
 

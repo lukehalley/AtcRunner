@@ -2,8 +2,8 @@ import os
 from decimal import Decimal
 
 from src.apis.dexScreener.dexScreener_Utils import buildDexscreenerAPIBaseURL
-from src.utils.api import buildApiURL, safeRequest
-from src.utils.general import replace_all
+from src.utils.web.web_Requests import buildApiURL, safeRequest
+from src.utils.files.files_Directory import replace_all
 
 dexscreenerAPIBaseURL = buildDexscreenerAPIBaseURL()
 

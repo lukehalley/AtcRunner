@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Utility modules
-from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, strToBool
-from src.utils.logger import setupLogging
+from src.utils.files.files_Directory import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, strToBool
+from src.utils.logging.logging_Setup import setupLogging
 
 # Selenium modules
 from src.web.actions import initBrowser

@@ -2,7 +2,7 @@ import pandas as pd
 import simplejson as json
 
 from src.tokenlist.tokenlist_Query import getAllowedKeys
-from src.utils.api import getAuthRawGithubFile
+from src.utils.web.web_Requests import getAuthRawGithubFile
 
 allowedKeys = getAllowedKeys()
 

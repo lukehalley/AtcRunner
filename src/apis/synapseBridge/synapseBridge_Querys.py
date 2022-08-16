@@ -3,8 +3,8 @@ import os
 from retry import retry
 
 from src.apis import callSynapseTokenCaseRetry, buildSynapseAPIBaseURL
-from src.utils.api import buildApiURL, safeRequest
-from src.utils.general import percentage, isBetween, getProjectLogger, getRetryParams
+from src.utils.web.web_Requests import buildApiURL, safeRequest
+from src.utils.files.files_Directory import percentage, isBetween, getProjectLogger, getRetryParams
 
 logger = getProjectLogger()
 

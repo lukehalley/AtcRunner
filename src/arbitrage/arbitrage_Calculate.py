@@ -4,7 +4,7 @@ from itertools import repeat
 
 from src.apis.firebaseDB.firebaseDB_Querys import fetchArbitrageStrategy
 from src.arbitrage.arbitrage_Utils import getNextArbitrageNumber
-from src.utils.general import strToBool, printSeperator, percentageDifference, truncateDecimal, getProjectLogger
+from src.utils.files.files_Directory import strToBool, printSeperator, percentageDifference, truncateDecimal, getProjectLogger
 from src.wallet.queries.swap import getSwapQuoteOut
 
 # Set up our logging
