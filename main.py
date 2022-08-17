@@ -1,9 +1,11 @@
 import os, time
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from src.apis.firebaseDB.firebaseDB_Utils import createDatabaseConnection
 
-from src.arbitrage.arbitrage_Calculate import calculateArbitrageStrategy, calculateArbitrageIsProfitable
-from src.arbitrage.arbitrage_Execute import executeArbitrage
+from src.arbitrage.arbitrage_Calculate import calculateArbitrageIsProfitable, determineArbitrageStrategy
 
 from src.chain.network.network_Querys import getWalletsInformation
 from src.chain.swap.swap_Actions import setupWallet
@@ -47,7 +49,7 @@ while True:
 
         recipe = recipesDetails.copy()
 
-        recipe = calculateArbitrageStrategy(recipe)
+        recipe = determineArbitrageStrategy(recipe)
 
         printRoundtrip(recipe["arbitrage"]["currentRoundTripCount"])
 
@@ -63,7 +65,7 @@ while True:
 
         printSeperator(True)
 
-        if isProfitable:
+        if False:
 
             telegramStatusMessage = printArbitrageProfitable(recipe, predictions)
 

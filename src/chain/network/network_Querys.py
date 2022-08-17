@@ -78,14 +78,14 @@ def getWalletsInformation(recipe, printBalances=False):
         recipe[direction]["chain"]["balances"]["gas"] = getWalletGasBalance(
             rpcURL=recipe[direction]["chain"]["rpc"],
             walletAddress=recipe[direction]["chain"]["address"],
-            wethContractABI=recipe[direction]["chain"]["contract"]["weth"]["abi"]
+            wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
         recipe[direction]["chain"]["balances"]["stablecoin"] = getTokenBalance(
             rpcURL=recipe[direction]["chain"]["rpc"],
             tokenAddress=recipe[direction]["stablecoin"]["address"],
             tokenDecimals=recipe[direction]["stablecoin"]["decimals"],
-            wethContractABI=recipe[direction]["chain"]["contract"]["weth"]["abi"]
+            wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
         tokenIsGas = recipe[direction]["tokens"]["isGas"]
@@ -97,7 +97,7 @@ def getWalletsInformation(recipe, printBalances=False):
                 rpcURL=recipe[direction]["chain"]["rpc"],
                 tokenAddress=recipe[direction]["tokens"]["address"],
                 tokenDecimals=recipe[direction]["tokens"]["decimals"],
-                wethContractABI=recipe[direction]["chain"]["contract"]["weth"]["abi"]
+                wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
             )
 
         if printBalances:

@@ -19,7 +19,7 @@ def getRecipeDetails():
 
     for recipesTitle, recipeDetails in recipes.items():
 
-        dexId = recipeDetails["arbitrage"]["dexName"]
+        dexId = recipeDetails["arbitrage"]["dexId"]
 
         tokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
         tokenList = recipeDetails["arbitrage"]["tokenList"]
@@ -39,15 +39,15 @@ def getRecipeDetails():
             
             chainWrappedGasTokenAddress = getNetworkWETH(
                 rpcUrl=recipeDetails[chainNumber]["chain"]["rpc"],
-                routerAddress=recipeDetails[chainNumber]["chain"]["contract"]["router"]["address"],
-                routerABI=recipeDetails[chainNumber]["chain"]["contract"]["router"]["abi"],
-                routerABIMappings=recipeDetails[chainNumber]["chain"]["contract"]["router"]["mapping"]
+                routerAddress=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["address"],
+                routerABI=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["abi"],
+                routerABIMappings=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["mapping"]
             )
 
             if tokenRetrievalMethod == "tokenList":
 
                 toFill = {
-                    "tokens": recipeDetails[chainNumber]["tokens"],
+                    "token": recipeDetails[chainNumber]["token"],
                     "stablecoin": recipeDetails[chainNumber]["stablecoin"]
                 }
 
@@ -146,13 +146,13 @@ def getRecipeDetails():
             recipeDetails[chainNumber]["gas"]["symbol"] = recipeDetails[chainNumber]["chain"]["gasDetails"]["symbol"]
             recipeDetails[chainNumber]["gas"]["address"] = chainWrappedGasTokenAddress
 
-            recipeDetails[chainNumber]["chain"]["contract"]["weth"]["address"] = chainWrappedGasTokenAddress
+            recipeDetails[chainNumber]["chain"]["contracts"]["weth"]["address"] = chainWrappedGasTokenAddress
 
             recipeDetails[chainNumber]["stablecoin"]["price"] = \
                 getTokenPriceByDexId(
                     chainName=recipeDetails[chainNumber]["chain"]["name"],
                     tokenAddress=recipeDetails[chainNumber]["stablecoin"]["address"],
-                    dexName=dexId
+                    dexId=dexId
                 )
 
             if recipeDetails[chainNumber]["stablecoin"]["price"] is None:

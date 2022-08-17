@@ -82,9 +82,9 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                     rpcUrl=recipe[position]["chain"]["rpc"],
-                    routerAddress=recipe[position]["chain"]["contract"]["router"]["address"],
-                    routerABI=recipe[position]["chain"]["contract"]["router"]["abi"],
-                    routerABIMappings=recipe[position]["chain"]["contract"]["router"]["mapping"],
+                    routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
+                    routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+                    routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
                     routes=swapRoute
                 )
 
@@ -110,10 +110,10 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_swap",
                     explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-                    routerAddress=recipe[position]["chain"]["contract"]["router"]["address"],
-                    routerABI=recipe[position]["chain"]["contract"]["router"]["abi"],
-                    routerABIMappings=recipe[position]["chain"]["contract"]["router"]["mapping"],
-                    wethContractABI=recipe[position]["chain"]["contract"]["weth"]["abi"],
+                    routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
+                    routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+                    routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
+                    wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                     telegramStatusMessage=telegramStatusMessage,
                     swappingFromGas=recipe[position][toSwapFrom]["isGas"],
                     swappingToGas=recipe[position][toSwapTo]["isGas"]
@@ -171,7 +171,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
                     toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                     toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
-                    wethContractABI=recipe[position]["chain"]["contract"]["weth"]["abi"],
+                    wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_bridge",
                     explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
@@ -287,9 +287,9 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                 amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                 rpcUrl=recipe[position]["chain"]["rpc"],
-                routerAddress=recipe[position]["chain"]["contract"]["router"]["address"],
-                routerABI=recipe[position]["chain"]["contract"]["router"]["abi"],
-                routerABIMappings=recipe[position]["chain"]["contract"]["router"]["mapping"],
+                routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
+                routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+                routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
                 routes=swapRoute
             )
 
@@ -310,10 +310,10 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=f"{stepNumber}_swap",
                 explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-                routerAddress=recipe[position]["chain"]["contract"]["router"]["address"],
-                routerABI=recipe[position]["chain"]["contract"]["router"]["abi"],
-                routerABIMappings=recipe[position]["chain"]["contract"]["router"]["mapping"],
-                wethContractABI=recipe[position]["chain"]["contract"]["weth"]["abi"],
+                routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
+                routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+                routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
+                wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                 telegramStatusMessage=telegramStatusMessage,
                 swappingFromGas=recipe[position][toSwapFrom]["isGas"],
                 swappingToGas=recipe[position][toSwapTo]["isGas"]
@@ -352,7 +352,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
                 toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                 toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
-                wethContractABI=recipe[position]["chain"]["contract"]["weth"]["abi"],
+                wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=f"{stepNumber}_bridge",
                 explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],

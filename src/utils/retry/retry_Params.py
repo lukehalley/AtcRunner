@@ -1,12 +1,24 @@
 import os, sys
 
 # Get retry params for different sections of the project
+from src.utils.env.env_AWSSecrets import checkIsDocker
+
 def getRetryParams(retryType: str):
-    if type == "http":
-        return int(os.environ.get("HTTP_RETRY_LIMIT")), int(os.environ.get("HTTP_RETRY_DELAY"))
-    elif type == "transactionQuery":
-        return int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT")), int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
-    elif type == "transactionAction":
-        return int(os.environ.get("TRANSACTION_ACTION_RETRY_LIMIT")), int(os.environ.get("TRANSACTION_ACTION_RETRY_DELAY")), int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
+
+    isDocker = checkIsDocker()
+
+    if isDocker:
+        if retryType == "http":
+            return int(os.environ.get("HTTP_RETRY_LIMIT")), int(os.environ.get("HTTP_RETRY_DELAY"))
+        elif retryType == "transactionQuery":
+            return int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT")), int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
+        elif retryType == "transactionAction":
+            return int(os.environ.get("TRANSACTION_ACTION_RETRY_LIMIT")), int(os.environ.get("TRANSACTION_ACTION_RETRY_DELAY"))
+        else:
+            sys.exit(f"Invalid Retry param type {retryType}")
     else:
-        sys.exit(f"Invalid Retry param type {retryType}")
+        return 1, 0
+
+# Get transaction timeout
+def getTransactionTimeout():
+    return int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))

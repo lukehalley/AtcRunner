@@ -25,8 +25,8 @@ def parseTokenLists(urls):
 
     tokenListDataframe = pd.DataFrame(finalTokenList).drop_duplicates(subset=['chainId', 'symbol'], keep='last').sort_values('chainId')
 
-    with open(f'data/cache/masterTokenList.json', 'w') as cacheFile:
-        json.dump(tokenListDataframe.to_dict('records'), cacheFile, indent=4, use_decimal=True)
+    # with open(f'data/cache/masterTokenList.json', 'w') as cacheFile:
+    #     json.dump(tokenListDataframe.to_dict('records'), cacheFile, indent=4, use_decimal=True)
 
     return tokenListDataframe
 
