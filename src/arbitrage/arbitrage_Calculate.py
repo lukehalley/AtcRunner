@@ -1,4 +1,4 @@
-
+import os
 from decimal import Decimal
 from itertools import repeat
 
@@ -153,7 +153,7 @@ def calculateArbitrageStrategy(recipe):
     return recipe
 
 # Check if Arbitrage will be profitable
-def calculateArbitrageIsProfitable(recipe, originDriver, destinationDriver, printInfo=True, position="origin"):
+def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
     steps = fetchArbitrageStrategy(strategyName="networkBridge")
     isProfitable = False
 
@@ -193,11 +193,6 @@ def calculateArbitrageIsProfitable(recipe, originDriver, destinationDriver, prin
 
             toSwapFrom = stepSettings["from"]
             toSwapTo = stepSettings["to"]
-
-            if position == "origin":
-                driver = originDriver
-            else:
-                driver = destinationDriver
 
             if stepNumber <= 1 and printInfo:
                 logger.info(f'Starting Capital: {startingStables} {recipe[position]["stablecoin"]["name"]}')
