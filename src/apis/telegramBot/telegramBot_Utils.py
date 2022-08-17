@@ -2,7 +2,10 @@ import os
 
 from telegram import Bot
 
-from src.utils.files.files_Directory import getAWSSecret, checkIsDocker, getProjectLogger, getRetryParams
+from src.utils.env.env_AWSSecrets import checkIsDocker
+from src.utils.env.env_Docker import getAWSSecret
+from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.retry.retry_Params import getRetryParams
 
 logger = getProjectLogger()
 

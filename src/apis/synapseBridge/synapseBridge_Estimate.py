@@ -3,10 +3,11 @@ from decimal import Decimal
 
 from retry import retry
 
-from src.apis.synapseBridge.synapseBridge_Utils import callSynapseTokenCaseRetry, buildSynapseAPIBaseURL
-from src.utils.web.web_Requests import buildApiURL
-from src.utils.files.files_Directory import getProjectLogger, getRetryParams
-from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
+from src.apis.synapseBridge.synapseBridge_Utils import buildSynapseAPIBaseURL, callSynapseTokenCaseRetry
+from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.retry.retry_Params import getRetryParams
+from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
+from src.utils.web.web_URLs import buildApiURL
 
 logger = getProjectLogger()
 

@@ -1,21 +1,13 @@
 import time
-from decimal import Decimal
 
-from src.utils.files.files_Directory import percentage, getProjectLogger
+from src.utils.logging.logging_Setup import getProjectLogger
 
+from src.utils.math.math_Percentage import getPercentageOfNumber
 logger = getProjectLogger()
 
-# Get the wei amount of a value from int value
-def getTokenDecimalValue(amount, decimalPlaces=18):
-    return str(format(Decimal(amount) * (10 ** decimalPlaces), f'.0f'))
-
-# Get the int amount of a value from wei value
-def getTokenNormalValue(amount, decimalPlaces=18):
-    return str(format(Decimal(amount) / (10 ** decimalPlaces), f'.{decimalPlaces}f'))
-
-# Get a value with a percentage of slippage
+# Get a value with a getPercentageOfNumber of slippage
 def getValueWithSlippage(amount, slippage=0.5):
-    return amount - percentage(slippage, amount)
+    return amount - getPercentageOfNumber(slippage, amount)
 
 # Calculate the future transaction deadline timestamp for given seconds
 def getTransactionDeadline(timeInSeconds=300):

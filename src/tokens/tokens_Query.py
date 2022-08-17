@@ -1,4 +1,4 @@
-from src.tokenlist.tokenlist_Parse import parseDataframeResult
+from src.tokens.tokens_Parse import parseDataframeResult
 
 def getAllowedKeys():
     return ['chainId', 'address', 'symbol', 'name', 'decimals', 'logoURI']

@@ -3,9 +3,11 @@ import time
 
 from retry import retry
 
-from src.apis import checkBridgeStatusAPI, checkBridgeStatusBalance
-from src.apis import notifyHangingBridge, notifyUnstickedBridge
-from src.utils.files.files_Directory import getMinSecString, printSeperator
+from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeStatusAPI, queryBridgeStatusBalance
+from src.apis.telegramBot.telegramBot_Action import notifyHangingBridge, notifyUnstickedBridge
+from src.utils.logging.logging_Print import printSeperator
+from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.time.time_Calculations import getMinSecString
 
 logger = getProjectLogger()
 
@@ -57,10 +59,10 @@ def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, to
             logger.info(f'Notification Sent!')
             bridgeTransactionNotificationSent = True
 
-        fundsBridgedAPI = checkBridgeStatusAPI(toChain=toChain, fromChainTxnHash=transactionId)["isComplete"]
+        fundsBridgedAPI = queryBridgeStatusAPI(toChain=toChain, fromChainTxnHash=transactionId)["isComplete"]
 
         if predictions:
-            fundsBridgedBalance = checkBridgeStatusBalance(predictions=predictions, stepNumber=stepNumber, toChainRPCURL=toChainRPCURL, toTokenAddress=toTokenAddress, toTokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
+            fundsBridgedBalance = queryBridgeStatusBalance(predictions=predictions, stepNumber=stepNumber, toChainRPCURL=toChainRPCURL, toTokenAddress=toTokenAddress, toTokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
         time.sleep(0)
 

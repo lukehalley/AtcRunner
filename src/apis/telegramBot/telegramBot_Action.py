@@ -1,8 +1,9 @@
 from retry import retry
 
-from src.apis.telegramBot.telegramBot_Utils import getTelegramBot, getTelegramChannelID, getTelegramStuckMentions, \
-    getTelegramHangingChannelID
-from src.utils.files.files_Directory import getRetryParams, getProjectLogger
+from src.apis.telegramBot.telegramBot_Utils import getTelegramBot, getTelegramChannelID, getTelegramHangingChannelID, \
+    getTelegramStuckMentions
+from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.retry.retry_Params import getRetryParams
 
 logger = getProjectLogger()
 
@@ -39,7 +40,6 @@ def appendToMessage(originalMessage, messageToAppend):
             pass
         else:
             raise Exception(str(e))
-
 
 # Update the emoji at the end of a message
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)

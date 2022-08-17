@@ -1,7 +1,8 @@
-import pandas as pd
-import simplejson as json
+import json
 
-from src.tokenlist.tokenlist_Query import getAllowedKeys
+import pandas as pd
+
+from src.tokens.tokens_Query import getAllowedKeys
 from src.utils.web.web_Requests import getAuthRawGithubFile
 
 allowedKeys = getAllowedKeys()
@@ -10,7 +11,7 @@ def parseTokenLists(urls):
     finalTokenList = []
 
     for url in urls:
-        singleTokenListJSON = getAuthRawGithubFile(url)["tokenlist"]
+        singleTokenListJSON = getAuthRawGithubFile(url)["tokens"]
         finalTokenList = finalTokenList + singleTokenListJSON
 
     allKeys = list(set().union(*(d.keys() for d in finalTokenList)))

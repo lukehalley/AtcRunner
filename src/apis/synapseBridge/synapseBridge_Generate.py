@@ -1,10 +1,7 @@
-import os
-
-from retry import retry
-
-from src.apis import callSynapseTokenCaseRetry, buildSynapseAPIBaseURL
-from src.utils.web.web_Requests import buildApiURL
-from src.utils.files.files_Directory import getProjectLogger, getRetryParams
+from src.apis.synapseBridge.synapseBridge_Utils import buildSynapseAPIBaseURL, callSynapseTokenCaseRetry
+from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.retry.retry_Params import getRetryParams
+from src.utils.web.web_URLs import buildApiURL
 
 logger = getProjectLogger()
 

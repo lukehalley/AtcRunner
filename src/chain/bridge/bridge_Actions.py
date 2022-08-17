@@ -1,15 +1,15 @@
-import logging
+
 import os
 
 from web3 import Web3
 
-from src.apis import generateUnsignedBridgeTransaction
-from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
-from src.wallet.actions.network import signAndSendTransaction
-from src.wallet.queries.bridge import waitForBridgeToComplete
-from src.wallet.queries.network import getWalletAddressFromPrivateKey, getTokenBalance
+from src.apis.synapseBridge.synapseBridge_Generate import generateUnsignedBridgeTransaction
+from src.chain.bridge.bridge_Querys import waitForBridgeToComplete
+from src.chain.network.network_Actions import signAndSendTransaction
+from src.chain.network.network_Querys import getWalletAddressFromPrivateKey, getTokenBalance
+from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
+from src.utils.logging.logging_Setup import getProjectLogger
 
-# Set up our logging
 logger = getProjectLogger()
 
 def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, stepNumber, wethContractABI, predictions=None):

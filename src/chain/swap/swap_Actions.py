@@ -3,27 +3,27 @@ from decimal import Decimal
 
 from web3 import Web3
 
-from src.apis import updateStatusMessage
-from src.utils.chain.chain_Calculations import getTransactionDeadline, getValueWithSlippage
-from src.utils.files.files_Directory import printSettingUpWallet, printSeperator, truncateDecimal
-from src.utils.wei import getTokenNormalValue, getTokenDecimalValue
-from src.wallet.actions.network import signAndSendTransaction, buildMappedContractFunction
-from src.wallet.queries.network import getTokenBalance, getWalletGasBalance, getWalletsInformation, \
-    getMappedContractFunction
-
-# Set up our logging
-from src.wallet.queries.swap import getSwapQuoteOut
+from src.apis.telegramBot.telegramBot_Action import updateStatusMessage
+from src.chain.network.network_Actions import buildMappedContractFunction, signAndSendTransaction
+from src.chain.network.network_Querys import getWalletsInformation, getWalletGasBalance, getTokenBalance
+from src.chain.swap.swap_Querys import getSwapQuoteOut
+from src.utils.chain.chain_ABI import getMappedContractFunction
+from src.utils.chain.chain_Calculations import getValueWithSlippage, getTransactionDeadline
+from src.utils.chain.chain_Wallet import getPrivateKey
+from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
+from src.utils.logging.logging_Print import printSettingUpWallet, printSeperator
+from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.math.math_Decimal import truncateDecimal
 
 logger = getProjectLogger()
 transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
 
-
 def setupWallet(recipe):
-    originHasStablecoins = recipe["origin"]["wallet"]["balances"]["stablecoin"] > 0.1
-    originHasTokens = recipe["origin"]["wallet"]["balances"]["token"] > 0
+    originHasStablecoins = recipe["origin"]["chain"]["balances"]["stablecoin"] > 0.1
+    originHasTokens = recipe["origin"]["chain"]["balances"]["tokens"] > 0
 
     if not originHasTokens and not originHasStablecoins:
-        errMsg = f'Origin wallet has neither Tokens or Stablecoins!'
+        errMsg = f'Origin chain has neither Tokens or Stablecoins!'
         logger.error(errMsg)
         raise Exception(errMsg)
     elif not originHasStablecoins:
@@ -31,16 +31,16 @@ def setupWallet(recipe):
         telegramStatusMessage = printSettingUpWallet(recipe['arbitrage']['currentRoundTripCount'])
 
         positionToSetup = "origin"
-        toSwapFrom = "token"
+        toSwapFrom = "tokens"
         toSwapTo = "stablecoin"
 
         if recipe[positionToSetup][toSwapFrom]["isGas"]:
             maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
-            amountInNormal = abs(recipe[positionToSetup]["wallet"]["balances"][toSwapFrom] - maximumGasBalance)
+            amountInNormal = abs(recipe[positionToSetup]["chain"]["balances"][toSwapFrom] - maximumGasBalance)
         else:
-            amountInNormal = recipe[positionToSetup]["wallet"]["balances"][toSwapFrom]
+            amountInNormal = recipe[positionToSetup]["chain"]["balances"][toSwapFrom]
 
-        balanceBeforeSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
+        balanceBeforeSwap = recipe[positionToSetup]["chain"]["balances"][toSwapTo]
 
         swapRoute = recipe[positionToSetup]["routes"][f"{toSwapFrom}-{toSwapTo}"]
 
@@ -49,9 +49,9 @@ def setupWallet(recipe):
             amountInDecimals=recipe[positionToSetup][toSwapFrom]["decimals"],
             amountOutDecimals=recipe[positionToSetup][toSwapTo]["decimals"],
             rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
-            routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[positionToSetup]["chain"]["contracts"]["router"]["abi"],
-            routerABIMappings=recipe[positionToSetup]["chain"]["contracts"]["router"]["mapping"],
+            routerAddress=recipe[positionToSetup]["chain"]["contract"]["router"]["address"],
+            routerABI=recipe[positionToSetup]["chain"]["contract"]["router"]["abi"],
+            routerABIMappings=recipe[positionToSetup]["chain"]["contract"]["router"]["mapping"],
             routes=swapRoute
         )
 
@@ -67,10 +67,10 @@ def setupWallet(recipe):
             arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
             stepCategory=f"0_setup",
             explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
-            routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[positionToSetup]["chain"]["contracts"]["router"]["abi"],
-            routerABIMappings=recipe[positionToSetup]["chain"]["contracts"]["router"]["mapping"],
-            wethContractABI=recipe[positionToSetup]["chain"]["contracts"]["weth"]["abi"],
+            routerAddress=recipe[positionToSetup]["chain"]["contract"]["router"]["address"],
+            routerABI=recipe[positionToSetup]["chain"]["contract"]["router"]["abi"],
+            routerABIMappings=recipe[positionToSetup]["chain"]["contract"]["router"]["mapping"],
+            wethContractABI=recipe[positionToSetup]["chain"]["contract"]["weth"]["abi"],
             telegramStatusMessage=telegramStatusMessage,
             swappingFromGas=recipe[positionToSetup][toSwapFrom]["isGas"],
             swappingToGas=recipe[positionToSetup][toSwapTo]["isGas"]
@@ -78,11 +78,11 @@ def setupWallet(recipe):
 
         recipe = getWalletsInformation(recipe)
 
-        balanceAfterSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
+        balanceAfterSwap = recipe[positionToSetup]["chain"]["balances"][toSwapTo]
 
         while balanceAfterSwap == balanceBeforeSwap:
             recipe = getWalletsInformation(recipe)
-            balanceAfterSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
+            balanceAfterSwap = recipe[positionToSetup]["chain"]["balances"][toSwapTo]
 
         result = balanceAfterSwap - balanceBeforeSwap
 
@@ -102,7 +102,6 @@ def setupWallet(recipe):
 def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, routerABI, routerABIMappings,
               arbitrageNumber, stepCategory, explorerUrl, wethContractABI, telegramStatusMessage=None,
               swappingFromGas=False, swappingToGas=False):
-    from src.wallet.queries.network import getPrivateKey
 
     # Setup our web3 object
     w3 = Web3(Web3.HTTPProvider(rpcURL))

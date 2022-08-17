@@ -1,16 +1,17 @@
-import logging
 from web3 import Web3
 
-# Set up our logging
+from src.utils.logging.logging_Setup import getProjectLogger
+
+
 logger = getProjectLogger()
 
-def wei2eth(w3, wei):
+def convertWeiToETH(w3, wei):
     return w3.fromWei(wei, 'ether')
 
-def eth2wei(w3, eth):
+def convertETHToWei(w3, eth):
     return w3.toWei(eth, 'ether')
 
-def symbol(token_address, rpc_address, wethContractABI):
+def getTokenSymbol(token_address, rpc_address, wethContractABI):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(token_address)
@@ -18,7 +19,7 @@ def symbol(token_address, rpc_address, wethContractABI):
 
     return contract.functions.symbol().call()
 
-def name(token_address, rpc_address, wethContractABI):
+def getTokenName(token_address, rpc_address, wethContractABI):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(token_address)
@@ -26,7 +27,7 @@ def name(token_address, rpc_address, wethContractABI):
 
     return contract.functions.name().call()
 
-def decimals(token_address, rpc_address, wethContractABI):
+def getTokenDecimals(token_address, rpc_address, wethContractABI):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(token_address)
@@ -34,7 +35,7 @@ def decimals(token_address, rpc_address, wethContractABI):
 
     return contract.functions.decimals().call()
 
-def balance_of(address, rpc_address, wethContractABI, token_address="", getGasTokenBalance=False):
+def getBalanceOfToken(address, rpc_address, wethContractABI, token_address="", getGasTokenBalance=False):
 
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 

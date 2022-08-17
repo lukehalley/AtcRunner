@@ -1,7 +1,7 @@
 import os
 
+from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.web.web_Requests import safeRequest
-from src.utils.files.files_Directory import getProjectLogger
 
 logger = getProjectLogger()
 
