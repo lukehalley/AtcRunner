@@ -16,7 +16,8 @@ from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
 
 logger = getProjectLogger()
-transactionTimeout = int(os.environ.get("TRANSACTION_TIMEOUT_SECS"))
+
+transactionTimeout = getTransactionDeadline()
 
 def setupWallet(recipe):
     originHasStablecoins = recipe["origin"]["chain"]["balances"]["stablecoin"] > 0.1
@@ -49,9 +50,9 @@ def setupWallet(recipe):
             amountInDecimals=recipe[positionToSetup][toSwapFrom]["decimals"],
             amountOutDecimals=recipe[positionToSetup][toSwapTo]["decimals"],
             rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
-            routerAddress=recipe[positionToSetup]["chain"]["contract"]["router"]["address"],
-            routerABI=recipe[positionToSetup]["chain"]["contract"]["router"]["abi"],
-            routerABIMappings=recipe[positionToSetup]["chain"]["contract"]["router"]["mapping"],
+            routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
+            routerABI=recipe[positionToSetup]["chain"]["contracts"]["router"]["abi"],
+            routerABIMappings=recipe[positionToSetup]["chain"]["contracts"]["router"]["mapping"],
             routes=swapRoute
         )
 
@@ -67,10 +68,10 @@ def setupWallet(recipe):
             arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
             stepCategory=f"0_setup",
             explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
-            routerAddress=recipe[positionToSetup]["chain"]["contract"]["router"]["address"],
-            routerABI=recipe[positionToSetup]["chain"]["contract"]["router"]["abi"],
-            routerABIMappings=recipe[positionToSetup]["chain"]["contract"]["router"]["mapping"],
-            wethContractABI=recipe[positionToSetup]["chain"]["contract"]["weth"]["abi"],
+            routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
+            routerABI=recipe[positionToSetup]["chain"]["contracts"]["router"]["abi"],
+            routerABIMappings=recipe[positionToSetup]["chain"]["contracts"]["router"]["mapping"],
+            wethContractABI=recipe[positionToSetup]["chain"]["contracts"]["weth"]["abi"],
             telegramStatusMessage=telegramStatusMessage,
             swappingFromGas=recipe[positionToSetup][toSwapFrom]["isGas"],
             swappingToGas=recipe[positionToSetup][toSwapTo]["isGas"]

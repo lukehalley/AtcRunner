@@ -16,12 +16,13 @@ from src.utils.chain.chain_Wallet import getPrivateKey
 from src.utils.logging.logging_Print import printSeperator
 
 from src.utils.logging.logging_Setup import getProjectLogger
-from src.utils.retry.retry_Params import getRetryParams
+from src.utils.retry.retry_Params import getRetryParams, getTransactionTimeout
 from src.utils.time.time_Calculations import getCurrentDateTime
 
 logger = getProjectLogger()
 
-transactionRetryLimit, transactionRetryDelay, transactionTimeout = getRetryParams(retryType="transactionAction")
+transactionTimeout = getTransactionTimeout()
+transactionRetryLimit, transactionRetryDelay,  = getRetryParams(retryType="transactionAction")
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):
@@ -151,7 +152,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
         rpcURL=recipe[direction]["chain"]["rpc"],
         tokenAddress=recipe[direction][toSwapFrom]["address"],
         tokenDecimals=recipe[direction][toSwapFrom]["decimals"],
-        wethContractABI=recipe[direction]["chain"]["contract"]["weth"]["abi"]
+        wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
     )
 
     if direction == "origin":
@@ -170,8 +171,8 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
             amountOutDecimals=recipe[direction][toSwapFrom]["decimals"],
             amountInDecimals=recipe[direction][toSwapFrom]["decimals"],
             rpcUrl=recipe[direction]["chain"]["rpc"],
-            routerAddress=recipe[direction]["chain"]["contract"]["router"]["address"],
-            routerABI=recipe[direction]["chain"]["contract"]["router"]["abi"],
+            routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
+            routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
             routes=routes
         )
 
@@ -202,10 +203,10 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 stepCategory=gasTopUpCategory,
                 telegramStatusMessage=telegramStatusMessage,
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"]["txBaseURL"],
-                routerAddress=recipe[direction]["chain"]["contract"]["router"]["address"],
-                routerABI=recipe[direction]["chain"]["contract"]["router"]["abi"],
-                routerABIMappings=recipe[direction]["chain"]["contract"]["router"]["mappings"],
-                wethContractABI=recipe[direction]["chain"]["contract"]["weth"]["abi"],
+                routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
+                routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
+                routerABIMappings=recipe[direction]["chain"]["contracts"]["router"]["mappings"],
+                wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"],
                 swappingFromGas=False,
                 swappingToGas=True
             )
@@ -220,7 +221,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
         recipe[direction]["chain"]["balances"]["gas"] = getWalletGasBalance(
             rpcURL=recipe[direction]["chain"]["rpc"],
             walletAddress=recipe[direction]["chain"]["address"],
-            wethContractABI=recipe[direction]["chain"]["contract"]["weth"]["abi"]
+            wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
         recipe = getWalletsInformation(recipe)
@@ -275,17 +276,17 @@ def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, teleg
 
     if isSwap:
         typeText = "Swap"
-        spenderAddress=recipe[position]["chain"]["contract"]["router"]["address"]
+        spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"]
     else:
         typeText = "Bridge"
-        spenderAddress=recipe[position]["chain"]["contract"]["bridges"]["synapse"]["address"]
+        spenderAddress=recipe[position]["chain"]["contracts"]["bridges"]["synapse"]["address"]
 
     isApproved = getTokenApprovalStatus(
         rpcUrl=recipe[position]["chain"]["rpc"],
         walletAddress=recipe[position]["chain"]["address"],
         tokenAddress=recipe[position][toSwapFrom]["address"],
         spenderAddress=spenderAddress,
-        wethAbi=recipe[position]["chain"]["contract"]["weth"]["abi"]
+        wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"]
     )
 
     if not isApproved:
@@ -303,7 +304,7 @@ def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, teleg
             walletAddress=recipe[position]["chain"]["address"],
             tokenAddress=recipe[position][toSwapFrom]["address"],
             spenderAddress=spenderAddress,
-            wethAbi=recipe[position]["chain"]["contract"]["weth"]["abi"],
+            wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
             arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
             stepCategory=f"{stepNumber}_5_{typeText.lower()}",
             telegramStatusMessage=telegramStatusMessage

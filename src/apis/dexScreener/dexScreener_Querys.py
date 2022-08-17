@@ -1,3 +1,4 @@
+import os
 from decimal import Decimal
 
 from src.apis.dexScreener.dexScreener_Utils import buildDexscreenerAPIBaseURL
@@ -29,11 +30,11 @@ def getTokensByQuery(query: str):
     return safeRequest(endpoint, params)["pairs"]
 
 # Get the tokens price by Dex id
-def getTokenPriceByDexId(chainName: str, tokenAddress: str, dexName: str):
+def getTokenPriceByDexId(chainName: str, tokenAddress: str, dexId: str):
     tokens = getTokens(tokenAddress)["pairs"]
 
     for token in tokens:
-        if token["chainId"] == chainName and token["dexName"] == dexName:
+        if token["chainId"] == chainName and token["dexId"] == dexId:
             return Decimal(token["priceUsd"])
 
 # Get the price of one tokens by its address
@@ -45,9 +46,9 @@ def getTokenPrice(chainName: str, tokenAddress: str):
             return Decimal(token["priceUsd"])
 
 # Get tokens address by tokens symbol and dex name
-def getTokenAddressByDexId(query: str, dexName: str):
+def getTokenAddressByDexId(query: str, dexId: str):
     tokens = getTokensByQuery(query)
 
     for token in tokens:
-        if token["dexName"] == dexName and token["baseToken"]["symbol"] == query:
+        if token["dexId"] == dexId and token["baseToken"]["symbol"] == query:
             return token["baseToken"]["address"]

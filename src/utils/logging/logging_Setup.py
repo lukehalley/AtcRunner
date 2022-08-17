@@ -1,8 +1,8 @@
 import logging, os, sys
 
-from src.utils.files.files_Directory import strToBool
-
 # Set up logging
+from src.utils.data.data_Booleans import strToBool
+
 def setupLogging(isDocker):
 
     logger = logging.getLogger("DFK-ARB")

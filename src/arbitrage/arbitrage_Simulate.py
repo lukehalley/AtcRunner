@@ -23,9 +23,9 @@ def simulateStep(recipe, stepSettings, currentFunds):
             amountInDecimals=recipe[position][toSwapFrom]["decimals"],
             amountOutDecimals=recipe[position][toSwapTo]["decimals"],
             rpcUrl=recipe[position]["chain"]["rpc"],
-            routerAddress=recipe[position]["chain"]["contract"]["router"]["address"],
-            routerABI=recipe[position]["chain"]["contract"]["router"]["abi"],
-            routerABIMappings=recipe[position]["chain"]["contract"]["router"]["mapping"],
+            routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
+            routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
+            routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
             routes=routeAddressList
         )
 

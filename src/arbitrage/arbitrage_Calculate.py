@@ -15,31 +15,31 @@ from src.utils.math.math_Percentage import percentageDifference
 logger = getProjectLogger()
 
 # Determine our arbitrage strategy
-def calculateArbitrageStrategy(recipe):
+def determineArbitrageStrategy(recipe):
     logger.debug(f"Calling Dexscreener API to find current price of pair")
 
     recipe["arbitrage"]["currentRoundTripCount"] = getNextArbitrageNumber()
 
     chainOneTokenPrice = getSwapQuoteOut(
         amountInNormal=1.0,
-        amountInDecimals=recipe["chainOne"]["tokens"]["decimals"],
+        amountInDecimals=recipe["chainOne"]["token"]["decimals"],
         amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
-        routerAddress=recipe["chainOne"]["chain"]["contract"]["router"]["address"],
-        routerABI=recipe["chainOne"]["chain"]["contract"]["router"]["abi"],
-        routerABIMappings=recipe["chainOne"]["chain"]["contract"]["router"]["mapping"],
-        routes=recipe["chainOne"]["routes"]["tokens-stablecoin"]
+        routerAddress=recipe["chainOne"]["chain"]["contracts"]["router"]["address"],
+        routerABI=recipe["chainOne"]["chain"]["contracts"]["router"]["abi"],
+        routerABIMappings=recipe["chainOne"]["chain"]["contracts"]["router"]["mapping"],
+        routes=recipe["chainOne"]["routes"]["token-stablecoin"]
     )
 
     chainTwoTokenPrice = getSwapQuoteOut(
         amountInNormal=1.0,
-        amountInDecimals=recipe["chainTwo"]["tokens"]["decimals"],
+        amountInDecimals=recipe["chainTwo"]["token"]["decimals"],
         amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
-        routerAddress=recipe["chainTwo"]["chain"]["contract"]["router"]["address"],
-        routerABI=recipe["chainTwo"]["chain"]["contract"]["router"]["abi"],
-        routerABIMappings=recipe["chainTwo"]["chain"]["contract"]["router"]["mapping"],
-        routes=recipe["chainTwo"]["routes"]["tokens-stablecoin"]
+        routerAddress=recipe["chainTwo"]["chain"]["contracts"]["router"]["address"],
+        routerABI=recipe["chainTwo"]["chain"]["contracts"]["router"]["abi"],
+        routerABIMappings=recipe["chainTwo"]["chain"]["contracts"]["router"]["mapping"],
+        routes=recipe["chainTwo"]["routes"]["token-stablecoin"]
     )
 
     chainOneGasPrice = getSwapQuoteOut(
@@ -47,9 +47,9 @@ def calculateArbitrageStrategy(recipe):
         amountInDecimals=18,
         amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainOne"]["chain"]["rpc"],
-        routerAddress=recipe["chainOne"]["chain"]["contract"]["router"]["address"],
-        routerABI=recipe["chainOne"]["chain"]["contract"]["router"]["abi"],
-        routerABIMappings=recipe["chainOne"]["chain"]["contract"]["router"]["mapping"],
+        routerAddress=recipe["chainOne"]["chain"]["contracts"]["router"]["address"],
+        routerABI=recipe["chainOne"]["chain"]["contracts"]["router"]["abi"],
+        routerABIMappings=recipe["chainOne"]["chain"]["contracts"]["router"]["mapping"],
         routes=[recipe["chainOne"]["gas"]["address"], recipe["chainOne"]["stablecoin"]["address"]]
     )
 
@@ -58,9 +58,9 @@ def calculateArbitrageStrategy(recipe):
         amountInDecimals=18,
         amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
         rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
-        routerAddress=recipe["chainTwo"]["chain"]["contract"]["router"]["address"],
-        routerABI=recipe["chainTwo"]["chain"]["contract"]["router"]["abi"],
-        routerABIMappings=recipe["chainTwo"]["chain"]["contract"]["router"]["mapping"],
+        routerAddress=recipe["chainTwo"]["chain"]["contracts"]["router"]["address"],
+        routerABI=recipe["chainTwo"]["chain"]["contracts"]["router"]["abi"],
+        routerABIMappings=recipe["chainTwo"]["chain"]["contracts"]["router"]["mapping"],
         routes=[recipe["chainTwo"]["gas"]["address"], recipe["chainTwo"]["stablecoin"]["address"]]
     )
 
@@ -81,22 +81,22 @@ def calculateArbitrageStrategy(recipe):
         if recipe["chainOne"]["chain"]["name"] == originLock and recipe["chainTwo"]["chain"]["name"] == destinationLock:
 
             recipe["origin"] = recipe["chainOne"]
-            recipe["origin"]["tokens"]["price"] = chainOneTokenPrice
+            recipe["origin"]["token"]["price"] = chainOneTokenPrice
             recipe["origin"]["gas"]["price"] = chainOneGasPrice
 
             recipe["destination"] = recipe["chainTwo"]
-            recipe["destination"]["tokens"]["price"] = chainTwoTokenPrice
+            recipe["destination"]["token"]["price"] = chainTwoTokenPrice
             recipe["destination"]["gas"]["price"] = chainTwoGasPrice
 
         elif recipe["chainTwo"]["chain"]["name"] == originLock and recipe["chainOne"]["chain"][
             "name"] == destinationLock:
 
             recipe["origin"] = recipe["chainTwo"]
-            recipe["origin"]["tokens"]["price"] = chainTwoTokenPrice
+            recipe["origin"]["token"]["price"] = chainTwoTokenPrice
             recipe["origin"]["gas"]["price"] = chainTwoGasPrice
 
             recipe["destination"] = recipe["chainOne"]
-            recipe["destination"]["tokens"]["price"] = chainOneTokenPrice
+            recipe["destination"]["token"]["price"] = chainOneTokenPrice
             recipe["destination"]["gas"]["price"] = chainOneGasPrice
 
         else:
@@ -108,19 +108,19 @@ def calculateArbitrageStrategy(recipe):
         if origin == recipe["chainOne"]["chain"]["name"]:
 
             recipe["origin"] = recipe["chainOne"]
-            recipe["origin"]["tokens"]["price"] = chainOneTokenPrice
+            recipe["origin"]["token"]["price"] = chainOneTokenPrice
             recipe["origin"]["gas"]["price"] = chainOneGasPrice
 
             recipe["destination"] = recipe["chainTwo"]
-            recipe["destination"]["tokens"]["price"] = chainTwoTokenPrice
+            recipe["destination"]["token"]["price"] = chainTwoTokenPrice
             recipe["destination"]["gas"]["price"] = chainTwoGasPrice
         else:
             recipe["origin"] = recipe["chainTwo"]
-            recipe["origin"]["tokens"]["price"] = chainTwoTokenPrice
+            recipe["origin"]["token"]["price"] = chainTwoTokenPrice
             recipe["origin"]["gas"]["price"] = chainTwoGasPrice
 
             recipe["destination"] = recipe["chainOne"]
-            recipe["destination"]["tokens"]["price"] = chainOneTokenPrice
+            recipe["destination"]["token"]["price"] = chainOneTokenPrice
             recipe["destination"]["gas"]["price"] = chainOneGasPrice
 
     printSeperator()
@@ -131,12 +131,12 @@ def calculateArbitrageStrategy(recipe):
         logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Arbitrage Opportunity Identified')
 
     logger.info(
-        f'Buy: {recipe["origin"]["tokens"]["name"]} @ ${truncateDecimal(recipe["origin"]["tokens"]["price"], 6)} on '
+        f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateDecimal(recipe["origin"]["token"]["price"], 6)} on '
         f'{recipe["origin"]["chain"]["name"]}'
     )
 
     logger.info(
-        f'Sell: {recipe["destination"]["tokens"]["name"]} @ ${truncateDecimal(recipe["destination"]["tokens"]["price"], 6)} on '
+        f'Sell: {recipe["destination"]["token"]["name"]} @ ${truncateDecimal(recipe["destination"]["token"]["price"], 6)} on '
         f'{recipe["destination"]["chain"]["name"]} '
     )
 
@@ -173,11 +173,11 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
     else:
         startingStables = recipe[position]["chain"]["balances"]["stablecoin"]
 
-    startingTokens = recipe[position]["chain"]["balances"]["tokens"]
+    startingTokens = recipe[position]["chain"]["balances"]["token"]
 
     currentFunds = {
         "stablecoin": startingStables,
-        "tokens": startingTokens
+        "token": startingTokens
     }
 
     predictions = {"steps": {}}
@@ -279,9 +279,9 @@ def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
         for _ in repeat(None, tripAmount):
             capitalAfterFees = currentCapital - recipe["status"]["fees"]["total"]
 
-            tokensBought = capitalAfterFees / recipe["origin"]["tokens"]["price"]
+            tokensBought = capitalAfterFees / recipe["origin"]["token"]["price"]
 
-            arbSell = tokensBought * recipe["destination"]["tokens"]["price"]
+            arbSell = tokensBought * recipe["destination"]["token"]["price"]
 
             profitLoss = arbSell - startingCapital
 
@@ -300,7 +300,7 @@ def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
 
     return tripIsProfitible
 
-# Calculate the difference between two tokens
+# Calculate the difference between two token
 def calculateDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")
 
@@ -308,7 +308,7 @@ def calculateDifference(pairOne, pairTwo):
 
     return round(ans, 6)
 
-# Determine which tokens is the origin and destination
+# Determine which token is the origin and destination
 def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
     if n1Price < n2Price:
         return n1Name, n2Name
