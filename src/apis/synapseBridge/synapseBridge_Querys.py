@@ -2,9 +2,14 @@ import os
 
 from retry import retry
 
-from src.apis import callSynapseTokenCaseRetry, buildSynapseAPIBaseURL
-from src.utils.web.web_Requests import buildApiURL, safeRequest
-from src.utils.files.files_Directory import percentage, isBetween, getProjectLogger, getRetryParams
+from src.apis.synapseBridge.synapseBridge_Utils import buildSynapseAPIBaseURL, callSynapseTokenCaseRetry
+from src.chain.network.network_Querys import getTokenBalance
+from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.math.math_Logic import isBetween
+from src.utils.math.math_Percentage import getPercentageOfNumber
+from src.utils.retry.retry_Params import getRetryParams
+from src.utils.web.web_Requests import safeRequest
+from src.utils.web.web_URLs import buildApiURL
 
 logger = getProjectLogger()
 
@@ -19,14 +24,14 @@ def queryBridgeStatusAPI(toChain: int, fromChainTxnHash: str):
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_CHECK_BRIDGE_STATUS_ENDPOINT"))
     return safeRequest(endpoint=endpoint, params=params)
 
-# Check what is the status of our bridge transaction using the wallet balance
+# Check what is the status of our bridge transaction using the chain balance
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def queryBridgeStatusBalance(predictions: dict, stepNumber: int, toChainRPCURL: str, toTokenAddress: int, toTokenDecimals: int, wethContractABI: dict):
-    from src.wallet.queries.network import getTokenBalance
+
     if predictions["steps"][stepNumber]["stepType"] == "bridge":
         bridgePredictions = predictions["steps"][stepNumber]["amountOut"]
 
-        percentageDifference = percentage(percent=10, whole=predictions["steps"][2]["amountOut"])
+        percentageDifference = getPercentageOfNumber(percent=10, whole=predictions["steps"][2]["amountOut"])
         lowerLimit = bridgePredictions - percentageDifference
         upperLimit = bridgePredictions + percentageDifference
 
@@ -45,7 +50,7 @@ def querySwapSupported(fromChain: int, toChain: int, fromToken: str, toToken: st
 
     return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
-# Get bridgeable tokenlist for a given chain
+# Get bridgeable tokens for a given chain
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def queryBridgeableTokens(chain: int):
     params = {"chain": chain}
@@ -53,10 +58,10 @@ def queryBridgeableTokens(chain: int):
 
     return safeRequest(endpoint=endpoint, params=params)
 
-# Get all the chains a token is on
+# Get all the chains a tokens is on
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def queryChainsForToken(token: str):
-    params = {"token": token}
+    params = {"tokens": token}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_GET_CHAINS_FOR_TOKEN_ENDPOINT"))
 
     return safeRequest(endpoint=endpoint, params=params)
@@ -69,7 +74,7 @@ def queryStableswapPools(chain: int):
 
     return safeRequest(endpoint=endpoint, params=params)
 
-# Get all swappable tokenlist for a given network
+# Get all swappable tokens for a given network
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def querySwappableTokensForNetwork(chainFrom: int, toChain: int):
     params = {"chainFrom": chainFrom, "toChain": toChain}

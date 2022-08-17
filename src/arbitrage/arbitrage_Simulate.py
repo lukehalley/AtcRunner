@@ -1,10 +1,9 @@
-from src.apis.synapseBridge.synapseBridge_Estimate import estimateBridgeOutput
-from src.arbitrage.arbitrage_Utils import getRoutes
-from src.utils.chain.chain_Calculations import getOppositeDirection
-from src.utils.files.files_Directory import getProjectLogger
-from src.wallet.queries.swap import getSwapQuoteOut
 
-# Set up our logging
+from src.apis.synapseBridge.synapseBridge_Estimate import estimateBridgeOutput
+from src.arbitrage.arbitrage_Utils import getOppositeDirection, getRoutes
+from src.chain.swap.swap_Querys import getSwapQuoteOut
+from src.utils.logging.logging_Setup import getProjectLogger
+
 logger = getProjectLogger()
 
 # Simulate an arbitrage step
@@ -24,9 +23,9 @@ def simulateStep(recipe, stepSettings, currentFunds):
             amountInDecimals=recipe[position][toSwapFrom]["decimals"],
             amountOutDecimals=recipe[position][toSwapTo]["decimals"],
             rpcUrl=recipe[position]["chain"]["rpc"],
-            routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-            routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
+            routerAddress=recipe[position]["chain"]["contract"]["router"]["address"],
+            routerABI=recipe[position]["chain"]["contract"]["router"]["abi"],
+            routerABIMappings=recipe[position]["chain"]["contract"]["router"]["mapping"],
             routes=routeAddressList
         )
 

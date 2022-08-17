@@ -1,18 +1,17 @@
-import logging
 import os
-import sys
 
 from retry import retry
 from web3 import Web3
 
-from src.wallet.actions.network import callMappedContractFunction
-from src.wallet.queries.network import getMappedContractFunction
+from src.chain.network.network_Actions import callMappedContractFunction
+from src.utils.chain.chain_ABI import getMappedContractFunction
+from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.retry.retry_Params import getRetryParams
 
 logger = getProjectLogger()
 
 # Retry Envs
-httpRetryLimit = int(os.environ.get("HTTP_RETRY_LIMIT"))
-httpRetryDelay = int(os.environ.get("HTTP_RETRY_DELAY"))
+httpRetryLimit, httpRetryDelay = getRetryParams(retryType="http")
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def factory(rpc_address, routerAddress, routerABI):

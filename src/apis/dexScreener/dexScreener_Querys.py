@@ -1,34 +1,34 @@
-import os
 from decimal import Decimal
 
 from src.apis.dexScreener.dexScreener_Utils import buildDexscreenerAPIBaseURL
-from src.utils.web.web_Requests import buildApiURL, safeRequest
-from src.utils.files.files_Directory import replace_all
+from src.utils.data.data_Dictionary import replaceAllValuesInDict
+from src.utils.web.web_Requests import safeRequest
+from src.utils.web.web_URLs import buildApiURL
 
 dexscreenerAPIBaseURL = buildDexscreenerAPIBaseURL()
 
-# Get token pairs from Dexscreener
+# Get tokens pairs from Dexscreener
 def getPairs(chain: int, tokenAddress: str):
     initEndpoint = buildApiURL(baseUrl=dexscreenerAPIBaseURL, endpoint=os.getenv("DEXSCREENER_GET_PAIRS"))
     params = {":chainId": chain, ":pairAddress": tokenAddress}
-    endpoint = replace_all(initEndpoint, params)
+    endpoint = replaceAllValuesInDict(initEndpoint, params)
     return safeRequest(endpoint, params)
 
-# Get token(s) from Dexscreener
+# Get tokens(s) from Dexscreener
 def getTokens(tokenAddress: str):
     initEndpoint = buildApiURL(baseUrl=dexscreenerAPIBaseURL, endpoint=os.getenv("DEXSCREENER_GET_TOKENS"))
     params = {":tokenAddress": tokenAddress}
-    endpoint = replace_all(initEndpoint, params)
+    endpoint = replaceAllValuesInDict(initEndpoint, params)
     return safeRequest(endpoint, params)
 
 # Do a query against the Dexscreener API
 def getTokensByQuery(query: str):
     initEndpoint = buildApiURL(baseUrl=dexscreenerAPIBaseURL, endpoint=os.getenv("DEXSCREENER_SEARCH_TOKENS"))
     params = {":query": query}
-    endpoint = replace_all(initEndpoint, params)
+    endpoint = replaceAllValuesInDict(initEndpoint, params)
     return safeRequest(endpoint, params)["pairs"]
 
-# Get the token price by Dex id
+# Get the tokens price by Dex id
 def getTokenPriceByDexId(chainName: str, tokenAddress: str, dexName: str):
     tokens = getTokens(tokenAddress)["pairs"]
 
@@ -36,7 +36,7 @@ def getTokenPriceByDexId(chainName: str, tokenAddress: str, dexName: str):
         if token["chainId"] == chainName and token["dexName"] == dexName:
             return Decimal(token["priceUsd"])
 
-# Get the price of one token by its address
+# Get the price of one tokens by its address
 def getTokenPrice(chainName: str, tokenAddress: str):
     tokens = getTokens(tokenAddress)["pairs"]
 
@@ -44,7 +44,7 @@ def getTokenPrice(chainName: str, tokenAddress: str):
         if token["chainId"] == chainName:
             return Decimal(token["priceUsd"])
 
-# Get token address by tokenlist symbol and dex name
+# Get tokens address by tokens symbol and dex name
 def getTokenAddressByDexId(query: str, dexName: str):
     tokens = getTokensByQuery(query)
 

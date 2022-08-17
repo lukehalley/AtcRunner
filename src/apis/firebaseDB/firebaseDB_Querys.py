@@ -1,6 +1,7 @@
 from firebase_admin import db
 
-from src.utils.files.files_Directory import checkIsDocker, getProjectLogger
+from src.utils.env.env_AWSSecrets import checkIsDocker
+from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 

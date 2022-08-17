@@ -1,14 +1,14 @@
-
 from num2words import num2words
 
 from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
 from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
-from src.tokens.tokens_Parse import getTokenBySymbolAndChainID, parseTokenLists
+from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeableTokens
+from src.chain.network.network_Querys import getNetworkWETH
+from src.tokens.tokens_Parse import parseTokenLists
+from src.tokens.tokens_Query import getTokenBySymbolAndChainID
+from src.utils.data.data_Booleans import strToBool
+from src.utils.logging.logging_Setup import getProjectLogger
 
-from src.utils.files.files_Directory import strToBool, getProjectLogger
-from src.wallet.queries.network import getNetworkWETH
-
-# Set up our logging
 logger = getProjectLogger()
 
 # Get the details of our recipe
@@ -39,15 +39,15 @@ def getRecipeDetails():
             
             chainWrappedGasTokenAddress = getNetworkWETH(
                 rpcUrl=recipeDetails[chainNumber]["chain"]["rpc"],
-                routerAddress=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["address"],
-                routerABI=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["abi"],
-                routerABIMappings=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["mapping"]
+                routerAddress=recipeDetails[chainNumber]["chain"]["contract"]["router"]["address"],
+                routerABI=recipeDetails[chainNumber]["chain"]["contract"]["router"]["abi"],
+                routerABIMappings=recipeDetails[chainNumber]["chain"]["contract"]["router"]["mapping"]
             )
 
             if tokenRetrievalMethod == "tokenList":
 
                 toFill = {
-                    "token": recipeDetails[chainNumber]["token"],
+                    "tokens": recipeDetails[chainNumber]["tokens"],
                     "stablecoin": recipeDetails[chainNumber]["stablecoin"]
                 }
 
@@ -103,15 +103,15 @@ def getRecipeDetails():
 
             elif tokenRetrievalMethod == "apis":
 
-                recipeToken = recipeDetails["arbitrage"]["token"]
+                recipeToken = recipeDetails["arbitrage"]["tokens"]
                 recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
 
                 toFill = {
-                    "token": recipeToken,
+                    "tokens": recipeToken,
                     "stablecoin": recipeStablecoin
                 }
 
-                chainTokens = getBridgeableTokens(chainId)
+                chainTokens = queryBridgeableTokens(chainId)
                 for key, value in toFill.items():
 
                     for token in chainTokens:
@@ -146,7 +146,7 @@ def getRecipeDetails():
             recipeDetails[chainNumber]["gas"]["symbol"] = recipeDetails[chainNumber]["chain"]["gasDetails"]["symbol"]
             recipeDetails[chainNumber]["gas"]["address"] = chainWrappedGasTokenAddress
 
-            recipeDetails[chainNumber]["chain"]["contracts"]["weth"]["address"] = chainWrappedGasTokenAddress
+            recipeDetails[chainNumber]["chain"]["contract"]["weth"]["address"] = chainWrappedGasTokenAddress
 
             recipeDetails[chainNumber]["stablecoin"]["price"] = \
                 getTokenPriceByDexId(

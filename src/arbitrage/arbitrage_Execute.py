@@ -1,16 +1,16 @@
+
+
 from src.apis.firebaseDB.firebaseDB_Querys import fetchArbitrageStrategy
-from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatusMessage
-from src.arbitrage.arbitrage_Simulate import simulateStep
+from src.apis.telegramBot.telegramBot_Action import appendToMessage
+from src.arbitrage.arbitrage_Utils import getOppositeDirection
+from src.chain.network.network_Actions import topUpWalletGas, checkAndApproveToken
+from src.chain.network.network_Querys import getWalletsInformation
+from src.chain.swap.swap_Querys import getSwapQuoteOut
+from src.utils.chain.chain_Calculations import getValueWithSlippage
+from src.utils.logging.logging_Print import printSeperator
+from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.math.math_Decimal import truncateDecimal
 
-from src.utils.chain.chain_Calculations import getOppositeDirection, getValueWithSlippage
-from src.utils.files.files_Directory import printSeperator, percentageDifference, printArbitrageRollbackComplete, printArbitrageResult, truncateDecimal, getProjectLogger
-from src.wallet.actions.bridge import executeBridge
-from src.wallet.actions.network import topUpWalletGas, checkAndApproveToken
-from src.wallet.actions.swap import swapToken, setupWallet
-from src.wallet.queries.network import getWalletsInformation
-from src.wallet.queries.swap import getSwapQuoteOut
-
-# Set up our logging
 logger = getProjectLogger()
 
 # Execute an Arbitrage
@@ -24,13 +24,13 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
     recipe = getWalletsInformation(recipe)
 
-    startingStables = recipe["origin"]["wallet"]["balances"]["stablecoin"]
+    startingStables = recipe["origin"]["chain"]["balances"]["stablecoin"]
 
     recipe["status"]["startingStables"] = startingStables
 
     currentFunds = {
         "stablecoin": startingStables,
-        "token": 0
+        "tokens": 0
     }
 
     for stepSettings in steps:
@@ -52,8 +52,8 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
         )
 
         if toppedUpOccured:
-            currentFunds["stablecoin"] = recipe[position]["wallet"]["balances"]["stablecoin"]
-            currentFunds["token"] = recipe[position]["wallet"]["balances"]["token"]
+            currentFunds["stablecoin"] = recipe[position]["chain"]["balances"]["stablecoin"]
+            currentFunds["tokens"] = recipe[position]["chain"]["balances"]["tokens"]
 
         recipe = getWalletsInformation(recipe)
 
@@ -82,9 +82,9 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                     rpcUrl=recipe[position]["chain"]["rpc"],
-                    routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                    routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-                    routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
+                    routerAddress=recipe[position]["chain"]["contract"]["router"]["address"],
+                    routerABI=recipe[position]["chain"]["contract"]["router"]["abi"],
+                    routerABIMappings=recipe[position]["chain"]["contract"]["router"]["mapping"],
                     routes=swapRoute
                 )
 
@@ -98,7 +98,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
                 recipe = getWalletsInformation(recipe)
 
-                balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+                balanceBeforeSwap = recipe[position]["chain"]["balances"][toSwapTo]
 
                 swapResult = swapToken(
                     amountInNormal=currentFunds[toSwapFrom],
@@ -110,10 +110,10 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_swap",
                     explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-                    routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                    routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-                    routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
-                    wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
+                    routerAddress=recipe[position]["chain"]["contract"]["router"]["address"],
+                    routerABI=recipe[position]["chain"]["contract"]["router"]["abi"],
+                    routerABIMappings=recipe[position]["chain"]["contract"]["router"]["mapping"],
+                    wethContractABI=recipe[position]["chain"]["contract"]["weth"]["abi"],
                     telegramStatusMessage=telegramStatusMessage,
                     swappingFromGas=recipe[position][toSwapFrom]["isGas"],
                     swappingToGas=recipe[position][toSwapTo]["isGas"]
@@ -121,11 +121,11 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
                 recipe = getWalletsInformation(recipe)
 
-                balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+                balanceAfterSwap = recipe[position]["chain"]["balances"][toSwapTo]
 
                 while balanceAfterSwap == balanceBeforeSwap:
                     recipe = getWalletsInformation(recipe)
-                    balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+                    balanceAfterSwap = recipe[position]["chain"]["balances"][toSwapTo]
 
                 result = balanceAfterSwap - balanceBeforeSwap
 
@@ -159,7 +159,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
                 recipe = getWalletsInformation(recipe)
 
-                balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+                balanceBeforeBridge = recipe[oppositePosition]["chain"]["balances"][toSwapFrom]
 
                 bridgeResult = executeBridge(
                     amountToBridge=currentFunds[toSwapFrom],
@@ -171,7 +171,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
                     toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                     toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
-                    wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
+                    wethContractABI=recipe[position]["chain"]["contract"]["weth"]["abi"],
                     arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_bridge",
                     explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
@@ -181,11 +181,11 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                 )
 
                 recipe = getWalletsInformation(recipe)
-                balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+                balanceAfterBridge = recipe[oppositePosition]["chain"]["balances"][toSwapFrom]
 
                 while balanceAfterBridge == balanceBeforeBridge:
                     recipe = getWalletsInformation(recipe)
-                    balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+                    balanceAfterBridge = recipe[oppositePosition]["chain"]["balances"][toSwapFrom]
 
                 result = balanceAfterBridge - balanceBeforeBridge
 
@@ -214,15 +214,15 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
             recipe = getWalletsInformation(recipe)
 
-            wasProfitable = recipe[position]["wallet"]["balances"]["stablecoin"] > startingStables
-            profitLoss = abs(recipe[position]["wallet"]["balances"]["stablecoin"] - startingStables)
+            wasProfitable = recipe[position]["chain"]["balances"]["stablecoin"] > startingStables
+            profitLoss = abs(recipe[position]["chain"]["balances"]["stablecoin"] - startingStables)
 
             if wasProfitable:
-                arbitragePercentage = percentageDifference(recipe[position]["wallet"]["balances"]["stablecoin"],
+                arbitragePercentage = percentageDifference(recipe[position]["chain"]["balances"]["stablecoin"],
                                                            startingStables, 2)
             else:
                 arbitragePercentage = percentageDifference(startingStables,
-                                                           recipe[position]["wallet"]["balances"]["stablecoin"], 2)
+                                                           recipe[position]["chain"]["balances"]["stablecoin"], 2)
 
             printArbitrageResult(count=recipe["arbitrage"]["currentRoundTripCount"], amount=profitLoss,
                                  percentageDifference=arbitragePercentage, wasProfitable=wasProfitable,
@@ -263,8 +263,8 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
         )
 
         if toppedUpOccured:
-            currentFunds["stablecoin"] = recipe[position]["wallet"]["balances"]["stablecoin"]
-            currentFunds["token"] = recipe[position]["wallet"]["balances"]["token"]
+            currentFunds["stablecoin"] = recipe[position]["chain"]["balances"]["stablecoin"]
+            currentFunds["tokens"] = recipe[position]["chain"]["balances"]["tokens"]
 
         recipe = getWalletsInformation(recipe)
 
@@ -278,7 +278,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
         if stepType == "swap":
 
-            balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+            balanceBeforeSwap = recipe[position]["chain"]["balances"][toSwapTo]
 
             swapRoute = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
 
@@ -287,9 +287,9 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 amountInDecimals=recipe[position][toSwapFrom]["decimals"],
                 amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                 rpcUrl=recipe[position]["chain"]["rpc"],
-                routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-                routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
+                routerAddress=recipe[position]["chain"]["contract"]["router"]["address"],
+                routerABI=recipe[position]["chain"]["contract"]["router"]["abi"],
+                routerABIMappings=recipe[position]["chain"]["contract"]["router"]["mapping"],
                 routes=swapRoute
             )
 
@@ -310,10 +310,10 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=f"{stepNumber}_swap",
                 explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-                routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-                routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
-                wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
+                routerAddress=recipe[position]["chain"]["contract"]["router"]["address"],
+                routerABI=recipe[position]["chain"]["contract"]["router"]["abi"],
+                routerABIMappings=recipe[position]["chain"]["contract"]["router"]["mapping"],
+                wethContractABI=recipe[position]["chain"]["contract"]["weth"]["abi"],
                 telegramStatusMessage=telegramStatusMessage,
                 swappingFromGas=recipe[position][toSwapFrom]["isGas"],
                 swappingToGas=recipe[position][toSwapTo]["isGas"]
@@ -321,11 +321,11 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
             recipe = getWalletsInformation(recipe)
 
-            balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+            balanceAfterSwap = recipe[position]["chain"]["balances"][toSwapTo]
 
             while balanceAfterSwap == balanceBeforeSwap:
                 recipe = getWalletsInformation(recipe)
-                balanceAfterSwap = recipe[position]["wallet"]["balances"][toSwapTo]
+                balanceAfterSwap = recipe[position]["chain"]["balances"][toSwapTo]
 
             result = balanceAfterSwap - balanceBeforeSwap
 
@@ -335,7 +335,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
         elif stepType == "bridge":
 
-            balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+            balanceBeforeBridge = recipe[oppositePosition]["chain"]["balances"][toSwapFrom]
 
             telegramStatusMessage = checkAndApproveToken(
                 recipe=recipe, position=position, toSwapFrom=toSwapFrom, stepNumber=stepNumber,
@@ -352,7 +352,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 toTokenDecimals=recipe[oppositePosition][toSwapFrom]['decimals'],
                 toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                 toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
-                wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
+                wethContractABI=recipe[position]["chain"]["contract"]["weth"]["abi"],
                 arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
                 stepCategory=f"{stepNumber}_bridge",
                 explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
@@ -362,11 +362,11 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
             )
 
             recipe = getWalletsInformation(recipe)
-            balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+            balanceAfterBridge = recipe[oppositePosition]["chain"]["balances"][toSwapFrom]
 
             while balanceAfterBridge == balanceBeforeBridge:
                 recipe = getWalletsInformation(recipe)
-                balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
+                balanceAfterBridge = recipe[oppositePosition]["chain"]["balances"][toSwapFrom]
 
             result = balanceAfterBridge - balanceBeforeBridge
 
@@ -397,15 +397,15 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
     recipe = getWalletsInformation(recipe)
 
-    wasProfitable = recipe["origin"]["wallet"]["balances"]["stablecoin"] > startingStables
-    profitLoss = abs(recipe["origin"]["wallet"]["balances"]["stablecoin"] - startingStables)
+    wasProfitable = recipe["origin"]["chain"]["balances"]["stablecoin"] > startingStables
+    profitLoss = abs(recipe["origin"]["chain"]["balances"]["stablecoin"] - startingStables)
 
     if wasProfitable:
-        arbitragePercentage = percentageDifference(recipe["origin"]["wallet"]["balances"]["stablecoin"],
+        arbitragePercentage = percentageDifference(recipe["origin"]["chain"]["balances"]["stablecoin"],
                                                    startingStables, 2)
     else:
         arbitragePercentage = percentageDifference(startingStables,
-                                                   recipe["origin"]["wallet"]["balances"]["stablecoin"], 2)
+                                                   recipe["origin"]["chain"]["balances"]["stablecoin"], 2)
 
     printArbitrageRollbackComplete(count=recipe["arbitrage"]["currentRoundTripCount"], wasProfitable=wasProfitable,
                                    profitLoss=profitLoss, arbitragePercentage=arbitragePercentage,

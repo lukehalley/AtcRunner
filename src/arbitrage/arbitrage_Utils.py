@@ -1,5 +1,5 @@
 from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
-from src.utils.files.files_Directory import getProjectLogger
+from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
@@ -11,7 +11,7 @@ def getNextArbitrageNumber():
     else:
         return 1
 
-# Get the routes for token we are swapping from -> to in the recipe dict
+# Get the routes for tokens we are swapping from -> to in the recipe dict
 def getRoutes(recipe, position, toSwapFrom, toSwapTo):
     return recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
 
@@ -22,9 +22,9 @@ def getOppositeDirection(direction):
     else:
         return "origin"
 
-# Get the opposite swap of a given token
+# Get the opposite swap of a given tokens
 def getOppositeToken(token):
-    if token == "token":
+    if token == "tokens":
         return "stablecoin"
     else:
-        return "token"
+        return "tokens"

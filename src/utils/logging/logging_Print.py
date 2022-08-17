@@ -1,7 +1,7 @@
-# Set up our logging
 import time
 
-from src.utils.files.files_Directory import getProjectLogger, getMinSecString
+from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.time.time_Calculations import getMinSecString
 
 logger = getProjectLogger()
 
@@ -32,7 +32,7 @@ def printArbitrageProfitable(recipe, predictions):
 
     count = recipe['arbitrage']['currentRoundTripCount']
     networkPath = f'{recipe["origin"]["chain"]["name"]} -> {recipe["destination"]["chain"]["name"]}'
-    tokenPath = f'{recipe["origin"]["token"]["symbol"]} -> {recipe["destination"]["token"]["symbol"]}'
+    tokenPath = f'{recipe["origin"]["tokens"]["symbol"]} -> {recipe["destination"]["tokens"]["symbol"]}'
 
     logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     logger.info(f"ARBITRAGE #{count} PROFITABLE")

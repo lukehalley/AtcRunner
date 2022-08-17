@@ -6,22 +6,22 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Utility modules
-from src.utils.files.files_Directory import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, strToBool
-from src.utils.logging.logging_Setup import setupLogging
+from src import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, strToBool
+from src import setupLogging
 
 # Selenium modules
-from src.web.actions import initBrowser
+from src import initBrowser
 
 # API modules
-from src.apis import createDatabaseConnection
+from src import createDatabaseConnection
 
 # Data modules
-from src.recipe.recipe_Data import getRecipeDetails
-from src.arbitrage.arbitrage_Calculate import calculateArbitrageStrategy, calculateArbitrageIsProfitable, executeArbitrage
+from src import getRecipeDetails
+from src import calculateArbitrageStrategy, calculateArbitrageIsProfitable, executeArbitrage
 
 # Wallet modules
-from src.wallet.actions.swap import setupWallet
-from src.wallet.queries.network import getWalletsInformation
+from src import setupWallet
+from src import getWalletsInformation
 
 # General Init
 isDocker = checkIsDocker()
