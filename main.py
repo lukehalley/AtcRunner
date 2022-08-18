@@ -1,27 +1,21 @@
-import os
-import time
-
+import os, time
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Utility modules
-from src.utils.general import checkIsDocker, printSeperator, printRoundtrip, printArbitrageProfitable, strToBool
-from src.utils.logger import setupLogging
+from src.apis.firebaseDB.firebaseDB_Utils import createDatabaseConnection
 
-# Selenium modules
-from src.web.actions import initBrowser
+from src.arbitrage.arbitrage_Calculate import calculateArbitrageIsProfitable, determineArbitrageStrategy
+from src.arbitrage.arbitrage_Execute import executeArbitrage
 
-# API modules
-from src.api.firebase import createDatabaseConnection
+from src.chain.network.network_Querys import getWalletsInformation
+from src.chain.swap.swap_Actions import setupWallet
 
-# Data modules
-from src.data.recipe import getRecipeDetails
-from src.data.arbitrage import determineArbitrageStrategy, checkArbitrageIsProfitable, executeArbitrage
-
-# Wallet modules
-from src.wallet.actions.swap import setupWallet
-from src.wallet.queries.network import getWalletsInformation, getTokenApprovalStatus
+from src.recipe.recipe_Data import getRecipeDetails
+from src.utils.data.data_Booleans import strToBool
+from src.utils.env.env_AWSSecrets import checkIsDocker
+from src.utils.logging.logging_Print import printSeperator, printRoundtrip, printArbitrageProfitable
+from src.utils.logging.logging_Setup import setupLogging
 
 # General Init
 isDocker = checkIsDocker()
@@ -33,8 +27,9 @@ forceRun = False
 useTestCapital = False
 startingCapitalTestAmount = 10
 
-# Firebase Setup
 printSeperator()
+
+# Firebase Setup
 logger.info(f"Getting Data From Firebase")
 printSeperator()
 createDatabaseConnection()
@@ -48,13 +43,6 @@ pauseTime = int(os.environ.get("ARBITRAGE_INTERVAL"))
 printSeperator()
 logger.info(f"Waiting For Arbitrage Opportunity...")
 printSeperator(True)
-
-if not useFallbackRoutes:
-    originDriver = initBrowser(profileToUse=1)
-    destinationDriver = initBrowser(profileToUse=2)
-else:
-    originDriver = None
-    destinationDriver = None
 
 while True:
 
@@ -74,11 +62,11 @@ while True:
 
         setupWallet(recipe=recipe)
 
-        isProfitable, predictions = checkArbitrageIsProfitable(recipe, originDriver=originDriver, destinationDriver=destinationDriver)
+        isProfitable, predictions = calculateArbitrageIsProfitable(recipe)
 
         printSeperator(True)
 
-        if isProfitable:
+        if True:
 
             telegramStatusMessage = printArbitrageProfitable(recipe, predictions)
 
