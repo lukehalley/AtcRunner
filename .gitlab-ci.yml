@@ -32,7 +32,7 @@ publish:
     - aws templates update-stack
       --stack-name $CFN_STACK_NAME
       --use-previous-template
-      --parameters ParameterKey=Image,ParameterValue=$AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION
+      --parameters ParameterKey=Image,ParameterValue="$AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION"
       --capabilities CAPABILITY_NAMED_IAM
     - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 1
   only:
