@@ -1,7 +1,3 @@
-stages:
-  - buildAndPush
-  - updateStack
-
 build:
   image:
     name: docker
@@ -17,6 +13,10 @@ build:
   only:
     variables:
       - $CI_COMMIT_BRANCH != "master"
+
+stages:
+  - buildAndPush
+  - updateStack
 
 buildAndPush:
   image:
