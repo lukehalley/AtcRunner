@@ -256,7 +256,10 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
                 predictions["profitLoss"] = profitLossReadable
                 predictions["arbitragePercentage"] = arbitragePercentage
 
-    return isProfitable, predictions
+    recipe["arbitrage"]["isProfitable"] = isProfitable
+    recipe["arbitrage"]["predictions"] = predictions
+
+    return recipe
 
 
 # Predict our potential profit/loss
