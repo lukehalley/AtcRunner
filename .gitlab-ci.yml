@@ -1,7 +1,13 @@
+stages:
+  - build
+  - buildAndPush
+  - updateStack
+
 build:
   image:
     name: docker
     entrypoint: [""]
+  stage: build
   services:
     - docker:dind
   before_script:
@@ -13,15 +19,13 @@ build:
   only:
     variables:
       - $CI_COMMIT_BRANCH != "master"
-
-stages:
-  - buildAndPush
-  - updateStack
+  
 
 buildAndPush:
   image:
     name: amazon/aws-cli
     entrypoint: [""]
+  stage: buildAndPush
   services:
     - docker:dind
   before_script:
@@ -32,6 +36,7 @@ buildAndPush:
     - docker build -t $AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION .
     - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ACCOUNT
     - docker push $AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION
+
   only:
     - master
 
@@ -39,6 +44,7 @@ updateStack:
   image:
     name: amazon/aws-cli
     entrypoint: [""]
+  stage: updateStack
   services:
     - docker:dind
   before_script:
