@@ -14,7 +14,7 @@ build:
     variables:
       - $CI_COMMIT_BRANCH != "master"
 
-publish:
+buildAndPush:
   image:
     name: amazon/aws-cli
     entrypoint: [""]
@@ -28,6 +28,18 @@ publish:
     - docker build -t $AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION .
     - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ACCOUNT
     - docker push $AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION
+  only:
+    - master
+
+updateStack:
+  image:
+    name: amazon/aws-cli
+    entrypoint: [""]
+  services:
+    - docker:dind
+  before_script:
+    - CURRENT_IMAGE_VERSION=$(aws ecr describe-images --repository-name arb-bot --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]' | tr -d '"')
+  script:
     - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 0
     - aws cloudformation update-stack
       --stack-name $CFN_STACK_NAME
@@ -37,3 +49,4 @@ publish:
     - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 1
   only:
     - master
+  allow_failure: true
