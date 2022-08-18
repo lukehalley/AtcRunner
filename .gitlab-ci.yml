@@ -16,7 +16,6 @@ build:
     variables:
       - $CI_COMMIT_BRANCH != "master"
 
-
 buildAndPush:
   image:
     name: amazon/aws-cli

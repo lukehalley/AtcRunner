@@ -40,10 +40,7 @@ def getRecipeDetails():
             chainId = recipeDetails[chainNumber]["chain"]["id"]
             
             chainWrappedGasTokenAddress = getNetworkWETH(
-                rpcUrl=recipeDetails[chainNumber]["chain"]["rpc"],
-                routerAddress=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["address"],
-                routerABI=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["abi"],
-                routerABIMappings=recipeDetails[chainNumber]["chain"]["contracts"]["router"]["mapping"]
+                chainDetails=recipeDetails[chainNumber]["chain"]
             )
 
             if tokenRetrievalMethod == "tokenList":
