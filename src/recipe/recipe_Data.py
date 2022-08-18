@@ -103,11 +103,11 @@ def getRecipeDetails():
 
             elif tokenRetrievalMethod == "apis":
 
-                recipeToken = recipeDetails["arbitrage"]["tokens"]
+                recipeToken = recipeDetails["arbitrage"]["token"]
                 recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
 
                 toFill = {
-                    "tokens": recipeToken,
+                    "token": recipeToken,
                     "stablecoin": recipeStablecoin
                 }
 

@@ -144,7 +144,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
     minimumGasBalance = Decimal(recipe[direction]["chain"]["gasDetails"]["gasLimits"]["minGas"])
     maximumGasBalance = Decimal(recipe[direction]["chain"]["gasDetails"]["gasLimits"]["maxGas"])
 
-    gasBalance = recipe[direction]["chain"]["balances"]["gas"]
+    gasBalance = recipe[direction]["wallet"]["balances"]["gas"]
 
     needsGas = gasBalance < minimumGasBalance
 
@@ -179,13 +179,13 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
         amountOutMinWithSlippage = getValueWithSlippage(amount=gasTokensNeeded, slippage=0.5)
 
         if amountInQuoted > balanceBeforeBridge:
-            errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) chain with gas: ' \
+            errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: ' \
                      f'Not enough {toSwapFrom}s (balance: {balanceBeforeBridge}) to purchase {gasTokensNeeded} {recipe[direction]["gas"]["symbol"]} ' \
                      f'for {amountInQuoted} {recipe[direction][toSwapFrom]["symbol"]}'
             logger.error(errMsg)
             raise Exception(errMsg)
 
-        logger.info(f'{direction} chain ({recipe[direction]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[direction]["gas"]["symbol"]} for {amountInQuoted} {recipe[direction][toSwapFrom]["symbol"]}')
+        logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[direction]["gas"]["symbol"]} for {amountInQuoted} {recipe[direction][toSwapFrom]["symbol"]}')
 
         try:
 
@@ -205,7 +205,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"]["txBaseURL"],
                 routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
                 routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
-                routerABIMappings=recipe[direction]["chain"]["contracts"]["router"]["mappings"],
+                routerABIMappings=recipe[direction]["chain"]["contracts"]["router"]["mapping"],
                 wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"],
                 swappingFromGas=False,
                 swappingToGas=True
@@ -214,19 +214,19 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
             updateStatusMessage(originalMessage=result["telegramStatusMessage"], newStatus="✅")
 
         except Exception as err:
-            errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) chain with gas: {err}'
+            errMsg = f'Error topping up {direction} ({recipe[direction]["chain"]["name"]}) wallet with gas: {err}'
             logger.error(errMsg)
             raise Exception(err)
 
-        recipe[direction]["chain"]["balances"]["gas"] = getWalletGasBalance(
+        recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
             rpcURL=recipe[direction]["chain"]["rpc"],
-            walletAddress=recipe[direction]["chain"]["address"],
+            walletAddress=recipe[direction]["wallet"]["address"],
             wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
         recipe = getWalletsInformation(recipe)
 
-        logger.info(f'{direction} chain ({recipe[direction]["chain"]["name"]}) topped up successful - new balance is {recipe[direction]["chain"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]}')
+        logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up successful - new balance is {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]}')
 
     return recipe, needsGas, telegramStatusMessage
 
@@ -276,14 +276,14 @@ def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, teleg
 
     if isSwap:
         typeText = "Swap"
-        spenderAddress=recipe[position]["chain"]["contracts"]["router"]["address"]
+        spenderAddress = recipe[position]["chain"]["contracts"]["router"]["address"]
     else:
         typeText = "Bridge"
-        spenderAddress=recipe[position]["chain"]["contracts"]["bridges"]["synapse"]["address"]
+        spenderAddress = recipe[position]["chain"]["contracts"]["bridges"]["synapse"]["address"]
 
     isApproved = getTokenApprovalStatus(
         rpcUrl=recipe[position]["chain"]["rpc"],
-        walletAddress=recipe[position]["chain"]["address"],
+        walletAddress=recipe[position]["wallet"]["address"],
         tokenAddress=recipe[position][toSwapFrom]["address"],
         spenderAddress=spenderAddress,
         wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"]
@@ -301,7 +301,7 @@ def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, teleg
         telegramStatusMessage = approveToken(
             rpcUrl=recipe[position]["chain"]["rpc"],
             explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
-            walletAddress=recipe[position]["chain"]["address"],
+            walletAddress=recipe[position]["wallet"]["address"],
             tokenAddress=recipe[position][toSwapFrom]["address"],
             spenderAddress=spenderAddress,
             wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
@@ -311,5 +311,5 @@ def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, teleg
         )
 
         printSeperator()
-        
+
     return telegramStatusMessage

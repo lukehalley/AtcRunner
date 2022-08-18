@@ -61,7 +61,7 @@ def queryBridgeableTokens(chain: int):
 # Get all the chains a tokens is on
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def queryChainsForToken(token: str):
-    params = {"tokens": token}
+    params = {"token": token}
     endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_GET_CHAINS_FOR_TOKEN_ENDPOINT"))
 
     return safeRequest(endpoint=endpoint, params=params)
