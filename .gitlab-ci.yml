@@ -1,7 +1,13 @@
+stages:
+  - build
+  - buildAndPush
+  - updateStack
+
 build:
   image:
     name: docker
     entrypoint: [""]
+  stage: build
   services:
     - docker:dind
   before_script:
@@ -14,10 +20,12 @@ build:
     variables:
       - $CI_COMMIT_BRANCH != "master"
 
+
 buildAndPush:
   image:
     name: amazon/aws-cli
     entrypoint: [""]
+  stage: buildAndPush
   services:
     - docker:dind
   before_script:
@@ -28,6 +36,7 @@ buildAndPush:
     - docker build -t $AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION .
     - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ACCOUNT
     - docker push $AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION
+
   only:
     - master
 
@@ -35,6 +44,7 @@ updateStack:
   image:
     name: amazon/aws-cli
     entrypoint: [""]
+  stage: updateStack
   services:
     - docker:dind
   before_script:
@@ -44,7 +54,7 @@ updateStack:
     - aws cloudformation update-stack
       --stack-name $CFN_STACK_NAME
       --use-previous-template
-      --parameters ParameterKey=Image,ParameterValue=$AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION
+      --parameters ParameterKey=Image,ParameterValue=$AWS_ACCOUNT/$ECR_REPO:CURRENT_IMAGE_VERSION
       --capabilities CAPABILITY_NAMED_IAM
     - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 1
   only:

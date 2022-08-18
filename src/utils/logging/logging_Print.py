@@ -27,11 +27,10 @@ def printSettingUpWallet(count):
     return sentMessage
 
 # Print the Arbitrage is profitable alert
-def printArbitrageProfitable(recipe, predictions):
+def printArbitrageProfitable(recipe):
     from src.apis.telegramBot.telegramBot_Action import sendMessage
 
-
-    count = recipe['arbitrage']['currentRoundTripCount']
+    count = recipe['status']['currentRoundTripCount']
     networkPath = f'{recipe["origin"]["chain"]["name"]} -> {recipe["destination"]["chain"]["name"]}'
     tokenPath = f'{recipe["origin"]["token"]["symbol"]} -> {recipe["destination"]["token"]["symbol"]}'
 
@@ -44,11 +43,13 @@ def printArbitrageProfitable(recipe, predictions):
             f"Arbitrage #{count} Profitable 🤑\n"
             f"{networkPath}\n"
             f"{tokenPath}\n"
-            f"${predictions['startingStables']} -> ${predictions['outStables']}\n"
-            f"Profit: ${predictions['profitLoss']} | {predictions['arbitragePercentage']}%"
+            f"${recipe['arbitrage']['predictions']['startingStables']} -> ${recipe['arbitrage']['predictions']['outStables']}\n"
+            f"Profit: ${recipe['arbitrage']['predictions']['profitLoss']} | {recipe['arbitrage']['predictions']['arbitragePercentage']}%"
     )
 
-    return sentMessage
+    recipe["status"]["telegramMessage"] = sentMessage
+
+    return recipe
 
 # Print the Arbitrage is profitable alert
 def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePercentage, startingTime, telegramStatusMessage):

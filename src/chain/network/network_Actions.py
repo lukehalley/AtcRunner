@@ -199,7 +199,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 amountOutDecimals=18,
                 tokenPath=routes,
                 rpcURL=recipe[direction]["chain"]["rpc"],
-                arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+                arbitrageNumber=recipe["status"]["currentRoundTripCount"],
                 stepCategory=gasTopUpCategory,
                 telegramStatusMessage=telegramStatusMessage,
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"]["txBaseURL"],
@@ -305,7 +305,7 @@ def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, teleg
             tokenAddress=recipe[position][toSwapFrom]["address"],
             spenderAddress=spenderAddress,
             wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
-            arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+            arbitrageNumber=recipe["status"]["currentRoundTripCount"],
             stepCategory=f"{stepNumber}_5_{typeText.lower()}",
             telegramStatusMessage=telegramStatusMessage
         )

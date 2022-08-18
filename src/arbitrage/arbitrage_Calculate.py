@@ -2,7 +2,7 @@ import os
 from decimal import Decimal
 from itertools import repeat
 
-from src.apis.firebaseDB.firebaseDB_Querys import fetchArbitrageStrategy
+from src.apis.firebaseDB.firebaseDB_Querys import fetchStrategy
 from src.arbitrage.arbitrage_Simulate import simulateStep
 from src.arbitrage.arbitrage_Utils import getNextArbitrageNumber
 from src.chain.swap.swap_Querys import getSwapQuoteOut
@@ -18,7 +18,10 @@ logger = getProjectLogger()
 def determineArbitrageStrategy(recipe):
     logger.debug(f"Calling Dexscreener API to find current price of pair")
 
-    recipe["arbitrage"]["currentRoundTripCount"] = getNextArbitrageNumber()
+    if not "status" in recipe:
+        recipe["status"] = {}
+
+    recipe["status"]["currentRoundTripCount"] = getNextArbitrageNumber()
 
     chainOneTokenPrice = getSwapQuoteOut(
         amountInNormal=1.0,
@@ -126,9 +129,9 @@ def determineArbitrageStrategy(recipe):
     printSeperator()
 
     if directionLockEnabled:
-        logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Locked Arbitrage Opportunity Identified')
+        logger.info(f'[ARB #{recipe["status"]["currentRoundTripCount"]}] Locked Arbitrage Opportunity Identified')
     else:
-        logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Arbitrage Opportunity Identified')
+        logger.info(f'[ARB #{recipe["status"]["currentRoundTripCount"]}] Arbitrage Opportunity Identified')
 
     logger.info(
         f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateDecimal(recipe["origin"]["token"]["price"], 6)} on '
@@ -154,7 +157,8 @@ def determineArbitrageStrategy(recipe):
 
 # Check if Arbitrage will be profitable
 def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
-    steps = fetchArbitrageStrategy(strategyName="networkBridge")
+
+    steps = fetchStrategy(recipe=recipe, strategyType="arbitrage")
     isProfitable = False
 
     if not recipe["status"]["stablesAreOnOrigin"]:
@@ -164,7 +168,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
 
     if printInfo:
         printSeperator()
-        logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
+        logger.info(f"[ARB #{recipe['status']['currentRoundTripCount']}] "
                     f"Simulating Arbitrage")
         printSeperator()
 

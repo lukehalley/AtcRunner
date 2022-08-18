@@ -1,3 +1,5 @@
+import sys
+
 from firebase_admin import db
 
 from src.utils.env.env_AWSSecrets import checkIsDocker
@@ -29,7 +31,12 @@ def fetchFromDatabase(reference: str, printInfo=False):
     return queryResult
 
 # Fetch an arbitrage strategy by its name
-def fetchArbitrageStrategy(strategyName: str):
+def fetchStrategy(recipe, strategyType):
     strategies = fetchFromDatabase("strategies")
 
-    return strategies[strategyName]
+    strategyName = recipe["arbitrage"]["strategies"][strategyType]
+
+    if strategyName in strategies:
+        return strategies[strategyName]
+    else:
+        sys.exit(f"Strategy of type: {strategyType} with name: {strategyName} does not exist!")
