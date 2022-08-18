@@ -15,6 +15,6 @@ RUN mkdir -p /$HOME_DIR/log
 
 # Setup python files
 COPY [".env", "main.py", "requirements.txt", "/$HOME_DIR/"]
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --root-user-action=ignore
 
 ENTRYPOINT [ "python", "main.py" ]
