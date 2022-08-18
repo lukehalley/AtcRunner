@@ -17,6 +17,8 @@ def getRecipeDetails():
     chains = fetchFromDatabase("chains")
     recipes = fetchFromDatabase("recipes")
 
+    recipes = {recipeName:recipeDetail for recipeName, recipeDetail in recipes.items() if recipeDetail["enabled"]}
+
     for recipesTitle, recipeDetails in recipes.items():
 
         dexId = recipeDetails["arbitrage"]["dexId"]
@@ -157,7 +159,5 @@ def getRecipeDetails():
 
             if recipeDetails[chainNumber]["stablecoin"]["price"] is None:
                 recipeDetails[chainNumber]["stablecoin"]["price"] = 1.0
-
-    recipes = {recipeName:recipeDetail for recipeName, recipeDetail in recipes.items() if recipeDetail["enabled"]}
 
     return recipes

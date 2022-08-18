@@ -1,6 +1,4 @@
-
-
-from src.apis.firebaseDB.firebaseDB_Querys import fetchArbitrageStrategy
+from src.apis.firebaseDB.firebaseDB_Querys import fetchStrategy
 from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatusMessage
 from src.arbitrage.arbitrage_Simulate import simulateStep
 from src.arbitrage.arbitrage_Utils import getOppositeDirection
@@ -17,13 +15,16 @@ from src.utils.math.math_Percentage import percentageDifference
 
 logger = getProjectLogger()
 
+
 # Execute an Arbitrage
-def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
-    steps = fetchArbitrageStrategy(strategyName="networkBridge")
+def executeArbitrage(recipe):
+    steps = fetchStrategy(recipe=recipe, strategyType="arbitrage")
 
     printSeperator()
-    logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
-                f"Executing Arbitrage")
+    logger.info(
+        f"[ARB #{recipe['status']['currentRoundTripCount']}] "
+        f"Executing Arbitrage"
+    )
     printSeperator()
 
     recipe = getWalletsInformation(recipe)
@@ -111,7 +112,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                     tokenPath=swapRoute,
                     rpcURL=recipe[position]["chain"]["rpc"],
-                    arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+                    arbitrageNumber=recipe["status"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_swap",
                     explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                     routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
@@ -145,7 +146,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
 
                     if quote < startingStables:
                         telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
-                                                                messageToAppend=f"Rolling Back Arbitrage #{recipe['arbitrage']['currentRoundTripCount']} ‍⏮")
+                                                                messageToAppend=f"Rolling Back Arbitrage #{recipe['status']['currentRoundTripCount']} ‍⏮")
 
                         wasProfitable, telegramStatusMessage = rollbackArbitrage(recipe=recipe,
                                                                                  currentFunds=currentFunds,
@@ -176,7 +177,7 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                     toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                     toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
                     wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
-                    arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+                    arbitrageNumber=recipe["status"]["currentRoundTripCount"],
                     stepCategory=f"{stepNumber}_bridge",
                     explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                     telegramStatusMessage=telegramStatusMessage,
@@ -228,21 +229,21 @@ def executeArbitrage(recipe, predictions, startingTime, telegramStatusMessage):
                 arbitragePercentage = percentageDifference(startingStables,
                                                            recipe[position]["wallet"]["balances"]["stablecoin"], 2)
 
-            printArbitrageResult(count=recipe["arbitrage"]["currentRoundTripCount"], amount=profitLoss,
+            printArbitrageResult(count=recipe["status"]["currentRoundTripCount"], amount=profitLoss,
                                  percentageDifference=arbitragePercentage, wasProfitable=wasProfitable,
                                  startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 
             return wasProfitable
 
+
 # Rollback an Arbitrage
 def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, telegramStatusMessage):
-
-    steps = fetchArbitrageStrategy(strategyName="networkBridgeRollback")
+    steps = fetchStrategy(recipe=recipe, strategyType="rollback")
 
     printSeperator(True)
 
     printSeperator()
-    logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] "
+    logger.info(f"[ARB #{recipe['status']['currentRoundTripCount']}] "
                 f"Rolling Back Arbitrage")
     printSeperator(True)
 
@@ -312,7 +313,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 amountOutDecimals=recipe[position][toSwapTo]["decimals"],
                 tokenPath=swapRoute,
                 rpcURL=recipe[position]["chain"]["rpc"],
-                arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+                arbitrageNumber=recipe["status"]["currentRoundTripCount"],
                 stepCategory=f"{stepNumber}_swap",
                 explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                 routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
@@ -358,7 +359,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
                 toTokenAddress=recipe[oppositePosition][toSwapFrom]['address'],
                 toChainRPCURL=recipe[oppositePosition]["chain"]["rpc"],
                 wethContractABI=recipe[position]["chain"]["contracts"]["weth"]["abi"],
-                arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+                arbitrageNumber=recipe["status"]["currentRoundTripCount"],
                 stepCategory=f"{stepNumber}_bridge",
                 explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
                 telegramStatusMessage=telegramStatusMessage,
@@ -412,7 +413,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
         arbitragePercentage = percentageDifference(startingStables,
                                                    recipe["origin"]["wallet"]["balances"]["stablecoin"], 2)
 
-    printArbitrageRollbackComplete(count=recipe["arbitrage"]["currentRoundTripCount"], wasProfitable=wasProfitable,
+    printArbitrageRollbackComplete(count=recipe["status"]["currentRoundTripCount"], wasProfitable=wasProfitable,
                                    profitLoss=profitLoss, arbitragePercentage=arbitragePercentage,
                                    startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
 

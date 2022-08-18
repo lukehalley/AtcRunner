@@ -64,9 +64,6 @@ def getTokenBalance(rpcURL, tokenAddress, tokenDecimals, wethContractABI):
 def getWalletsInformation(recipe, printBalances=False):
     directionList = ("origin", "destination")
 
-    if not "status" in recipe:
-        recipe["status"] = {}
-
     for direction in directionList:
 
         recipe[direction]["wallet"] = {}

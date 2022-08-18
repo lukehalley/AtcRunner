@@ -29,7 +29,7 @@ def setupWallet(recipe):
         raise Exception(errMsg)
     elif not originHasStablecoins:
 
-        telegramStatusMessage = printSettingUpWallet(recipe['arbitrage']['currentRoundTripCount'])
+        telegramStatusMessage = printSettingUpWallet(recipe['status']['currentRoundTripCount'])
 
         positionToSetup = "origin"
         toSwapFrom = "token"
@@ -65,7 +65,7 @@ def setupWallet(recipe):
             amountOutDecimals=recipe[positionToSetup][toSwapTo]["decimals"],
             tokenPath=swapRoute,
             rpcURL=recipe[positionToSetup]["chain"]["rpc"],
-            arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
+            arbitrageNumber=recipe["status"]["currentRoundTripCount"],
             stepCategory=f"0_setup",
             explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
             routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
