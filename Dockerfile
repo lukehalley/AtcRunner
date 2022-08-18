@@ -1,9 +1,5 @@
 FROM python:3.9
 
-# Install base packages.
-RUN apt update
-RUN apt install iputils-ping -y
-
 # Create a home directory.
 ARG HOME_DIR="home/arBot"
 RUN mkdir -p /$HOME_DIR

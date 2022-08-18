@@ -5,7 +5,7 @@ build:
   services:
     - docker:dind
   script:
-    - docker build -t $AWS_ACCOUNT/$ECR_REPO:$CI_PIPELINE_IID .
+    - docker build -t $AWS_ACCOUNT/$ECR_REPO:CI_JOB_ID .
   only:
     variables:
       - $CI_COMMIT_BRANCH != "master"
@@ -19,14 +19,14 @@ publish:
   before_script:
     - amazon-linux-extras install docker
   script:
-    - docker build -t $AWS_ACCOUNT/$ECR_REPO:$CI_PIPELINE_IID .
+    - docker build -t $AWS_ACCOUNT/$ECR_REPO:CI_JOB_ID .
     - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ACCOUNT
-    - docker push $AWS_ACCOUNT/$ECR_REPO:$CI_PIPELINE_IID
+    - docker push $AWS_ACCOUNT/$ECR_REPO:CI_JOB_ID
     - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 0
     - aws templates update-stack
       --stack-name $CFN_STACK_NAME
       --use-previous-template
-      --parameters ParameterKey=Image,ParameterValue=$AWS_ACCOUNT/$ECR_REPO:$CI_PIPELINE_IID
+      --parameters ParameterKey=Image,ParameterValue=$AWS_ACCOUNT/$ECR_REPO:CI_JOB_ID
       --capabilities CAPABILITY_NAMED_IAM
     - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 1
   only:
