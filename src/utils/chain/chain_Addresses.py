@@ -14,8 +14,8 @@ class HexJsonEncoder(json.JSONEncoder):
         return super().default(obj)
 
 def checkWalletsMatch(recipe):
-    if recipe["origin"]["chain"]["address"] != recipe["destination"]["chain"]["address"]:
-        errMsg = f'originWalletAddress [{recipe["origin"]["chain"]["address"]}] did not match destinationWalletAddress [{recipe["destination"]["chain"]["address"]}] this should never happen!'
+    if recipe["origin"]["wallet"]["address"] != recipe["destination"]["wallet"]["address"]:
+        errMsg = f'originWalletAddress [{recipe["origin"]["wallet"]["address"]}] did not match destinationWalletAddress [{recipe["destination"]["wallet"]["address"]}] this should never happen!'
         logger.error(errMsg)
         raise Exception(errMsg)
 

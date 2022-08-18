@@ -30,9 +30,10 @@ def printSettingUpWallet(count):
 def printArbitrageProfitable(recipe, predictions):
     from src.apis.telegramBot.telegramBot_Action import sendMessage
 
+
     count = recipe['arbitrage']['currentRoundTripCount']
     networkPath = f'{recipe["origin"]["chain"]["name"]} -> {recipe["destination"]["chain"]["name"]}'
-    tokenPath = f'{recipe["origin"]["tokens"]["symbol"]} -> {recipe["destination"]["tokens"]["symbol"]}'
+    tokenPath = f'{recipe["origin"]["token"]["symbol"]} -> {recipe["destination"]["token"]["symbol"]}'
 
     logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     logger.info(f"ARBITRAGE #{count} PROFITABLE")

@@ -20,11 +20,11 @@ logger = getProjectLogger()
 transactionTimeout = getTransactionDeadline()
 
 def setupWallet(recipe):
-    originHasStablecoins = recipe["origin"]["chain"]["balances"]["stablecoin"] > 0.1
-    originHasTokens = recipe["origin"]["chain"]["balances"]["tokens"] > 0
+    originHasStablecoins = recipe["origin"]["wallet"]["balances"]["stablecoin"] > 0.1
+    originHasTokens = recipe["origin"]["wallet"]["balances"]["token"] > 0
 
     if not originHasTokens and not originHasStablecoins:
-        errMsg = f'Origin chain has neither Tokens or Stablecoins!'
+        errMsg = f'Origin wallet has neither Tokens or Stablecoins!'
         logger.error(errMsg)
         raise Exception(errMsg)
     elif not originHasStablecoins:
@@ -32,16 +32,16 @@ def setupWallet(recipe):
         telegramStatusMessage = printSettingUpWallet(recipe['arbitrage']['currentRoundTripCount'])
 
         positionToSetup = "origin"
-        toSwapFrom = "tokens"
+        toSwapFrom = "token"
         toSwapTo = "stablecoin"
 
         if recipe[positionToSetup][toSwapFrom]["isGas"]:
             maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
-            amountInNormal = abs(recipe[positionToSetup]["chain"]["balances"][toSwapFrom] - maximumGasBalance)
+            amountInNormal = abs(recipe[positionToSetup]["wallet"]["balances"][toSwapFrom] - maximumGasBalance)
         else:
-            amountInNormal = recipe[positionToSetup]["chain"]["balances"][toSwapFrom]
+            amountInNormal = recipe[positionToSetup]["wallet"]["balances"][toSwapFrom]
 
-        balanceBeforeSwap = recipe[positionToSetup]["chain"]["balances"][toSwapTo]
+        balanceBeforeSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
 
         swapRoute = recipe[positionToSetup]["routes"][f"{toSwapFrom}-{toSwapTo}"]
 
@@ -79,11 +79,11 @@ def setupWallet(recipe):
 
         recipe = getWalletsInformation(recipe)
 
-        balanceAfterSwap = recipe[positionToSetup]["chain"]["balances"][toSwapTo]
+        balanceAfterSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
 
         while balanceAfterSwap == balanceBeforeSwap:
             recipe = getWalletsInformation(recipe)
-            balanceAfterSwap = recipe[positionToSetup]["chain"]["balances"][toSwapTo]
+            balanceAfterSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
 
         result = balanceAfterSwap - balanceBeforeSwap
 
@@ -98,7 +98,6 @@ def setupWallet(recipe):
         updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
         printSeperator(True)
-
 
 def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, routerABI, routerABIMappings,
               arbitrageNumber, stepCategory, explorerUrl, wethContractABI, telegramStatusMessage=None,

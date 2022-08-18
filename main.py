@@ -6,6 +6,7 @@ load_dotenv()
 from src.apis.firebaseDB.firebaseDB_Utils import createDatabaseConnection
 
 from src.arbitrage.arbitrage_Calculate import calculateArbitrageIsProfitable, determineArbitrageStrategy
+from src.arbitrage.arbitrage_Execute import executeArbitrage
 
 from src.chain.network.network_Querys import getWalletsInformation
 from src.chain.swap.swap_Actions import setupWallet
@@ -65,7 +66,7 @@ while True:
 
         printSeperator(True)
 
-        if False:
+        if True:
 
             telegramStatusMessage = printArbitrageProfitable(recipe, predictions)
 

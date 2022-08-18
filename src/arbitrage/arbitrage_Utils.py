@@ -24,7 +24,7 @@ def getOppositeDirection(direction):
 
 # Get the opposite swap of a given tokens
 def getOppositeToken(token):
-    if token == "tokens":
+    if token == "token":
         return "stablecoin"
     else:
-        return "tokens"
+        return "token"

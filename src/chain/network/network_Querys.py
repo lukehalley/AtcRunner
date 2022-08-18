@@ -5,7 +5,7 @@ from web3 import Web3
 
 from src.utils.chain.chain_ABI import getMappedContractFunction, fillEmptyABIParams
 from src.utils.chain.chain_Addresses import checkWalletsMatch
-from src.utils.chain.chain_Wallet import getPrivateKey
+from src.utils.chain.chain_Wallet import getPrivateKey, checkIfStablesAreOnOrigin
 from src.utils.chain.chain_Wei import getTokenNormalValue
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.retry.retry_Params import getRetryParams
@@ -69,43 +69,43 @@ def getWalletsInformation(recipe, printBalances=False):
 
     for direction in directionList:
 
-        recipe[direction]["chain"] = {}
+        recipe[direction]["wallet"] = {}
 
-        recipe[direction]["chain"]["address"] = getWalletAddressFromPrivateKey(recipe[direction]["chain"]["rpc"])
+        recipe[direction]["wallet"]["address"] = getWalletAddressFromPrivateKey(recipe[direction]["chain"]["rpc"])
 
-        recipe[direction]["chain"]["balances"] = {}
+        recipe[direction]["wallet"]["balances"] = {}
 
-        recipe[direction]["chain"]["balances"]["gas"] = getWalletGasBalance(
+        recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
             rpcURL=recipe[direction]["chain"]["rpc"],
-            walletAddress=recipe[direction]["chain"]["address"],
+            walletAddress=recipe[direction]["wallet"]["address"],
             wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
-        recipe[direction]["chain"]["balances"]["stablecoin"] = getTokenBalance(
+        recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
             rpcURL=recipe[direction]["chain"]["rpc"],
             tokenAddress=recipe[direction]["stablecoin"]["address"],
             tokenDecimals=recipe[direction]["stablecoin"]["decimals"],
             wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
-        tokenIsGas = recipe[direction]["tokens"]["isGas"]
+        tokenIsGas = recipe[direction]["token"]["isGas"]
 
         if tokenIsGas:
-            recipe[direction]["chain"]["balances"]["tokens"] = recipe[direction]["chain"]["balances"]["gas"]
+            recipe[direction]["wallet"]["balances"]["token"] = recipe[direction]["wallet"]["balances"]["gas"]
         else:
-            recipe[direction]["chain"]["balances"]["tokens"] = getTokenBalance(
+            recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
                 rpcURL=recipe[direction]["chain"]["rpc"],
-                tokenAddress=recipe[direction]["tokens"]["address"],
-                tokenDecimals=recipe[direction]["tokens"]["decimals"],
+                tokenAddress=recipe[direction]["token"]["address"],
+                tokenDecimals=recipe[direction]["token"]["decimals"],
                 wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
             )
 
         if printBalances:
             logger.info(
                 f'{direction.title()} ({recipe[direction]["chain"]["name"]}): '
-                f'Token {round(recipe[direction]["chain"]["balances"]["tokens"], 6)} {recipe[direction]["tokens"]["name"]} | '
-                f'Gas {round(recipe[direction]["chain"]["balances"]["gas"], 6)} {recipe[direction]["gas"]["symbol"]} | '
-                f'Stables {round(recipe[direction]["chain"]["balances"]["stablecoin"], 6)} {recipe[direction]["stablecoin"]["symbol"]}'
+                f'Token {round(recipe[direction]["wallet"]["balances"]["token"], 6)} {recipe[direction]["token"]["name"]} | '
+                f'Gas {round(recipe[direction]["wallet"]["balances"]["gas"], 6)} {recipe[direction]["gas"]["symbol"]} | '
+                f'Stables {round(recipe[direction]["wallet"]["balances"]["stablecoin"], 6)} {recipe[direction]["stablecoin"]["symbol"]}'
             )
 
     checkWalletsMatch(recipe)

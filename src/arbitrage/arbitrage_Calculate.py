@@ -158,9 +158,9 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
     isProfitable = False
 
     if not recipe["status"]["stablesAreOnOrigin"]:
-        balanceOnDest = recipe["destination"]["chain"]["balances"]["stablecoin"]
-        recipe["destination"]["chain"]["balances"]["stablecoin"] = recipe["origin"]["chain"]["balances"]["stablecoin"]
-        recipe["origin"]["chain"]["balances"]["stablecoin"] = balanceOnDest
+        balanceOnDest = recipe["destination"]["wallet"]["balances"]["stablecoin"]
+        recipe["destination"]["wallet"]["balances"]["stablecoin"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
+        recipe["origin"]["wallet"]["balances"]["stablecoin"] = balanceOnDest
 
     if printInfo:
         printSeperator()
@@ -171,9 +171,9 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
     if "startingStables" in recipe["status"]:
         startingStables = recipe["status"]["startingStables"]
     else:
-        startingStables = recipe[position]["chain"]["balances"]["stablecoin"]
+        startingStables = recipe[position]["wallet"]["balances"]["stablecoin"]
 
-    startingTokens = recipe[position]["chain"]["balances"]["token"]
+    startingTokens = recipe[position]["wallet"]["balances"]["token"]
 
     currentFunds = {
         "stablecoin": startingStables,
@@ -257,6 +257,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
                 predictions["arbitragePercentage"] = arbitragePercentage
 
     return isProfitable, predictions
+
 
 # Predict our potential profit/loss
 def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
