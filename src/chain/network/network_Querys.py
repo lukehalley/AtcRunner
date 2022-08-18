@@ -17,8 +17,13 @@ logger = getProjectLogger()
 transactionRetryLimit, transactionRetryDelay = getRetryParams(retryType="transactionQuery")
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getNetworkWETH(rpcUrl, routerAddress, routerABI, routerABIMappings):
+def getNetworkWETH(chainDetails):
     from src.chain.network.network_Actions import callMappedContractFunction
+
+    rpcUrl = chainDetails["rpc"]
+    routerAddress = chainDetails["contracts"]["router"]["address"]
+    routerABI = chainDetails["contracts"]["router"]["abi"]
+    routerABIMappings = chainDetails["contracts"]["router"]["mapping"]
 
     w3 = Web3(Web3.HTTPProvider(rpcUrl))
 
