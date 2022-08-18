@@ -29,7 +29,7 @@ publish:
     - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ACCOUNT
     - docker push $AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION
     - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 0
-    - aws templates update-stack
+    - aws cloudformation update-stack
       --stack-name $CFN_STACK_NAME
       --use-previous-template
       --parameters ParameterKey=Image,ParameterValue="$AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION"
@@ -38,3 +38,4 @@ publish:
   only:
     - master
 
+aws templates update-stack --stack-name $CFN_STACK_NAME --use-previous-template --parameters ParameterKey=Image,ParameterValue="538602529242.dkr.ecr.eu-west-1.amazonaws.com/arb-bot:latest" --capabilities CAPABILITY_NAMED_IAM
