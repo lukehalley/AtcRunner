@@ -1,8 +1,4 @@
-FROM python:latest
-
-# Install base packages.
-RUN apt-get update
-RUN apt-get install apt-utils -y
+FROM python:3.9
 
 # Create a home directory.
 ARG HOME_DIR="home/arBot"
@@ -15,8 +11,6 @@ RUN mkdir -p /$HOME_DIR/log
 
 # Setup python files
 COPY [".env", "main.py", "requirements.txt", "/$HOME_DIR/"]
-
-RUN pip install --upgrade pip
-RUN pip install --root-user-action=ignore -r requirements.txt
+RUN pip install -r requirements.txt
 
 ENTRYPOINT [ "python", "main.py" ]
