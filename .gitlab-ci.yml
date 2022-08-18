@@ -1,3 +1,8 @@
+stages:
+  - build
+  - buildAndPush
+  - updateStack
+
 build:
   image:
     name: docker
