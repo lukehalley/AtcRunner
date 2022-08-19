@@ -34,6 +34,7 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
     w3.eth.default_account = walletAddress
 
     initNonce = w3.eth.getTransactionCount(walletAddress, 'pending')
+    initGas = tx["gas"]
 
     tx["nonce"] = initNonce
 
@@ -46,7 +47,7 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
     logger.info(f'Chain ID: {tx["chainId"]}')
     logger.info(f'Nonce: {tx["nonce"]}')
     logger.info(f'To: {tx["to"]}')
-    logger.info(f'Gas Limit: {tx["gas"]}')
+    logger.info(f'Gas Limit: {initGas}')
     logger.info(f'Gas Price: {tx["gasPrice"]}')
 
     printSeperator()
@@ -61,6 +62,7 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
     except Exception as e:
         isKnownTransactionError = "known transaction" in e.args[0]["message"]
         isNonceTooLowError = "nonce too low" in e.args[0]["message"]
+        isTransactionUnderpriced = "transaction underpriced" in e.args[0]["message"]
         if isKnownTransactionError:
             logger.warning("Hit isKnownTransactionError but going ahead...")
             pass
@@ -72,6 +74,12 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
             tx["nonce"] = actualNonce
             signed_tx = w3.eth.account.sign_transaction(tx, private_key=privateKey)
             logger.info("Nonce too low error solved - sending again...")
+            w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        elif isTransactionUnderpriced:
+            logger.info(f"Transaction underpriced ({initNonce}) error caught...")
+            tx["gas"] = initGas + 50000
+            signed_tx = w3.eth.account.sign_transaction(tx, private_key=privateKey)
+            logger.info("Transaction underpriced error solved - sending again...")
             w3.eth.send_raw_transaction(signed_tx.rawTransaction)
         else:
              raise Exception(e.args[0]["message"])
