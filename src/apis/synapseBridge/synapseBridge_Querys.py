@@ -26,17 +26,21 @@ def queryBridgeStatusAPI(toChain: int, fromChainTxnHash: str):
 
 # Check what is the status of our bridge transaction using the chain balance
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def queryBridgeStatusBalance(predictions: dict, stepNumber: int, toChainRPCURL: str, toTokenAddress: int, toTokenDecimals: int, wethContractABI: dict):
+def queryBridgeStatusBalance(predictions, toChainRPCURL, toTokenAddress, toTokenDecimals, wethContractABI, currentStepNumber):
 
-    if predictions["steps"][stepNumber]["stepType"] == "bridge":
-        bridgePredictions = predictions["steps"][stepNumber]["amountOut"]
+    if predictions["steps"][currentStepNumber]["stepType"] == "bridge":
+        bridgePredictions = predictions["steps"][currentStepNumber]["amountOut"]
 
         percentageDifference = getPercentageOfNumber(percent=10, whole=predictions["steps"][2]["amountOut"])
         lowerLimit = bridgePredictions - percentageDifference
         upperLimit = bridgePredictions + percentageDifference
 
-        currentBalance = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress,
-                                         tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
+        currentBalance = getTokenBalance(
+            rpcURL=toChainRPCURL,
+            tokenAddress=toTokenAddress,
+            tokenDecimals=toTokenDecimals,
+            wethContractABI=wethContractABI
+        )
 
         return isBetween(lowerLimit=lowerLimit, middleNumber=currentBalance, upperLimit=upperLimit)
     else:

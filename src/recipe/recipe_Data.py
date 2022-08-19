@@ -27,6 +27,8 @@ def getRecipeDetails():
         tokenLists = fetchFromDatabase(reference="tokenLists")[tokenList]
         masterTokenList = parseTokenLists(urls=tokenLists)
 
+        # TODO: Set recipe position
+
         for i in range(1, 3):
 
             num = num2words(i).title()
@@ -36,7 +38,7 @@ def getRecipeDetails():
             recipeDetails[chainNumber]["chain"].update(chain)
             
             chainGasToken = getNetworkWETH(
-                chainDetails=recipeDetails[chainNumber]["chain"]
+                recipe=recipeDetails
             )
 
             if tokenRetrievalMethod == "tokenList":

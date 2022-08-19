@@ -1,6 +1,6 @@
 
 from src.apis.synapseBridge.synapseBridge_Estimate import estimateBridgeOutput
-from src.arbitrage.arbitrage_Utils import getOppositeDirection, getRoutes
+from src.arbitrage.arbitrage_Utils import getOppositePosition, getRoutes
 from src.chain.swap.swap_Querys import getSwapQuoteOut
 from src.utils.logging.logging_Setup import getProjectLogger
 
@@ -10,7 +10,7 @@ logger = getProjectLogger()
 def simulateStep(recipe, stepSettings, currentFunds):
     stepType = stepSettings["type"]
     position = stepSettings["position"]
-    oppositePosition = getOppositeDirection(position)
+    oppositePosition = getOppositePosition(position)
 
     toSwapFrom = stepSettings["from"]
 

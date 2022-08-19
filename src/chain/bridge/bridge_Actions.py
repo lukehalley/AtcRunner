@@ -7,6 +7,7 @@ from src.arbitrage.arbitrage_Utils import getOppositeToken
 from src.chain.bridge.bridge_Querys import waitForBridgeToComplete
 from src.chain.network.network_Actions import signAndSendTransaction
 from src.chain.network.network_Querys import getWalletAddressFromPrivateKey, getTokenBalance
+from src.utils.chain.chain_Wallet import getCurrentPositions
 from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
 from src.utils.logging.logging_Setup import getProjectLogger
 
@@ -14,9 +15,7 @@ logger = getProjectLogger()
 
 def executeBridge(recipe, tokenToBridge):
 
-    currentPosition = recipe["status"]["position"]["currentPosition"]
-    currentOppositePosition = recipe["status"]["position"]["currentOppositePosition"]
-
+    currentPosition, currentOppositePosition = getCurrentPositions(recipe=recipe)
     oppositeToken = getOppositeToken(token=tokenToBridge)
 
     walletAddress = getWalletAddressFromPrivateKey(
@@ -62,23 +61,13 @@ def executeBridge(recipe, tokenToBridge):
     )
 
     transactionResult = signAndSendTransaction(
-        tx=tx,
-        rpcURL=recipe[currentPosition]["chain"]["rpc"],
-        explorerUrl=recipe[currentPosition]["chain"]["blockExplorer"]["txBaseURL"],
-        roundTrip=recipe["status"]["currentRoundTrip"],
-        stepCategory="bridge",
-        telegramStatusMessage=recipe["status"]["telegramMessage"])
+        recipe=recipe,
+        tx=tx
+    )
 
     fundsBridged = waitForBridgeToComplete(
-        transactionId=transactionResult["hash"],
-        fromChain=recipe[currentPosition]["chain"]["id"],
-        toChain=recipe[currentOppositePosition]["chain"]["id"],
-        toChainRPCURL=recipe[currentOppositePosition]["chain"]["rpc"],
-        toTokenAddress=recipe[currentOppositePosition][oppositeToken]["address"],
-        toTokenDecimals=recipe[currentOppositePosition][oppositeToken]["decimals"],
-        wethContractABI=recipe[currentOppositePosition]["chain"]["contracts"]["weth"]["abi"],
-        predictions=recipe["arbitrage"]["predictions"],
-        stepNumber=recipe["status"]["currentRoundTrip"]
+        recipe=recipe,
+        transactionId=transactionResult["hash"]
     )
 
     balanceAfterBridge = getTokenBalance(

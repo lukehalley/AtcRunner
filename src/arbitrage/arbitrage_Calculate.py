@@ -11,9 +11,11 @@ from src.utils.logging.logging_Print import printSeperator
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
 from src.utils.math.math_Percentage import percentageDifference
+from src.utils.state.position.state_getPosition import getCurrentPositions
+from src.utils.state.step.state_getStep import getCurrentStepNameAndNumber
+from src.utils.state.token.state_getToken import getCurrentTokens
 
 logger = getProjectLogger()
-
 
 # Determine our arbitrage strategy
 def determineArbitrageStrategy(recipe):
@@ -144,16 +146,17 @@ def determineArbitrageStrategy(recipe):
 
     return recipe
 
-
 # Check if Arbitrage will be profitable
-def calculateArbitrageIsProfitable(recipe, position="origin", printInfo=True):
+def calculateArbitrageIsProfitable(recipe, printInfo=True):
     steps = fetchStrategy(recipe=recipe, strategyType="arbitrage")
-    isProfitable = False
 
-    # if not recipe["status"]["stablesAreOnOrigin"]:
-    #     balanceOnDest = recipe["destination"]["wallet"]["balances"]["stablecoin"]
-    #     recipe["destination"]["wallet"]["balances"]["stablecoin"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
-    #     recipe["origin"]["wallet"]["balances"]["stablecoin"] = balanceOnDest
+    # State Params ############################################################
+    currentPosition, currentOppositePosition = getCurrentPositions(recipe=recipe)
+    currentStepName, currentStepNumber = getCurrentStepNameAndNumber(recipe=recipe)
+    currentToken, currentOppositeToken = getCurrentTokens(recipe=recipe)
+    # State Params ############################################################
+
+    isProfitable = False
 
     if printInfo:
         printSeperator()
@@ -164,9 +167,9 @@ def calculateArbitrageIsProfitable(recipe, position="origin", printInfo=True):
     if "startingStables" in recipe["status"]:
         startingStables = recipe["status"]["startingStables"]
     else:
-        startingStables = recipe[position]["wallet"]["balances"]["stablecoin"]
+        startingStables = recipe[currentPosition]["wallet"]["balances"]["stablecoin"]
 
-    startingTokens = recipe[position]["wallet"]["balances"]["token"]
+    startingTokens = recipe[currentPosition]["wallet"]["balances"]["token"]
 
     currentFunds = {
         "stablecoin": startingStables,
@@ -254,7 +257,6 @@ def calculateArbitrageIsProfitable(recipe, position="origin", printInfo=True):
 
     return recipe
 
-
 # Predict our potential profit/loss
 def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
     logger.debug(f"Calculating potential profit")
@@ -297,7 +299,6 @@ def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
 
     return tripIsProfitible
 
-
 # Calculate the difference between two token
 def calculateDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")
@@ -305,7 +306,6 @@ def calculateDifference(pairOne, pairTwo):
     ans = abs(((pairOne - pairTwo) / ((pairOne + pairTwo) / 2)) * 100)
 
     return round(ans, 6)
-
 
 # Determine which token is the origin and destination
 def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
@@ -315,7 +315,6 @@ def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
         return n2Name, n1Name
     else:
         return None, None
-
 
 # Check if arbitrage is worth it
 def calculateArbitrageIsWorthIt(difference):
