@@ -25,7 +25,7 @@ transactionTimeout = getTransactionTimeout()
 transactionRetryLimit, transactionRetryDelay,  = getRetryParams(retryType="transactionAction")
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage):
+def signAndSendTransaction(tx, rpcURL, explorerUrl, roundTrip, stepCategory, telegramStatusMessage):
 
     # Setup our web3 object
     w3 = Web3(Web3.HTTPProvider(rpcURL))
@@ -120,7 +120,7 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, arbitrageNumber, stepCategor
 
     writeTransactionToDB(
         transaction=result,
-        arbitrageNumber=arbitrageNumber,
+        roundTrip=roundTrip,
         stepCategory=stepCategory
     )
 
@@ -199,7 +199,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 amountOutDecimals=18,
                 tokenPath=routes,
                 rpcURL=recipe[direction]["chain"]["rpc"],
-                arbitrageNumber=recipe["status"]["currentRoundTripCount"],
+                roundTrip=recipe["status"]["currentRoundTrip"],
                 stepCategory=gasTopUpCategory,
                 telegramStatusMessage=telegramStatusMessage,
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"]["txBaseURL"],
@@ -251,7 +251,7 @@ def buildMappedContractFunction(contract, functionToCall, txParams, functionPara
     return result
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddress, wethAbi, arbitrageNumber, stepCategory, telegramStatusMessage):
+def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddress, wethAbi, roundTrip, stepCategory, telegramStatusMessage):
 
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
     web3.middleware_onion.inject(geth_poa_middleware, layer=0)
@@ -268,7 +268,7 @@ def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddres
         'gasPrice': web3.eth.gas_price,
     })
 
-    signAndSendTransaction(tx=tx, rpcURL=rpcUrl, explorerUrl=explorerUrl, arbitrageNumber=arbitrageNumber, stepCategory=stepCategory, telegramStatusMessage=telegramStatusMessage)
+    signAndSendTransaction(tx=tx, rpcURL=rpcUrl, explorerUrl=explorerUrl, roundTrip=roundTrip, stepCategory=stepCategory, telegramStatusMessage=telegramStatusMessage)
 
     return telegramStatusMessage
 
@@ -305,7 +305,7 @@ def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, teleg
             tokenAddress=recipe[position][toSwapFrom]["address"],
             spenderAddress=spenderAddress,
             wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
-            arbitrageNumber=recipe["status"]["currentRoundTripCount"],
+            roundTrip=recipe["status"]["currentRoundTrip"],
             stepCategory=f"{stepNumber}_5_{typeText.lower()}",
             telegramStatusMessage=telegramStatusMessage
         )

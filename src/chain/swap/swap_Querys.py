@@ -3,6 +3,7 @@ import os
 from retry import retry
 from web3 import Web3
 
+from src.arbitrage.arbitrage_Utils import getOppositeToken, getRoutes
 from src.chain.contract.contract_Router import getAmountsOut, getAmountsIn
 from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
 from src.utils.logging.logging_Setup import getProjectLogger
@@ -25,7 +26,27 @@ def normaliseSwapRoutes(routes):
     return normalisedRoutes
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getSwapQuoteOut(amountInNormal, amountInDecimals, amountOutDecimals, routes,  rpcUrl, routerAddress, routerABI, routerABIMappings):
+def getSwapQuoteOut(recipe, recipeDirection, recipeToken, recipeTokenIsGas, amountInNormal):
+
+    oppositeRecipeToken = getOppositeToken(recipeToken)
+
+    amountInDecimals = recipe[recipeDirection][recipeToken]["decimals"]
+    amountOutDecimals = recipe[recipeDirection][oppositeRecipeToken]["decimals"]
+
+    rpcUrl = recipe[recipeDirection]["chain"]["rpc"]
+    
+    routerAddress = recipe[recipeDirection]["chain"]["contracts"]["router"]["address"]
+    routerABI = recipe[recipeDirection]["chain"]["contracts"]["router"]["abi"]
+    routerABIMappings = recipe[recipeDirection]["chain"]["contracts"]["router"]["mapping"]
+
+    if recipeTokenIsGas:
+        routes = [recipe[recipeDirection]["gas"]["address"], recipe[recipeDirection]["stablecoin"]["address"]]
+    else:
+        routes = getRoutes(
+            recipe=recipe,
+            position=recipeDirection,
+            toSwapFrom=recipeToken,
+            toSwapTo=oppositeRecipeToken)
 
     normalisedRoutes = normaliseSwapRoutes(routes)
 

@@ -13,20 +13,15 @@ def simulateStep(recipe, stepSettings, currentFunds):
     oppositePosition = getOppositeDirection(position)
 
     toSwapFrom = stepSettings["from"]
-    toSwapTo = stepSettings["to"]
 
     if stepType == "swap":
-        routeAddressList = getRoutes(recipe=recipe, position=position, toSwapFrom=toSwapFrom, toSwapTo=toSwapTo)
 
         quote = getSwapQuoteOut(
-            amountInNormal=currentFunds[toSwapFrom],
-            amountInDecimals=recipe[position][toSwapFrom]["decimals"],
-            amountOutDecimals=recipe[position][toSwapTo]["decimals"],
-            rpcUrl=recipe[position]["chain"]["rpc"],
-            routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-            routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
-            routes=routeAddressList
+            recipe=recipe,
+            recipeDirection=position,
+            recipeToken=toSwapFrom,
+            recipeTokenIsGas=recipe[position][toSwapFrom]["isGas"],
+            amountInNormal=currentFunds[toSwapFrom]
         )
 
     elif stepType == "bridge":

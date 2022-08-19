@@ -38,12 +38,9 @@ recipes = getRecipeDetails()
 printSeperator(True)
 
 # Interval Set-Up
+arbEnabled = strToBool(os.environ.get("ARB_ENABLED"))
 forceArb = strToBool(os.environ.get("FORCE_ARB"))
 pauseTime = int(os.environ.get("ARBITRAGE_INTERVAL"))
-
-printSeperator()
-logger.info(f"Waiting For Arbitrage Opportunity...")
-printSeperator(True)
 
 while True:
 
@@ -53,10 +50,10 @@ while True:
 
         recipe = determineArbitrageStrategy(recipe)
 
-        printRoundtrip(recipe["status"]["currentRoundTripCount"])
+        printRoundtrip(recipe["status"]["currentRoundTrip"])
 
         printSeperator()
-        logger.info(f"[ARB #{recipe['status']['currentRoundTripCount']}] Getting Wallet Details & Balance")
+        logger.info(f"[ARB #{recipe['status']['currentRoundTrip']}] Getting Wallet Details & Balance")
         printSeperator()
 
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
@@ -67,7 +64,7 @@ while True:
 
         printSeperator(True)
 
-        if recipe["arbitrage"]["isProfitable"] or forceArb:
+        if (recipe["arbitrage"]["isProfitable"] or forceArb) and arbEnabled:
 
             recipe = printArbitrageProfitable(recipe)
 
@@ -77,7 +74,7 @@ while True:
 
         else:
             printSeperator()
-            logger.info(f'[ARB #{recipe["status"]["currentRoundTripCount"]}] Trip Not Profitable')
+            logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Trip Not Profitable')
             if pauseTime > 0:
                 logger.info(f'Waiting {pauseTime} seconds...')
             printSeperator(True)

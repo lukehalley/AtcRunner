@@ -4,8 +4,8 @@ from src.utils.logging.logging_Setup import getProjectLogger
 logger = getProjectLogger()
 
 # Write a transaction to Firebase
-def writeTransactionToDB(transaction: dict, arbitrageNumber: int, stepCategory: str):
-    arbitrageTitle = f"arbitrage_{arbitrageNumber}"
+def writeTransactionToDB(transaction: dict, roundTrip: int, stepCategory: str):
+    arbitrageTitle = f"arbitrage_{roundTrip}"
 
     arbitrages = fetchFromDatabase("arbitrages")
 
@@ -27,8 +27,8 @@ def writeTransactionToDB(transaction: dict, arbitrageNumber: int, stepCategory: 
     ref.set(arbitrages)
 
 # Write a arbitrage result to Firebase
-def writeResultToDB(result: dict, arbitrageNumber: int):
-    arbitrageTitle = f"arbitrage_{arbitrageNumber}"
+def writeResultToDB(result: dict, roundTrip: int):
+    arbitrageTitle = f"arbitrage_{roundTrip}"
 
     arbitrages = fetchFromDatabase("arbitrages")
 

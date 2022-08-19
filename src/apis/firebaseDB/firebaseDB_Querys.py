@@ -22,7 +22,7 @@ def fetchEnvCollection(collection):
 # Fetch a collection from Firebase
 def fetchFromDatabase(reference: str, printInfo=False):
     if printInfo:
-        logger.info(f"DB: Getting '{reference}' from Firebase")
+        logger.info(f"Getting '{reference}' from Firebase")
 
     ref = fetchEnvCollection(collection=reference)
 
