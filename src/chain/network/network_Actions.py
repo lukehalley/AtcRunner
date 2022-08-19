@@ -137,7 +137,7 @@ def signAndSendTransaction(tx, rpcURL, explorerUrl, roundTrip, stepCategory, tel
         raise Exception(errMsg)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
+def topUpWalletGas(recipe, direction, toSwapFrom):
     from src.chain.swap.swap_Querys import getSwapQuoteIn
     from src.chain.swap.swap_Actions import swapToken
 
@@ -167,13 +167,11 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
         routes = [recipe[direction][toSwapFrom]["address"], recipe[direction]["gas"]["address"]]
 
         amountInQuoted = getSwapQuoteIn(
-            amountOutNormal=gasTokensNeeded,
-            amountOutDecimals=recipe[direction][toSwapFrom]["decimals"],
-            amountInDecimals=recipe[direction][toSwapFrom]["decimals"],
-            rpcUrl=recipe[direction]["chain"]["rpc"],
-            routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
-            routes=routes
+            recipe=recipe,
+            recipeDirection=direction,
+            recipeToken=toSwapFrom,
+            recipeTokenIsGas=recipe[direction][toSwapFrom]["isGas"],
+            amountOutNormal=gasTokensNeeded
         )
 
         amountOutMinWithSlippage = getValueWithSlippage(amount=gasTokensNeeded, slippage=0.5)
@@ -189,7 +187,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
 
         try:
 
-            telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
+            recipe = appendToMessage(recipe=recipe,
                                                     messageToAppend=f"⛽️ Topping Up {direction.title()} Wallet -> 📤")
 
             result = swapToken(
@@ -201,7 +199,6 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
                 rpcURL=recipe[direction]["chain"]["rpc"],
                 roundTrip=recipe["status"]["currentRoundTrip"],
                 stepCategory=gasTopUpCategory,
-                telegramStatusMessage=telegramStatusMessage,
                 explorerUrl=recipe[direction]["chain"]["blockExplorer"]["txBaseURL"],
                 routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
                 routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
@@ -228,7 +225,7 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
 
         logger.info(f'{direction} wallet ({recipe[direction]["chain"]["name"]}) topped up successful - new balance is {recipe[direction]["wallet"]["balances"]["gas"]} {recipe[direction]["gas"]["symbol"]}')
 
-    return recipe, needsGas, telegramStatusMessage
+    return recipe, needsGas
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def callMappedContractFunction(contract, functionToCall, functionParams=None):
@@ -251,7 +248,7 @@ def buildMappedContractFunction(contract, functionToCall, txParams, functionPara
     return result
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddress, wethAbi, roundTrip, stepCategory, telegramStatusMessage):
+def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddress, wethAbi, roundTrip, stepCategory):
 
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
     web3.middleware_onion.inject(geth_poa_middleware, layer=0)
@@ -270,9 +267,9 @@ def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddres
 
     signAndSendTransaction(tx=tx, rpcURL=rpcUrl, explorerUrl=explorerUrl, roundTrip=roundTrip, stepCategory=stepCategory, telegramStatusMessage=telegramStatusMessage)
 
-    return telegramStatusMessage
+    return recipe
 
-def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, telegramStatusMessage):
+def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap):
 
     if isSwap:
         typeText = "Swap"
@@ -293,12 +290,12 @@ def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, teleg
         printSeperator()
 
         logger.info(f'{stepNumber}.5 Approving {recipe[position][toSwapFrom]["symbol"]} {typeText}')
-        telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
+        recipe = appendToMessage(recipe=recipe,
                                                 messageToAppend=f"{stepNumber} Approving {recipe[position][toSwapFrom]['symbol']} {typeText} 💸")
 
         printSeperator()
 
-        telegramStatusMessage = approveToken(
+        recipe = approveToken(
             rpcUrl=recipe[position]["chain"]["rpc"],
             explorerUrl=recipe[position]["chain"]["blockExplorer"]["txBaseURL"],
             walletAddress=recipe[position]["wallet"]["address"],
@@ -306,8 +303,7 @@ def checkAndApproveToken(recipe, position, toSwapFrom, stepNumber, isSwap, teleg
             spenderAddress=spenderAddress,
             wethAbi=recipe[position]["chain"]["contracts"]["weth"]["abi"],
             roundTrip=recipe["status"]["currentRoundTrip"],
-            stepCategory=f"{stepNumber}_5_{typeText.lower()}",
-            telegramStatusMessage=telegramStatusMessage
+            stepCategory=f"{stepNumber}_5_{typeText.lower()}"
         )
 
         printSeperator()

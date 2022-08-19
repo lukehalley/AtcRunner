@@ -95,8 +95,7 @@ def setupWallet(recipe):
         printSeperator(True)
 
 def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, routerABI, routerABIMappings,
-              roundTrip, stepCategory, explorerUrl, wethContractABI, telegramStatusMessage=None,
-              swappingFromGas=False, swappingToGas=False):
+              roundTrip, stepCategory, explorerUrl, wethContractABI, swappingFromGas=False, swappingToGas=False):
 
     # Setup our web3 object
     w3 = Web3(Web3.HTTPProvider(rpcURL))

@@ -1,4 +1,4 @@
-import os, threading
+import os
 from decimal import Decimal
 from itertools import repeat
 
@@ -13,6 +13,7 @@ from src.utils.math.math_Decimal import truncateDecimal
 from src.utils.math.math_Percentage import percentageDifference
 
 logger = getProjectLogger()
+
 
 # Determine our arbitrage strategy
 def determineArbitrageStrategy(recipe):
@@ -143,16 +144,16 @@ def determineArbitrageStrategy(recipe):
 
     return recipe
 
-# Check if Arbitrage will be profitable
-def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
 
+# Check if Arbitrage will be profitable
+def calculateArbitrageIsProfitable(recipe, position="origin", printInfo=True):
     steps = fetchStrategy(recipe=recipe, strategyType="arbitrage")
     isProfitable = False
 
-    if not recipe["status"]["stablesAreOnOrigin"]:
-        balanceOnDest = recipe["destination"]["wallet"]["balances"]["stablecoin"]
-        recipe["destination"]["wallet"]["balances"]["stablecoin"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
-        recipe["origin"]["wallet"]["balances"]["stablecoin"] = balanceOnDest
+    # if not recipe["status"]["stablesAreOnOrigin"]:
+    #     balanceOnDest = recipe["destination"]["wallet"]["balances"]["stablecoin"]
+    #     recipe["destination"]["wallet"]["balances"]["stablecoin"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
+    #     recipe["origin"]["wallet"]["balances"]["stablecoin"] = balanceOnDest
 
     if printInfo:
         printSeperator()
@@ -296,6 +297,7 @@ def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
 
     return tripIsProfitible
 
+
 # Calculate the difference between two token
 def calculateDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")
@@ -303,6 +305,7 @@ def calculateDifference(pairOne, pairTwo):
     ans = abs(((pairOne - pairTwo) / ((pairOne + pairTwo) / 2)) * 100)
 
     return round(ans, 6)
+
 
 # Determine which token is the origin and destination
 def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
@@ -313,6 +316,7 @@ def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
     else:
         return None, None
 
+
 # Check if arbitrage is worth it
 def calculateArbitrageIsWorthIt(difference):
     # Dex Screen Envs
@@ -321,11 +325,3 @@ def calculateArbitrageIsWorthIt(difference):
         return True
     else:
         return False
-
-
-
-
-
-
-
-
