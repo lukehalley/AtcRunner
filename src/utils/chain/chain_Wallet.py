@@ -22,3 +22,17 @@ def compareBalance(expected, actual, feeAllowancePercentage=10):
 # Check if stables are on origin network
 def checkIfStablesAreOnOrigin(recipe):
     return recipe["origin"]["wallet"]["balances"]["stablecoin"] > recipe["destination"]["wallet"]["balances"]["stablecoin"]
+
+# def getCurrentPositions(recipe):
+#     currentPosition = recipe["status"]["position"]["currentPosition"]
+#     currentOppositePosition = recipe["status"]["position"]["currentOppositePosition"]
+#
+#     return currentPosition, currentOppositePosition
+#
+#
+# def getCurrentStepCategoryAndNumber(recipe):
+#
+#     currentStepNumber = recipe["status"]["currentStep"]["stepNumber"]
+#     currentStepCategory = recipe["status"]["currentStep"]["stepCategory"]
+#
+#     return currentStepNumber, currentStepCategory

@@ -176,12 +176,8 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
         balanceBeforeSwap = getTokenBalance(rpcURL=rpcURL, tokenAddress=tokenPath[-1], tokenDecimals=amountOutDecimals, wethContractABI=wethContractABI)
 
     transactionResult = signAndSendTransaction(
-        tx=tx,
-        rpcURL=rpcURL,
-        explorerUrl=explorerUrl,
-        roundTrip=roundTrip,
-        stepCategory=stepCategory,
-        telegramStatusMessage=telegramStatusMessage
+        recipe=recipe,
+        tx=tx
     )
 
     balanceAfterSwap = balanceBeforeSwap

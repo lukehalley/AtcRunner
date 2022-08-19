@@ -5,7 +5,8 @@ from web3 import Web3
 
 from src.utils.chain.chain_ABI import getMappedContractFunction, fillEmptyABIParams
 from src.utils.chain.chain_Addresses import checkWalletsMatch
-from src.utils.chain.chain_Wallet import getPrivateKey, checkIfStablesAreOnOrigin
+from src.utils.chain.chain_Wallet import getPrivateKey, checkIfStablesAreOnOrigin, getCurrentPositions, \
+    getCurrentStepCategoryAndNumber
 from src.utils.chain.chain_Wei import getTokenNormalValue
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.retry.retry_Params import getRetryParams
@@ -17,13 +18,17 @@ logger = getProjectLogger()
 transactionRetryLimit, transactionRetryDelay = getRetryParams(retryType="transactionQuery")
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getNetworkWETH(chainDetails):
+def getNetworkWETH(recipe):
     from src.chain.network.network_Actions import callMappedContractFunction
 
-    rpcUrl = chainDetails["rpc"]
-    routerAddress = chainDetails["contracts"]["router"]["address"]
-    routerABI = chainDetails["contracts"]["router"]["abi"]
-    routerABIMappings = chainDetails["contracts"]["router"]["mapping"]
+    # Build Params ############################################################
+    currentPosition, currentOppositePosition = getCurrentPositions(recipe=recipe)
+    # Build Params ############################################################
+
+    rpcUrl = recipe[currentPosition]["rpc"]
+    routerAddress = recipe[currentPosition]["contracts"]["router"]["address"]
+    routerABI = recipe[currentPosition]["contracts"]["router"]["abi"]
+    routerABIMappings = recipe[currentPosition]["contracts"]["router"]["mapping"]
 
     w3 = Web3(Web3.HTTPProvider(rpcUrl))
 
@@ -36,22 +41,48 @@ def getNetworkWETH(chainDetails):
     return callMappedContractFunction(contract=contract, functionToCall=wethFunctionName)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getWalletAddressFromPrivateKey(rpcURL):
-    w3 = Web3(Web3.HTTPProvider(rpcURL))
+def getWalletAddressFromPrivateKey(recipe):
+
+    # Build Params ############################################################
+    currentPosition, currentOppositePosition = getCurrentPositions(recipe=recipe)
+    # Build Params ############################################################
+
+    rpcUrl = recipe[currentPosition]["rpc"]
+
+    w3 = Web3(Web3.HTTPProvider(rpcUrl))
     privateKey = getPrivateKey()
     return w3.eth.account.privateKeyToAccount(privateKey).address
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getGasPrice(rpcURL):
+def getGasPrice(recipe):
+
+    # Build Params ############################################################
+    currentPosition, currentOppositePosition = getCurrentPositions(recipe=recipe)
+    # Build Params ############################################################
+
+    rpcUrl = recipe[currentPosition]["rpc"]
+    
     # Connect to our RPC.
-    w3 = Web3(Web3.HTTPProvider(rpcURL))
+    w3 = Web3(Web3.HTTPProvider(rpcUrl))
 
     gasPrice = Decimal(w3.fromWei(w3.eth.gas_price, 'gwei'))
 
     return gasPrice
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getTokenBalance(rpcURL, tokenAddress, tokenDecimals, wethContractABI):
+def getTokenBalance(recipe):
+
+    # Build Params ############################################################
+    currentPosition, currentOppositePosition = getCurrentPositions(recipe=recipe)
+
+    rpcURL = toChainRPCURL,
+    tokenAddress = toTokenAddress,
+    tokenDecimals = toTokenDecimals,
+    wethContractABI = wethContractABI
+    # Build Params ############################################################
+
+    rpcUrl = recipe[currentPosition]["rpc"]
+
     walletAddress = getWalletAddressFromPrivateKey(rpcURL=rpcURL)
 
     balanceWei = getBalanceOfToken(
