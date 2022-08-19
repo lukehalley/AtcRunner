@@ -18,6 +18,7 @@ logger = getProjectLogger()
 
 # Execute an Arbitrage
 def executeArbitrage(recipe):
+
     steps = fetchStrategy(recipe=recipe, strategyType="arbitrage")
 
     printSeperator()
@@ -28,15 +29,15 @@ def executeArbitrage(recipe):
     printSeperator()
 
     recipe = getWalletsInformation(recipe)
-
-    startingStables = recipe["origin"]["wallet"]["balances"]["stablecoin"]
-
-    recipe["status"]["startingStables"] = startingStables
-
-    currentFunds = {
-        "stablecoin": startingStables,
-        "token": 0
-    }
+    
+    # startingStables = recipe["origin"]["wallet"]["balances"]["stablecoin"]
+    # 
+    # recipe["status"]["startingStables"] = startingStables
+    # 
+    # currentFunds = {
+    #     "stablecoin": startingStables,
+    #     "token": 0
+    # }
 
     for stepSettings in steps:
 
@@ -49,16 +50,11 @@ def executeArbitrage(recipe):
         toSwapFrom = stepSettings["from"]
         toSwapTo = stepSettings["to"]
 
-        recipe, toppedUpOccured, telegramStatusMessage = topUpWalletGas(
+        recipe, toppedUpOccured = topUpWalletGas(
             recipe=recipe,
             direction=position,
-            toSwapFrom=toSwapFrom,
-            telegramStatusMessage=telegramStatusMessage,
+            toSwapFrom=toSwapFrom
         )
-
-        if toppedUpOccured:
-            currentFunds["stablecoin"] = recipe[position]["wallet"]["balances"]["stablecoin"]
-            currentFunds["token"] = recipe[position]["wallet"]["balances"]["token"]
 
         recipe = getWalletsInformation(recipe)
 
@@ -75,7 +71,7 @@ def executeArbitrage(recipe):
             logger.info(
                 f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
-            telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
+            recipe = appendToMessage(recipe=recipe,
                                                     messageToAppend=f"{stepNumber}. Doing {position.title()} {stepType.title()} -> 📤")
 
             if stepType == "swap":
@@ -90,9 +86,9 @@ def executeArbitrage(recipe):
 
                 amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
-                telegramStatusMessage = checkAndApproveToken(
+                recipe = checkAndApproveToken(
                     recipe=recipe, position=position, toSwapFrom=toSwapFrom, stepNumber=stepNumber,
-                    isSwap=True, telegramStatusMessage=telegramStatusMessage
+                    isSwap=True
                 )
 
                 recipe = getWalletsInformation(recipe)
@@ -139,7 +135,7 @@ def executeArbitrage(recipe):
                     quote = simulateStep(recipe=recipe, stepSettings=stepSettings, currentFunds=currentFunds)
 
                     if quote < startingStables:
-                        telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
+                        recipe = appendToMessage(recipe=recipe,
                                                                 messageToAppend=f"Rolling Back Arbitrage #{recipe['status']['currentRoundTrip']} ‍⏮")
 
                         wasProfitable, telegramStatusMessage = rollbackArbitrage(recipe=recipe,
@@ -223,9 +219,10 @@ def executeArbitrage(recipe):
                 arbitragePercentage = percentageDifference(startingStables,
                                                            recipe[position]["wallet"]["balances"]["stablecoin"], 2)
 
-            printArbitrageResult(count=recipe["status"]["currentRoundTrip"], amount=profitLoss,
+            printArbitrageResult(recipe=recipe,
+                                 count=recipe["status"]["currentRoundTrip"], amount=profitLoss,
                                  percentageDifference=arbitragePercentage, wasProfitable=wasProfitable,
-                                 startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+                                 startingTime=startingTime)
 
             return wasProfitable
 
@@ -273,7 +270,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
         logger.info(
             f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
-        telegramStatusMessage = appendToMessage(originalMessage=telegramStatusMessage,
+        recipe = appendToMessage(recipe=recipe,
                                                 messageToAppend=f"{stepNumber}. RBack {position.title()} {stepType.title()} -> 📤")
 
         if stepType == "swap":
@@ -402,8 +399,8 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
         arbitragePercentage = percentageDifference(startingStables,
                                                    recipe["origin"]["wallet"]["balances"]["stablecoin"], 2)
 
-    printArbitrageRollbackComplete(count=recipe["status"]["currentRoundTrip"], wasProfitable=wasProfitable,
-                                   profitLoss=profitLoss, arbitragePercentage=arbitragePercentage,
-                                   startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+    printArbitrageRollbackComplete(recipe=recipe,
+                                   count=recipe["status"]["currentRoundTrip"], wasProfitable=wasProfitable,
+                                   profitLoss=profitLoss, arbitragePercentage=arbitragePercentage)
 
     return wasProfitable, telegramStatusMessage

@@ -9,7 +9,7 @@ logger = getProjectLogger()
 def removeDisabledRecipes(recipes):
     initLength = len(recipes)
     recipes = {recipeName: recipeDetail for recipeName, recipeDetail in recipes.items() if recipeDetail["enabled"]}
-    logger.info(f"Imported {len(recipes)}/{initLength} Recipes")
+    logger.info(f"Imported {len(recipes)} out of {initLength} available Recipes")
     return recipes
 
 def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, masterTokenList):

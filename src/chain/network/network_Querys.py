@@ -93,7 +93,17 @@ def getWalletsInformation(recipe, printBalances=False):
         tokenIsGas = recipe[direction]["token"]["isGas"]
 
         if tokenIsGas:
-            recipe[direction]["wallet"]["balances"]["token"] = recipe[direction]["wallet"]["balances"]["gas"]
+
+            gasUpperLimit = recipe[direction]["chain"]["gasDetails"]["gasLimits"]["maxGas"]
+
+            trueTokenBalance = recipe[direction]["wallet"]["balances"]["gas"]
+            limitedTokenBalance = abs(trueTokenBalance - recipe[direction]["chain"]["gasDetails"]["gasLimits"]["maxGas"])
+
+            recipe[direction]["wallet"]["balances"]["token"] = limitedTokenBalance
+
+            if trueTokenBalance > gasUpperLimit:
+                recipe[direction]["wallet"]["balances"]["gas"] = gasUpperLimit
+
         else:
             recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
                 rpcURL=recipe[direction]["chain"]["rpc"],

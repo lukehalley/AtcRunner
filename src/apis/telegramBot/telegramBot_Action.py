@@ -24,16 +24,17 @@ def sendMessage(msg, channelId=telegramChannelID):
 
 # Add another line to a message
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def appendToMessage(originalMessage, messageToAppend):
-    originalText = originalMessage["text"]
+def appendToMessage(recipe, messageToAppend):
+
+    originalText = recipe["status"]["telegramMessage"]["text"]
 
     newText = f"{originalText}\n{messageToAppend}"
 
     try:
-        updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
-                                               message_id=originalMessage.message_id,
+        recipe["status"]["telegramMessage"] = bot.edit_message_text(chat_id=recipe["status"]["telegramMessage"].chat_id,
+                                               message_id=recipe["status"]["telegramMessage"].message_id,
                                                text=newText)
-        return updatedMessage
+        return recipe
     except Exception as e:
         isKnownTransactionError = "specified new message content and reply markup are exactly the same" in str(e)
         if isKnownTransactionError:
