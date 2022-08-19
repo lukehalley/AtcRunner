@@ -43,17 +43,12 @@ def setupWallet(recipe):
 
         balanceBeforeSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
 
-        swapRoute = recipe[positionToSetup]["routes"][f"{toSwapFrom}-{toSwapTo}"]
-
         amountOutQuoted = getSwapQuoteOut(
-            amountInNormal=amountInNormal,
-            amountInDecimals=recipe[positionToSetup][toSwapFrom]["decimals"],
-            amountOutDecimals=recipe[positionToSetup][toSwapTo]["decimals"],
-            rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
-            routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[positionToSetup]["chain"]["contracts"]["router"]["abi"],
-            routerABIMappings=recipe[positionToSetup]["chain"]["contracts"]["router"]["mapping"],
-            routes=swapRoute
+            recipe=recipe,
+            recipeDirection=positionToSetup,
+            recipeToken=toSwapFrom,
+            recipeTokenIsGas=recipe[positionToSetup][toSwapFrom]["isGas"],
+            amountInNormal=amountInNormal
         )
 
         amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)

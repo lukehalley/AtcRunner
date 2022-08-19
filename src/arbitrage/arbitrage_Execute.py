@@ -80,22 +80,16 @@ def executeArbitrage(recipe):
 
             if stepType == "swap":
 
-                swapRoute = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
-
                 amountOutQuoted = getSwapQuoteOut(
-                    amountInNormal=currentFunds[toSwapFrom],
-                    amountInDecimals=recipe[position][toSwapFrom]["decimals"],
-                    amountOutDecimals=recipe[position][toSwapTo]["decimals"],
-                    rpcUrl=recipe[position]["chain"]["rpc"],
-                    routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                    routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-                    routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
-                    routes=swapRoute
+                    recipe=recipe,
+                    recipeDirection=position,
+                    recipeToken=toSwapFrom,
+                    recipeTokenIsGas=recipe[position][toSwapFrom]["isGas"],
+                    amountInNormal=currentFunds[toSwapFrom]
                 )
 
                 amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
-                # if not recipe[position][toSwapFrom]["isGas"]:
                 telegramStatusMessage = checkAndApproveToken(
                     recipe=recipe, position=position, toSwapFrom=toSwapFrom, stepNumber=stepNumber,
                     isSwap=True, telegramStatusMessage=telegramStatusMessage
@@ -286,17 +280,12 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
             balanceBeforeSwap = recipe[position]["wallet"]["balances"][toSwapTo]
 
-            swapRoute = recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
-
             amountOutQuoted = getSwapQuoteOut(
-                amountInNormal=currentFunds[toSwapFrom],
-                amountInDecimals=recipe[position][toSwapFrom]["decimals"],
-                amountOutDecimals=recipe[position][toSwapTo]["decimals"],
-                rpcUrl=recipe[position]["chain"]["rpc"],
-                routerAddress=recipe[position]["chain"]["contracts"]["router"]["address"],
-                routerABI=recipe[position]["chain"]["contracts"]["router"]["abi"],
-                routerABIMappings=recipe[position]["chain"]["contracts"]["router"]["mapping"],
-                routes=swapRoute
+                recipe=recipe,
+                recipeDirection=position,
+                recipeToken=toSwapFrom,
+                recipeTokenIsGas=recipe[position][toSwapFrom]["isGas"],
+                amountInNormal=currentFunds[toSwapFrom]
             )
 
             amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
