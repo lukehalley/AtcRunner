@@ -12,7 +12,7 @@ from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
-def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, stepNumber, wethContractABI, predictions=None):
+def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, roundTrip, stepCategory, telegramStatusMessage, stepNumber, wethContractABI, predictions=None):
     walletAddress = getWalletAddressFromPrivateKey(fromChainRPCURL)
 
     amountToBridgeWei = getTokenDecimalValue(amountToBridge, fromTokenDecimals)
@@ -49,7 +49,7 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
         tx=tx,
         rpcURL=fromChainRPCURL,
         explorerUrl=explorerUrl,
-        arbitrageNumber=arbitrageNumber,
+        roundTrip=roundTrip,
         stepCategory=stepCategory,
         telegramStatusMessage=telegramStatusMessage)
 

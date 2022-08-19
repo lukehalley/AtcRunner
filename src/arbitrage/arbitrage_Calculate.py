@@ -1,4 +1,4 @@
-import os
+import os, threading
 from decimal import Decimal
 from itertools import repeat
 
@@ -21,50 +21,38 @@ def determineArbitrageStrategy(recipe):
     if not "status" in recipe:
         recipe["status"] = {}
 
-    recipe["status"]["currentRoundTripCount"] = getNextArbitrageNumber()
+    recipe["status"]["currentRoundTrip"] = getNextArbitrageNumber()
 
     chainOneTokenPrice = getSwapQuoteOut(
-        amountInNormal=1.0,
-        amountInDecimals=recipe["chainOne"]["token"]["decimals"],
-        amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
-        rpcUrl=recipe["chainOne"]["chain"]["rpc"],
-        routerAddress=recipe["chainOne"]["chain"]["contracts"]["router"]["address"],
-        routerABI=recipe["chainOne"]["chain"]["contracts"]["router"]["abi"],
-        routerABIMappings=recipe["chainOne"]["chain"]["contracts"]["router"]["mapping"],
-        routes=recipe["chainOne"]["routes"]["token-stablecoin"]
+        recipe=recipe,
+        recipeDirection="chainOne",
+        recipeToken="token",
+        recipeTokenIsGas=False,
+        amountInNormal=1.0
     )
 
     chainTwoTokenPrice = getSwapQuoteOut(
-        amountInNormal=1.0,
-        amountInDecimals=recipe["chainTwo"]["token"]["decimals"],
-        amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
-        rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
-        routerAddress=recipe["chainTwo"]["chain"]["contracts"]["router"]["address"],
-        routerABI=recipe["chainTwo"]["chain"]["contracts"]["router"]["abi"],
-        routerABIMappings=recipe["chainTwo"]["chain"]["contracts"]["router"]["mapping"],
-        routes=recipe["chainTwo"]["routes"]["token-stablecoin"]
+        recipe=recipe,
+        recipeDirection="chainTwo",
+        recipeToken="token",
+        recipeTokenIsGas=False,
+        amountInNormal=1.0
     )
 
     chainOneGasPrice = getSwapQuoteOut(
-        amountInNormal=1.0,
-        amountInDecimals=18,
-        amountOutDecimals=recipe["chainOne"]["stablecoin"]["decimals"],
-        rpcUrl=recipe["chainOne"]["chain"]["rpc"],
-        routerAddress=recipe["chainOne"]["chain"]["contracts"]["router"]["address"],
-        routerABI=recipe["chainOne"]["chain"]["contracts"]["router"]["abi"],
-        routerABIMappings=recipe["chainOne"]["chain"]["contracts"]["router"]["mapping"],
-        routes=[recipe["chainOne"]["gas"]["address"], recipe["chainOne"]["stablecoin"]["address"]]
+        recipe=recipe,
+        recipeDirection="chainOne",
+        recipeToken="token",
+        recipeTokenIsGas=True,
+        amountInNormal=1.0
     )
 
     chainTwoGasPrice = getSwapQuoteOut(
-        amountInNormal=1.0,
-        amountInDecimals=18,
-        amountOutDecimals=recipe["chainTwo"]["stablecoin"]["decimals"],
-        rpcUrl=recipe["chainTwo"]["chain"]["rpc"],
-        routerAddress=recipe["chainTwo"]["chain"]["contracts"]["router"]["address"],
-        routerABI=recipe["chainTwo"]["chain"]["contracts"]["router"]["abi"],
-        routerABIMappings=recipe["chainTwo"]["chain"]["contracts"]["router"]["mapping"],
-        routes=[recipe["chainTwo"]["gas"]["address"], recipe["chainTwo"]["stablecoin"]["address"]]
+        recipe=recipe,
+        recipeDirection="chainTwo",
+        recipeToken="token",
+        recipeTokenIsGas=True,
+        amountInNormal=1.0
     )
 
     priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
@@ -129,9 +117,9 @@ def determineArbitrageStrategy(recipe):
     printSeperator()
 
     if directionLockEnabled:
-        logger.info(f'[ARB #{recipe["status"]["currentRoundTripCount"]}] Locked Arbitrage Opportunity Identified')
+        logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Locked Arbitrage Opportunity Identified')
     else:
-        logger.info(f'[ARB #{recipe["status"]["currentRoundTripCount"]}] Arbitrage Opportunity Identified')
+        logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Arbitrage Opportunity Identified')
 
     logger.info(
         f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateDecimal(recipe["origin"]["token"]["price"], 6)} on '
@@ -168,7 +156,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
 
     if printInfo:
         printSeperator()
-        logger.info(f"[ARB #{recipe['status']['currentRoundTripCount']}] "
+        logger.info(f"[ARB #{recipe['status']['currentRoundTrip']}] "
                     f"Simulating Arbitrage")
         printSeperator()
 

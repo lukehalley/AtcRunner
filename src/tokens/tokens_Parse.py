@@ -17,7 +17,6 @@ def parseTokenLists(urls):
     allKeys = list(set().union(*(d.keys() for d in finalTokenList)))
     keysToRemove = list(set(allKeys) - set(allowedKeys))
 
-
     for key in keysToRemove:
         for dict in finalTokenList:
             if key in dict:

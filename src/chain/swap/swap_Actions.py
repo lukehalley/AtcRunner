@@ -29,7 +29,7 @@ def setupWallet(recipe):
         raise Exception(errMsg)
     elif not originHasStablecoins:
 
-        telegramStatusMessage = printSettingUpWallet(recipe['status']['currentRoundTripCount'])
+        telegramStatusMessage = printSettingUpWallet(recipe['status']['currentRoundTrip'])
 
         positionToSetup = "origin"
         toSwapFrom = "token"
@@ -65,7 +65,7 @@ def setupWallet(recipe):
             amountOutDecimals=recipe[positionToSetup][toSwapTo]["decimals"],
             tokenPath=swapRoute,
             rpcURL=recipe[positionToSetup]["chain"]["rpc"],
-            arbitrageNumber=recipe["status"]["currentRoundTripCount"],
+            roundTrip=recipe["status"]["currentRoundTrip"],
             stepCategory=f"0_setup",
             explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
             routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
@@ -100,7 +100,7 @@ def setupWallet(recipe):
         printSeperator(True)
 
 def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, routerABI, routerABIMappings,
-              arbitrageNumber, stepCategory, explorerUrl, wethContractABI, telegramStatusMessage=None,
+              roundTrip, stepCategory, explorerUrl, wethContractABI, telegramStatusMessage=None,
               swappingFromGas=False, swappingToGas=False):
 
     # Setup our web3 object
@@ -185,7 +185,7 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
         tx=tx,
         rpcURL=rpcURL,
         explorerUrl=explorerUrl,
-        arbitrageNumber=arbitrageNumber,
+        roundTrip=roundTrip,
         stepCategory=stepCategory,
         telegramStatusMessage=telegramStatusMessage
     )
