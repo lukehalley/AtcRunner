@@ -23,11 +23,11 @@ from src.utils.time.time_Calculations import getCurrentDateTime
 logger = getProjectLogger()
 
 transactionTimeout = getTransactionTimeout()
-transactionRetryLimit, transactionRetryDelay,  = getRetryParams(retryType="transactionAction")
+transactionRetryLimit, transactionRetryDelay, = getRetryParams(retryType="transactionAction")
+
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def signAndSendTransaction(tx, rpcUrl, explorerUrl, roundTrip, stepCategory, telegramStatusMessage):
-
+def signAndSendTransaction(tx, rpcUrl, explorerUrl, currentRoundTrip, stepCategory, telegramStatusMessage):
     # Setup our web3 object
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
     privateKey = getPrivateKey()
@@ -75,7 +75,7 @@ def signAndSendTransaction(tx, rpcUrl, explorerUrl, roundTrip, stepCategory, tel
             logger.info("Nonce too low error solved - sending again...")
             web3.eth.send_raw_transaction(signed_tx.rawTransaction)
         else:
-             raise Exception(e.args[0]["message"])
+            raise Exception(e.args[0]["message"])
     logger.info("Transaction successfully sent!")
 
     explorerLink = generateBlockExplorerLink(explorerUrl, signed_tx.hash.hex())
@@ -86,7 +86,7 @@ def signAndSendTransaction(tx, rpcUrl, explorerUrl, roundTrip, stepCategory, tel
 
     try:
         txReceipt = web3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=2,
-                                                        timeout=transactionTimeout)
+                                                          timeout=transactionTimeout)
     except exceptions.TimeExhausted:
         raise Exception("Wait for transaction receipt timed out!")
     except Exception as error:
@@ -96,12 +96,12 @@ def signAndSendTransaction(tx, rpcUrl, explorerUrl, roundTrip, stepCategory, tel
             retryLimit = 10
             retryCount = 0
             txReceipt = web3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash, poll_latency=2,
-                                                            timeout=transactionTimeout)
+                                                              timeout=transactionTimeout)
             while "status" not in txReceipt:
                 if retryCount <= retryLimit:
                     txReceipt = web3.eth.wait_for_transaction_receipt(transaction_hash=signed_tx.hash,
-                                                                    timeout=transactionTimeout,
-                                                                    poll_latency=2)
+                                                                      timeout=transactionTimeout,
+                                                                      poll_latency=2)
                     retryCount = retryCount + 1
                 else:
                     raise Exception(f"Unable to get a valid transaction receipt after {retryCount} tries: {errorText}")
@@ -121,7 +121,7 @@ def signAndSendTransaction(tx, rpcUrl, explorerUrl, roundTrip, stepCategory, tel
 
     writeTransactionToDB(
         transaction=result,
-        roundTrip=roundTrip,
+        currentRoundTrip=currentRoundTrip,
         stepCategory=stepCategory
     )
 
@@ -136,6 +136,7 @@ def signAndSendTransaction(tx, rpcUrl, explorerUrl, roundTrip, stepCategory, tel
         if telegramStatusMessage:
             updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
         raise Exception(errMsg)
+
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
@@ -181,7 +182,8 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
             logger.error(errMsg)
             raise Exception(errMsg)
 
-        logger.info(f'{topUpDirection} wallet ({recipe[topUpDirection]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[topUpDirection]["gas"]["symbol"]} for {amountInQuoted} {recipe[topUpDirection][topUpTokenToUse]["symbol"]}')
+        logger.info(
+            f'{topUpDirection} wallet ({recipe[topUpDirection]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[topUpDirection]["gas"]["symbol"]} for {amountInQuoted} {recipe[topUpDirection][topUpTokenToUse]["symbol"]}')
 
         try:
 
@@ -210,15 +212,18 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
             wethContractABI=recipe[topUpDirection]["chain"]["contracts"]["weth"]["abi"]
         )
 
-        recipe = getWalletsInformation(recipe)
+        recipe = getWalletsInformation(
+            recipe=recipe
+        )
 
-        logger.info(f'{topUpDirection} wallet ({recipe[topUpDirection]["chain"]["name"]}) topped up successful - new balance is {recipe[topUpDirection]["wallet"]["balances"]["gas"]} {recipe[topUpDirection]["gas"]["symbol"]}')
+        logger.info(
+            f'{topUpDirection} wallet ({recipe[topUpDirection]["chain"]["name"]}) topped up successful - new balance is {recipe[topUpDirection]["wallet"]["balances"]["gas"]} {recipe[topUpDirection]["gas"]["symbol"]}')
 
     return recipe, needsGas, telegramStatusMessage
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def callMappedContractFunction(contract, functionToCall, functionParams=None):
-
     if functionParams:
         result = getattr(contract.functions, functionToCall)(*functionParams).call()
     else:
@@ -226,9 +231,9 @@ def callMappedContractFunction(contract, functionToCall, functionParams=None):
 
     return result
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def buildMappedContractFunction(contract, functionToCall, txParams, functionParams=None):
-
     if functionParams:
         result = getattr(contract.functions, functionToCall)(*functionParams).buildTransaction(txParams)
     else:
@@ -236,30 +241,57 @@ def buildMappedContractFunction(contract, functionToCall, txParams, functionPara
 
     return result
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddress, wethAbi, roundTrip, stepCategory, telegramStatusMessage):
 
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory):
+    # Dict Params ####################################################
+    rpcUrl = recipe[recipePosition]["chain"]["rpc"]
+    walletAddress = recipe[recipePosition]["wallet"]["address"]
+    tokenAddress = recipe[recipePosition][tokenType]["address"]
+    wethAbi = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
+    telegramStatusMessage = recipe["status"]["telegramMessage"]
+    currentRoundTrip = recipe["status"]["currentRoundTrip"]
+    explorerUrl = recipe[recipePosition]["chain"]["blockExplorer"]["txBaseURL"]
+    # Dict Params ####################################################
+
+    # Setup Web 3
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
     web3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
-    tokenAddressCS = web3.toChecksumAddress(tokenAddress)
-    tokenToApproveContract = web3.eth.contract(address=tokenAddressCS, abi=wethAbi)
+    # Get The Token Contract Which We Are Approving
+    contract = web3.eth.contract(
+        address=web3.toChecksumAddress(tokenAddress),
+        abi=wethAbi
+    )
 
+    # Calculate The Amount We Will Approve
     amountToApprove = web3.toWei(2 ** 64 - 1, 'ether')
-    nonce = web3.eth.getTransactionCount(walletAddress, 'pending')
 
-    tx = tokenToApproveContract.functions.approve(spenderAddress, amountToApprove).buildTransaction({
+    # Build Out Transaction Object
+    nonce = web3.eth.getTransactionCount(walletAddress, 'pending')
+    tx = contract.functions.approve(spenderAddress, amountToApprove).buildTransaction({
         'from': walletAddress,
         'nonce': nonce,
         'gasPrice': web3.eth.gas_price,
     })
 
-    signAndSendTransaction(tx=tx, rpcUrl=rpcUrl, explorerUrl=explorerUrl, roundTrip=roundTrip, stepCategory=stepCategory, telegramStatusMessage=telegramStatusMessage)
+    # Sign And Send The Transaction
+    transactionResult = signAndSendTransaction(
+        tx=tx,
+        rpcUrl=rpcUrl,
+        explorerUrl=explorerUrl,
+        currentRoundTrip=currentRoundTrip,
+        stepCategory=stepCategory,
+        telegramStatusMessage=telegramStatusMessage
+    )
 
-    return telegramStatusMessage
+    # Update Our Stored Telegram Message
+    recipe["status"]["telegramMessage"] = transactionResult["telegramMessage"]
+
+    return recipe
+
 
 def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNumber):
-
     # Dict Params ####################################################
     telegramStatusMessage = recipe["status"]["telegramMessage"]
     # Dict Params ####################################################
@@ -280,25 +312,24 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
         spenderAddress=spenderAddress
     )
 
+    # If Token Is Not Approved - Approve It
     if not isApproved:
+        # Log That We Approving
+        printSeperator()
+        logger.info(f'{stepNumber}.5 Approving {recipe[recipePosition][tokenType]["symbol"]}')
+        recipe["status"]["telegramMessage"] = appendToMessage(
+            messageToAppend=f"{stepNumber} Approving {recipe[recipePosition][tokenType]['symbol']} 💸",
+            messageToAppendTo=telegramStatusMessage
+        )
         printSeperator()
 
-        logger.info(f'{stepNumber}.5 Approving {recipe[recipePosition][tokenType]["symbol"]} {typeText}')
-        telegramStatusMessage = appendToMessage(messageToAppendTo=telegramStatusMessage,
-                                                messageToAppend=f"{stepNumber} Approving {recipe[recipePosition][tokenType]['symbol']} {typeText} 💸")
-
-        printSeperator()
-
-        telegramStatusMessage = approveToken(
-            rpcUrl=recipe[recipePosition]["chain"]["rpc"],
-            explorerUrl=recipe[recipePosition]["chain"]["blockExplorer"]["txBaseURL"],
-            walletAddress=recipe[recipePosition]["wallet"]["address"],
-            tokenAddress=recipe[recipePosition][tokenType]["address"],
+        # Approve The Token
+        recipe = approveToken(
+            recipe=recipe,
+            recipePosition=recipePosition,
+            tokenType=tokenType,
             spenderAddress=spenderAddress,
-            wethAbi=recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"],
-            roundTrip=recipe["status"]["currentRoundTrip"],
-            stepCategory=f"{stepNumber}_5_{approvalType.lower()}",
-            telegramStatusMessage=telegramStatusMessage
+            stepCategory=f"{stepNumber}_5_{approvalType.lower()}"
         )
 
         printSeperator()

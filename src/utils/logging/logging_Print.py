@@ -5,11 +5,13 @@ from src.utils.time.time_Calculations import getMinSecString
 
 logger = getProjectLogger()
 
+
 # Print the current round trip count
 def printRoundtrip(count):
     logger.info("################################")
     logger.info(f"STARTING ARBITRAGE #{count}")
     logger.info("################################\n")
+
 
 # Print the Arbitrage is profitable alert
 def printSettingUpWallet(count):
@@ -20,11 +22,12 @@ def printSettingUpWallet(count):
 
     sentMessage = sendMessage(
         msg=
-            f"Arbitrage #{count} Setup ⚙️\n"
-            f"Tokens -> Stables"
+        f"Arbitrage #{count} Setup ⚙️\n"
+        f"Tokens -> Stables"
     )
 
     return sentMessage
+
 
 # Print the Arbitrage is profitable alert
 def printArbitrageProfitable(recipe):
@@ -40,19 +43,21 @@ def printArbitrageProfitable(recipe):
 
     sentMessage = sendMessage(
         msg=
-            f"Arbitrage #{count} Profitable 🤑\n"
-            f"{networkPath}\n"
-            f"{tokenPath}\n"
-            f"${recipe['arbitrage']['predictions']['startingStables']} -> ${recipe['arbitrage']['predictions']['outStables']}\n"
-            f"Profit: ${recipe['arbitrage']['predictions']['profitLoss']} | {recipe['arbitrage']['predictions']['arbitragePercentage']}%"
+        f"Arbitrage #{count} Profitable 🤑\n"
+        f"{networkPath}\n"
+        f"{tokenPath}\n"
+        f"${recipe['arbitrage']['predictions']['startingStables']} -> ${recipe['arbitrage']['predictions']['outStables']}\n"
+        f"Profit: ${recipe['arbitrage']['predictions']['profitLoss']} | {recipe['arbitrage']['predictions']['arbitragePercentage']}%"
     )
 
     recipe["status"]["telegramMessage"] = sentMessage
 
     return recipe
 
+
 # Print the Arbitrage is profitable alert
-def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePercentage, startingTime, telegramStatusMessage):
+def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePercentage, startingTime,
+                                   telegramStatusMessage):
     from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
     from src.apis.firebaseDB.firebaseDB_Actions import writeResultToDB
 
@@ -87,9 +92,10 @@ def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePe
         "timeTookSeconds": timeTook,
         "wasRollback": True
     }
-    writeResultToDB(result=result, roundTrip=count)
+    writeResultToDB(result=result, currentRoundTrip=count)
     logger.info("Result written to Firebase ✅")
     printSeperator(True)
+
 
 # Print the Arbitrage is profitable alert
 def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime, telegramStatusMessage):
@@ -103,14 +109,16 @@ def printArbitrageResult(count, amount, percentageDifference, wasProfitable, sta
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.info(f"ARBITRAGE #{count} ROLLBACK RESULT")
         logger.info(f"Made A Profit Of ${amount} ({percentageDifference}%)")
-        appendToMessage(messageToAppendTo=telegramStatusMessage, messageToAppend=f"Made A Profit Of ${round(amount, 2)} ({percentageDifference}%) 👍\n")
+        appendToMessage(messageToAppendTo=telegramStatusMessage,
+                        messageToAppend=f"Made A Profit Of ${round(amount, 2)} ({percentageDifference}%) 👍\n")
         logger.info(timeString)
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
     else:
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.info(f"ARBITRAGE #{count} ROLLBACK RESULT")
         logger.info(f"Made A Loss Of ${amount} ({percentageDifference}%)")
-        appendToMessage(messageToAppendTo=telegramStatusMessage, messageToAppend=f"Made A Loss Of ${round(amount, 2)} ({percentageDifference}%) 👎\n")
+        appendToMessage(messageToAppendTo=telegramStatusMessage,
+                        messageToAppend=f"Made A Loss Of ${round(amount, 2)} ({percentageDifference}%) 👎\n")
         logger.info(timeString)
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
@@ -124,14 +132,14 @@ def printArbitrageResult(count, amount, percentageDifference, wasProfitable, sta
         "timeTookSeconds": timeTook,
         "wasRollback": False
     }
-    writeResultToDB(result=result, roundTrip=count)
+    writeResultToDB(result=result, currentRoundTrip=count)
     logger.info("Result written to Firebase\n")
 
     printSeperator(True)
 
+
 # Print a seperator line
 def printSeperator(newLine=False):
-
     if newLine:
         line = ("--------------------------------\n")
     else:

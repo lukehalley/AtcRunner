@@ -1,9 +1,10 @@
 from src.utils.logging.logging_Setup import getProjectLogger
+
 logger = getProjectLogger()
+
 
 # Add a fee to our recipe dict and add up the current sub-totals and totals
 def addFee(recipe, fee, section):
-
     if "fees" not in recipe["status"]:
         recipe["status"]["fees"] = {}
 

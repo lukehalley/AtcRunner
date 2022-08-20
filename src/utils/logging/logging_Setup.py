@@ -3,8 +3,8 @@ import logging, os, sys
 # Set up logging
 from src.utils.data.data_Booleans import strToBool
 
-def setupLogging(isDocker):
 
+def setupLogging(isDocker):
     logger = logging.getLogger("DFK-ARB")
 
     log_format = '%(asctime)s | %(levelname)s | %(message)s'
@@ -22,6 +22,7 @@ def setupLogging(isDocker):
                             stream=sys.stdout, datefmt=dateFormat)
 
     return logger
+
 
 # Get the project logger
 def getProjectLogger():

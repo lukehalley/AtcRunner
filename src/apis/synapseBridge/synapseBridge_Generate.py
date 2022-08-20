@@ -13,6 +13,7 @@ synapseAPIBaseURL = buildSynapseAPIBaseURL()
 
 httpRetryLimit, httpRetryDelay = getRetryParams(retryType="http")
 
+
 # Generate a skeleton swap transaction
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def generateSwapTransaction(chain: int, fromToken: str, toToken: str, amountIn: int):
@@ -21,19 +22,24 @@ def generateSwapTransaction(chain: int, fromToken: str, toToken: str, amountIn: 
 
     return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
+
 # Generate a skeleton approval bridge transaction
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def generateUnsignedBridgeApprovalTransaction(fromChain: int, fromToken: str):
     params = {"fromChain": fromChain, "fromToken": fromToken}
-    endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_GENERATE_UNSIGNED_BRIDGE_APPROVAL_TRANSACTION_ENDPOINT"))
+    endpoint = buildApiURL(baseUrl=synapseAPIBaseURL,
+                           endpoint=os.getenv("SYNAPSE_GENERATE_UNSIGNED_BRIDGE_APPROVAL_TRANSACTION_ENDPOINT"))
 
     return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)
 
+
 # Generate a skeleton bridge transaction
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def generateUnsignedBridgeTransaction(fromChain: int, toChain: int, fromToken: str, toToken: str, amountFrom: int, addressTo: str):
+def generateUnsignedBridgeTransaction(fromChain: int, toChain: int, fromToken: str, toToken: str, amountFrom: int,
+                                      addressTo: str):
     params = {"fromChain": fromChain, "toChain": toChain, "fromToken": fromToken, "toToken": toToken,
               "amountFrom": amountFrom, "addressTo": addressTo}
-    endpoint = buildApiURL(baseUrl=synapseAPIBaseURL, endpoint=os.getenv("SYNAPSE_GENERATE_UNSIGNED_BRIDGE_TRANSACTION_ENDPOINT"))
+    endpoint = buildApiURL(baseUrl=synapseAPIBaseURL,
+                           endpoint=os.getenv("SYNAPSE_GENERATE_UNSIGNED_BRIDGE_TRANSACTION_ENDPOINT"))
 
     return callSynapseTokenCaseRetry(endpoint=endpoint, params=params)

@@ -3,6 +3,7 @@ from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
+
 # Get the next arbitrage number using the arbitrages collection in Firebase
 def getNextArbitrageNumber():
     arbitrages = fetchFromDatabase("arbitrages")
@@ -11,9 +12,11 @@ def getNextArbitrageNumber():
     else:
         return 1
 
+
 # Get the routes for tokens we are swapping from -> to in the recipe dict
 def getRoutes(recipe, position, toSwapFrom, toSwapTo):
     return recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
+
 
 # Get the opposite arb topUpDirection
 def getOppositeDirection(direction):
@@ -21,6 +24,7 @@ def getOppositeDirection(direction):
         return "destination"
     else:
         return "origin"
+
 
 # Get the opposite swap of a given tokens
 def getOppositeToken(token):

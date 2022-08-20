@@ -9,9 +9,9 @@ from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
+
 # Get the details of our recipe
 def getRecipeDetails():
-
     printSeperator()
     logger.info(f"Importing Recipes...")
     printSeperator()
@@ -31,10 +31,10 @@ def getRecipeDetails():
 
             num = num2words(i).title()
             chainNumber = f"chain{num}"
-            
+
             chain = chains[recipeDetails[chainNumber]["chain"]["name"]]
             recipeDetails[chainNumber]["chain"].update(chain)
-            
+
             chainGasToken = getNetworkWETH(
                 chainDetails=recipeDetails[chainNumber]["chain"]
             )

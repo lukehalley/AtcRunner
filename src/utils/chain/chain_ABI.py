@@ -19,6 +19,7 @@ def fillEmptyABIParams(abi, contractFunctionName):
 
     return abi
 
+
 def getMappedContractFunction(functionName, abiMapping):
     if functionName in abiMapping.keys():
         return abiMapping[functionName]

@@ -13,6 +13,7 @@ logger = getProjectLogger()
 transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def normaliseSwapRoutes(routes):
     normalisedRoutes = []
@@ -25,9 +26,9 @@ def normaliseSwapRoutes(routes):
 
     return normalisedRoutes
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getSwapQuoteOut(recipe, recipeDirection, tokenType, tokenIsGas, tokenAmountIn):
-
     # Dict Params ####################################################
     oppositeRecipeToken = getOppositeToken(tokenType)
     amountInDecimals = recipe[recipeDirection][tokenType]["decimals"]
@@ -66,9 +67,9 @@ def getSwapQuoteOut(recipe, recipeDirection, tokenType, tokenIsGas, tokenAmountI
 
     return quote
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getSwapQuoteIn(recipe, recipeDirection, tokenType, tokenIsGas, tokenAmountOut):
-
     # Dict Params ####################################################
     oppositeRecipeToken = getOppositeToken(tokenType)
     amountOutDecimals = recipe[recipeDirection][tokenType]["decimals"]
@@ -102,7 +103,3 @@ def getSwapQuoteIn(recipe, recipeDirection, tokenType, tokenIsGas, tokenAmountOu
     quote = getTokenNormalValue(out[0], amountInDecimals)
 
     return quote
-
-
-
-

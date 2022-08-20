@@ -15,9 +15,11 @@ synapseAPIBaseURL = buildSynapseAPIBaseURL()
 
 httpRetryLimit, httpRetryDelay = getRetryParams(retryType="http")
 
+
 # Estimate the output of a bridge
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def estimateBridgeOutput(fromChain: int, toChain: int, fromToken: str, toToken: str, amountToBridge: int, decimalPlacesFrom: int, decimalPlacesTo: int, returning=False):
+def estimateBridgeOutput(fromChain: int, toChain: int, fromToken: str, toToken: str, amountToBridge: int,
+                         decimalPlacesFrom: int, decimalPlacesTo: int, returning=False):
     if returning:
         x = decimalPlacesFrom
         decimalPlacesFrom = decimalPlacesTo
@@ -32,6 +34,7 @@ def estimateBridgeOutput(fromChain: int, toChain: int, fromToken: str, toToken: 
 
     amountToReceive = Decimal(getTokenNormalValue(result["amountToReceive"], decimalPlacesFrom))
     return amountToReceive
+
 
 # Estimate the output of a swap
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)

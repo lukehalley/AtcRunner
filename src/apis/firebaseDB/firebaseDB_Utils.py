@@ -8,6 +8,7 @@ from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
+
 # Create a connection to Firebase
 def createDatabaseConnection():
     databaseURL = os.environ.get("DATABASE_URL")

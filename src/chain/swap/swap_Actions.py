@@ -62,7 +62,7 @@ def setupWallet(recipe):
             tokenDecimalsOut=recipe[positionToSetup][toSwapTo]["decimals"],
             tokenPath=swapRoute,
             rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
-            roundTrip=recipe["status"]["currentRoundTrip"],
+            currentRoundTrip=recipe["status"]["currentRoundTrip"],
             stepCategory=f"0_setup",
             explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
             routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
@@ -74,19 +74,25 @@ def setupWallet(recipe):
             swappingToGas=recipe[positionToSetup][toSwapTo]["isGas"]
         )
 
-        recipe = getWalletsInformation(recipe)
+        recipe = getWalletsInformation(
+            recipe=recipe
+        )
 
         balanceAfterSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
 
         while balanceAfterSwap == balanceBeforeSwap:
-            recipe = getWalletsInformation(recipe)
+            recipe = getWalletsInformation(
+                recipe=recipe
+            )
             balanceAfterSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
 
         result = balanceAfterSwap - balanceBeforeSwap
 
         telegramStatusMessage = swapResult["telegramStatusMessage"]
 
-        recipe = getWalletsInformation(recipe)
+        recipe = getWalletsInformation(
+            recipe=recipe
+        )
 
         printSeperator()
 
@@ -245,7 +251,7 @@ def swapToken(recipe, recipePosition, tokenInAmount, tokenOutAmount, tokenType, 
         tx=tx,
         rpcUrl=rpcUrl,
         explorerUrl=explorerUrl,
-        roundTrip=recipe["status"]["currentRoundTrip"],
+        currentRoundTrip=recipe["status"]["currentRoundTrip"],
         stepCategory=stepCategory,
         telegramStatusMessage=recipe["status"]["telegramMessage"]
     )
