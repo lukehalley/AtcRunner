@@ -19,7 +19,7 @@ def getRoutes(recipe, position, toSwapFrom, toSwapTo):
 
 
 # Get the opposite arb topUpDirection
-def getOppositeDirection(direction):
+def getOppositePosition(direction):
     if direction == "origin":
         return "destination"
     else:
