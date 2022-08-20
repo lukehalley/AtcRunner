@@ -6,11 +6,13 @@ from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
+
 def removeDisabledRecipes(recipes):
     initLength = len(recipes)
     recipes = {recipeName: recipeDetail for recipeName, recipeDetail in recipes.items() if recipeDetail["enabled"]}
     logger.info(f"Imported {len(recipes)}/{initLength} Recipes")
     return recipes
+
 
 def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, masterTokenList):
     toFill = {
@@ -83,6 +85,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, masterTok
 
     return recipeDetails
 
+
 def fillRecipeFromAPI(recipeDetails, chainNumber, chainGasToken):
     recipeToken = recipeDetails["arbitrage"]["token"]
     recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
@@ -113,11 +116,13 @@ def fillRecipeFromAPI(recipeDetails, chainNumber, chainGasToken):
                 recipeDetails[chainNumber][key]["symbol"] = tokenDetails["symbol"]
 
                 if "decimals" in tokenDetails:
-                    recipeDetails[chainNumber][key]["decimals"] = tokenDetails["decimals"][recipeDetails[chainNumber]["chain"]["id"]]
+                    recipeDetails[chainNumber][key]["decimals"] = tokenDetails["decimals"][
+                        recipeDetails[chainNumber]["chain"]["id"]]
                 else:
                     recipeDetails[chainNumber][key]["decimals"] = None
 
-                recipeDetails[chainNumber][key]["address"] = tokenDetails["addresses"][recipeDetails[chainNumber]["chain"]["id"]]
+                recipeDetails[chainNumber][key]["address"] = tokenDetails["addresses"][
+                    recipeDetails[chainNumber]["chain"]["id"]]
                 recipeDetails[chainNumber][key]["swapType"] = tokenDetails["swapType"]
                 recipeDetails[chainNumber][key]["wrapperAddresses"] = tokenDetails["wrapperAddresses"]
 
@@ -135,8 +140,8 @@ def fillRecipeFromAPI(recipeDetails, chainNumber, chainGasToken):
 
     return recipeDetails
 
-def addChainGasInformation(recipeDetails, chainNumber, chainGasToken):
 
+def addChainGasInformation(recipeDetails, chainNumber, chainGasToken):
     recipeDetails[chainNumber]["gas"] = {}
     recipeDetails[chainNumber]["gas"]["symbol"] = recipeDetails[chainNumber]["chain"]["gasDetails"]["symbol"]
     recipeDetails[chainNumber]["gas"]["address"] = chainGasToken
@@ -145,8 +150,8 @@ def addChainGasInformation(recipeDetails, chainNumber, chainGasToken):
 
     return recipeDetails
 
-def addChainStablecoinInformation(recipeDetails, chainNumber, dexId):
 
+def addChainStablecoinInformation(recipeDetails, chainNumber, dexId):
     recipeDetails[chainNumber]["stablecoin"]["price"] = \
         getTokenPriceByDexId(
             chainName=recipeDetails[chainNumber]["chain"]["name"],

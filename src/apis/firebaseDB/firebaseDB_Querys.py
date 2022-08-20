@@ -7,6 +7,7 @@ from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
+
 # Get collection for current env
 def fetchEnvCollection(collection):
     isProd = checkIsDocker()
@@ -29,6 +30,7 @@ def fetchFromDatabase(reference: str, printInfo=False):
     queryResult = ref.get()
 
     return queryResult
+
 
 # Fetch an arbitrage strategy by its name
 def fetchStrategy(recipe, strategyType):

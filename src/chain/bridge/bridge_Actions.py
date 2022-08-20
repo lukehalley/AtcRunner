@@ -1,4 +1,3 @@
-
 import os
 
 from web3 import Web3
@@ -12,7 +11,10 @@ from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
-def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, roundTrip, stepCategory, telegramStatusMessage, stepNumber, wethContractABI, predictions=None):
+
+def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress,
+                  toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, currentRoundTrip, stepCategory,
+                  telegramStatusMessage, stepNumber, wethContractABI, predictions=None):
     walletAddress = getWalletAddressFromPrivateKey(fromChainRPCURL)
 
     amountToBridgeWei = getTokenDecimalValue(amountToBridge, fromTokenDecimals)
@@ -43,13 +45,14 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
         'value': int(bridgeTransaction["value"])
     }
 
-    balanceBeforeBridge = getTokenBalance(rpcUrl=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
+    balanceBeforeBridge = getTokenBalance(rpcUrl=toChainRPCURL, tokenAddress=toTokenAddress,
+                                          tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
     transactionResult = signAndSendTransaction(
         tx=tx,
         rpcUrl=fromChainRPCURL,
         explorerUrl=explorerUrl,
-        roundTrip=roundTrip,
+        currentRoundTrip=currentRoundTrip,
         stepCategory=stepCategory,
         telegramStatusMessage=telegramStatusMessage)
 
@@ -65,7 +68,8 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
         stepNumber=stepNumber
     )
 
-    balanceAfterBridge = getTokenBalance(rpcUrl=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
+    balanceAfterBridge = getTokenBalance(rpcUrl=toChainRPCURL, tokenAddress=toTokenAddress,
+                                         tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
     actualBridgedAmount = balanceAfterBridge - balanceBeforeBridge
 

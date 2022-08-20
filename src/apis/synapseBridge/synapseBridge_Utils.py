@@ -5,9 +5,9 @@ from src.utils.web.web_Requests import safeRequest
 
 logger = getProjectLogger()
 
+
 # Build the Synapse API base URL
 def buildSynapseAPIBaseURL():
-
     # Build the base of our API endpoint url
     synapseAPIEndpoint = os.getenv("SYNAPSE_API_ENDPOINT")
     synapseAPIVersion = os.getenv("SYNAPSE_API_VERSION")
@@ -15,9 +15,9 @@ def buildSynapseAPIBaseURL():
 
     return synapseAPIBaseURL
 
+
 # Call Synapse allowing for their case being incorrect
 def callSynapseTokenCaseRetry(endpoint: str, params: dict):
-
     lowerFrom = params["fromToken"].lower()
     lowerTo = params["toToken"].lower()
 

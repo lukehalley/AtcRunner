@@ -16,6 +16,7 @@ logger = getProjectLogger()
 
 transactionRetryLimit, transactionRetryDelay = getRetryParams(retryType="transactionQuery")
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getNetworkWETH(chainDetails):
     from src.chain.network.network_Actions import callMappedContractFunction
@@ -35,11 +36,13 @@ def getNetworkWETH(chainDetails):
 
     return callMappedContractFunction(contract=contract, functionToCall=wethFunctionName)
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcUrl):
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
     privateKey = getPrivateKey()
     return web3.eth.account.privateKeyToAccount(privateKey).address
+
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getGasPrice(rpcUrl):
@@ -49,6 +52,7 @@ def getGasPrice(rpcUrl):
     gasPrice = Decimal(web3.fromWei(web3.eth.gas_price, 'gwei'))
 
     return gasPrice
+
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getTokenBalance(rpcUrl, tokenAddress, tokenDecimals, wethContractABI):
@@ -64,6 +68,7 @@ def getTokenBalance(rpcUrl, tokenAddress, tokenDecimals, wethContractABI):
     balance = getTokenNormalValue(amount=balanceWei, decimalPlaces=tokenDecimals)
 
     return Decimal(balance)
+
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletsInformation(recipe, printBalances=False):
@@ -116,16 +121,18 @@ def getWalletsInformation(recipe, printBalances=False):
 
     return recipe
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletGasBalance(rpcUrl, walletAddress, wethContractABI):
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
 
-    balance = convertWeiToETH(web3, getBalanceOfToken(address=walletAddress, rpc_address=rpcUrl, wethContractABI=wethContractABI, getGasTokenBalance=True))
+    balance = convertWeiToETH(web3, getBalanceOfToken(address=walletAddress, rpc_address=rpcUrl,
+                                                      wethContractABI=wethContractABI, getGasTokenBalance=True))
 
     return Decimal(balance)
 
-def getTokenApprovalStatus(recipe, recipePosition, tokenType, spenderAddress):
 
+def getTokenApprovalStatus(recipe, recipePosition, tokenType, spenderAddress):
     # Dict Params ####################################################
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
     walletAddress = recipe[recipePosition]["wallet"]["address"]
@@ -141,7 +148,7 @@ def getTokenApprovalStatus(recipe, recipePosition, tokenType, spenderAddress):
         address=web3.toChecksumAddress(tokenAddress),
         abi=wethAbi
     )
-    
+
     # Get The Token Owner + Spender Address
     tokenOwner = web3.toChecksumAddress(walletAddress)
     tokenSpender = web3.toChecksumAddress(spenderAddress)

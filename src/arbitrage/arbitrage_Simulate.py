@@ -1,10 +1,10 @@
-
 from src.apis.synapseBridge.synapseBridge_Estimate import estimateBridgeOutput
 from src.arbitrage.arbitrage_Utils import getOppositeDirection, getRoutes
 from src.chain.swap.swap_Querys import getSwapQuoteOut
 from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
+
 
 # Simulate an arbitrage step
 def simulateStep(recipe, stepSettings, currentFunds):

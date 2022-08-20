@@ -14,6 +14,7 @@ from src.utils.math.math_Percentage import percentageDifference
 
 logger = getProjectLogger()
 
+
 # Determine our arbitrage strategy
 def determineArbitrageStrategy(recipe):
     logger.debug(f"Calling Dexscreener API to find current price of pair")
@@ -143,9 +144,9 @@ def determineArbitrageStrategy(recipe):
 
     return recipe
 
+
 # Check if Arbitrage will be profitable
 def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
-
     steps = fetchStrategy(recipe=recipe, strategyType="arbitrage")
     isProfitable = False
 
@@ -296,6 +297,7 @@ def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
 
     return tripIsProfitible
 
+
 # Calculate the difference between two token
 def calculateDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")
@@ -303,6 +305,7 @@ def calculateDifference(pairOne, pairTwo):
     ans = abs(((pairOne - pairTwo) / ((pairOne + pairTwo) / 2)) * 100)
 
     return round(ans, 6)
+
 
 # Determine which token is the origin and destination
 def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
@@ -313,6 +316,7 @@ def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
     else:
         return None, None
 
+
 # Check if arbitrage is worth it
 def calculateArbitrageIsWorthIt(difference):
     # Dex Screen Envs
@@ -321,11 +325,3 @@ def calculateArbitrageIsWorthIt(difference):
         return True
     else:
         return False
-
-
-
-
-
-
-
-
