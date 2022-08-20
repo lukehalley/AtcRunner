@@ -5,45 +5,45 @@ from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
-def convertWeiToETH(w3, wei):
-    return w3.fromWei(wei, 'ether')
+def convertWeiToETH(web3, wei):
+    return web3.fromWei(wei, 'ether')
 
-def convertETHToWei(w3, eth):
-    return w3.toWei(eth, 'ether')
+def convertETHToWei(web3, eth):
+    return web3.toWei(eth, 'ether')
 
 def getTokenSymbol(token_address, rpc_address, wethContractABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(token_address)
-    contract = w3.eth.contract(contract_address, abi=wethContractABI)
+    contract = web3.eth.contract(contract_address, abi=wethContractABI)
 
     return contract.functions.symbol().call()
 
 def getTokenName(token_address, rpc_address, wethContractABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(token_address)
-    contract = w3.eth.contract(contract_address, abi=wethContractABI)
+    contract = web3.eth.contract(contract_address, abi=wethContractABI)
 
     return contract.functions.name().call()
 
 def getTokenDecimals(token_address, rpc_address, wethContractABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(token_address)
-    contract = w3.eth.contract(contract_address, abi=wethContractABI)
+    contract = web3.eth.contract(contract_address, abi=wethContractABI)
 
     return contract.functions.decimals().call()
 
 def getBalanceOfToken(address, rpc_address, wethContractABI, token_address="", getGasTokenBalance=False):
 
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     if getGasTokenBalance:
-        result = w3.eth.get_balance(address)
+        result = web3.eth.get_balance(address)
     else:
         contract_address = Web3.toChecksumAddress(token_address)
-        contract = w3.eth.contract(contract_address, abi=wethContractABI)
+        contract = web3.eth.contract(contract_address, abi=wethContractABI)
         result = contract.functions.balanceOf(address).call()
 
     return result
