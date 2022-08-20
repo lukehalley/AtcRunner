@@ -46,9 +46,9 @@ def setupWallet(recipe):
         amountOutQuoted = getSwapQuoteOut(
             recipe=recipe,
             recipeDirection=positionToSetup,
-            recipeToken=toSwapFrom,
-            recipeTokenIsGas=recipe[positionToSetup][toSwapFrom]["isGas"],
-            amountInNormal=amountInNormal
+            tokenType=toSwapFrom,
+            tokenIsGas=recipe[positionToSetup][toSwapFrom]["isGas"],
+            tokenAmountIn=amountInNormal
         )
 
         amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
