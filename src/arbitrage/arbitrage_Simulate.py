@@ -19,9 +19,9 @@ def simulateStep(recipe, stepSettings, currentFunds):
         quote = getSwapQuoteOut(
             recipe=recipe,
             recipeDirection=position,
-            recipeToken=toSwapFrom,
-            recipeTokenIsGas=recipe[position][toSwapFrom]["isGas"],
-            amountInNormal=currentFunds[toSwapFrom]
+            tokenType=toSwapFrom,
+            tokenIsGas=recipe[position][toSwapFrom]["isGas"],
+            tokenAmountIn=currentFunds[toSwapFrom]
         )
 
     elif stepType == "bridge":

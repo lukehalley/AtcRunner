@@ -168,11 +168,6 @@ def topUpWalletGas(recipe, direction, toSwapFrom, telegramStatusMessage):
 
         amountInQuoted = getSwapQuoteIn(
             amountOutNormal=gasTokensNeeded,
-            amountOutDecimals=recipe[direction][toSwapFrom]["decimals"],
-            amountInDecimals=recipe[direction][toSwapFrom]["decimals"],
-            rpcUrl=recipe[direction]["chain"]["rpc"],
-            routerAddress=recipe[direction]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[direction]["chain"]["contracts"]["router"]["abi"],
             routes=routes
         )
 

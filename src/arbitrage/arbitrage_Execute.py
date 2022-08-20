@@ -83,9 +83,9 @@ def executeArbitrage(recipe):
                 amountOutQuoted = getSwapQuoteOut(
                     recipe=recipe,
                     recipeDirection=position,
-                    recipeToken=toSwapFrom,
-                    recipeTokenIsGas=recipe[position][toSwapFrom]["isGas"],
-                    amountInNormal=currentFunds[toSwapFrom]
+                    tokenType=toSwapFrom,
+                    tokenIsGas=recipe[position][toSwapFrom]["isGas"],
+                    tokenAmountIn=currentFunds[toSwapFrom]
                 )
 
                 amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
@@ -283,9 +283,9 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
             amountOutQuoted = getSwapQuoteOut(
                 recipe=recipe,
                 recipeDirection=position,
-                recipeToken=toSwapFrom,
-                recipeTokenIsGas=recipe[position][toSwapFrom]["isGas"],
-                amountInNormal=currentFunds[toSwapFrom]
+                tokenType=toSwapFrom,
+                tokenIsGas=recipe[position][toSwapFrom]["isGas"],
+                tokenAmountIn=currentFunds[toSwapFrom]
             )
 
             amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)

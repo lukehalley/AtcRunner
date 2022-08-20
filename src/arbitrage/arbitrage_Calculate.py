@@ -26,33 +26,33 @@ def determineArbitrageStrategy(recipe):
     chainOneTokenPrice = getSwapQuoteOut(
         recipe=recipe,
         recipeDirection="chainOne",
-        recipeToken="token",
-        recipeTokenIsGas=False,
-        amountInNormal=1.0
+        tokenType="token",
+        tokenIsGas=False,
+        tokenAmountIn=1.0
     )
 
     chainTwoTokenPrice = getSwapQuoteOut(
         recipe=recipe,
         recipeDirection="chainTwo",
-        recipeToken="token",
-        recipeTokenIsGas=False,
-        amountInNormal=1.0
+        tokenType="token",
+        tokenIsGas=False,
+        tokenAmountIn=1.0
     )
 
     chainOneGasPrice = getSwapQuoteOut(
         recipe=recipe,
         recipeDirection="chainOne",
-        recipeToken="token",
-        recipeTokenIsGas=True,
-        amountInNormal=1.0
+        tokenType="token",
+        tokenIsGas=True,
+        tokenAmountIn=1.0
     )
 
     chainTwoGasPrice = getSwapQuoteOut(
         recipe=recipe,
         recipeDirection="chainTwo",
-        recipeToken="token",
-        recipeTokenIsGas=True,
-        amountInNormal=1.0
+        tokenType="token",
+        tokenIsGas=True,
+        tokenAmountIn=1.0
     )
 
     priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
