@@ -50,7 +50,7 @@ def executeArbitrage(recipe):
         stepName = stepSettings["name"]
 
         # Get Current Network Positions
-        position = stepSettings["tokenPosition"]
+        position = stepSettings["recipePosition"]
         oppositePosition = getOppositeDirection(position)
 
         # Get Token We Are Swapping From $ To
@@ -71,6 +71,7 @@ def executeArbitrage(recipe):
         recipe = getWalletsInformation(recipe)
 
         if stepNumber <= 1:
+
             # On Step 1 - Print Out Our Starting Stables
             logger.info(f'Starting Capital: {currentFunds["stablecoin"]} {recipe[position]["stablecoin"]["name"]}')
             printSeperator(True)
@@ -85,7 +86,7 @@ def executeArbitrage(recipe):
                     f'{recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
 
             # Update The Telegram Status Message
-            telegramStatusMessage = appendToMessage(
+            recipe["status"]["telegramMessage"] = appendToMessage(
                 messageToAppendTo=recipe["status"]["telegramMessage"],
                 messageToAppend=f"{stepNumber}. Doing {position.title()} {stepCategory.title()} -> 📤"
             )
@@ -109,13 +110,12 @@ def executeArbitrage(recipe):
                 )
 
                 # Before We Swap Check If We Need To First Approve The Token To Be Spent
-                recipe["status"]["telegramMessage"] = checkAndApproveToken(
+                recipe = checkAndApproveToken(
                     recipe=recipe,
-                    tokenPosition=position,
+                    recipePosition=position,
                     tokenType=toSwapFrom,
                     stepNumber=stepNumber,
-                    tokenApprovalsSwap=True,
-                    telegramStatusMessage=recipe["status"]["telegramMessage"]
+                    approvalType=stepCategory
                 )
 
                 # Get Wallet Balances Again In Case We Spent Tokens Approving
@@ -126,7 +126,7 @@ def executeArbitrage(recipe):
 
                 swapResult = swapToken(
                     recipe=recipe,
-                    recipeDirection=position,
+                    recipePosition=position,
                     tokenInAmount=currentFunds[toSwapFrom],
                     tokenOutAmount=amountOutMinWithSlippage,
                     tokenType=toSwapFrom,
@@ -167,9 +167,12 @@ def executeArbitrage(recipe):
                         return wasProfitable
 
                 if not recipe[position][toSwapFrom]["isGas"]:
-                    telegramStatusMessage = checkAndApproveToken(
-                        recipe=recipe, tokenPosition=position, tokenType=toSwapFrom, stepNumber=stepNumber,
-                        tokenApprovalsSwap=False, telegramStatusMessage=recipe["status"]["telegramMessage"]
+                    recipe = checkAndApproveToken(
+                        recipe=recipe,
+                        recipePosition=position,
+                        tokenType=toSwapFrom,
+                        stepNumber=stepNumber,
+                        approvalType=stepCategory
                     )
 
                 recipe = getWalletsInformation(recipe)
@@ -264,7 +267,7 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
         stepCategory = stepSettings["type"]
         stepNumber = steps.index(stepSettings) + 1 + normalStepCount
 
-        position = stepSettings["tokenPosition"]
+        position = stepSettings["recipePosition"]
         oppositePosition = getOppositeDirection(position)
         toSwapFrom = stepSettings["from"]
         toSwapTo = stepSettings["to"]
@@ -304,14 +307,17 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
             amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
-            telegramStatusMessage = checkAndApproveToken(
-                recipe=recipe, tokenPosition=position, tokenType=toSwapFrom, stepNumber=stepNumber,
-                tokenApprovalsSwap=True, telegramStatusMessage=recipe["status"]["telegramMessage"]
+            recipe = checkAndApproveToken(
+                recipe=recipe,
+                recipePosition=position,
+                tokenType=toSwapFrom,
+                stepNumber=stepNumber,
+                approvalType=stepCategory
             )
 
             swapResult = swapToken(
                 recipe=recipe,
-                recipeDirection=position,
+                recipePosition=position,
                 tokenInAmount=currentFunds[toSwapFrom],
                 tokenOutAmount=amountOutMinWithSlippage,
                 tokenType=toSwapFrom,
@@ -336,9 +342,12 @@ def rollbackArbitrage(recipe, currentFunds, startingStables, startingTime, teleg
 
             balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][toSwapFrom]
 
-            telegramStatusMessage = checkAndApproveToken(
-                recipe=recipe, tokenPosition=position, tokenType=toSwapFrom, stepNumber=stepNumber,
-                tokenApprovalsSwap=False, telegramStatusMessage=recipe["status"]["telegramMessage"]
+            recipe = checkAndApproveToken(
+                recipe=recipe,
+                recipePosition=position,
+                tokenType=toSwapFrom,
+                stepNumber=stepNumber,
+                approvalType=stepCategory
             )
 
             bridgeResult = executeBridge(
