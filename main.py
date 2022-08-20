@@ -70,7 +70,10 @@ while True:
 
             recipe["status"]["startingTime"] = time.perf_counter()
 
-            executeArbitrage(recipe=recipe)
+            executeArbitrage(
+                recipe=recipe,
+                isRollback=False
+            )
 
         else:
             printSeperator()
