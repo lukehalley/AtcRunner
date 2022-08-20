@@ -1,7 +1,9 @@
+import sys
+
 from src.apis.firebaseDB.firebaseDB_Querys import fetchStrategy
 from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatusMessage
 from src.arbitrage.arbitrage_Simulate import simulateStep
-from src.arbitrage.arbitrage_Utils import getOppositeDirection
+from src.arbitrage.arbitrage_Utils import getOppositePosition
 from src.chain.bridge.bridge_Actions import executeBridge
 from src.chain.network.network_Actions import topUpWalletGas, checkAndApproveToken
 from src.chain.network.network_Querys import getWalletsInformation
@@ -48,6 +50,7 @@ def executeArbitrage(recipe, isRollback):
     recipe = getWalletsInformation(
         recipe=recipe
     )
+
     startingStables = recipe["origin"]["wallet"]["balances"]["stablecoin"]
     recipe["status"]["startingStables"] = startingStables
 
@@ -67,7 +70,7 @@ def executeArbitrage(recipe, isRollback):
 
         # Get Current Network Positions
         position = stepSettings["recipePosition"]
-        oppositePosition = getOppositeDirection(position)
+        oppositePosition = getOppositePosition(position)
 
         # Get Token We Are Swapping From $ To
         fromToken = stepSettings["from"]
@@ -218,13 +221,17 @@ def executeArbitrage(recipe, isRollback):
                 # Get Token Balance Before We Bridge
                 balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][fromToken]
 
+                # Execute The Bridge
                 bridgeResult = executeBridge(
+                    recipe=recipe,
+                    recipePosition=position,
                     tokenAmountBridge=currentFunds[fromToken],
-                    stepCategory=f"{stepNumber}_bridge",
-                    predictions=predictions,
+                    tokenType=fromToken,
+                    stepCategory=stepCategory,
                     stepNumber=stepNumber
                 )
 
+                # Get Token Balance After We Bridge
                 recipe = getWalletsInformation(
                     recipe=recipe
                 )
@@ -232,27 +239,24 @@ def executeArbitrage(recipe, isRollback):
                 # Get The Balance After Bridge So We Know How Much Tokens We Gained
                 balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][fromToken]
 
+                # Wait For Balance On Chain We Are Bridging On To Update
                 while balanceAfterBridge == balanceBeforeBridge:
                     recipe = getWalletsInformation(
                         recipe=recipe
                     )
                     balanceAfterBridge = recipe[oppositePosition]["wallet"]["balances"][fromToken]
 
-                result = balanceAfterBridge - balanceBeforeBridge
+                # Calculate The True Amount Bridged + Update Our Balance
+                bridgedAmount = balanceAfterBridge - balanceBeforeBridge
+                currentFunds[fromToken] = bridgedAmount
 
-                currentFunds[fromToken] = result
-
+                # Update Our Stored Telegram Message
                 telegramStatusMessage = bridgeResult["telegramStatusMessage"]
 
             else:
-                updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
-                errMsg = f'Invalid Arbitrage execution type: {stepCategory}'
-                logger.error(errMsg)
-                raise Exception(errMsg)
-
-            recipe = getWalletsInformation(
-                recipe=recipe
-            )
+                # If We Provide An Invalid Step Category - Exit w/ Error
+                errMsg = f'Invalid Arbitrage Step Category: {stepCategory}'
+                sys.exit(errMsg)
 
             printSeperator()
 
@@ -265,6 +269,7 @@ def executeArbitrage(recipe, isRollback):
 
         else:
 
+            # Check If Arbitrage Was Profitable
             wasProfitable = recipe[position]["wallet"]["balances"]["stablecoin"] > startingStables
             profitLoss = abs(recipe[position]["wallet"]["balances"]["stablecoin"] - startingStables)
 
@@ -317,7 +322,7 @@ def executeArbitrage(recipe, isRollback):
 #         stepNumber = steps.index(stepSettings) + 1 + normalStepCount
 #
 #         position = stepSettings["recipePosition"]
-#         oppositePosition = getOppositeDirection(position)
+#         oppositePosition = getOppositePosition(position)
 #         fromToken = stepSettings["from"]
 #         toToken = stepSettings["to"]
 #
