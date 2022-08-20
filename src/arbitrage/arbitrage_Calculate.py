@@ -180,7 +180,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
 
         if not stepSettings["done"]:
 
-            position = stepSettings["tokenPosition"]
+            position = stepSettings["recipePosition"]
             stepType = stepSettings["type"]
 
             toSwapFrom = stepSettings["from"]

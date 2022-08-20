@@ -1,3 +1,4 @@
+import sys
 from decimal import Decimal
 
 from retry import retry
@@ -189,7 +190,7 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
 
             result = swapToken(
                 recipe=recipe,
-                recipeDirection=topUpDirection,
+                recipePosition=topUpDirection,
                 tokenInAmount=amountInQuoted,
                 tokenOutAmount=amountOutMinWithSlippage,
                 tokenType=topUpTokenToUse,
@@ -257,44 +258,49 @@ def approveToken(rpcUrl, explorerUrl, walletAddress, tokenAddress, spenderAddres
 
     return telegramStatusMessage
 
-def checkAndApproveToken(recipe, tokenPosition, tokenType, tokenApprovalsSwap, stepNumber, telegramStatusMessage):
+def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNumber):
 
-    if tokenApprovalsSwap:
-        typeText = "Swap"
-        spenderAddress = recipe[tokenPosition]["chain"]["contracts"]["router"]["address"]
+    # Dict Params ####################################################
+    telegramStatusMessage = recipe["status"]["telegramMessage"]
+    # Dict Params ####################################################
+
+    # Choose The Contract Address To Choose Based On If Its A Swap or Bridge Approval
+    if approvalType == "swap":
+        spenderAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
+    elif approvalType == "bridge":
+        spenderAddress = recipe[recipePosition]["chain"]["contracts"]["bridges"]["synapse"]["address"]
     else:
-        typeText = "Bridge"
-        spenderAddress = recipe[tokenPosition]["chain"]["contracts"]["bridges"]["synapse"]["address"]
+        sys.exit(f"Invalid Approval Type: {approvalType}")
 
+    # Check If The Token Is Approved
     isApproved = getTokenApprovalStatus(
-        rpcUrl=recipe[tokenPosition]["chain"]["rpc"],
-        walletAddress=recipe[tokenPosition]["wallet"]["address"],
-        tokenAddress=recipe[tokenPosition][tokenType]["address"],
-        spenderAddress=spenderAddress,
-        wethAbi=recipe[tokenPosition]["chain"]["contracts"]["weth"]["abi"]
+        recipe=recipe,
+        recipePosition=recipePosition,
+        tokenType=tokenType,
+        spenderAddress=spenderAddress
     )
 
     if not isApproved:
         printSeperator()
 
-        logger.info(f'{stepNumber}.5 Approving {recipe[tokenPosition][tokenType]["symbol"]} {typeText}')
+        logger.info(f'{stepNumber}.5 Approving {recipe[recipePosition][tokenType]["symbol"]} {typeText}')
         telegramStatusMessage = appendToMessage(messageToAppendTo=telegramStatusMessage,
-                                                messageToAppend=f"{stepNumber} Approving {recipe[tokenPosition][tokenType]['symbol']} {typeText} 💸")
+                                                messageToAppend=f"{stepNumber} Approving {recipe[recipePosition][tokenType]['symbol']} {typeText} 💸")
 
         printSeperator()
 
         telegramStatusMessage = approveToken(
-            rpcUrl=recipe[tokenPosition]["chain"]["rpc"],
-            explorerUrl=recipe[tokenPosition]["chain"]["blockExplorer"]["txBaseURL"],
-            walletAddress=recipe[tokenPosition]["wallet"]["address"],
-            tokenAddress=recipe[tokenPosition][tokenType]["address"],
+            rpcUrl=recipe[recipePosition]["chain"]["rpc"],
+            explorerUrl=recipe[recipePosition]["chain"]["blockExplorer"]["txBaseURL"],
+            walletAddress=recipe[recipePosition]["wallet"]["address"],
+            tokenAddress=recipe[recipePosition][tokenType]["address"],
             spenderAddress=spenderAddress,
-            wethAbi=recipe[tokenPosition]["chain"]["contracts"]["weth"]["abi"],
+            wethAbi=recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"],
             roundTrip=recipe["status"]["currentRoundTrip"],
-            stepCategory=f"{stepNumber}_5_{typeText.lower()}",
+            stepCategory=f"{stepNumber}_5_{approvalType.lower()}",
             telegramStatusMessage=telegramStatusMessage
         )
 
         printSeperator()
 
-    return telegramStatusMessage
+    return recipe

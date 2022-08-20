@@ -124,18 +124,29 @@ def getWalletGasBalance(rpcUrl, walletAddress, wethContractABI):
 
     return Decimal(balance)
 
-def getTokenApprovalStatus(rpcUrl, walletAddress, tokenAddress, spenderAddress, wethAbi):
+def getTokenApprovalStatus(recipe, recipePosition, tokenType, spenderAddress):
+
+    # Dict Params ####################################################
+    rpcUrl = recipe[recipePosition]["chain"]["rpc"]
+    walletAddress = recipe[recipePosition]["wallet"]["address"]
+    tokenAddress = recipe[recipePosition][tokenType]["address"]
+    wethAbi = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
+    # Dict Params ####################################################
+
+    # Setup Web 3
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
 
-    contract = tokenAddress
-    contract = web3.toChecksumAddress(contract)
+    # Get The Token Contract Which We Are Approving
+    contract = web3.eth.contract(
+        address=web3.toChecksumAddress(tokenAddress),
+        abi=wethAbi
+    )
+    
+    # Get The Token Owner + Spender Address
+    tokenOwner = web3.toChecksumAddress(walletAddress)
+    tokenSpender = web3.toChecksumAddress(spenderAddress)
 
-    contract = web3.eth.contract(address=contract, abi=wethAbi)
+    # Call The 'allowance' Contract Function To See If The Token Is Approved
+    isApproved = bool(contract.functions.allowance(tokenOwner, tokenSpender).call())
 
-    _owner = web3.toChecksumAddress(walletAddress)
-    _spender = web3.toChecksumAddress(spenderAddress)
-
-    isApproved = contract.functions.allowance(_owner, _spender).call()
-    isApprovedBool = bool(isApproved)
-
-    return isApprovedBool
+    return isApproved

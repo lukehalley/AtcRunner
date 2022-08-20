@@ -97,31 +97,31 @@ def setupWallet(recipe):
         printSeperator(True)
 
 
-def swapToken(recipe, recipeDirection, tokenInAmount, tokenOutAmount, tokenType, stepCategory):
+def swapToken(recipe, recipePosition, tokenInAmount, tokenOutAmount, tokenType, stepCategory):
 
     # Dict Params ####################################################
     # Token Types
     tokenTypeOpposite = getOppositeToken(tokenType)
-    tokenInDecimals = recipe[recipeDirection][tokenType]["decimals"]
-    tokenDecimalsOut = recipe[recipeDirection][tokenTypeOpposite]["decimals"]
-    swappingFromGas = recipe[recipeDirection][tokenType]["isGas"]
-    swappingToGas = recipe[recipeDirection][tokenTypeOpposite]["isGas"]
+    tokenInDecimals = recipe[recipePosition][tokenType]["decimals"]
+    tokenDecimalsOut = recipe[recipePosition][tokenTypeOpposite]["decimals"]
+    swappingFromGas = recipe[recipePosition][tokenType]["isGas"]
+    swappingToGas = recipe[recipePosition][tokenTypeOpposite]["isGas"]
     # Static Params
-    rpcUrl = recipe[recipeDirection]["chain"]["rpc"]
-    routerAddress = recipe[recipeDirection]["chain"]["contracts"]["router"]["address"]
-    routerABI = recipe[recipeDirection]["chain"]["contracts"]["router"]["abi"]
-    routerABIMappings = recipe[recipeDirection]["chain"]["contracts"]["router"]["mapping"]
-    wethContractABI = recipe[recipeDirection]["chain"]["contracts"]["weth"]["abi"]
-    explorerUrl = recipe[recipeDirection]["chain"]["blockExplorer"]["txBaseURL"]
+    rpcUrl = recipe[recipePosition]["chain"]["rpc"]
+    routerAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
+    routerABI = recipe[recipePosition]["chain"]["contracts"]["router"]["abi"]
+    routerABIMappings = recipe[recipePosition]["chain"]["contracts"]["router"]["mapping"]
+    wethContractABI = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
+    explorerUrl = recipe[recipePosition]["chain"]["blockExplorer"]["txBaseURL"]
     # Dict Params ####################################################
 
     # Get The Swap Routes For Our Token And Normalise Them
     if swappingFromGas:
-        routes = [recipe[recipeDirection]["gas"]["address"], recipe[recipeDirection]["stablecoin"]["address"]]
+        routes = [recipe[recipePosition]["gas"]["address"], recipe[recipePosition]["stablecoin"]["address"]]
     else:
         routes = getRoutes(
             recipe=recipe,
-            position=recipeDirection,
+            position=recipePosition,
             toSwapFrom=tokenType,
             toSwapTo=tokenTypeOpposite
         )
