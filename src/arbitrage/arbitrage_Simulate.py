@@ -9,7 +9,7 @@ logger = getProjectLogger()
 # Simulate an arbitrage step
 def simulateStep(recipe, stepSettings, currentFunds):
     stepType = stepSettings["type"]
-    position = stepSettings["position"]
+    position = stepSettings["tokenPosition"]
     oppositePosition = getOppositeDirection(position)
 
     toSwapFrom = stepSettings["from"]

@@ -1,82 +1,82 @@
 from web3 import Web3
 
 def getPairName(pool_address, rpc_address, ABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = web3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.symbol().call()
 
 def getPairSymbol(pool_address, rpc_address, ABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = web3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.symbol().call()
 
 def getPairToken0(pool_address, rpc_address, ABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = web3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.token0().call()
 
 def getPairToken1(pool_address, rpc_address, ABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = web3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.token1().call()
 
 def getPairDecimals(pool_address, rpc_address, ABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = web3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.decimals().call()
 
 def getPairTotalSupply(pool_address, rpc_address, ABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = web3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.totalSupply().call()
 
 def getPairReserves(pool_address, rpc_address, ABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = web3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.getReserves().call()
 
 def getBalanceOfToken(pool_address, owner_address, rpc_address, ABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = web3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.balanceOf(owner_address).call()
 
 def getPairPrice0CumulativeLast(pool_address, rpc_address, ABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = web3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.price0CumulativeLast().call()
 
 def getPairPrice1CumulativeLast(pool_address, rpc_address, ABI):
-    w3 = Web3(Web3.HTTPProvider(rpc_address))
+    web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(pool_address)
-    contract = w3.eth.contract(contract_address, abi=ABI)
+    contract = web3.eth.contract(contract_address, abi=ABI)
 
     return contract.functions.price1CumulativeLast().call()
 

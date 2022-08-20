@@ -30,24 +30,24 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
     if "value" not in bridgeTransaction:
         bridgeTransaction["value"] = "0"
 
-    w3 = Web3(Web3.HTTPProvider(fromChainRPCURL))
-    gasPriceWei = w3.fromWei(w3.eth.gas_price, 'gwei')
+    web3 = Web3(Web3.HTTPProvider(fromChainRPCURL))
+    gasPriceWei = web3.fromWei(web3.eth.gas_price, 'gwei')
 
     tx = {
-        'nonce': w3.eth.getTransactionCount(walletAddress, 'pending'),
+        'nonce': web3.eth.getTransactionCount(walletAddress, 'pending'),
         'to': bridgeTransaction["to"],
         'chainId': int(fromChain),
         'gas': int(os.environ.get("BRIDGE_GAS")),
-        'gasPrice': w3.eth.gas_price,
+        'gasPrice': web3.eth.gas_price,
         'data': bridgeTransaction["unsigned_data"],
         'value': int(bridgeTransaction["value"])
     }
 
-    balanceBeforeBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
+    balanceBeforeBridge = getTokenBalance(rpcUrl=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
     transactionResult = signAndSendTransaction(
         tx=tx,
-        rpcURL=fromChainRPCURL,
+        rpcUrl=fromChainRPCURL,
         explorerUrl=explorerUrl,
         roundTrip=roundTrip,
         stepCategory=stepCategory,
@@ -65,14 +65,14 @@ def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCUR
         stepNumber=stepNumber
     )
 
-    balanceAfterBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
+    balanceAfterBridge = getTokenBalance(rpcUrl=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
     actualBridgedAmount = balanceAfterBridge - balanceBeforeBridge
 
     result = {
         "successfull": fundsBridged,
         "bridgeOutput": actualBridgedAmount,
-        "fee": getTokenNormalValue(transactionResult["gasUsed"] * w3.toWei(gasPriceWei, 'gwei'), 18),
+        "fee": getTokenNormalValue(transactionResult["gasUsed"] * web3.toWei(gasPriceWei, 'gwei'), 18),
         "blockURL": transactionResult["explorerLink"],
         "hash": transactionResult["hash"],
         "telegramStatusMessage": transactionResult["telegramStatusMessage"]

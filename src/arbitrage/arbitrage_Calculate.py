@@ -64,7 +64,7 @@ def determineArbitrageStrategy(recipe):
     directionLockEnabled = strToBool(recipe["arbitrage"]["directionLock"]["lockEnabled"])
 
     if directionLockEnabled:
-        directionlock = recipe["arbitrage"]["directionLock"]["direction"].split(",")
+        directionlock = recipe["arbitrage"]["directionLock"]["topUpDirection"].split(",")
 
         originLock = directionlock[0]
         destinationLock = directionlock[1]
@@ -91,7 +91,7 @@ def determineArbitrageStrategy(recipe):
             recipe["destination"]["gas"]["price"] = chainOneGasPrice
 
         else:
-            errMsg = f'Invalid direction lock: {directionlock}'
+            errMsg = f'Invalid topUpDirection lock: {directionlock}'
             logger.error(errMsg)
             raise Exception(errMsg)
 
@@ -180,7 +180,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
 
         if not stepSettings["done"]:
 
-            position = stepSettings["position"]
+            position = stepSettings["tokenPosition"]
             stepType = stepSettings["type"]
 
             toSwapFrom = stepSettings["from"]

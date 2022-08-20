@@ -15,7 +15,7 @@ def getNextArbitrageNumber():
 def getRoutes(recipe, position, toSwapFrom, toSwapTo):
     return recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
 
-# Get the opposite arb direction
+# Get the opposite arb topUpDirection
 def getOppositeDirection(direction):
     if direction == "origin":
         return "destination"

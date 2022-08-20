@@ -25,37 +25,37 @@ def getNetworkWETH(chainDetails):
     routerABI = chainDetails["contracts"]["router"]["abi"]
     routerABIMappings = chainDetails["contracts"]["router"]["mapping"]
 
-    w3 = Web3(Web3.HTTPProvider(rpcUrl))
+    web3 = Web3(Web3.HTTPProvider(rpcUrl))
 
     wethFunctionName = getMappedContractFunction(functionName="WETH", abiMapping=routerABIMappings)
     routerABI = fillEmptyABIParams(abi=routerABI, contractFunctionName=wethFunctionName)
 
     contract_address = Web3.toChecksumAddress(routerAddress)
-    contract = w3.eth.contract(contract_address, abi=routerABI)
+    contract = web3.eth.contract(contract_address, abi=routerABI)
 
     return callMappedContractFunction(contract=contract, functionToCall=wethFunctionName)
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getWalletAddressFromPrivateKey(rpcURL):
-    w3 = Web3(Web3.HTTPProvider(rpcURL))
+def getWalletAddressFromPrivateKey(rpcUrl):
+    web3 = Web3(Web3.HTTPProvider(rpcUrl))
     privateKey = getPrivateKey()
-    return w3.eth.account.privateKeyToAccount(privateKey).address
+    return web3.eth.account.privateKeyToAccount(privateKey).address
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getGasPrice(rpcURL):
+def getGasPrice(rpcUrl):
     # Connect to our RPC.
-    w3 = Web3(Web3.HTTPProvider(rpcURL))
+    web3 = Web3(Web3.HTTPProvider(rpcUrl))
 
-    gasPrice = Decimal(w3.fromWei(w3.eth.gas_price, 'gwei'))
+    gasPrice = Decimal(web3.fromWei(web3.eth.gas_price, 'gwei'))
 
     return gasPrice
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getTokenBalance(rpcURL, tokenAddress, tokenDecimals, wethContractABI):
-    walletAddress = getWalletAddressFromPrivateKey(rpcURL=rpcURL)
+def getTokenBalance(rpcUrl, tokenAddress, tokenDecimals, wethContractABI):
+    walletAddress = getWalletAddressFromPrivateKey(rpcUrl=rpcUrl)
 
     balanceWei = getBalanceOfToken(
-        rpc_address=rpcURL,
+        rpc_address=rpcUrl,
         address=walletAddress,
         token_address=tokenAddress,
         wethContractABI=wethContractABI
@@ -78,13 +78,13 @@ def getWalletsInformation(recipe, printBalances=False):
         recipe[direction]["wallet"]["balances"] = {}
 
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
-            rpcURL=recipe[direction]["chain"]["rpc"],
+            rpcUrl=recipe[direction]["chain"]["rpc"],
             walletAddress=recipe[direction]["wallet"]["address"],
             wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
         )
 
         recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
-            rpcURL=recipe[direction]["chain"]["rpc"],
+            rpcUrl=recipe[direction]["chain"]["rpc"],
             tokenAddress=recipe[direction]["stablecoin"]["address"],
             tokenDecimals=recipe[direction]["stablecoin"]["decimals"],
             wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
@@ -96,7 +96,7 @@ def getWalletsInformation(recipe, printBalances=False):
             recipe[direction]["wallet"]["balances"]["token"] = recipe[direction]["wallet"]["balances"]["gas"]
         else:
             recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
-                rpcURL=recipe[direction]["chain"]["rpc"],
+                rpcUrl=recipe[direction]["chain"]["rpc"],
                 tokenAddress=recipe[direction]["token"]["address"],
                 tokenDecimals=recipe[direction]["token"]["decimals"],
                 wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
@@ -117,10 +117,10 @@ def getWalletsInformation(recipe, printBalances=False):
     return recipe
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getWalletGasBalance(rpcURL, walletAddress, wethContractABI):
-    w3 = Web3(Web3.HTTPProvider(rpcURL))
+def getWalletGasBalance(rpcUrl, walletAddress, wethContractABI):
+    web3 = Web3(Web3.HTTPProvider(rpcUrl))
 
-    balance = convertWeiToETH(w3, getBalanceOfToken(address=walletAddress, rpc_address=rpcURL, wethContractABI=wethContractABI, getGasTokenBalance=True))
+    balance = convertWeiToETH(web3, getBalanceOfToken(address=walletAddress, rpc_address=rpcUrl, wethContractABI=wethContractABI, getGasTokenBalance=True))
 
     return Decimal(balance)
 

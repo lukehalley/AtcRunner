@@ -24,14 +24,15 @@ def sendMessage(msg, channelId=telegramChannelID):
 
 # Add another line to a message
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def appendToMessage(originalMessage, messageToAppend):
-    originalText = originalMessage["text"]
+def appendToMessage(messageToAppendTo, messageToAppend):
+
+    originalText = messageToAppendTo["text"]
 
     newText = f"{originalText}\n{messageToAppend}"
 
     try:
-        updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
-                                               message_id=originalMessage.message_id,
+        updatedMessage = bot.edit_message_text(chat_id=messageToAppendTo.chat_id,
+                                               message_id=messageToAppendTo.message_id,
                                                text=newText)
         return updatedMessage
     except Exception as e:

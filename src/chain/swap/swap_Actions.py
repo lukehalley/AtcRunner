@@ -4,9 +4,10 @@ from decimal import Decimal
 from web3 import Web3
 
 from src.apis.telegramBot.telegramBot_Action import updateStatusMessage
+from src.arbitrage.arbitrage_Utils import getOppositeToken, getRoutes
 from src.chain.network.network_Actions import buildMappedContractFunction, signAndSendTransaction
 from src.chain.network.network_Querys import getWalletsInformation, getWalletGasBalance, getTokenBalance
-from src.chain.swap.swap_Querys import getSwapQuoteOut
+from src.chain.swap.swap_Querys import getSwapQuoteOut, normaliseSwapRoutes
 from src.utils.chain.chain_ABI import getMappedContractFunction
 from src.utils.chain.chain_Calculations import getValueWithSlippage, getTransactionDeadline
 from src.utils.chain.chain_Wallet import getPrivateKey
@@ -18,6 +19,7 @@ from src.utils.math.math_Decimal import truncateDecimal
 logger = getProjectLogger()
 
 transactionTimeout = getTransactionDeadline()
+
 
 def setupWallet(recipe):
     originHasStablecoins = recipe["origin"]["wallet"]["balances"]["stablecoin"] > 0.1
@@ -54,12 +56,12 @@ def setupWallet(recipe):
         amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
 
         swapResult = swapToken(
-            amountInNormal=amountInNormal,
-            amountInDecimals=recipe[positionToSetup][toSwapFrom]["decimals"],
-            amountOutNormal=amountOutMinWithSlippage,
-            amountOutDecimals=recipe[positionToSetup][toSwapTo]["decimals"],
+            tokenInAmount=amountInNormal,
+            tokenInDecimals=recipe[positionToSetup][toSwapFrom]["decimals"],
+            tokenOutAmount=amountOutMinWithSlippage,
+            tokenDecimalsOut=recipe[positionToSetup][toSwapTo]["decimals"],
             tokenPath=swapRoute,
-            rpcURL=recipe[positionToSetup]["chain"]["rpc"],
+            rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
             roundTrip=recipe["status"]["currentRoundTrip"],
             stepCategory=f"0_setup",
             explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
@@ -94,42 +96,71 @@ def setupWallet(recipe):
 
         printSeperator(True)
 
-def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, routerABI, routerABIMappings,
-              roundTrip, stepCategory, explorerUrl, wethContractABI, telegramStatusMessage=None,
-              swappingFromGas=False, swappingToGas=False):
 
-    # Setup our web3 object
-    w3 = Web3(Web3.HTTPProvider(rpcURL))
+def swapToken(recipe, recipeDirection, tokenInAmount, tokenOutAmount, tokenType, stepCategory):
+
+    # Dict Params ####################################################
+    # Token Types
+    tokenTypeOpposite = getOppositeToken(tokenType)
+    tokenInDecimals = recipe[recipeDirection][tokenType]["decimals"]
+    tokenDecimalsOut = recipe[recipeDirection][tokenTypeOpposite]["decimals"]
+    swappingFromGas = recipe[recipeDirection][tokenType]["isGas"]
+    swappingToGas = recipe[recipeDirection][tokenTypeOpposite]["isGas"]
+    # Static Params
+    rpcUrl = recipe[recipeDirection]["chain"]["rpc"]
+    routerAddress = recipe[recipeDirection]["chain"]["contracts"]["router"]["address"]
+    routerABI = recipe[recipeDirection]["chain"]["contracts"]["router"]["abi"]
+    routerABIMappings = recipe[recipeDirection]["chain"]["contracts"]["router"]["mapping"]
+    wethContractABI = recipe[recipeDirection]["chain"]["contracts"]["weth"]["abi"]
+    explorerUrl = recipe[recipeDirection]["chain"]["blockExplorer"]["txBaseURL"]
+    # Dict Params ####################################################
+
+    # Get The Swap Routes For Our Token And Normalise Them
+    if swappingFromGas:
+        routes = [recipe[recipeDirection]["gas"]["address"], recipe[recipeDirection]["stablecoin"]["address"]]
+    else:
+        routes = getRoutes(
+            recipe=recipe,
+            position=recipeDirection,
+            toSwapFrom=tokenType,
+            toSwapTo=tokenTypeOpposite
+        )
+    normalisedRoutes = normaliseSwapRoutes(routes)
+
+    # Setup Web3
+    web3 = Web3(Web3.HTTPProvider(rpcUrl))
     privateKey = getPrivateKey()
-    walletAddress = w3.eth.account.privateKeyToAccount(privateKey).address
-    w3.eth.default_account = walletAddress
+    walletAddress = web3.eth.account.privateKeyToAccount(privateKey).address
+    web3.eth.default_account = walletAddress
 
-    # Get general settings for our transaction
-    nonce = w3.eth.getTransactionCount(walletAddress, 'pending')
-    gasPriceWei = w3.fromWei(w3.eth.gas_price, 'gwei')
+    # Create Transaction Params
+    transactionNonce = web3.eth.getTransactionCount(walletAddress, 'pending')
+    transactionGasPriceWei = web3.fromWei(web3.eth.gas_price, 'gwei')
+    transactionContract = web3.eth.contract(routerAddress, abi=routerABI)
+    transactionDeadline = getTransactionDeadline(timeInSeconds=transactionTimeout)
 
-    # Get properties for our swap contract
-    contract = w3.eth.contract(routerAddress, abi=routerABI)
-
+    # Create Transaction Object
     txParams = {
-        'gasPrice': w3.toWei(gasPriceWei, 'gwei'),
-        'nonce': nonce,
+        'gasPrice': web3.toWei(transactionGasPriceWei, 'gwei'),
+        'nonce': transactionNonce,
         'gas': int(os.environ.get("SWAP_GAS"))
     }
 
-    amountInWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
-    amountOutWei = int(getTokenDecimalValue(amountOutNormal, amountOutDecimals))
+    # Get Amount In + Out In Wei
+    amountInWei = getTokenDecimalValue(
+        amount=tokenInAmount,
+        decimalPlaces=tokenInDecimals
+    )
+    amountOutWei = getTokenDecimalValue(
+        amount=tokenOutAmount,
+        decimalPlaces=tokenDecimalsOut
+    )
 
-    normalisedRoutes = []
-
-    for token in tokenPath:
-        normalisedRoutes.append(Web3.toChecksumAddress(token))
-
-    transactionDeadline = getTransactionDeadline(timeInSeconds=transactionTimeout)
-
+    # Check If We Are Swapping To A Gas Token
     if swappingToGas:
 
-        params = [
+        # Build A List Of Params Which Will Be Passed To Contract
+        contractParams = [
             amountInWei,
             amountOutWei,
             normalisedRoutes,
@@ -137,28 +168,46 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
             transactionDeadline
         ]
 
-        swapExactTokensForETHFunctionName = getMappedContractFunction(functionName="swapExactTokensForETH", abiMapping=routerABIMappings)
+        # Get The Current Network's Equivalent Of 'swapExactTokensForETH'
+        swapExactTokensForETHFunctionName = getMappedContractFunction(
+            functionName="swapExactTokensForETH",
+            abiMapping=routerABIMappings
+        )
 
-        tx = buildMappedContractFunction(contract=contract, functionToCall=swapExactTokensForETHFunctionName, txParams=txParams, functionParams=params)
+        # Build A Transaction For This Function
+        tx = buildMappedContractFunction(
+            contract=transactionContract,
+            functionToCall=swapExactTokensForETHFunctionName,
+            txParams=txParams,
+            functionParams=contractParams
+        )
 
+    # Check If We Are Swapping From A Gas Token
     elif swappingFromGas:
 
-        params = [
+        # Build A List Of Params Which Will Be Passed To Contract
+        contractParams = [
             amountOutWei,
             normalisedRoutes,
             walletAddress,
             transactionDeadline
         ]
 
-        swapExactETHForTokensFunctionName = getMappedContractFunction(functionName="swapExactETHForTokens", abiMapping=routerABIMappings)
+        # Get The Current Network's Equivalent Of 'swapExactETHForTokens'
+        swapExactETHForTokensFunctionName = getMappedContractFunction(functionName="swapExactETHForTokens",
+                                                                      abiMapping=routerABIMappings)
 
-        tx = buildMappedContractFunction(contract=contract, functionToCall=swapExactETHForTokensFunctionName, txParams=txParams, functionParams=params)
+        # Build A Transaction For This Function
+        tx = buildMappedContractFunction(contract=transactionContract, functionToCall=swapExactETHForTokensFunctionName,
+                                         txParams=txParams, functionParams=contractParams)
 
+        # Add The Value Param
         tx["value"] = amountInWei
 
     else:
 
-        params = [
+        # Build A List Of Params Which Will Be Passed To Contract
+        contractParams = [
             amountInWei,
             amountOutWei,
             normalisedRoutes,
@@ -166,40 +215,57 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
             transactionDeadline
         ]
 
-        swapExactTokensForTokensFunctionName = getMappedContractFunction(functionName="swapExactTokensForTokens", abiMapping=routerABIMappings)
+        # Get The Current Network's Equivalent Of 'swapExactTokensForTokens'
+        swapExactTokensForTokensFunctionName = getMappedContractFunction(functionName="swapExactTokensForTokens",
+                                                                         abiMapping=routerABIMappings)
 
-        tx = buildMappedContractFunction(contract=contract, functionToCall=swapExactTokensForTokensFunctionName, txParams=txParams, functionParams=params)
+        # Build A Transaction For This Function
+        tx = buildMappedContractFunction(contract=transactionContract,
+                                         functionToCall=swapExactTokensForTokensFunctionName,
+                                         txParams=txParams, functionParams=contractParams)
 
+    # Check The Balance Og The Token Before We Swap
+    # So We Know The True Amount We Gained
     if swappingToGas:
-        balanceBeforeSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress,
-                                                wethContractABI=wethContractABI)
+        balanceBeforeSwap = getWalletGasBalance(
+            rpcUrl=rpcUrl,
+            walletAddress=walletAddress,
+            wethContractABI=wethContractABI
+        )
     else:
-        balanceBeforeSwap = getTokenBalance(rpcURL=rpcURL, tokenAddress=tokenPath[-1], tokenDecimals=amountOutDecimals, wethContractABI=wethContractABI)
+        balanceBeforeSwap = getTokenBalance(
+            rpcUrl=rpcUrl,
+            tokenAddress=normalisedRoutes[-1],
+            tokenDecimals=tokenDecimalsOut,
+            wethContractABI=wethContractABI
+        )
 
+    # Sign The Transaction And Send It
     transactionResult = signAndSendTransaction(
         tx=tx,
-        rpcURL=rpcURL,
+        rpcUrl=rpcUrl,
         explorerUrl=explorerUrl,
-        roundTrip=roundTrip,
+        roundTrip=recipe["status"]["currentRoundTrip"],
         stepCategory=stepCategory,
-        telegramStatusMessage=telegramStatusMessage
+        telegramStatusMessage=recipe["status"]["telegramMessage"]
     )
 
+    # After The Swap, Calculate What We Truly Gained
     balanceAfterSwap = balanceBeforeSwap
-
     while balanceAfterSwap <= balanceBeforeSwap:
         if swappingToGas:
-            balanceAfterSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress, wethContractABI=wethContractABI)
+            balanceAfterSwap = getWalletGasBalance(rpcUrl=rpcUrl, walletAddress=walletAddress,
+                                                   wethContractABI=wethContractABI)
         else:
-            balanceAfterSwap = getTokenBalance(rpcURL=rpcURL, tokenAddress=tokenPath[-1],
-                                               tokenDecimals=amountOutDecimals, wethContractABI=wethContractABI)
-
+            balanceAfterSwap = getTokenBalance(rpcUrl=rpcUrl, tokenAddress=normalisedRoutes[-1],
+                                               tokenDecimals=tokenDecimalsOut, wethContractABI=wethContractABI)
     actualSwapAmount = balanceAfterSwap - balanceBeforeSwap
 
+    # Create A Result Object We Can Store Later
     result = {
         "successfull": transactionResult["wasSuccessful"],
         "swapOutput": actualSwapAmount,
-        "fee": getTokenNormalValue(transactionResult["gasUsed"] * w3.toWei(gasPriceWei, 'gwei'), 18),
+        "fee": getTokenNormalValue(transactionResult["gasUsed"] * web3.toWei(transactionGasPriceWei, 'gwei'), 18),
         "blockURL": transactionResult['explorerLink'],
         "hash": transactionResult["hash"],
         "telegramStatusMessage": transactionResult["telegramStatusMessage"]

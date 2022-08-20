@@ -64,7 +64,7 @@ def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePe
         logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
         logger.info(f"ROLLBACK #{count} DONE")
         logger.info(f"Made A Profit Of ${profitLoss} ({arbitragePercentage}%)")
-        appendToMessage(originalMessage=telegramStatusMessage,
+        appendToMessage(messageToAppendTo=telegramStatusMessage,
                         messageToAppend=f"Made A Profit Of ${round(profitLoss, 2)} ({arbitragePercentage}%) 👍\n")
         logger.info(timeString)
         logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
@@ -72,7 +72,7 @@ def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePe
         logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
         logger.info(f"ROLLBACK #{count} DONE")
         logger.info(f"Made A Loss Of ${profitLoss} ({arbitragePercentage}%)")
-        appendToMessage(originalMessage=telegramStatusMessage,
+        appendToMessage(messageToAppendTo=telegramStatusMessage,
                         messageToAppend=f"Made A Loss Of ${round(profitLoss, 2)} ({arbitragePercentage}%) 👎\n")
         logger.info(timeString)
         logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
@@ -103,14 +103,14 @@ def printArbitrageResult(count, amount, percentageDifference, wasProfitable, sta
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.info(f"ARBITRAGE #{count} ROLLBACK RESULT")
         logger.info(f"Made A Profit Of ${amount} ({percentageDifference}%)")
-        appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"Made A Profit Of ${round(amount, 2)} ({percentageDifference}%) 👍\n")
+        appendToMessage(messageToAppendTo=telegramStatusMessage, messageToAppend=f"Made A Profit Of ${round(amount, 2)} ({percentageDifference}%) 👍\n")
         logger.info(timeString)
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
     else:
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         logger.info(f"ARBITRAGE #{count} ROLLBACK RESULT")
         logger.info(f"Made A Loss Of ${amount} ({percentageDifference}%)")
-        appendToMessage(originalMessage=telegramStatusMessage, messageToAppend=f"Made A Loss Of ${round(amount, 2)} ({percentageDifference}%) 👎\n")
+        appendToMessage(messageToAppendTo=telegramStatusMessage, messageToAppend=f"Made A Loss Of ${round(amount, 2)} ({percentageDifference}%) 👎\n")
         logger.info(timeString)
         logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
