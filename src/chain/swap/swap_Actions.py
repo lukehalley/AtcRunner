@@ -1,6 +1,7 @@
 import os
 from decimal import Decimal
 
+from retry import retry
 from web3 import Web3
 
 from src.apis.telegramBot.telegramBot_Action import updateStatusMessage
@@ -15,11 +16,12 @@ from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
 from src.utils.logging.logging_Print import printSettingUpWallet, printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
+from src.utils.retry.retry_Params import getRetryParams
 
 logger = getProjectLogger()
 
 transactionTimeout = getTransactionDeadline()
-
+transactionRetryLimit, transactionRetryDelay, = getRetryParams(retryType="transactionAction")
 
 def setupWallet(recipe, recipePosition, tokenType, stepCategory):
     
@@ -93,8 +95,8 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
 
         return recipe
 
-
-def swapToken(recipe, recipePosition, tokenInAmount, tokenOutAmount, tokenType, stepCategory):
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def swapToken(recipe, recipePosition, tokenType, stepCategory):
     
     # Dict Params ####################################################
     # Token Types
@@ -109,8 +111,33 @@ def swapToken(recipe, recipePosition, tokenInAmount, tokenOutAmount, tokenType, 
     routerABI = recipe[recipePosition]["chain"]["contracts"]["router"]["abi"]
     routerABIMappings = recipe[recipePosition]["chain"]["contracts"]["router"]["mapping"]
     wethContractABI = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
-    explorerUrl = recipe[recipePosition]["chain"]["blockExplorer"]["txBaseURL"]
     # Dict Params ####################################################
+
+    # Get Wallet Balances
+    recipe = getWalletsInformation(
+        recipe=recipe
+    )
+
+    # Get Token Balance Before We Swap
+    balanceBeforeSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
+
+    # First Get A Quote
+    amountOutQuoted = getSwapQuoteOut(
+        recipe=recipe,
+        recipePosition=recipePosition,
+        tokenType=tokenType,
+        tokenIsGas=recipe[recipePosition][tokenType]["isGas"],
+        tokenAmountIn=recipe[recipePosition]["wallet"]["balances"][tokenType]
+    )
+
+    # Calculate Min Out With Slippage
+    amountOutMinWithSlippage = getValueWithSlippage(
+        amount=amountOutQuoted,
+        slippage=0.5
+    )
+
+    tokenInAmount = recipe[recipePosition]["wallet"]["balances"][tokenType],
+    tokenOutAmount = amountOutMinWithSlippage,
 
     # Get The Swap Routes For Our Token And Normalise Them
     if swappingFromGas:
@@ -220,22 +247,6 @@ def swapToken(recipe, recipePosition, tokenInAmount, tokenOutAmount, tokenType, 
                                          functionToCall=swapExactTokensForTokensFunctionName,
                                          txParams=txParams, functionParams=contractParams)
 
-    # Check The Balance Og The Token Before We Swap
-    # So We Know The True Amount We Gained
-    if swappingToGas:
-        balanceBeforeSwap = getWalletGasBalance(
-            rpcUrl=rpcUrl,
-            walletAddress=walletAddress,
-            wethContractABI=wethContractABI
-        )
-    else:
-        balanceBeforeSwap = getTokenBalance(
-            fromChainRPCUrl=rpcUrl,
-            tokenAddress=normalisedRoutes[-1],
-            tokenDecimals=tokenDecimalsOut,
-            wethContractABI=wethContractABI
-        )
-
     # Sign The Transaction And Send It
     signAndSendTransaction(
         tx=tx,
@@ -244,14 +255,14 @@ def swapToken(recipe, recipePosition, tokenInAmount, tokenOutAmount, tokenType, 
         stepCategory=stepCategory
     )
 
-    # After The Swap, Calculate What We Truly Gained
-    balanceAfterSwap = balanceBeforeSwap
-    while balanceAfterSwap <= balanceBeforeSwap:
-        if swappingToGas:
-            balanceAfterSwap = getWalletGasBalance(rpcUrl=rpcUrl, walletAddress=walletAddress,
-                                                   wethContractABI=wethContractABI)
-        else:
-            balanceAfterSwap = getTokenBalance(fromChainRPCUrl=rpcUrl, tokenAddress=normalisedRoutes[-1],
-                                               tokenDecimals=tokenDecimalsOut, wethContractABI=wethContractABI)
+    # Get The Balance After Swap So We Know How Much Tokens We Gained
+    balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
+
+    # Wait For The Tokens To Arrive In Out Wallet
+    while balanceAfterSwap == balanceBeforeSwap:
+        recipe = getWalletsInformation(
+            recipe=recipe
+        )
+        balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
 
     return recipe
