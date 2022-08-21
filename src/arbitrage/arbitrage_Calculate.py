@@ -179,79 +179,77 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
 
         stepNumber = steps.index(stepSettings) + 1
 
-        if not stepSettings["done"]:
+        position = stepSettings["position"]
+        stepType = stepSettings["type"]
 
-            position = stepSettings["position"]
-            stepType = stepSettings["type"]
+        toSwapFrom = stepSettings["from"]
+        toSwapTo = stepSettings["to"]
 
-            toSwapFrom = stepSettings["from"]
-            toSwapTo = stepSettings["to"]
+        if stepNumber <= 1 and printInfo:
+            logger.info(f'Starting Capital: {startingStables} {recipe[position]["stablecoin"]["name"]}')
+            printSeparator()
 
-            if stepNumber <= 1 and printInfo:
-                logger.info(f'Starting Capital: {startingStables} {recipe[position]["stablecoin"]["name"]}')
+        if toSwapTo != "done":
+
+            if printInfo:
+                logger.info(
+                    f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+
+            predictions["steps"][stepNumber] = {
+                "stepType": stepType,
+                "amountIn": currentFunds[toSwapFrom],
+            }
+
+            if printInfo:
                 printSeparator()
 
-            if toSwapTo != "done":
+            quote = simulateStep(
+                recipe=recipe,
+                stepSettings=stepSettings,
+                currentFunds=currentFunds
+            )
 
-                if printInfo:
-                    logger.info(
-                        f'{stepNumber}. {stepType.title()} {truncateDecimal(currentFunds[toSwapFrom], 6)} {recipe[position][toSwapFrom]["name"]} -> {recipe[position][toSwapTo]["name"]}')
+            currentFunds[toSwapTo] = quote
 
-                predictions["steps"][stepNumber] = {
-                    "stepType": stepType,
-                    "amountIn": currentFunds[toSwapFrom],
-                }
+            if printInfo:
+                logger.info(
+                    f'   Out {truncateDecimal(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
 
-                if printInfo:
-                    printSeparator()
+            predictions["steps"][stepNumber]["amountOut"] = currentFunds[toSwapTo]
 
-                quote = simulateStep(
-                    recipe=recipe,
-                    stepSettings=stepSettings,
-                    currentFunds=currentFunds
-                )
+            if printInfo:
+                printSeparator()
 
-                currentFunds[toSwapTo] = quote
+        else:
 
-                if printInfo:
-                    logger.info(
-                        f'   Out {truncateDecimal(currentFunds[toSwapTo], 6)} {recipe[position][toSwapTo]["name"]}')
+            arbitragePercentage = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
+            isOverPercentage = calculateArbitrageIsWorthIt(difference=arbitragePercentage)
 
-                predictions["steps"][stepNumber]["amountOut"] = currentFunds[toSwapTo]
+            isProfitable = (currentFunds["stablecoin"] > startingStables) and isOverPercentage
 
-                if printInfo:
-                    printSeparator()
+            profitLoss = currentFunds["stablecoin"] - startingStables
+            profitLossReadable = truncateDecimal(profitLoss, 2)
 
+            startingStablesReadable = truncateDecimal(startingStables, 2)
+            outStablesReadable = truncateDecimal(currentFunds["stablecoin"], 2)
+
+            calculateDifference(outStablesReadable, startingStablesReadable)
+
+            if profitLossReadable > 0:
+                amountStr = f"${profitLossReadable}"
             else:
+                amountStr = f"-${abs(profitLossReadable)}"
 
-                arbitragePercentage = percentageDifference(currentFunds["stablecoin"], startingStables, 2)
-                isOverPercentage = calculateArbitrageIsWorthIt(difference=arbitragePercentage)
-
-                isProfitable = (currentFunds["stablecoin"] > startingStables) and isOverPercentage
-
-                profitLoss = currentFunds["stablecoin"] - startingStables
-                profitLossReadable = truncateDecimal(profitLoss, 2)
-
-                startingStablesReadable = truncateDecimal(startingStables, 2)
-                outStablesReadable = truncateDecimal(currentFunds["stablecoin"], 2)
-
-                calculateDifference(outStablesReadable, startingStablesReadable)
-
-                if profitLossReadable > 0:
-                    amountStr = f"${profitLossReadable}"
+            if printInfo:
+                if isProfitable:
+                    logger.info(f'Profit: {amountStr} ({arbitragePercentage}%)')
                 else:
-                    amountStr = f"-${abs(profitLossReadable)}"
+                    logger.info(f'Loss: {amountStr} ({arbitragePercentage}%)')
 
-                if printInfo:
-                    if isProfitable:
-                        logger.info(f'Profit: {amountStr} ({arbitragePercentage}%)')
-                    else:
-                        logger.info(f'Loss: {amountStr} ({arbitragePercentage}%)')
-
-                predictions["startingStables"] = startingStablesReadable
-                predictions["outStables"] = outStablesReadable
-                predictions["profitLoss"] = profitLossReadable
-                predictions["arbitragePercentage"] = arbitragePercentage
+            predictions["startingStables"] = startingStablesReadable
+            predictions["outStables"] = outStablesReadable
+            predictions["profitLoss"] = profitLossReadable
+            predictions["arbitragePercentage"] = arbitragePercentage
 
     recipe["arbitrage"]["isProfitable"] = isProfitable
     recipe["arbitrage"]["predictions"] = predictions
