@@ -15,6 +15,7 @@ build:
   only:
     variables:
       - $CI_COMMIT_BRANCH != "master"
+  
 
 buildAndPush:
   image:
