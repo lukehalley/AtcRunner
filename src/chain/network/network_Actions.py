@@ -53,7 +53,7 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
     logger.info(f'Chain ID: {tx["chainId"]}')
     logger.info(f'Nonce: {tx["nonce"]}')
     logger.info(f'To: {tx["to"]}')
-    logger.info(f'Gas Limit: {tx["gas"]}')
+    logger.info(f'Gas Limit: {initGas}')
     logger.info(f'Gas Price: {tx["gasPrice"]}')
 
     printSeparator()
@@ -68,6 +68,7 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
     except Exception as e:
         isKnownTransactionError = "known transaction" in e.args[0]["message"]
         isNonceTooLowError = "nonce too low" in e.args[0]["message"]
+        isTransactionUnderpriced = "transaction underpriced" in e.args[0]["message"]
         if isKnownTransactionError:
             logger.warning("Hit isKnownTransactionError but going ahead...")
             pass
