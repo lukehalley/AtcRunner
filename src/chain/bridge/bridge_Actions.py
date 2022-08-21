@@ -1,22 +1,29 @@
 import os
 
+from retry import retry
 from web3 import Web3
 
 from src.apis.synapseBridge.synapseBridge_Generate import generateUnsignedBridgeTransaction
 from src.arbitrage.arbitrage_Utils import getOppositeToken, getOppositePosition
 from src.chain.bridge.bridge_Querys import waitForBridgeToComplete
 from src.chain.network.network_Actions import signAndSendTransaction
-from src.chain.network.network_Querys import getWalletAddressFromPrivateKey, getTokenBalance
+from src.chain.network.network_Querys import getWalletAddressFromPrivateKey, getTokenBalance, getWalletsInformation
+from src.utils.chain.chain_Calculations import getTransactionDeadline
 from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
 from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.retry.retry_Params import getRetryParams
 
 logger = getProjectLogger()
 
+transactionTimeout = getTransactionDeadline()
+transactionRetryLimit, transactionRetryDelay, = getRetryParams(retryType="transactionAction")
 
-def executeBridge(recipe, recipePosition, tokenAmountBridge, tokenType, stepCategory, stepNumber):
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
 
     # Dict Params ####################################################
     oppositePosition = getOppositePosition(direction=recipePosition)
+    predictions = recipe["arbitrage"]["predictions"]
     # Token Params
     tokenTypeOpposite = getOppositeToken(tokenType)
     tokenInAddress = recipe[recipePosition][tokenType]["address"]
@@ -27,12 +34,7 @@ def executeBridge(recipe, recipePosition, tokenAmountBridge, tokenType, stepCate
     fromChainRPCUrl = recipe[recipePosition]["chain"]["rpc"]
     toChain = recipe[oppositePosition]["chain"]["id"]
     toChainRPCUrl = recipe[oppositePosition]["chain"]["rpc"]
-    # Static Params
-    predictions = recipe["arbitrage"]["predictions"]
-    currentRoundTrip = recipe["status"]["currentRoundTrip"]
-    # Dict Params ####################################################
     wethContractABI = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
-    explorerUrl = recipe[recipePosition]["chain"]["blockExplorer"]["txBaseURL"]
     # Dict Params ####################################################
 
     # Get Wallet Address From Private Key
@@ -40,11 +42,19 @@ def executeBridge(recipe, recipePosition, tokenAmountBridge, tokenType, stepCate
         rpcUrl=fromChainRPCUrl
     )
 
+    # Get Token Balance Before We Bridge
+    recipe = getWalletsInformation(
+        recipe=recipe
+    )
+
     # Get The Amount We Want To Bridge In Wei
     amountToBridgeWei = getTokenDecimalValue(
-        amount=tokenAmountBridge,
+        amount=recipe[recipePosition]["wallet"]["balances"][tokenType],
         decimalPlaces=tokenInDecimals
     )
+
+    # Get Token Balance Before We Bridge
+    balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][tokenTypeOpposite]
 
     # Generate An Unsigned Bridge Transaction
     bridgeTransaction = \
@@ -65,10 +75,7 @@ def executeBridge(recipe, recipePosition, tokenAmountBridge, tokenType, stepCate
     # Setup Web 3
     web3 = Web3(Web3.HTTPProvider(fromChainRPCUrl))
 
-    # Get The Current Price Of Gas
-    gasPriceWei = web3.fromWei(web3.eth.gas_price, 'gwei')
-
-    # Build Our Full Bridge Transaction
+    # Build Our Full Bridge Transaction Object
     tx = {
         'nonce': web3.eth.getTransactionCount(walletAddress, 'pending'),
         'to': bridgeTransaction["to"],
@@ -99,5 +106,16 @@ def executeBridge(recipe, recipePosition, tokenAmountBridge, tokenType, stepCate
         predictions=predictions,
         stepNumber=stepNumber
     )
+
+    # Get Token Balance After We Bridge
+    recipe = getWalletsInformation(
+        recipe=recipe
+    )
+
+    # Wait For Balance On Chain We Are Bridging On To Update
+    while recipe[oppositePosition]["wallet"]["balances"][tokenTypeOpposite] == balanceBeforeBridge:
+        recipe = getWalletsInformation(
+            recipe=recipe
+        )
 
     return recipe

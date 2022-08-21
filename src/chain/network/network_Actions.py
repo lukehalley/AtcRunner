@@ -88,6 +88,8 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
 
     logger.info(f"{explorerLink}")
 
+    printSeparator()
+
     logger.info(f"Waiting for transaction to be mined...")
 
     try:
