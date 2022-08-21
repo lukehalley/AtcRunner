@@ -213,7 +213,7 @@ def executeArbitrage(recipe, isRollback):
 
                 printSeparator()
                 logger.info(
-                    f'Output: {truncateDecimal(recipe[oppositePosition]["wallet"]["balances"][toToken], 6)}'
+                    f'Output: {truncateDecimal(recipe[oppositePosition]["wallet"]["balances"][toToken], 6)} '
                     f'{recipe[oppositePosition][toToken]["name"]}'
                 )
 
