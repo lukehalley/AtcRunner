@@ -205,7 +205,11 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
                 if printInfo:
                     printSeparator()
 
-                quote = simulateStep(recipe=recipe, stepSettings=stepSettings, currentFunds=currentFunds)
+                quote = simulateStep(
+                    recipe=recipe,
+                    stepSettings=stepSettings,
+                    currentFunds=currentFunds
+                )
 
                 currentFunds[toSwapTo] = quote
 
