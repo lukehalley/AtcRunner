@@ -29,6 +29,8 @@ def executeArbitrage(recipe, isRollback):
     printSeparator()
     if isRollback:
 
+        logger.info("\n")
+
         # Print Arb Info
         logger.info(
             f"[ARB #{recipe['status']['currentRoundTrip']}] "
@@ -45,14 +47,6 @@ def executeArbitrage(recipe, isRollback):
             messageToAppendTo=recipe["status"]["telegramStatusMessage"],
             messageToAppend=f"Rolling Back Arbitrage #{recipe['status']['currentRoundTrip']} ‍⏮"
         )
-
-        # startingTokens = recipe["destination"]["wallet"]["balances"]["token"]
-
-        # Used To Track Arb Balance
-        # currentFunds = {
-        #     "stablecoin": 0,
-        #     "token": startingTokens
-        # }
 
     else:
 
@@ -183,6 +177,8 @@ def executeArbitrage(recipe, isRollback):
                             isRollback=True
                         )
 
+                        break
+
                 # Check If We Are Swapping From Gas
                 # If We Are We Don't Have To Approve It
                 if not recipe[recipePosition][fromToken]["isGas"]:
@@ -232,26 +228,24 @@ def executeArbitrage(recipe, isRollback):
             # Mark The Step As Done
             stepSettings["done"] = True
 
-        else:
+    # Check If Arbitrage Was Profitable
+    wasProfitable = recipe["origin"]["wallet"]["balances"]["stablecoin"] > recipe["status"]["startingStables"]
+    profitLoss = abs(recipe["origin"]["wallet"]["balances"]["stablecoin"] - recipe["status"]["startingStables"])
 
-            # Check If Arbitrage Was Profitable
-            wasProfitable = recipe[recipePosition]["wallet"]["balances"]["stablecoin"] > recipe["status"]["startingStables"]
-            profitLoss = abs(recipe[recipePosition]["wallet"]["balances"]["stablecoin"] - recipe["status"]["startingStables"])
+    # Calculate The Percentage Gain/Loss Made In The Arbitrage
+    if wasProfitable:
+        arbitragePercentage = percentageDifference(recipe["origin"]["wallet"]["balances"]["stablecoin"],
+                                                   recipe["status"]["startingStables"], 2)
+    else:
+        arbitragePercentage = percentageDifference(recipe["status"]["startingStables"],
+                                                   recipe["origin"]["wallet"]["balances"]["stablecoin"], 2)
 
-            # Calculate The Percentage Gain/Loss Made In The Arbitrage
-            if wasProfitable:
-                arbitragePercentage = percentageDifference(recipe[recipePosition]["wallet"]["balances"]["stablecoin"],
-                                                           recipe["status"]["startingStables"], 2)
-            else:
-                arbitragePercentage = percentageDifference(recipe["status"]["startingStables"],
-                                                           recipe[recipePosition]["wallet"]["balances"]["stablecoin"], 2)
-
-            # Print The Applicable Message To Notify The Arbitrage Result
-            printArbitrageComplete(
-                recipe=recipe,
-                wasProfitable=wasProfitable,
-                profitLoss=profitLoss,
-                profitPercentage=arbitragePercentage,
-                wasRollback=isRollback
-            )
+    # Print The Applicable Message To Notify The Arbitrage Result
+    printArbitrageComplete(
+        recipe=recipe,
+        wasProfitable=wasProfitable,
+        profitLoss=profitLoss,
+        profitPercentage=arbitragePercentage,
+        wasRollback=isRollback
+    )
 
