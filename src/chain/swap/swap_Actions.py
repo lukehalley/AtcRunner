@@ -136,8 +136,8 @@ def swapToken(recipe, recipePosition, tokenType, stepCategory):
         slippage=0.5
     )
 
-    tokenInAmount = recipe[recipePosition]["wallet"]["balances"][tokenType],
-    tokenOutAmount = amountOutMinWithSlippage,
+    tokenInAmount = recipe[recipePosition]["wallet"]["balances"][tokenType]
+    tokenOutAmount = amountOutMinWithSlippage
 
     # Get The Swap Routes For Our Token And Normalise Them
     if swappingFromGas:
