@@ -10,7 +10,7 @@ from src.chain.network.network_Querys import getWalletsInformation
 from src.chain.swap.swap_Querys import getSwapQuoteOut
 from src.chain.swap.swap_Actions import swapToken, setupWallet
 from src.utils.chain.chain_Calculations import getValueWithSlippage
-from src.utils.logging.logging_Print import printSeparator, printArbitrageResult, printArbitrageComplete
+from src.utils.logging.logging_Print import printSeparator, printArbitrageComplete
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
 from src.utils.math.math_Percentage import percentageDifference
@@ -264,7 +264,7 @@ def executeArbitrage(recipe, isRollback):
             # Update Telegram Message To Notify The Step Was Successfull
             printSeparator()
             logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[recipePosition][toToken]["name"]}')
-            recipe["telegramStatusMessage"] = updateStatusMessage(originalMessage=recipe["telegramStatusMessage"],
+            recipe["status"]["telegramStatusMessage"] = updateStatusMessage(originalMessage=recipe["status"]["telegramStatusMessage"],
                                                                   newStatus="✅")
             printSeparator(newLine=True)
 
