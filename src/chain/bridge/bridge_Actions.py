@@ -87,7 +87,7 @@ def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
     }
 
     # Sign + Send The Bridge Transaction
-    transactionResult = signAndSendTransaction(
+    recipe, transactionResult = signAndSendTransaction(
         tx=tx,
         recipe=recipe,
         recipePosition=recipePosition,
