@@ -7,7 +7,7 @@ from src.arbitrage.arbitrage_Simulate import simulateStep
 from src.arbitrage.arbitrage_Utils import getNextArbitrageNumber
 from src.chain.swap.swap_Querys import getSwapQuoteOut
 from src.utils.data.data_Booleans import strToBool
-from src.utils.logging.logging_Print import printSeperator
+from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
 from src.utils.math.math_Percentage import percentageDifference
@@ -65,7 +65,7 @@ def determineArbitrageStrategy(recipe):
     directionLockEnabled = strToBool(recipe["arbitrage"]["directionLock"]["lockEnabled"])
 
     if directionLockEnabled:
-        directionlock = recipe["arbitrage"]["directionLock"]["topUpDirection"].split(",")
+        directionlock = recipe["arbitrage"]["directionLock"]["direction"].split(",")
 
         originLock = directionlock[0]
         destinationLock = directionlock[1]
@@ -115,7 +115,7 @@ def determineArbitrageStrategy(recipe):
             recipe["destination"]["token"]["price"] = chainOneTokenPrice
             recipe["destination"]["gas"]["price"] = chainOneGasPrice
 
-    printSeperator()
+    printSeparator()
 
     if directionLockEnabled:
         logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Locked Arbitrage Opportunity Identified')
@@ -132,7 +132,7 @@ def determineArbitrageStrategy(recipe):
         f'{recipe["destination"]["chain"]["name"]} '
     )
 
-    printSeperator()
+    printSeparator()
 
     logger.info(
         f'Arbitrage: {priceDifference}% difference'
@@ -140,7 +140,7 @@ def determineArbitrageStrategy(recipe):
 
     del recipe["chainOne"], recipe["chainTwo"]
 
-    printSeperator(True)
+    printSeparator(True)
 
     return recipe
 
@@ -156,10 +156,10 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
         recipe["origin"]["wallet"]["balances"]["stablecoin"] = balanceOnDest
 
     if printInfo:
-        printSeperator()
+        printSeparator()
         logger.info(f"[ARB #{recipe['status']['currentRoundTrip']}] "
                     f"Simulating Arbitrage")
-        printSeperator()
+        printSeparator()
 
     if "startingStables" in recipe["status"]:
         startingStables = recipe["status"]["startingStables"]
@@ -189,7 +189,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
 
             if stepNumber <= 1 and printInfo:
                 logger.info(f'Starting Capital: {startingStables} {recipe[position]["stablecoin"]["name"]}')
-                printSeperator()
+                printSeparator()
 
             if toSwapTo != "done":
 
@@ -203,7 +203,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
                 }
 
                 if printInfo:
-                    printSeperator()
+                    printSeparator()
 
                 quote = simulateStep(recipe=recipe, stepSettings=stepSettings, currentFunds=currentFunds)
 
@@ -216,7 +216,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
                 predictions["steps"][stepNumber]["amountOut"] = currentFunds[toSwapTo]
 
                 if printInfo:
-                    printSeperator()
+                    printSeparator()
 
             else:
 

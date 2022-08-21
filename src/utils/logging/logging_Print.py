@@ -94,7 +94,7 @@ def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePe
     }
     writeResultToDB(result=result, currentRoundTrip=count)
     logger.info("Result written to Firebase ✅")
-    printSeperator(True)
+    printSeparator(True)
 
 
 # Print the Arbitrage is profitable alert
@@ -135,11 +135,11 @@ def printArbitrageResult(count, amount, percentageDifference, wasProfitable, sta
     writeResultToDB(result=result, currentRoundTrip=count)
     logger.info("Result written to Firebase\n")
 
-    printSeperator(True)
+    printSeparator(True)
 
 
 # Print a seperator line
-def printSeperator(newLine=False):
+def printSeparator(newLine=False):
     if newLine:
         line = ("--------------------------------\n")
     else:

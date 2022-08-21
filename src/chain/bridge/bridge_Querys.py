@@ -5,7 +5,7 @@ from retry import retry
 
 from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeStatusAPI, queryBridgeStatusBalance
 from src.apis.telegramBot.telegramBot_Action import notifyHangingBridge, notifyUnstickedBridge
-from src.utils.logging.logging_Print import printSeperator
+from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.time.time_Calculations import getMinSecString
 
@@ -25,7 +25,7 @@ def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, to
 
     timeoutMins = int(timeout / 60)
 
-    printSeperator()
+    printSeparator()
 
     logger.info(f"Waiting for bridge to complete with a timeout of {timeoutMins} minutes...")
 

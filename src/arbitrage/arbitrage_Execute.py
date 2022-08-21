@@ -10,7 +10,7 @@ from src.chain.network.network_Querys import getWalletsInformation
 from src.chain.swap.swap_Querys import getSwapQuoteOut
 from src.chain.swap.swap_Actions import swapToken, setupWallet
 from src.utils.chain.chain_Calculations import getValueWithSlippage
-from src.utils.logging.logging_Print import printSeperator, printArbitrageResult, printArbitrageRollbackComplete
+from src.utils.logging.logging_Print import printSeparator, printArbitrageResult, printArbitrageRollbackComplete
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
 from src.utils.math.math_Percentage import percentageDifference
@@ -21,12 +21,12 @@ logger = getProjectLogger()
 def executeArbitrage(recipe, isRollback):
 
     # Print Arb Info
-    printSeperator()
+    printSeparator()
     logger.info(
         f"[ARB #{recipe['status']['currentRoundTrip']}] "
         f"Executing Arbitrage"
     )
-    printSeperator()
+    printSeparator()
 
     if isRollback:
         # Fetch Our Rollback Strategy
@@ -94,12 +94,12 @@ def executeArbitrage(recipe, isRollback):
         if stepNumber <= 1:
             # On Step 1 - Print Out Our Starting Stables
             logger.info(f'Starting Capital: {currentFunds["stablecoin"]} {recipe[position]["stablecoin"]["name"]}')
-            printSeperator(True)
+            printSeparator(True)
 
         if toToken != "done":
 
             # Print Out Current Step Info
-            printSeperator()
+            printSeparator()
             logger.info \
                     (
                     f'{stepNumber}. {stepCategory.title()} {truncateDecimal(currentFunds[fromToken], 6)} '
@@ -259,10 +259,10 @@ def executeArbitrage(recipe, isRollback):
                 sys.exit(errMsg)
 
             # Update Telegram Message To Notify The Step Was Successfull
-            printSeperator()
+            printSeparator()
             logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[position][toToken]["name"]}')
             recipe["telegramStatusMessage"] = updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
-            printSeperator(True)
+            printSeparator(True)
 
             # Mark The Step As Done
             stepSettings["done"] = True
