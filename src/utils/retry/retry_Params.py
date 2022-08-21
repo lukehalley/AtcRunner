@@ -7,7 +7,7 @@ from src.utils.env.env_AWSSecrets import checkIsDocker
 def getRetryParams(retryType: str):
     isDocker = checkIsDocker()
 
-    if True:
+    if isDocker:
         if retryType == "http":
             return int(os.environ.get("HTTP_RETRY_LIMIT")), int(os.environ.get("HTTP_RETRY_DELAY"))
         elif retryType == "transactionQuery":
