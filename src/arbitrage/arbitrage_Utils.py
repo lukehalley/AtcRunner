@@ -14,9 +14,9 @@ def getNextArbitrageNumber():
 
 
 # Get the routes for tokens we are swapping from -> to in the recipe dict
-def getRoutes(recipe, position, toSwapFrom, toSwapTo):
-    return recipe[position]["routes"][f"{toSwapFrom}-{toSwapTo}"]
-
+def getRoutes(recipe, recipePosition, tokenType):
+    tokenTypeOpposite = getOppositeToken(tokenType)
+    return recipe[recipePosition]["routes"][f"{tokenType}-{tokenTypeOpposite}"]
 
 # Get the opposite arb topUpDirection
 def getOppositePosition(direction):

@@ -56,7 +56,7 @@ def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, to
 
         if minutesWaiting >= bridgeStuckLimitMin and not bridgeTransactionNotificationSent:
             logger.info(f'Bridge Stuck - Sending Hanging Bridge Notification...')
-            notifyHangingBridge(fromChainId=fromChain, transactionId=transactionId)
+            notifyHangingBridge(fromChain=fromChain, transactionId=transactionId)
             logger.info(f'Notification Sent!')
             bridgeTransactionNotificationSent = True
 

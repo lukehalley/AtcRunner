@@ -43,7 +43,7 @@ createDatabaseConnection()
 recipes = getRecipeDetails()
 
 # Print A Separator
-printSeparator(True)
+printSeparator(newLine=True)
 
 # Interval Set-Up
 arbEnabled = strToBool(os.environ.get("ARB_ENABLED"))
@@ -73,17 +73,22 @@ while True:
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
         # Print A Separator
-        printSeparator()
+        printSeparator(newLine=True)
 
         # Check If Our Wallet Is In The Correct State To Begin
         # The Arbitrage - ie. Majority Stablecoins
-        setupWallet(recipe=recipe)
+        setupWallet(
+            recipe=recipe,
+            recipePosition="origin",
+            tokenType="token",
+            stepCategory="setup"
+        )
 
         # Check If The Current Arbitrage Would Be Profitable
         recipe = calculateArbitrageIsProfitable(recipe)
 
         # Print A Separator
-        printSeparator(True)
+        printSeparator(newLine=True)
 
         # If Our Arbitrage Is Profitable - Execute It
         if (recipe["arbitrage"]["isProfitable"] or forceArb) and arbEnabled:
@@ -94,7 +99,7 @@ while True:
             # Print A Message Notifying The Arbitrage Is Profitable
             recipe = printArbitrageProfitable(recipe)
 
-            # Execute The
+            # Execute The Arbitrage
             executeArbitrage(
                 recipe=recipe,
                 isRollback=False
@@ -105,5 +110,5 @@ while True:
             logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Trip Not Profitable')
             if pauseTime > 0:
                 logger.info(f'Waiting {pauseTime} seconds...')
-            printSeparator(True)
+            printSeparator(newLine=True)
             time.sleep(pauseTime)

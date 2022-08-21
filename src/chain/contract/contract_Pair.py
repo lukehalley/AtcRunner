@@ -104,17 +104,17 @@ class UniswapV2Pair:
 
     def symbol(self):
         if self.symbol_value is None:
-            self.symbol_value = getPairSymbol(self.address, self.rpc_address)
+            self.symbol_value = getPairSymbol(self.address, self.rpc_address, self.abi)
         return self.symbol_value
 
     def token_0(self):
         if self.token_0_value is None:
-            self.token_0_value = getPairToken0(self.address, self.rpc_address)
+            self.token_0_value = getPairToken0(self.address, self.rpc_address, self.abi)
         return self.token_0_value
 
     def token_1(self):
         if self.token_1_value is None:
-            self.token_1_value = getPairToken1(self.address, self.rpc_address)
+            self.token_1_value = getPairToken1(self.address, self.rpc_address, self.abi)
         return self.token_1_value
 
     def decimals(self):

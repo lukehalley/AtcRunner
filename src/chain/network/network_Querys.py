@@ -7,6 +7,7 @@ from src.utils.chain.chain_ABI import getMappedContractFunction, fillEmptyABIPar
 from src.utils.chain.chain_Addresses import checkWalletsMatch
 from src.utils.chain.chain_Wallet import getPrivateKey, checkIfStablesAreOnOrigin
 from src.utils.chain.chain_Wei import getTokenNormalValue
+from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.retry.retry_Params import getRetryParams
 
@@ -55,11 +56,11 @@ def getGasPrice(rpcUrl):
 
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getTokenBalance(rpcUrl, tokenAddress, tokenDecimals, wethContractABI):
-    walletAddress = getWalletAddressFromPrivateKey(rpcUrl=rpcUrl)
+def getTokenBalance(fromChainRPCUrl, tokenAddress, tokenDecimals, wethContractABI):
+    walletAddress = getWalletAddressFromPrivateKey(rpcUrl=fromChainRPCUrl)
 
     balanceWei = getBalanceOfToken(
-        rpc_address=rpcUrl,
+        rpc_address=fromChainRPCUrl,
         address=walletAddress,
         token_address=tokenAddress,
         wethContractABI=wethContractABI
@@ -75,10 +76,16 @@ def getWalletsInformation(recipe, printBalances=False):
     directionList = ("origin", "destination")
 
     for direction in directionList:
-
         recipe[direction]["wallet"] = {}
-
         recipe[direction]["wallet"]["address"] = getWalletAddressFromPrivateKey(recipe[direction]["chain"]["rpc"])
+
+    if printBalances:
+        printSeparator()
+        logger.info(
+            f'Wallet Address: {recipe[directionList[0]]["wallet"]["address"]}'
+        )
+
+    for direction in directionList:
 
         recipe[direction]["wallet"]["balances"] = {}
 
@@ -89,7 +96,7 @@ def getWalletsInformation(recipe, printBalances=False):
         )
 
         recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
-            rpcUrl=recipe[direction]["chain"]["rpc"],
+            fromChainRPCUrl=recipe[direction]["chain"]["rpc"],
             tokenAddress=recipe[direction]["stablecoin"]["address"],
             tokenDecimals=recipe[direction]["stablecoin"]["decimals"],
             wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
@@ -101,7 +108,7 @@ def getWalletsInformation(recipe, printBalances=False):
             recipe[direction]["wallet"]["balances"]["token"] = recipe[direction]["wallet"]["balances"]["gas"]
         else:
             recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
-                rpcUrl=recipe[direction]["chain"]["rpc"],
+                fromChainRPCUrl=recipe[direction]["chain"]["rpc"],
                 tokenAddress=recipe[direction]["token"]["address"],
                 tokenDecimals=recipe[direction]["token"]["decimals"],
                 wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]

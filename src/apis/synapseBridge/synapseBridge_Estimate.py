@@ -15,6 +15,7 @@ synapseAPIBaseURL = buildSynapseAPIBaseURL()
 
 httpRetryLimit, httpRetryDelay = getRetryParams(retryType="http")
 
+
 # Estimate the output of a bridge
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def estimateBridgeOutput(fromChain: int, toChain: int, fromToken: str, toToken: str, amountToBridge: int,

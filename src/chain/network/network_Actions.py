@@ -9,6 +9,7 @@ from web3.middleware import geth_poa_middleware
 
 from src.apis.firebaseDB.firebaseDB_Actions import writeTransactionToDB
 from src.apis.telegramBot.telegramBot_Action import updateStatusMessage, appendToMessage
+from src.arbitrage.arbitrage_Utils import getOppositePosition
 from src.chain.network.network_Querys import getTokenBalance, getWalletGasBalance, getWalletsInformation, \
     getTokenApprovalStatus
 from src.utils.chain.chain_Calculations import getValueWithSlippage
@@ -27,9 +28,16 @@ transactionRetryLimit, transactionRetryDelay, = getRetryParams(retryType="transa
 
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def signAndSendTransaction(tx, rpcUrl, explorerUrl, currentRoundTrip, stepCategory, telegramStatusMessage):
+def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
+
+    # Dict Params ####################################################
+    RPCUrl = recipe[recipePosition]["chain"]["rpc"]
+    currentRoundTrip = recipe["status"]["currentRoundTrip"]
+    explorerUrl = recipe[recipePosition]["chain"]["blockExplorer"]["txBaseURL"]
+    # Dict Params ####################################################
+
     # Setup our web3 object
-    web3 = Web3(Web3.HTTPProvider(rpcUrl))
+    web3 = Web3(Web3.HTTPProvider(RPCUrl))
     privateKey = getPrivateKey()
     walletAddress = web3.eth.account.privateKeyToAccount(privateKey).address
     web3.eth.default_account = walletAddress
@@ -38,7 +46,7 @@ def signAndSendTransaction(tx, rpcUrl, explorerUrl, currentRoundTrip, stepCatego
 
     tx["nonce"] = initNonce
 
-    telegramStatusMessage = updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
+    recipe["status"]["telegramStatusMessage"] = updateStatusMessage(originalMessage=recipe["status"]["telegramStatusMessage"], newStatus="⏳")
 
     printSeparator()
 
@@ -125,16 +133,13 @@ def signAndSendTransaction(tx, rpcUrl, explorerUrl, currentRoundTrip, stepCatego
         stepCategory=stepCategory
     )
 
-    result["telegramStatusMessage"] = telegramStatusMessage
-
     if wasSuccessful:
         logger.info(f"✅ Transaction was successful!")
         return result
 
     else:
         errMsg = f"⛔️ Transaction was unsuccessful!"
-        if telegramStatusMessage:
-            updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⛔️")
+        updateStatusMessage(originalMessage=recipe["status"]["telegramStatusMessage"], newStatus="⛔️")
         raise Exception(errMsg)
 
 
@@ -151,7 +156,7 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
     needsGas = gasBalance < minimumGasBalance
 
     balanceBeforeBridge = getTokenBalance(
-        rpcUrl=recipe[topUpDirection]["chain"]["rpc"],
+        fromChainRPCUrl=recipe[topUpDirection]["chain"]["rpc"],
         tokenAddress=recipe[topUpDirection][topUpTokenToUse]["address"],
         tokenDecimals=recipe[topUpDirection][topUpTokenToUse]["decimals"],
         wethContractABI=recipe[topUpDirection]["chain"]["contracts"]["weth"]["abi"]
@@ -187,10 +192,10 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
 
         try:
 
-            telegramStatusMessage = appendToMessage(messageToAppendTo=telegramStatusMessage,
+            recipe["status"]["telegramStatusMessage"] = appendToMessage(messageToAppendTo=recipe["status"]["telegramStatusMessage"],
                                                     messageToAppend=f"⛽️ Topping Up {topUpDirection.title()} Wallet -> 📤")
 
-            result = swapToken(
+            recipe = swapToken(
                 recipe=recipe,
                 recipePosition=topUpDirection,
                 tokenInAmount=amountInQuoted,
@@ -199,7 +204,10 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
                 stepCategory=gasTopUpCategory
             )
 
-            updateStatusMessage(originalMessage=result["telegramStatusMessage"], newStatus="✅")
+            recipe["status"]["telegramStatusMessage"] = updateStatusMessage(
+                originalMessage=recipe["status"]["telegramStatusMessage"],
+                newStatus="✅"
+            )
 
         except Exception as err:
             errMsg = f'Error topping up {topUpDirection} ({recipe[topUpDirection]["chain"]["name"]}) wallet with gas: {err}'
@@ -219,7 +227,7 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
         logger.info(
             f'{topUpDirection} wallet ({recipe[topUpDirection]["chain"]["name"]}) topped up successful - new balance is {recipe[topUpDirection]["wallet"]["balances"]["gas"]} {recipe[topUpDirection]["gas"]["symbol"]}')
 
-    return recipe, needsGas, telegramStatusMessage
+    return recipe, needsGas
 
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
@@ -249,9 +257,6 @@ def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory
     walletAddress = recipe[recipePosition]["wallet"]["address"]
     tokenAddress = recipe[recipePosition][tokenType]["address"]
     wethAbi = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
-    telegramStatusMessage = recipe["status"]["telegramMessage"]
-    currentRoundTrip = recipe["status"]["currentRoundTrip"]
-    explorerUrl = recipe[recipePosition]["chain"]["blockExplorer"]["txBaseURL"]
     # Dict Params ####################################################
 
     # Setup Web 3
@@ -276,25 +281,17 @@ def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory
     })
 
     # Sign And Send The Transaction
-    transactionResult = signAndSendTransaction(
+    signAndSendTransaction(
         tx=tx,
-        rpcUrl=rpcUrl,
-        explorerUrl=explorerUrl,
-        currentRoundTrip=currentRoundTrip,
-        stepCategory=stepCategory,
-        telegramStatusMessage=telegramStatusMessage
+        recipe=recipe,
+        recipePosition=recipePosition,
+        stepCategory=stepCategory
     )
-
-    # Update Our Stored Telegram Message
-    recipe["status"]["telegramMessage"] = transactionResult["telegramMessage"]
 
     return recipe
 
 
 def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNumber):
-    # Dict Params ####################################################
-    telegramStatusMessage = recipe["status"]["telegramMessage"]
-    # Dict Params ####################################################
 
     # Choose The Contract Address To Choose Based On If Its A Swap or Bridge Approval
     if approvalType == "swap":
@@ -317,9 +314,9 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
         # Log That We Approving
         printSeparator()
         logger.info(f'{stepNumber}.5 Approving {recipe[recipePosition][tokenType]["symbol"]}')
-        recipe["status"]["telegramMessage"] = appendToMessage(
+        recipe["status"]["telegramStatusMessage"] = appendToMessage(
             messageToAppend=f"{stepNumber} Approving {recipe[recipePosition][tokenType]['symbol']} 💸",
-            messageToAppendTo=telegramStatusMessage
+            messageToAppendTo=recipe["status"]["telegramStatusMessage"]
         )
         printSeparator()
 
