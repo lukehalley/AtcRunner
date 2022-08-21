@@ -1,3 +1,4 @@
+import os
 from decimal import Decimal
 
 from retry import retry
@@ -73,6 +74,7 @@ def getTokenBalance(fromChainRPCUrl, tokenAddress, tokenDecimals, wethContractAB
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletsInformation(recipe, printBalances=False):
+
     directionList = ("origin", "destination")
 
     for direction in directionList:
@@ -105,7 +107,15 @@ def getWalletsInformation(recipe, printBalances=False):
         tokenIsGas = recipe[direction]["token"]["isGas"]
 
         if tokenIsGas:
-            recipe[direction]["wallet"]["balances"]["token"] = recipe[direction]["wallet"]["balances"]["gas"]
+            maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
+
+            if recipe[direction]["wallet"]["balances"]["gas"] > maximumGasBalance:
+                recipe[direction]["wallet"]["balances"]["token"] = abs(recipe[direction]["wallet"]["balances"]["gas"] - maximumGasBalance)
+                recipe[direction]["wallet"]["balances"]["gas"] = maximumGasBalance
+            else:
+                recipe[direction]["wallet"]["balances"]["gas"] = maximumGasBalance
+                recipe[direction]["wallet"]["balances"]["token"] = 0
+
         else:
             recipe[direction]["wallet"]["balances"]["token"] = getTokenBalance(
                 fromChainRPCUrl=recipe[direction]["chain"]["rpc"],

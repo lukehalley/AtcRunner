@@ -110,7 +110,7 @@ def executeArbitrage(recipe, isRollback):
             # On Step 1 - Print Out Our Starting Stables
 
             logger.info(
-                f'Starting Capital: {recipe[recipePosition]["wallet"]["balances"]["stablecoin"]}'
+                f'Starting Capital: {truncateDecimal(recipe[recipePosition]["wallet"]["balances"]["stablecoin"], 6)} '
                 f'{recipe[recipePosition]["stablecoin"]["name"]}'
             )
             printSeparator(newLine=True)
@@ -122,7 +122,8 @@ def executeArbitrage(recipe, isRollback):
             logger.info \
                     (
                     f'{stepNumber}. {stepCategory.title()} {truncateDecimal(recipe[recipePosition]["wallet"]["balances"][fromToken], 6)} '
-                    f'{recipe[recipePosition][fromToken]["name"]} -> {recipe[recipePosition][toToken]["name"]}')
+                    f'{recipe[recipePosition][fromToken]["name"]} -> '
+                    f'{truncateDecimal(recipe["arbitrage"]["predictions"]["steps"][stepNumber]["amountOut"], 6)} {recipe[recipePosition][toToken]["name"]}')
 
             # Update The Telegram Status Message
             recipe["status"]["telegramStatusMessage"] = appendToMessage(
