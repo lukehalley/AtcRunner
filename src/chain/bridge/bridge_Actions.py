@@ -1,81 +1,121 @@
-
 import os
 
+from retry import retry
 from web3 import Web3
 
 from src.apis.synapseBridge.synapseBridge_Generate import generateUnsignedBridgeTransaction
+from src.arbitrage.arbitrage_Utils import getOppositeToken, getOppositePosition
 from src.chain.bridge.bridge_Querys import waitForBridgeToComplete
 from src.chain.network.network_Actions import signAndSendTransaction
-from src.chain.network.network_Querys import getWalletAddressFromPrivateKey, getTokenBalance
+from src.chain.network.network_Querys import getWalletAddressFromPrivateKey, getTokenBalance, getWalletsInformation
+from src.utils.chain.chain_Calculations import getTransactionDeadline
 from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
 from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.retry.retry_Params import getRetryParams
 
 logger = getProjectLogger()
 
-def executeBridge(fromChain, fromTokenAddress, fromTokenDecimals, fromChainRPCURL, toChain, toTokenAddress, toTokenDecimals, toChainRPCURL, amountToBridge, explorerUrl, arbitrageNumber, stepCategory, telegramStatusMessage, stepNumber, wethContractABI, predictions=None):
-    walletAddress = getWalletAddressFromPrivateKey(fromChainRPCURL)
+transactionTimeout = getTransactionDeadline()
+transactionRetryLimit, transactionRetryDelay, = getRetryParams(retryType="transactionAction")
 
-    amountToBridgeWei = getTokenDecimalValue(amountToBridge, fromTokenDecimals)
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
 
+    # Dict Params ####################################################
+    oppositePosition = getOppositePosition(direction=recipePosition)
+    predictions = recipe["arbitrage"]["predictions"]
+    # Token Params
+    tokenTypeOpposite = getOppositeToken(tokenType)
+    tokenInAddress = recipe[recipePosition][tokenType]["address"]
+    tokenInDecimals = recipe[recipePosition][tokenType]["decimals"]
+    tokenOutAddress = recipe[oppositePosition][tokenType]["address"]
+    # Chains Params
+    fromChain = recipe[recipePosition]["chain"]["id"]
+    fromChainRPCUrl = recipe[recipePosition]["chain"]["rpc"]
+    toChain = recipe[oppositePosition]["chain"]["id"]
+    toChainRPCUrl = recipe[oppositePosition]["chain"]["rpc"]
+    wethContractABI = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
+    # Dict Params ####################################################
+
+    # Get Wallet Address From Private Key
+    walletAddress = getWalletAddressFromPrivateKey(
+        rpcUrl=fromChainRPCUrl
+    )
+
+    # Get Token Balance Before We Bridge
+    recipe = getWalletsInformation(
+        recipe=recipe
+    )
+
+    # Get The Amount We Want To Bridge In Wei
+    amountToBridgeWei = getTokenDecimalValue(
+        amount=recipe[recipePosition]["wallet"]["balances"][tokenType],
+        decimalPlaces=tokenInDecimals
+    )
+
+    # Get Token Balance Before We Bridge
+    balanceBeforeBridge = recipe[oppositePosition]["wallet"]["balances"][tokenTypeOpposite]
+
+    # Generate An Unsigned Bridge Transaction
     bridgeTransaction = \
         generateUnsignedBridgeTransaction(
             fromChain=fromChain,
             toChain=toChain,
-            fromToken=fromTokenAddress,
-            toToken=toTokenAddress,
+            fromToken=tokenInAddress,
+            toToken=tokenOutAddress,
             amountFrom=amountToBridgeWei,
             addressTo=walletAddress
         )
 
+    # If Our Transaction Doesnt Return With The
+    # The Value Param - Add It
     if "value" not in bridgeTransaction:
         bridgeTransaction["value"] = "0"
 
-    w3 = Web3(Web3.HTTPProvider(fromChainRPCURL))
-    gasPriceWei = w3.fromWei(w3.eth.gas_price, 'gwei')
+    # Setup Web 3
+    web3 = Web3(Web3.HTTPProvider(fromChainRPCUrl))
 
+    # Build Our Full Bridge Transaction Object
     tx = {
-        'nonce': w3.eth.getTransactionCount(walletAddress, 'pending'),
+        'nonce': web3.eth.getTransactionCount(walletAddress, 'pending'),
         'to': bridgeTransaction["to"],
         'chainId': int(fromChain),
         'gas': int(os.environ.get("BRIDGE_GAS")),
-        'gasPrice': w3.eth.gas_price,
+        'gasPrice': web3.eth.gas_price,
         'data': bridgeTransaction["unsigned_data"],
         'value': int(bridgeTransaction["value"])
     }
 
-    balanceBeforeBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
-
-    transactionResult = signAndSendTransaction(
+    # Sign + Send The Bridge Transaction
+    recipe, transactionResult = signAndSendTransaction(
         tx=tx,
-        rpcURL=fromChainRPCURL,
-        explorerUrl=explorerUrl,
-        arbitrageNumber=arbitrageNumber,
-        stepCategory=stepCategory,
-        telegramStatusMessage=telegramStatusMessage)
+        recipe=recipe,
+        recipePosition=recipePosition,
+        stepCategory=stepCategory
+    )
 
-    fundsBridged = waitForBridgeToComplete(
+    # Wait For Bridge To Complete
+    waitForBridgeToComplete(
         transactionId=transactionResult["hash"],
         fromChain=fromChain,
         toChain=toChain,
-        toChainRPCURL=toChainRPCURL,
-        toTokenAddress=toTokenAddress,
-        toTokenDecimals=toTokenDecimals,
+        toChainRPCURL=toChainRPCUrl,
+        toTokenAddress=tokenOutAddress,
+        toTokenDecimals=tokenInDecimals,
         wethContractABI=wethContractABI,
         predictions=predictions,
         stepNumber=stepNumber
     )
 
-    balanceAfterBridge = getTokenBalance(rpcURL=toChainRPCURL, tokenAddress=toTokenAddress, tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
+    # Get Token Balance After We Bridge
+    recipe = getWalletsInformation(
+        recipe=recipe
+    )
 
-    actualBridgedAmount = balanceAfterBridge - balanceBeforeBridge
+    # Wait For Balance On Chain We Are Bridging On To Update
+    while recipe[oppositePosition]["wallet"]["balances"][tokenType] == balanceBeforeBridge:
+        recipe = getWalletsInformation(
+            recipe=recipe
+        )
 
-    result = {
-        "successfull": fundsBridged,
-        "bridgeOutput": actualBridgedAmount,
-        "fee": getTokenNormalValue(transactionResult["gasUsed"] * w3.toWei(gasPriceWei, 'gwei'), 18),
-        "blockURL": transactionResult["explorerLink"],
-        "hash": transactionResult["hash"],
-        "telegramStatusMessage": transactionResult["telegramStatusMessage"]
-    }
-
-    return result
+    return recipe

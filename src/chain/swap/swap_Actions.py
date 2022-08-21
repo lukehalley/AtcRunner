@@ -1,25 +1,34 @@
 import os
 from decimal import Decimal
 
+from retry import retry
 from web3 import Web3
 
 from src.apis.telegramBot.telegramBot_Action import updateStatusMessage
+from src.arbitrage.arbitrage_Utils import getOppositeToken, getRoutes
 from src.chain.network.network_Actions import buildMappedContractFunction, signAndSendTransaction
 from src.chain.network.network_Querys import getWalletsInformation, getWalletGasBalance, getTokenBalance
-from src.chain.swap.swap_Querys import getSwapQuoteOut
+from src.chain.swap.swap_Querys import getSwapQuoteOut, normaliseSwapRoutes
 from src.utils.chain.chain_ABI import getMappedContractFunction
 from src.utils.chain.chain_Calculations import getValueWithSlippage, getTransactionDeadline
 from src.utils.chain.chain_Wallet import getPrivateKey
 from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
-from src.utils.logging.logging_Print import printSettingUpWallet, printSeperator
+from src.utils.logging.logging_Print import printSettingUpWallet, printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
+from src.utils.retry.retry_Params import getRetryParams
 
 logger = getProjectLogger()
 
 transactionTimeout = getTransactionDeadline()
+transactionRetryLimit, transactionRetryDelay, = getRetryParams(retryType="transactionAction")
 
-def setupWallet(recipe):
+def setupWallet(recipe, recipePosition, tokenType, stepCategory):
+    
+    # Dict Params ####################################################
+    tokenTypeOpposite = getOppositeToken(tokenType)
+    # Dict Params ####################################################
+    
     originHasStablecoins = recipe["origin"]["wallet"]["balances"]["stablecoin"] > 0.1
     originHasTokens = recipe["origin"]["wallet"]["balances"]["token"] > 0
 
@@ -29,112 +38,121 @@ def setupWallet(recipe):
         raise Exception(errMsg)
     elif not originHasStablecoins:
 
-        telegramStatusMessage = printSettingUpWallet(recipe['arbitrage']['currentRoundTripCount'])
+        recipe["status"]["telegramStatusMessage"] = printSettingUpWallet(recipe['status']['currentRoundTrip'])
 
-        positionToSetup = "origin"
-        toSwapFrom = "token"
-        toSwapTo = "stablecoin"
-
-        if recipe[positionToSetup][toSwapFrom]["isGas"]:
-            maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
-            amountInNormal = abs(recipe[positionToSetup]["wallet"]["balances"][toSwapFrom] - maximumGasBalance)
-        else:
-            amountInNormal = recipe[positionToSetup]["wallet"]["balances"][toSwapFrom]
-
-        balanceBeforeSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
-
-        swapRoute = recipe[positionToSetup]["routes"][f"{toSwapFrom}-{toSwapTo}"]
-
-        amountOutQuoted = getSwapQuoteOut(
-            amountInNormal=amountInNormal,
-            amountInDecimals=recipe[positionToSetup][toSwapFrom]["decimals"],
-            amountOutDecimals=recipe[positionToSetup][toSwapTo]["decimals"],
-            rpcUrl=recipe[positionToSetup]["chain"]["rpc"],
-            routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[positionToSetup]["chain"]["contracts"]["router"]["abi"],
-            routerABIMappings=recipe[positionToSetup]["chain"]["contracts"]["router"]["mapping"],
-            routes=swapRoute
+        recipe = swapToken(
+            recipe=recipe,
+            recipePosition=recipePosition,
+            tokenType=tokenType,
+            stepCategory=stepCategory
         )
 
-        amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
-
-        swapResult = swapToken(
-            amountInNormal=amountInNormal,
-            amountInDecimals=recipe[positionToSetup][toSwapFrom]["decimals"],
-            amountOutNormal=amountOutMinWithSlippage,
-            amountOutDecimals=recipe[positionToSetup][toSwapTo]["decimals"],
-            tokenPath=swapRoute,
-            rpcURL=recipe[positionToSetup]["chain"]["rpc"],
-            arbitrageNumber=recipe["arbitrage"]["currentRoundTripCount"],
-            stepCategory=f"0_setup",
-            explorerUrl=recipe[positionToSetup]["chain"]["blockExplorer"]["txBaseURL"],
-            routerAddress=recipe[positionToSetup]["chain"]["contracts"]["router"]["address"],
-            routerABI=recipe[positionToSetup]["chain"]["contracts"]["router"]["abi"],
-            routerABIMappings=recipe[positionToSetup]["chain"]["contracts"]["router"]["mapping"],
-            wethContractABI=recipe[positionToSetup]["chain"]["contracts"]["weth"]["abi"],
-            telegramStatusMessage=telegramStatusMessage,
-            swappingFromGas=recipe[positionToSetup][toSwapFrom]["isGas"],
-            swappingToGas=recipe[positionToSetup][toSwapTo]["isGas"]
+        recipe = getWalletsInformation(
+            recipe=recipe
         )
 
-        recipe = getWalletsInformation(recipe)
+        printSeparator()
 
-        balanceAfterSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
+        logger.info(
+            f'Output: {truncateDecimal(recipe[recipePosition]["wallet"]["balances"][tokenType], 6)}'
+            f'{recipe[recipePosition][tokenType]["name"]}'
+        )
 
-        while balanceAfterSwap == balanceBeforeSwap:
-            recipe = getWalletsInformation(recipe)
-            balanceAfterSwap = recipe[positionToSetup]["wallet"]["balances"][toSwapTo]
+        recipe["status"]["telegramStatusMessage"] = updateStatusMessage(originalMessage=recipe["status"]["telegramStatusMessage"], newStatus="✅")
 
-        result = balanceAfterSwap - balanceBeforeSwap
+        printSeparator(newLine=True)
 
-        telegramStatusMessage = swapResult["telegramStatusMessage"]
+        return recipe
 
-        recipe = getWalletsInformation(recipe)
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def swapToken(recipe, recipePosition, tokenType, stepCategory):
+    
+    # Dict Params ####################################################
+    # Token Types
+    tokenTypeOpposite = getOppositeToken(tokenType)
+    tokenInDecimals = recipe[recipePosition][tokenType]["decimals"]
+    tokenDecimalsOut = recipe[recipePosition][tokenTypeOpposite]["decimals"]
+    swappingFromGas = recipe[recipePosition][tokenType]["isGas"]
+    swappingToGas = recipe[recipePosition][tokenTypeOpposite]["isGas"]
+    # Static Params
+    rpcUrl = recipe[recipePosition]["chain"]["rpc"]
+    routerAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
+    routerABI = recipe[recipePosition]["chain"]["contracts"]["router"]["abi"]
+    routerABIMappings = recipe[recipePosition]["chain"]["contracts"]["router"]["mapping"]
+    wethContractABI = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
+    # Dict Params ####################################################
 
-        printSeperator()
+    # Get Wallet Balances
+    recipe = getWalletsInformation(
+        recipe=recipe
+    )
 
-        logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[positionToSetup][toSwapTo]["name"]}')
+    # Get Token Balance Before We Swap
+    balanceBeforeSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
 
-        updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
+    # First Get A Quote
+    amountOutQuoted = getSwapQuoteOut(
+        recipe=recipe,
+        recipePosition=recipePosition,
+        tokenType=tokenType,
+        tokenIsGas=recipe[recipePosition][tokenType]["isGas"],
+        tokenAmountIn=recipe[recipePosition]["wallet"]["balances"][tokenType]
+    )
 
-        printSeperator(True)
+    # Calculate Min Out With Slippage
+    amountOutMinWithSlippage = getValueWithSlippage(
+        amount=amountOutQuoted,
+        slippage=0.5
+    )
 
-def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecimals, tokenPath, rpcURL, routerAddress, routerABI, routerABIMappings,
-              arbitrageNumber, stepCategory, explorerUrl, wethContractABI, telegramStatusMessage=None,
-              swappingFromGas=False, swappingToGas=False):
+    tokenInAmount = recipe[recipePosition]["wallet"]["balances"][tokenType]
+    tokenOutAmount = amountOutMinWithSlippage
 
-    # Setup our web3 object
-    w3 = Web3(Web3.HTTPProvider(rpcURL))
+    # Get The Swap Routes For Our Token And Normalise Them
+    if swappingFromGas:
+        routes = [recipe[recipePosition]["gas"]["address"], recipe[recipePosition]["stablecoin"]["address"]]
+    else:
+        routes = getRoutes(
+            recipe=recipe,
+            recipePosition=recipePosition,
+            tokenType=tokenType
+        )
+    normalisedRoutes = normaliseSwapRoutes(routes)
+
+    # Setup Web3
+    web3 = Web3(Web3.HTTPProvider(rpcUrl))
     privateKey = getPrivateKey()
-    walletAddress = w3.eth.account.privateKeyToAccount(privateKey).address
-    w3.eth.default_account = walletAddress
+    walletAddress = web3.eth.account.privateKeyToAccount(privateKey).address
+    web3.eth.default_account = walletAddress
 
-    # Get general settings for our transaction
-    nonce = w3.eth.getTransactionCount(walletAddress, 'pending')
-    gasPriceWei = w3.fromWei(w3.eth.gas_price, 'gwei')
+    # Create Transaction Params
+    transactionNonce = web3.eth.getTransactionCount(walletAddress, 'pending')
+    transactionGasPriceWei = web3.fromWei(web3.eth.gas_price, 'gwei')
+    transactionContract = web3.eth.contract(routerAddress, abi=routerABI)
+    transactionDeadline = getTransactionDeadline(timeInSeconds=transactionTimeout)
 
-    # Get properties for our swap contract
-    contract = w3.eth.contract(routerAddress, abi=routerABI)
-
+    # Create Transaction Object
     txParams = {
-        'gasPrice': w3.toWei(gasPriceWei, 'gwei'),
-        'nonce': nonce,
+        'gasPrice': web3.toWei(transactionGasPriceWei, 'gwei'),
+        'nonce': transactionNonce,
         'gas': int(os.environ.get("SWAP_GAS"))
     }
 
-    amountInWei = int(getTokenDecimalValue(amountInNormal, amountInDecimals))
-    amountOutWei = int(getTokenDecimalValue(amountOutNormal, amountOutDecimals))
+    # Get Amount In + Out In Wei
+    amountInWei = getTokenDecimalValue(
+        amount=tokenInAmount,
+        decimalPlaces=tokenInDecimals
+    )
+    amountOutWei = getTokenDecimalValue(
+        amount=tokenOutAmount,
+        decimalPlaces=tokenDecimalsOut
+    )
 
-    normalisedRoutes = []
-
-    for token in tokenPath:
-        normalisedRoutes.append(Web3.toChecksumAddress(token))
-
-    transactionDeadline = getTransactionDeadline(timeInSeconds=transactionTimeout)
-
+    # Check If We Are Swapping To A Gas Token
     if swappingToGas:
 
-        params = [
+        # Build A List Of Params Which Will Be Passed To Contract
+        contractParams = [
             amountInWei,
             amountOutWei,
             normalisedRoutes,
@@ -142,28 +160,46 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
             transactionDeadline
         ]
 
-        swapExactTokensForETHFunctionName = getMappedContractFunction(functionName="swapExactTokensForETH", abiMapping=routerABIMappings)
+        # Get The Current Network's Equivalent Of 'swapExactTokensForETH'
+        swapExactTokensForETHFunctionName = getMappedContractFunction(
+            functionName="swapExactTokensForETH",
+            abiMapping=routerABIMappings
+        )
 
-        tx = buildMappedContractFunction(contract=contract, functionToCall=swapExactTokensForETHFunctionName, txParams=txParams, functionParams=params)
+        # Build A Transaction For This Function
+        tx = buildMappedContractFunction(
+            contract=transactionContract,
+            functionToCall=swapExactTokensForETHFunctionName,
+            txParams=txParams,
+            functionParams=contractParams
+        )
 
+    # Check If We Are Swapping From A Gas Token
     elif swappingFromGas:
 
-        params = [
+        # Build A List Of Params Which Will Be Passed To Contract
+        contractParams = [
             amountOutWei,
             normalisedRoutes,
             walletAddress,
             transactionDeadline
         ]
 
-        swapExactETHForTokensFunctionName = getMappedContractFunction(functionName="swapExactETHForTokens", abiMapping=routerABIMappings)
+        # Get The Current Network's Equivalent Of 'swapExactETHForTokens'
+        swapExactETHForTokensFunctionName = getMappedContractFunction(functionName="swapExactETHForTokens",
+                                                                      abiMapping=routerABIMappings)
 
-        tx = buildMappedContractFunction(contract=contract, functionToCall=swapExactETHForTokensFunctionName, txParams=txParams, functionParams=params)
+        # Build A Transaction For This Function
+        tx = buildMappedContractFunction(contract=transactionContract, functionToCall=swapExactETHForTokensFunctionName,
+                                         txParams=txParams, functionParams=contractParams)
 
+        # Add The Value Param
         tx["value"] = amountInWei
 
     else:
 
-        params = [
+        # Build A List Of Params Which Will Be Passed To Contract
+        contractParams = [
             amountInWei,
             amountOutWei,
             normalisedRoutes,
@@ -171,43 +207,31 @@ def swapToken(amountInNormal, amountInDecimals, amountOutNormal, amountOutDecima
             transactionDeadline
         ]
 
-        swapExactTokensForTokensFunctionName = getMappedContractFunction(functionName="swapExactTokensForTokens", abiMapping=routerABIMappings)
+        # Get The Current Network's Equivalent Of 'swapExactTokensForTokens'
+        swapExactTokensForTokensFunctionName = getMappedContractFunction(functionName="swapExactTokensForTokens",
+                                                                         abiMapping=routerABIMappings)
 
-        tx = buildMappedContractFunction(contract=contract, functionToCall=swapExactTokensForTokensFunctionName, txParams=txParams, functionParams=params)
+        # Build A Transaction For This Function
+        tx = buildMappedContractFunction(contract=transactionContract,
+                                         functionToCall=swapExactTokensForTokensFunctionName,
+                                         txParams=txParams, functionParams=contractParams)
 
-    if swappingToGas:
-        balanceBeforeSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress,
-                                                wethContractABI=wethContractABI)
-    else:
-        balanceBeforeSwap = getTokenBalance(rpcURL=rpcURL, tokenAddress=tokenPath[-1], tokenDecimals=amountOutDecimals, wethContractABI=wethContractABI)
-
-    transactionResult = signAndSendTransaction(
+    # Sign The Transaction And Send It
+    recipe, transactionResult = signAndSendTransaction(
         tx=tx,
-        rpcURL=rpcURL,
-        explorerUrl=explorerUrl,
-        arbitrageNumber=arbitrageNumber,
-        stepCategory=stepCategory,
-        telegramStatusMessage=telegramStatusMessage
+        recipe=recipe,
+        recipePosition=recipePosition,
+        stepCategory=stepCategory
     )
 
-    balanceAfterSwap = balanceBeforeSwap
+    # Get The Balance After Swap So We Know How Much Tokens We Gained
+    balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
 
-    while balanceAfterSwap <= balanceBeforeSwap:
-        if swappingToGas:
-            balanceAfterSwap = getWalletGasBalance(rpcURL=rpcURL, walletAddress=walletAddress, wethContractABI=wethContractABI)
-        else:
-            balanceAfterSwap = getTokenBalance(rpcURL=rpcURL, tokenAddress=tokenPath[-1],
-                                               tokenDecimals=amountOutDecimals, wethContractABI=wethContractABI)
+    # Wait For The Tokens To Arrive In Out Wallet
+    while balanceAfterSwap == balanceBeforeSwap:
+        recipe = getWalletsInformation(
+            recipe=recipe
+        )
+        balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
 
-    actualSwapAmount = balanceAfterSwap - balanceBeforeSwap
-
-    result = {
-        "successfull": transactionResult["wasSuccessful"],
-        "swapOutput": actualSwapAmount,
-        "fee": getTokenNormalValue(transactionResult["gasUsed"] * w3.toWei(gasPriceWei, 'gwei'), 18),
-        "blockURL": transactionResult['explorerLink'],
-        "hash": transactionResult["hash"],
-        "telegramStatusMessage": transactionResult["telegramStatusMessage"]
-    }
-
-    return result
+    return recipe

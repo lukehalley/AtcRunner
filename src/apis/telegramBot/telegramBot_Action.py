@@ -16,6 +16,7 @@ hangingTelegramChannelID = getTelegramHangingChannelID()
 
 usernames, mentionStr = getTelegramStuckMentions()
 
+
 # Send a message to a Telegram channel
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def sendMessage(msg, channelId=telegramChannelID):
@@ -24,14 +25,14 @@ def sendMessage(msg, channelId=telegramChannelID):
 
 # Add another line to a message
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def appendToMessage(originalMessage, messageToAppend):
-    originalText = originalMessage["text"]
+def appendToMessage(messageToAppendTo, messageToAppend):
+    originalText = messageToAppendTo["text"]
 
     newText = f"{originalText}\n{messageToAppend}"
 
     try:
-        updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
-                                               message_id=originalMessage.message_id,
+        updatedMessage = bot.edit_message_text(chat_id=messageToAppendTo.chat_id,
+                                               message_id=messageToAppendTo.message_id,
                                                text=newText)
         return updatedMessage
     except Exception as e:
@@ -41,10 +42,10 @@ def appendToMessage(originalMessage, messageToAppend):
         else:
             raise Exception(str(e))
 
+
 # Update the emoji at the end of a message
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def updateStatusMessage(originalMessage, newStatus):
-
     originalText = originalMessage["text"]
 
     if originalText != newStatus:
@@ -67,18 +68,18 @@ def updateStatusMessage(originalMessage, newStatus):
         logger.info("Telegram message same as before - not updating.")
         return
 
-# Send a alert of a stuck bridge into the Synapse bridge support chat
-def notifyHangingBridge(fromChainId, transactionId):
 
+# Send a alert of a stuck bridge into the Synapse bridge support chat
+def notifyHangingBridge(fromChain, transactionId):
     msg = \
-        f"!unsticktx {transactionId} {fromChainId}\n" \
+        f"!unsticktx {transactionId} {fromChain}\n" \
         f"{mentionStr}"
 
     sendMessage(msg, channelId=hangingTelegramChannelID)
 
+
 # Send a alert of a now un-stuck bridge into the Synapse bridge support chat
 def notifyUnstickedBridge(transactionId):
-
     msg = \
         f"{transactionId} unstuck ✅\n" \
         f"{mentionStr}"

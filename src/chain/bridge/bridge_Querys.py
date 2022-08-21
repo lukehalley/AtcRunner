@@ -5,7 +5,7 @@ from retry import retry
 
 from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeStatusAPI, queryBridgeStatusBalance
 from src.apis.telegramBot.telegramBot_Action import notifyHangingBridge, notifyUnstickedBridge
-from src.utils.logging.logging_Print import printSeperator
+from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.time.time_Calculations import getMinSecString
 
@@ -17,14 +17,15 @@ transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 bridgeWaitTimeout = int(os.environ.get("BRIDGE_TIMEOUT_SECS"))
 bridgeStuckLimitMin = int(os.environ.get("BRIDGE_STUCK_MINS_LIMIT"))
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals, stepNumber, wethContractABI, predictions=None):
 
+@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
+def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals,
+                            stepNumber, wethContractABI, predictions=None):
     timeout = bridgeWaitTimeout
 
     timeoutMins = int(timeout / 60)
 
-    printSeperator()
+    printSeparator()
 
     logger.info(f"Waiting for bridge to complete with a timeout of {timeoutMins} minutes...")
 
@@ -55,14 +56,17 @@ def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, to
 
         if minutesWaiting >= bridgeStuckLimitMin and not bridgeTransactionNotificationSent:
             logger.info(f'Bridge Stuck - Sending Hanging Bridge Notification...')
-            notifyHangingBridge(fromChainId=fromChain, transactionId=transactionId)
+            notifyHangingBridge(fromChain=fromChain, transactionId=transactionId)
             logger.info(f'Notification Sent!')
             bridgeTransactionNotificationSent = True
 
         fundsBridgedAPI = queryBridgeStatusAPI(toChain=toChain, fromChainTxnHash=transactionId)["isComplete"]
 
         if predictions:
-            fundsBridgedBalance = queryBridgeStatusBalance(predictions=predictions, stepNumber=stepNumber, toChainRPCURL=toChainRPCURL, toTokenAddress=toTokenAddress, toTokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
+            fundsBridgedBalance = queryBridgeStatusBalance(predictions=predictions, stepNumber=stepNumber,
+                                                           toChainRPCURL=toChainRPCURL, toTokenAddress=toTokenAddress,
+                                                           toTokenDecimals=toTokenDecimals,
+                                                           wethContractABI=wethContractABI)
 
         time.sleep(0)
 
