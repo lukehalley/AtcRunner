@@ -3,18 +3,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Firebase Imports
 from src.apis.firebaseDB.firebaseDB_Utils import createDatabaseConnection
 
+# Arbitrage Imports
 from src.arbitrage.arbitrage_Calculate import calculateArbitrageIsProfitable, determineArbitrageStrategy
 from src.arbitrage.arbitrage_Execute import executeArbitrage
 
+# Chain Imports
 from src.chain.network.network_Querys import getWalletsInformation
 from src.chain.swap.swap_Actions import setupWallet
 
+# Recipe Imports
 from src.recipe.recipe_Data import getRecipeDetails
+
+# Util Imports
 from src.utils.data.data_Booleans import strToBool
 from src.utils.env.env_AWSSecrets import checkIsDocker
-from src.utils.logging.logging_Print import printSeperator, printRoundtrip, printArbitrageProfitable
+from src.utils.logging.logging_Print import printSeparator, printRoundtrip, printArbitrageProfitable
 from src.utils.logging.logging_Setup import setupLogging
 
 # General Init
@@ -27,57 +33,82 @@ forceRun = False
 useTestCapital = False
 startingCapitalTestAmount = 10
 
-printSeperator()
+# Print A Separator
+printSeparator()
 
 # Firebase Setup
 logger.info(f"Getting Data From Firebase")
-printSeperator()
+printSeparator()
 createDatabaseConnection()
 recipes = getRecipeDetails()
 
-printSeperator(True)
+# Print A Separator
+printSeparator(newLine=True)
 
 # Interval Set-Up
+arbEnabled = strToBool(os.environ.get("ARB_ENABLED"))
+forceArb = strToBool(os.environ.get("FORCE_ARB"))
 pauseTime = int(os.environ.get("ARBITRAGE_INTERVAL"))
 
-printSeperator()
-logger.info(f"Waiting For Arbitrage Opportunity...")
-printSeperator(True)
-
+# Infinite Loop
 while True:
 
+    # Iterate Through Recipe List
     for recipesTitle, recipesDetails in recipes.items():
 
+        # Make A Copy Of The Current Recipe So We Don't Edit Original
         recipe = recipesDetails.copy()
 
+        # Determine Our Arbitrage Strategy
         recipe = determineArbitrageStrategy(recipe)
 
-        printRoundtrip(recipe["arbitrage"]["currentRoundTripCount"])
+        # Print The Current Round Trip Number
+        printRoundtrip(recipe["status"]["currentRoundTrip"])
 
-        printSeperator()
-        logger.info(f"[ARB #{recipe['arbitrage']['currentRoundTripCount']}] Getting Wallet Details & Balance")
-        printSeperator()
+        # Print A Separator
+        printSeparator()
 
+        # Get The Current Wallet Token Balances
+        logger.info(f"[ARB #{recipe['status']['currentRoundTrip']}] Getting Wallet Details & Balance")
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
-        setupWallet(recipe=recipe)
+        # Print A Separator
+        printSeparator(newLine=True)
 
-        isProfitable, predictions = calculateArbitrageIsProfitable(recipe)
+        # Check If Our Wallet Is In The Correct State To Begin
+        # The Arbitrage - ie. Majority Stablecoins
+        setupWallet(
+            recipe=recipe,
+            recipePosition="origin",
+            tokenType="token",
+            stepCategory="setup"
+        )
 
-        printSeperator(True)
+        # Check If The Current Arbitrage Would Be Profitable
+        recipe = calculateArbitrageIsProfitable(recipe)
 
-        if isProfitable:
+        # Print A Separator
+        printSeparator(newLine=True)
 
-            telegramStatusMessage = printArbitrageProfitable(recipe, predictions)
+        # If Our Arbitrage Is Profitable - Execute It
+        if (recipe["arbitrage"]["isProfitable"] or forceArb) and arbEnabled:
 
-            startingTime = time.perf_counter()
+            # Start A Timer To Track How Long The Arbitrage Takes
+            recipe["status"]["startingTime"] = time.perf_counter()
 
-            executeArbitrage(recipe=recipe, predictions=predictions, startingTime=startingTime, telegramStatusMessage=telegramStatusMessage)
+            # Print A Message Notifying The Arbitrage Is Profitable
+            recipe = printArbitrageProfitable(recipe)
+
+            # Execute The Arbitrage
+            executeArbitrage(
+                recipe=recipe,
+                isRollback=False
+            )
 
         else:
-            printSeperator()
-            logger.info(f'[ARB #{recipe["arbitrage"]["currentRoundTripCount"]}] Trip Not Profitable')
+            printSeparator()
+            logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Trip Not Profitable')
             if pauseTime > 0:
                 logger.info(f'Waiting {pauseTime} seconds...')
-            printSeperator(True)
+            printSeparator(newLine=True)
             time.sleep(pauseTime)

@@ -7,11 +7,13 @@ from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
+
 class HexJsonEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, HexBytes):
             return obj.hex()
         return super().default(obj)
+
 
 def checkWalletsMatch(recipe):
     if recipe["origin"]["wallet"]["address"] != recipe["destination"]["wallet"]["address"]:
@@ -19,6 +21,6 @@ def checkWalletsMatch(recipe):
         logger.error(errMsg)
         raise Exception(errMsg)
 
+
 def addressToChecksumAddress(address):
     return Web3.toChecksumAddress(address)
-

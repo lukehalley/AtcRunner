@@ -3,9 +3,11 @@ import os
 from firebase_admin import credentials, initialize_app
 
 from src.utils.env.env_Docker import getAWSSecret
+from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
+
 
 # Create a connection to Firebase
 def createDatabaseConnection():
@@ -26,11 +28,13 @@ def createDatabaseConnection():
         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-w91wo%40dfk-arbitrage.iam.gserviceaccount.com"
     }
 
-    logger.info(f"DB: Creating connection to Firebase @ {databaseURL}")
+    logger.info(f"Creating connection to Firebase...")
 
     cred = credentials.Certificate(firebaseAuth)
     initialize_app(cred, {
         'databaseURL': databaseURL
     })
 
-    logger.info(f"DB: Connection established to Firebase")
+    logger.info(f"Connection established to Firebase")
+
+    printSeparator(newLine=True)

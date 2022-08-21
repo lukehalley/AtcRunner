@@ -1,7 +1,7 @@
 stages:
   - build
   - buildAndPush
-#  - updateStack
+  # - updateStack
 
 build:
   image:
@@ -10,12 +10,8 @@ build:
   stage: build
   services:
     - docker:dind
-  before_script:
-    - amazon-linux-extras install docker
-    - CURRENT_IMAGE_VERSION=$(aws ecr describe-images --repository-name arb-bot --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]' | tr -d '"')
-    - NEXT_VERSION=$(echo $CURRENT_IMAGE_VERSION 0.01 | awk '{print $1 + $2}')
   script:
-    - docker build -t $AWS_ACCOUNT/$ECR_REPO:$NEXT_VERSION .
+    - docker build .
   only:
     variables:
       - $CI_COMMIT_BRANCH != "master"
