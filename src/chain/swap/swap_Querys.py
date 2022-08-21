@@ -28,25 +28,25 @@ def normaliseSwapRoutes(routes):
 
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getSwapQuoteOut(recipe, recipeDirection, tokenType, tokenIsGas, tokenAmountIn):
+def getSwapQuoteOut(recipe, recipePosition, tokenType, tokenIsGas, tokenAmountIn):
     # Dict Params ####################################################
     oppositeRecipeToken = getOppositeToken(tokenType)
-    amountInDecimals = recipe[recipeDirection][tokenType]["decimals"]
-    amountOutDecimals = recipe[recipeDirection][oppositeRecipeToken]["decimals"]
-    rpcUrl = recipe[recipeDirection]["chain"]["rpc"]
-    routerAddress = recipe[recipeDirection]["chain"]["contracts"]["router"]["address"]
-    routerABI = recipe[recipeDirection]["chain"]["contracts"]["router"]["abi"]
-    routerABIMappings = recipe[recipeDirection]["chain"]["contracts"]["router"]["mapping"]
+    amountInDecimals = recipe[recipePosition][tokenType]["decimals"]
+    amountOutDecimals = recipe[recipePosition][oppositeRecipeToken]["decimals"]
+    rpcUrl = recipe[recipePosition]["chain"]["rpc"]
+    routerAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
+    routerABI = recipe[recipePosition]["chain"]["contracts"]["router"]["abi"]
+    routerABIMappings = recipe[recipePosition]["chain"]["contracts"]["router"]["mapping"]
     # Dict Params ####################################################
 
     if tokenIsGas:
-        routes = [recipe[recipeDirection]["gas"]["address"], recipe[recipeDirection]["stablecoin"]["address"]]
+        routes = [recipe[recipePosition]["gas"]["address"], recipe[recipePosition]["stablecoin"]["address"]]
     else:
         routes = getRoutes(
             recipe=recipe,
-            position=recipeDirection,
-            toSwapFrom=tokenType,
-            toSwapTo=oppositeRecipeToken)
+            recipePosition=recipePosition,
+            tokenType=tokenType
+        )
 
     normalisedRoutes = normaliseSwapRoutes(routes)
 
@@ -69,24 +69,24 @@ def getSwapQuoteOut(recipe, recipeDirection, tokenType, tokenIsGas, tokenAmountI
 
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def getSwapQuoteIn(recipe, recipeDirection, tokenType, tokenIsGas, tokenAmountOut):
+def getSwapQuoteIn(recipe, recipePosition, tokenType, tokenIsGas, tokenAmountOut):
+
     # Dict Params ####################################################
-    oppositeRecipeToken = getOppositeToken(tokenType)
-    amountOutDecimals = recipe[recipeDirection][tokenType]["decimals"]
-    amountInDecimals = recipe[recipeDirection][tokenType]["decimals"]
-    rpcUrl = recipe[recipeDirection]["chain"]["rpc"]
-    routerAddress = recipe[recipeDirection]["chain"]["contracts"]["router"]["address"]
-    routerABI = recipe[recipeDirection]["chain"]["contracts"]["router"]["abi"]
+    amountOutDecimals = recipe[recipePosition][tokenType]["decimals"]
+    amountInDecimals = recipe[recipePosition][tokenType]["decimals"]
+    rpcUrl = recipe[recipePosition]["chain"]["rpc"]
+    routerAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
+    routerABI = recipe[recipePosition]["chain"]["contracts"]["router"]["abi"]
     # Dict Params ####################################################
 
     if tokenIsGas:
-        routes = [recipe[recipeDirection]["gas"]["address"], recipe[recipeDirection]["stablecoin"]["address"]]
+        routes = [recipe[recipePosition]["gas"]["address"], recipe[recipePosition]["stablecoin"]["address"]]
     else:
         routes = getRoutes(
             recipe=recipe,
-            position=recipeDirection,
-            toSwapFrom=tokenType,
-            toSwapTo=oppositeRecipeToken)
+            recipePosition=recipePosition,
+            tokenType=tokenType
+        )
 
     normalisedRoutes = normaliseSwapRoutes(routes)
 

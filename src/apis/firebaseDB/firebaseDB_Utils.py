@@ -37,4 +37,4 @@ def createDatabaseConnection():
 
     logger.info(f"Connection established to Firebase")
 
-    printSeparator(True)
+    printSeparator(newLine=True)

@@ -23,7 +23,6 @@ def sendMessage(msg, channelId=telegramChannelID):
     result = bot.send_message(channelId, msg)
     return result
 
-
 # Add another line to a message
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def appendToMessage(messageToAppendTo, messageToAppend):
@@ -71,9 +70,9 @@ def updateStatusMessage(originalMessage, newStatus):
 
 
 # Send a alert of a stuck bridge into the Synapse bridge support chat
-def notifyHangingBridge(fromChainId, transactionId):
+def notifyHangingBridge(fromChain, transactionId):
     msg = \
-        f"!unsticktx {transactionId} {fromChainId}\n" \
+        f"!unsticktx {transactionId} {fromChain}\n" \
         f"{mentionStr}"
 
     sendMessage(msg, channelId=hangingTelegramChannelID)

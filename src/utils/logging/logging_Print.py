@@ -50,37 +50,43 @@ def printArbitrageProfitable(recipe):
         f"Profit: ${recipe['arbitrage']['predictions']['profitLoss']} | {recipe['arbitrage']['predictions']['arbitragePercentage']}%"
     )
 
-    recipe["status"]["telegramMessage"] = sentMessage
+    recipe["status"]["telegramStatusMessage"] = sentMessage
 
     return recipe
 
 
 # Print the Arbitrage is profitable alert
-def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePercentage, startingTime,
-                                   telegramStatusMessage):
+def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profitPercentage):
+    
     from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
     from src.apis.firebaseDB.firebaseDB_Actions import writeResultToDB
 
     finishingTime = time.perf_counter()
-    timeTook = finishingTime - startingTime
-    timeString = f"Completed Arbitrage Rollback In {getMinSecString(timeTook)}"
+    timeTook = finishingTime - recipe["status"]["startingTime"]
+
+    if wasRollback:
+        typeString = f"Rollback"
+        separatorString = "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+    else:
+        separatorString = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+        typeString = f"Arbitrage"
+
+    timeString = f"Completed {typeString} In {getMinSecString(timeTook)}"
+
+    logger.info(separatorString)
+    logger.info(f"{typeString} #{recipe['status']['currentRoundTrip']} Done")
 
     if wasProfitable:
-        logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-        logger.info(f"ROLLBACK #{count} DONE")
-        logger.info(f"Made A Profit Of ${profitLoss} ({arbitragePercentage}%)")
-        appendToMessage(messageToAppendTo=telegramStatusMessage,
-                        messageToAppend=f"Made A Profit Of ${round(profitLoss, 2)} ({arbitragePercentage}%) 👍\n")
-        logger.info(timeString)
-        logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+        logger.info(f"Made A Profit Of ${profitLoss} ({profitPercentage}%)")
+        appendToMessage(messageToAppendTo=recipe["status"]["telegramStatusMessage"],
+                        messageToAppend=f"Made A Profit Of ${round(profitLoss, 2)} ({profitPercentage}%) 👍\n")
     else:
-        logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-        logger.info(f"ROLLBACK #{count} DONE")
-        logger.info(f"Made A Loss Of ${profitLoss} ({arbitragePercentage}%)")
-        appendToMessage(messageToAppendTo=telegramStatusMessage,
-                        messageToAppend=f"Made A Loss Of ${round(profitLoss, 2)} ({arbitragePercentage}%) 👎\n")
-        logger.info(timeString)
-        logger.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+        logger.info(f"Made A Loss Of ${profitLoss} ({profitPercentage}%)")
+        appendToMessage(messageToAppendTo=recipe["status"]["telegramStatusMessage"],
+                        messageToAppend=f"Made A Loss Of ${round(profitLoss, 2)} ({profitPercentage}%) 👎\n")
+
+    logger.info(timeString)
+    logger.info(separatorString)
 
     sendMessage(msg="@lukehalley done")
 
@@ -88,57 +94,15 @@ def printArbitrageRollbackComplete(count, wasProfitable, profitLoss, arbitragePe
     result = {
         "wasProfitable": wasProfitable,
         "profitLoss": profitLoss,
-        "percentageDifference": arbitragePercentage,
+        "percentageDifference": profitPercentage,
         "timeTookSeconds": timeTook,
-        "wasRollback": True
+        "wasRollback": wasRollback
     }
-    writeResultToDB(result=result, currentRoundTrip=count)
+    writeResultToDB(result=result, currentRoundTrip=recipe['status']['currentRoundTrip'])
     logger.info("Result written to Firebase ✅")
-    printSeparator(True)
+    printSeparator(newLine=True)
 
-
-# Print the Arbitrage is profitable alert
-def printArbitrageResult(count, amount, percentageDifference, wasProfitable, startingTime, telegramStatusMessage):
-    from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
-    from src.apis.firebaseDB.firebaseDB_Actions import writeResultToDB
-
-    finishingTime = time.perf_counter()
-    timeTook = finishingTime - startingTime
-    timeString = f"Completed Arbitrage In {getMinSecString(timeTook)}"
-    if wasProfitable:
-        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        logger.info(f"ARBITRAGE #{count} ROLLBACK RESULT")
-        logger.info(f"Made A Profit Of ${amount} ({percentageDifference}%)")
-        appendToMessage(messageToAppendTo=telegramStatusMessage,
-                        messageToAppend=f"Made A Profit Of ${round(amount, 2)} ({percentageDifference}%) 👍\n")
-        logger.info(timeString)
-        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
-    else:
-        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        logger.info(f"ARBITRAGE #{count} ROLLBACK RESULT")
-        logger.info(f"Made A Loss Of ${amount} ({percentageDifference}%)")
-        appendToMessage(messageToAppendTo=telegramStatusMessage,
-                        messageToAppend=f"Made A Loss Of ${round(amount, 2)} ({percentageDifference}%) 👎\n")
-        logger.info(timeString)
-        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
-
-    sendMessage(msg="@lukehalley done")
-
-    logger.info("Writing result to Firebase...")
-    result = {
-        "wasProfitable": wasProfitable,
-        "profitLoss": float(amount),
-        "percentageDifference": float(percentageDifference),
-        "timeTookSeconds": timeTook,
-        "wasRollback": False
-    }
-    writeResultToDB(result=result, currentRoundTrip=count)
-    logger.info("Result written to Firebase\n")
-
-    printSeparator(True)
-
-
-# Print a seperator line
+# Print a separator line
 def printSeparator(newLine=False):
     if newLine:
         line = ("--------------------------------\n")

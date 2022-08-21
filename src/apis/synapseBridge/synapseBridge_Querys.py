@@ -37,7 +37,7 @@ def queryBridgeStatusBalance(predictions: dict, stepNumber: int, toChainRPCURL: 
         lowerLimit = bridgePredictions - percentageDifference
         upperLimit = bridgePredictions + percentageDifference
 
-        currentBalance = getTokenBalance(rpcUrl=toChainRPCURL, tokenAddress=toTokenAddress,
+        currentBalance = getTokenBalance(fromChainRPCUrl=toChainRPCURL, tokenAddress=toTokenAddress,
                                          tokenDecimals=toTokenDecimals, wethContractABI=wethContractABI)
 
         return isBetween(lowerLimit=lowerLimit, middleNumber=currentBalance, upperLimit=upperLimit)

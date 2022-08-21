@@ -16,23 +16,21 @@ logger = getProjectLogger()
 def executeBridge(recipe, recipePosition, tokenAmountBridge, tokenType, stepCategory, stepNumber):
 
     # Dict Params ####################################################
+    oppositePosition = getOppositePosition(direction=recipePosition)
     # Token Params
     tokenTypeOpposite = getOppositeToken(tokenType)
     tokenInAddress = recipe[recipePosition][tokenType]["address"]
     tokenInDecimals = recipe[recipePosition][tokenType]["decimals"]
-    tokenOutAddress = recipe[tokenTypeOpposite][tokenType]["address"]
+    tokenOutAddress = recipe[oppositePosition][tokenType]["address"]
     # Chains Params
-    oppositePosition = getOppositePosition(direction=recipePosition)
-    fromChainId = recipe[recipePosition]["chain"]["id"]
+    fromChain = recipe[recipePosition]["chain"]["id"]
     fromChainRPCUrl = recipe[recipePosition]["chain"]["rpc"]
-    toChainId = recipe[tokenTypeOpposite]["chain"]["id"]
+    toChain = recipe[oppositePosition]["chain"]["id"]
     toChainRPCUrl = recipe[oppositePosition]["chain"]["rpc"]
     # Static Params
     predictions = recipe["arbitrage"]["predictions"]
     currentRoundTrip = recipe["status"]["currentRoundTrip"]
-    telegramStatusMessage = recipe["status"]["telegramMessage"]
     # Dict Params ####################################################
-
     wethContractABI = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
     explorerUrl = recipe[recipePosition]["chain"]["blockExplorer"]["txBaseURL"]
     # Dict Params ####################################################
@@ -51,8 +49,8 @@ def executeBridge(recipe, recipePosition, tokenAmountBridge, tokenType, stepCate
     # Generate An Unsigned Bridge Transaction
     bridgeTransaction = \
         generateUnsignedBridgeTransaction(
-            fromChainId=fromChainId,
-            toChainId=toChainId,
+            fromChain=fromChain,
+            toChain=toChain,
             fromToken=tokenInAddress,
             toToken=tokenOutAddress,
             amountFrom=amountToBridgeWei,
@@ -74,65 +72,32 @@ def executeBridge(recipe, recipePosition, tokenAmountBridge, tokenType, stepCate
     tx = {
         'nonce': web3.eth.getTransactionCount(walletAddress, 'pending'),
         'to': bridgeTransaction["to"],
-        'chainId': int(fromChainId),
+        'chainId': int(fromChain),
         'gas': int(os.environ.get("BRIDGE_GAS")),
         'gasPrice': web3.eth.gas_price,
         'data': bridgeTransaction["unsigned_data"],
         'value': int(bridgeTransaction["value"])
     }
 
-    # Get The Current Balance Of The Token On The
-    # Destination Chain So We Know How We Bridged
-    balanceBeforeBridge = getTokenBalance(
-        fromChainRPCUrl=toChainRPCUrl,
-        tokenAddress=tokenOutAddress,
-        tokenDecimals=tokenInDecimals,
-        wethContractABI=wethContractABI
-    )
-
     # Sign + Send The Bridge Transaction
     transactionResult = signAndSendTransaction(
         tx=tx,
-        fromChainRPCUrl=fromChainRPCUrl,
-        explorerUrl=explorerUrl,
-        currentRoundTrip=currentRoundTrip,
-        stepCategory=stepCategory,
-        telegramStatusMessage=telegramStatusMessage
+        recipe=recipe,
+        recipePosition=recipePosition,
+        stepCategory=stepCategory
     )
 
     # Wait For Bridge To Complete
-    fundsBridged = waitForBridgeToComplete(
+    waitForBridgeToComplete(
         transactionId=transactionResult["hash"],
-        fromChainId=fromChainId,
-        toChainId=toChainId,
+        fromChain=fromChain,
+        toChain=toChain,
         toChainRPCURL=toChainRPCUrl,
-        tokenOutAddress=tokenOutAddress,
-        tokenInDecimals=tokenInDecimals,
+        toTokenAddress=tokenOutAddress,
+        toTokenDecimals=tokenInDecimals,
         wethContractABI=wethContractABI,
         predictions=predictions,
         stepNumber=stepNumber
     )
 
-    # Get The Updated Balance Of The Token On The
-    # Destination Chain After Bridge
-    balanceAfterBridge = getTokenBalance(
-        fromChainRPCUrl=toChainRPCUrl,
-        tokenAddress=tokenOutAddress,
-        tokenDecimals=tokenInDecimals,
-        wethContractABI=wethContractABI
-    )
-
-    # Get The True Amount We Gained From Bridge
-    actualBridgedAmount = balanceAfterBridge - balanceBeforeBridge
-
-    # Build The Bridge Result Object
-    result = {
-        "successfull": fundsBridged,
-        "bridgeOutput": actualBridgedAmount,
-        "fee": getTokenNormalValue(transactionResult["gasUsed"] * web3.toWei(gasPriceWei, 'gwei'), 18),
-        "blockURL": transactionResult["explorerLink"],
-        "hash": transactionResult["hash"],
-        "telegramStatusMessage": transactionResult["telegramStatusMessage"]
-    }
-
-    return result
+    return recipe

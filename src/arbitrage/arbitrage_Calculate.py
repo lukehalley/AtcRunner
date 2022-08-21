@@ -26,7 +26,7 @@ def determineArbitrageStrategy(recipe):
 
     chainOneTokenPrice = getSwapQuoteOut(
         recipe=recipe,
-        recipeDirection="chainOne",
+        recipePosition="chainOne",
         tokenType="token",
         tokenIsGas=False,
         tokenAmountIn=1.0
@@ -34,7 +34,7 @@ def determineArbitrageStrategy(recipe):
 
     chainTwoTokenPrice = getSwapQuoteOut(
         recipe=recipe,
-        recipeDirection="chainTwo",
+        recipePosition="chainTwo",
         tokenType="token",
         tokenIsGas=False,
         tokenAmountIn=1.0
@@ -42,7 +42,7 @@ def determineArbitrageStrategy(recipe):
 
     chainOneGasPrice = getSwapQuoteOut(
         recipe=recipe,
-        recipeDirection="chainOne",
+        recipePosition="chainOne",
         tokenType="token",
         tokenIsGas=True,
         tokenAmountIn=1.0
@@ -50,7 +50,7 @@ def determineArbitrageStrategy(recipe):
 
     chainTwoGasPrice = getSwapQuoteOut(
         recipe=recipe,
-        recipeDirection="chainTwo",
+        recipePosition="chainTwo",
         tokenType="token",
         tokenIsGas=True,
         tokenAmountIn=1.0
@@ -140,7 +140,7 @@ def determineArbitrageStrategy(recipe):
 
     del recipe["chainOne"], recipe["chainTwo"]
 
-    printSeparator(True)
+    printSeparator(newLine=True)
 
     return recipe
 
@@ -181,7 +181,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
 
         if not stepSettings["done"]:
 
-            position = stepSettings["recipePosition"]
+            position = stepSettings["position"]
             stepType = stepSettings["type"]
 
             toSwapFrom = stepSettings["from"]
