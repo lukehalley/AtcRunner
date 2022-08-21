@@ -113,7 +113,7 @@ def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
     )
 
     # Wait For Balance On Chain We Are Bridging On To Update
-    while recipe[oppositePosition]["wallet"]["balances"][tokenTypeOpposite] == balanceBeforeBridge:
+    while recipe[oppositePosition]["wallet"]["balances"][tokenType] == balanceBeforeBridge:
         recipe = getWalletsInformation(
             recipe=recipe
         )
