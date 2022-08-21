@@ -26,8 +26,6 @@ logger = getProjectLogger()
 transactionTimeout = getTransactionTimeout()
 transactionRetryLimit, transactionRetryDelay, = getRetryParams(retryType="transactionAction")
 
-
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
 
     # Dict Params ####################################################
@@ -142,7 +140,6 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
         updateStatusMessage(originalMessage=recipe["status"]["telegramStatusMessage"], newStatus="⛔️")
         raise Exception(errMsg)
 
-
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
     from src.chain.swap.swap_Querys import getSwapQuoteIn
@@ -229,7 +226,6 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
 
     return recipe, needsGas
 
-
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def callMappedContractFunction(contract, functionToCall, functionParams=None):
     if functionParams:
@@ -239,7 +235,6 @@ def callMappedContractFunction(contract, functionToCall, functionParams=None):
 
     return result
 
-
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def buildMappedContractFunction(contract, functionToCall, txParams, functionParams=None):
     if functionParams:
@@ -248,7 +243,6 @@ def buildMappedContractFunction(contract, functionToCall, txParams, functionPara
         result = getattr(contract.functions, functionToCall)().buildTransaction(txParams)
 
     return result
-
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory):
@@ -289,7 +283,6 @@ def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory
     )
 
     return recipe
-
 
 def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNumber):
 

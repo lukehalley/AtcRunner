@@ -134,21 +134,6 @@ def executeArbitrage(recipe, isRollback):
             # Swap Step Actions
             if stepCategory == "swap":
 
-                # First Get A Quote
-                amountOutQuoted = getSwapQuoteOut(
-                    recipe=recipe,
-                    recipePosition=recipePosition,
-                    tokenType=fromToken,
-                    tokenIsGas=recipe[recipePosition][fromToken]["isGas"],
-                    tokenAmountIn=recipe[recipePosition]["wallet"]["balances"][fromToken]
-                )
-
-                # Calculate Min Out With Slippage
-                amountOutMinWithSlippage = getValueWithSlippage(
-                    amount=amountOutQuoted,
-                    slippage=0.5
-                )
-
                 # Before We Swap Check If We Need To First Approve The Token To Be Spent
                 recipe = checkAndApproveToken(
                     recipe=recipe,
@@ -158,33 +143,13 @@ def executeArbitrage(recipe, isRollback):
                     approvalType=stepCategory
                 )
 
-                # Get Token Balance Before We Swap
-                balanceBeforeSwap = recipe[recipePosition]["wallet"]["balances"][toToken]
-
                 # Execute The Token Swap
                 recipe = swapToken(
                     recipe=recipe,
                     recipePosition=recipePosition,
-                    tokenInAmount=recipe[recipePosition]["wallet"]["balances"][fromToken],
-                    tokenOutAmount=amountOutMinWithSlippage,
                     tokenType=fromToken,
                     stepCategory=stepCategory
                 )
-
-                # Get Wallet Balances Again In Case We Spent Tokens Approving
-                recipe = getWalletsInformation(
-                    recipe=recipe
-                )
-
-                # Get The Balance After Swap So We Know How Much Tokens We Gained
-                balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][toToken]
-
-                # Wait For The Tokens To Arrive In Out Wallet
-                while balanceAfterSwap == balanceBeforeSwap:
-                    recipe = getWalletsInformation(
-                        recipe=recipe
-                    )
-                    balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][toToken]
 
                 printSeparator()
                 logger.info(f'Output: {truncateDecimal(recipe[recipePosition]["wallet"]["balances"][toToken], 6)} {recipe[recipePosition][toToken]["name"]}')
