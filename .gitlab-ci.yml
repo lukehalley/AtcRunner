@@ -1,7 +1,7 @@
 stages:
   - build
   - buildAndPush
-  - updateStack
+  # - updateStack
 
 build:
   image:
@@ -35,23 +35,23 @@ buildAndPush:
   only:
     - master
 
-updateStack:
-  image:
-    name: amazon/aws-cli
-    entrypoint: [""]
-  stage: updateStack
-  services:
-    - docker:dind
-  before_script:
-    - CURRENT_IMAGE_VERSION=$(aws ecr describe-images --repository-name arb-bot --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]' | tr -d '"')
-  script:
-    - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 0
-    - aws cloudformation update-stack
-      --stack-name $CFN_STACK_NAME
-      --use-previous-template
-      --parameters ParameterKey=Image,ParameterValue=$AWS_ACCOUNT/$ECR_REPO:CURRENT_IMAGE_VERSION
-      --capabilities CAPABILITY_NAMED_IAM
-    - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 1
-  only:
-    - master
-  allow_failure: true
+#updateStack:
+#  image:
+#    name: amazon/aws-cli
+#    entrypoint: [""]
+#  stage: updateStack
+#  services:
+#    - docker:dind
+#  before_script:
+#    - CURRENT_IMAGE_VERSION=$(aws ecr describe-images --repository-name arb-bot --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]' | tr -d '"')
+#  script:
+#    - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 0
+#    - aws cloudformation update-stack
+#      --stack-name $CFN_STACK_NAME
+#      --use-previous-template
+#      --parameters ParameterKey=Image,ParameterValue=$AWS_ACCOUNT/$ECR_REPO:CURRENT_IMAGE_VERSION
+#      --capabilities CAPABILITY_NAMED_IAM
+#    - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --desired-count 1
+#  only:
+#    - master
+#  allow_failure: true
