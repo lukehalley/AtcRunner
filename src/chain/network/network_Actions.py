@@ -135,7 +135,7 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
 
     if wasSuccessful:
         logger.info(f"✅ Transaction was successful!")
-        return result
+        return recipe, result
 
     else:
         errMsg = f"⛔️ Transaction was unsuccessful!"
@@ -248,6 +248,7 @@ def buildMappedContractFunction(contract, functionToCall, txParams, functionPara
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory):
+
     # Dict Params ####################################################
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
     walletAddress = recipe[recipePosition]["wallet"]["address"]
@@ -277,7 +278,7 @@ def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory
     })
 
     # Sign And Send The Transaction
-    signAndSendTransaction(
+    recipe, transactionResult = signAndSendTransaction(
         tx=tx,
         recipe=recipe,
         recipePosition=recipePosition,
@@ -306,6 +307,9 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
 
     # If Token Is Not Approved - Approve It
     if not isApproved:
+
+        logger.info("\n")
+
         # Log That We Approving
         printSeparator()
         logger.info(f'{stepNumber}.5 Approving {recipe[recipePosition][tokenType]["symbol"]}')
@@ -325,5 +329,7 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
         )
 
         printSeparator()
+
+        logger.info("\n")
 
     return recipe

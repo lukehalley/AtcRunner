@@ -217,7 +217,7 @@ def swapToken(recipe, recipePosition, tokenType, stepCategory):
                                          txParams=txParams, functionParams=contractParams)
 
     # Sign The Transaction And Send It
-    signAndSendTransaction(
+    recipe, transactionResult = signAndSendTransaction(
         tx=tx,
         recipe=recipe,
         recipePosition=recipePosition,
