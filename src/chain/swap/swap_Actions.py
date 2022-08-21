@@ -40,29 +40,9 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
 
         recipe["status"]["telegramStatusMessage"] = printSettingUpWallet(recipe['status']['currentRoundTrip'])
 
-        if recipe[recipePosition][tokenType]["isGas"]:
-            maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
-            amountInNormal = abs(recipe[recipePosition]["wallet"]["balances"][tokenType] - maximumGasBalance)
-        else:
-            amountInNormal = recipe[recipePosition]["wallet"]["balances"][tokenType]
-
-        balanceBeforeSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
-
-        amountOutQuoted = getSwapQuoteOut(
-            recipe=recipe,
-            recipePosition=recipePosition,
-            tokenType=tokenType,
-            tokenIsGas=recipe[recipePosition][tokenType]["isGas"],
-            tokenAmountIn=amountInNormal
-        )
-
-        amountOutMinWithSlippage = getValueWithSlippage(amount=amountOutQuoted, slippage=0.5)
-
         recipe = swapToken(
             recipe=recipe,
             recipePosition=recipePosition,
-            tokenInAmount=amountInNormal,
-            tokenOutAmount=amountOutMinWithSlippage,
             tokenType=tokenType,
             stepCategory=stepCategory
         )
@@ -71,23 +51,12 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
             recipe=recipe
         )
 
-        balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
-
-        while balanceAfterSwap == balanceBeforeSwap:
-            recipe = getWalletsInformation(
-                recipe=recipe
-            )
-            balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
-
-        result = balanceAfterSwap - balanceBeforeSwap
-
-        recipe = getWalletsInformation(
-            recipe=recipe
-        )
-
         printSeparator()
 
-        logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[recipePosition][tokenTypeOpposite]["name"]}')
+        logger.info(
+            f'Output: {truncateDecimal(recipe[recipePosition]["wallet"]["balances"][tokenType], 6)}'
+            f'{recipe[recipePosition][tokenType]["name"]}'
+        )
 
         recipe["status"]["telegramStatusMessage"] = updateStatusMessage(originalMessage=recipe["status"]["telegramStatusMessage"], newStatus="✅")
 
