@@ -14,7 +14,7 @@ from src.chain.network.network_Querys import getTokenBalance, getWalletGasBalanc
 from src.utils.chain.chain_Calculations import getValueWithSlippage
 from src.utils.chain.chain_URLs import generateBlockExplorerLink
 from src.utils.chain.chain_Wallet import getPrivateKey
-from src.utils.logging.logging_Print import printSeperator
+from src.utils.logging.logging_Print import printSeparator
 
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.retry.retry_Params import getRetryParams, getTransactionTimeout
@@ -40,7 +40,7 @@ def signAndSendTransaction(tx, rpcUrl, explorerUrl, currentRoundTrip, stepCatego
 
     telegramStatusMessage = updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="⏳")
 
-    printSeperator()
+    printSeparator()
 
     logger.info(f'Transaction Details:')
     logger.info(f'Value: {tx["value"]}')
@@ -50,7 +50,7 @@ def signAndSendTransaction(tx, rpcUrl, explorerUrl, currentRoundTrip, stepCatego
     logger.info(f'Gas Limit: {tx["gas"]}')
     logger.info(f'Gas Price: {tx["gasPrice"]}')
 
-    printSeperator()
+    printSeparator()
 
     logger.debug("Signing transaction...")
     signed_tx = web3.eth.account.sign_transaction(tx, private_key=privateKey)
@@ -315,13 +315,13 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
     # If Token Is Not Approved - Approve It
     if not isApproved:
         # Log That We Approving
-        printSeperator()
+        printSeparator()
         logger.info(f'{stepNumber}.5 Approving {recipe[recipePosition][tokenType]["symbol"]}')
         recipe["status"]["telegramMessage"] = appendToMessage(
             messageToAppend=f"{stepNumber} Approving {recipe[recipePosition][tokenType]['symbol']} 💸",
             messageToAppendTo=telegramStatusMessage
         )
-        printSeperator()
+        printSeparator()
 
         # Approve The Token
         recipe = approveToken(
@@ -332,6 +332,6 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
             stepCategory=f"{stepNumber}_5_{approvalType.lower()}"
         )
 
-        printSeperator()
+        printSeparator()
 
     return recipe

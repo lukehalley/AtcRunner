@@ -3,7 +3,7 @@ import os
 from firebase_admin import credentials, initialize_app
 
 from src.utils.env.env_Docker import getAWSSecret
-from src.utils.logging.logging_Print import printSeperator
+from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
@@ -37,4 +37,4 @@ def createDatabaseConnection():
 
     logger.info(f"Connection established to Firebase")
 
-    printSeperator(True)
+    printSeparator(True)

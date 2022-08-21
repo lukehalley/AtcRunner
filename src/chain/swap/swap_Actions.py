@@ -12,7 +12,7 @@ from src.utils.chain.chain_ABI import getMappedContractFunction
 from src.utils.chain.chain_Calculations import getValueWithSlippage, getTransactionDeadline
 from src.utils.chain.chain_Wallet import getPrivateKey
 from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
-from src.utils.logging.logging_Print import printSettingUpWallet, printSeperator
+from src.utils.logging.logging_Print import printSettingUpWallet, printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
 
@@ -94,13 +94,13 @@ def setupWallet(recipe):
             recipe=recipe
         )
 
-        printSeperator()
+        printSeparator()
 
         logger.info(f'Output: {truncateDecimal(result, 6)} {recipe[positionToSetup][toSwapTo]["name"]}')
 
         updateStatusMessage(originalMessage=telegramStatusMessage, newStatus="✅")
 
-        printSeperator(True)
+        printSeparator(True)
 
 
 def swapToken(recipe, recipePosition, tokenInAmount, tokenOutAmount, tokenType, stepCategory):
