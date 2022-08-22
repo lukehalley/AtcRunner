@@ -6,7 +6,7 @@ from web3 import Web3
 from src.apis.synapseBridge.synapseBridge_Generate import generateUnsignedBridgeTransaction
 from src.arbitrage.arbitrage_Utils import getOppositeToken, getOppositePosition
 from src.chain.bridge.bridge_Querys import waitForBridgeToComplete
-from src.chain.network.network_Actions import signAndSendTransaction
+from src.chain.network.network_Actions import signAndSendTransaction, checkAndApproveToken
 from src.chain.network.network_Querys import getWalletAddressFromPrivateKey, getTokenBalance, getWalletsInformation
 from src.utils.chain.chain_Calculations import getTransactionDeadline
 from src.utils.chain.chain_Wei import getTokenDecimalValue, getTokenNormalValue
@@ -85,6 +85,20 @@ def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
         'data': bridgeTransaction["unsigned_data"],
         'value': int(bridgeTransaction["value"])
     }
+
+    # Check If We Are Swapping From Gas
+    # If We Are We Don't Have To Approve It
+    if not recipe[recipePosition][tokenType]["isGas"]:
+
+        # Check If The The Token We Are Swapping To Needs To Be Approved
+        # If So - Approve It
+        recipe = checkAndApproveToken(
+            recipe=recipe,
+            recipePosition=recipePosition,
+            tokenType=tokenType,
+            stepNumber=stepNumber,
+            approvalType=stepCategory
+        )
 
     # Sign + Send The Bridge Transaction
     recipe, transactionResult = signAndSendTransaction(
