@@ -44,7 +44,10 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
 
     tx["nonce"] = initNonce
 
-    recipe["status"]["telegramStatusMessage"] = updateStatusMessage(originalMessage=recipe["status"]["telegramStatusMessage"], newStatus="⏳")
+    recipe["status"]["telegramStatusMessage"] = updateStatusMessage(
+        originalMessage=recipe["status"]["telegramStatusMessage"],
+        newStatus="⏳"
+    )
 
     printSeparator()
 
@@ -200,7 +203,8 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
                 tokenInAmount=amountInQuoted,
                 tokenOutAmount=amountOutMinWithSlippage,
                 tokenType=topUpTokenToUse,
-                stepCategory=gasTopUpCategory
+                stepCategory=gasTopUpCategory,
+                stepNumber=0
             )
 
             recipe["status"]["telegramStatusMessage"] = updateStatusMessage(
@@ -290,7 +294,7 @@ def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory
 def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNumber):
 
     # Choose The Contract Address To Choose Based On If Its A Swap or Bridge Approval
-    if approvalType == "swap":
+    if approvalType == "swap" or approvalType == "setup":
         spenderAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
     elif approvalType == "bridge":
         spenderAddress = recipe[recipePosition]["chain"]["contracts"]["bridges"]["synapse"]["address"]
@@ -308,8 +312,6 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
     # If Token Is Not Approved - Approve It
     if not isApproved:
 
-        logger.info("\n")
-
         # Log That We Approving
         printSeparator()
         logger.info(f'{stepNumber}.5 Approving {recipe[recipePosition][tokenType]["symbol"]}')
@@ -317,7 +319,6 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
             messageToAppend=f"{stepNumber} Approving {recipe[recipePosition][tokenType]['symbol']} 💸",
             messageToAppendTo=recipe["status"]["telegramStatusMessage"]
         )
-        printSeparator()
 
         # Approve The Token
         recipe = approveToken(
@@ -329,7 +330,5 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
         )
 
         printSeparator()
-
-        logger.info("\n")
 
     return recipe

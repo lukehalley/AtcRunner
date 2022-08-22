@@ -46,6 +46,7 @@ def appendToMessage(messageToAppendTo, messageToAppend):
 # Update the emoji at the end of a message
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def updateStatusMessage(originalMessage, newStatus):
+
     originalText = originalMessage["text"]
 
     if originalText != newStatus:
@@ -58,15 +59,15 @@ def updateStatusMessage(originalMessage, newStatus):
                                                    text=newText)
             return updatedMessage
         except Exception as e:
-            isKnownTransactionError = "specified new message content and reply markup are exactly the same" in str(e)
-            if isKnownTransactionError:
+            sameTextError = "specified new message content and reply markup are exactly the same" in str(e)
+            if sameTextError:
+                return originalMessage
                 pass
             else:
                 raise Exception(str(e))
-
     else:
         logger.info("Telegram message same as before - not updating.")
-        return
+        return originalMessage
 
 
 # Send a alert of a stuck bridge into the Synapse bridge support chat
