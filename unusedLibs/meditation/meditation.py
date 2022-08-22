@@ -1,3 +1,4 @@
+"""Meditation system for player stat regeneration and temporary buffs."""
 """Meditation module for character relaxation and mana regeneration."""
 """Meditation mechanics for mana recovery and passive skill training."""
 """Manage meditation sessions and apply cumulative stat buffs to player profile."""
