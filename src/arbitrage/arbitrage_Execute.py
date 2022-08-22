@@ -20,7 +20,6 @@ logger = getProjectLogger()
 
 # Execute an Arbitrage
 def executeArbitrage(recipe, isRollback):
-
     # Collect Initial Wallet Balances
     recipe = getWalletsInformation(
         recipe=recipe
@@ -128,25 +127,20 @@ def executeArbitrage(recipe, isRollback):
             # Swap Step Actions
             if stepCategory == "swap":
 
-                # Before We Swap Check If We Need To First Approve The Token To Be Spent
-                recipe = checkAndApproveToken(
-                    recipe=recipe,
-                    recipePosition=recipePosition,
-                    tokenType=fromToken,
-                    stepNumber=stepNumber,
-                    approvalType=stepCategory
-                )
-
                 # Execute The Token Swap
                 recipe = swapToken(
                     recipe=recipe,
                     recipePosition=recipePosition,
                     tokenType=fromToken,
-                    stepCategory=stepCategory
+                    stepCategory=stepCategory,
+                    stepNumber=stepNumber
                 )
 
                 printSeparator()
-                logger.info(f'Output: {truncateDecimal(recipe[recipePosition]["wallet"]["balances"][toToken], 6)} {recipe[recipePosition][toToken]["name"]}')
+                logger.info(
+                    f'Output: {truncateDecimal(recipe[recipePosition]["wallet"]["balances"][toToken], 6)}'
+                    f'{recipe[recipePosition][toToken]["name"]}'
+                )
 
             # Bridge Step Actions
             elif stepCategory == "bridge":
@@ -170,7 +164,6 @@ def executeArbitrage(recipe, isRollback):
 
                     # Check If We Would Would Lose Money
                     if quote < recipe["status"]["startingStables"]:
-
                         # Rollback Arbitrage
                         executeArbitrage(
                             recipe=recipe,
@@ -182,7 +175,6 @@ def executeArbitrage(recipe, isRollback):
                 # Check If We Are Swapping From Gas
                 # If We Are We Don't Have To Approve It
                 if not recipe[recipePosition][fromToken]["isGas"]:
-
                     # Check If The The Token We Are Swapping To Needs To Be Approved
                     # If So - Approve It
                     recipe = checkAndApproveToken(
@@ -248,4 +240,3 @@ def executeArbitrage(recipe, isRollback):
         profitPercentage=arbitragePercentage,
         wasRollback=isRollback
     )
-
