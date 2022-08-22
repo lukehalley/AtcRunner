@@ -172,24 +172,6 @@ def executeArbitrage(recipe, isRollback):
 
                         break
 
-                # Check If We Are Swapping From Gas
-                # If We Are We Don't Have To Approve It
-                if not recipe[recipePosition][fromToken]["isGas"]:
-                    # Check If The The Token We Are Swapping To Needs To Be Approved
-                    # If So - Approve It
-                    recipe = checkAndApproveToken(
-                        recipe=recipe,
-                        recipePosition=recipePosition,
-                        tokenType=fromToken,
-                        stepNumber=stepNumber,
-                        approvalType=stepCategory
-                    )
-
-                    # Get Wallet Balances Again In Case We Spent Tokens Approving
-                    recipe = getWalletsInformation(
-                        recipe=recipe
-                    )
-
                 # Execute The Bridge
                 recipe = executeBridge(
                     recipe=recipe,
