@@ -1,7 +1,7 @@
 import sys
 
 from src.apis.firebaseDB.firebaseDB_Querys import fetchStrategy
-from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatusMessage
+from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatusMessage, removeStatusMessage
 from src.arbitrage.arbitrage_Simulate import simulateStep
 from src.arbitrage.arbitrage_Utils import getOppositePosition
 from src.chain.bridge.bridge_Actions import executeBridge
@@ -20,6 +20,7 @@ logger = getProjectLogger()
 
 # Execute an Arbitrage
 def executeArbitrage(recipe, isRollback):
+
     # Collect Initial Wallet Balances
     recipe = getWalletsInformation(
         recipe=recipe
@@ -40,6 +41,11 @@ def executeArbitrage(recipe, isRollback):
         steps = fetchStrategy(
             recipe=recipe,
             strategyType="rollback"
+        )
+
+        recipe["status"]["telegramStatusMessage"] = removeStatusMessage(
+            originalMessage=recipe["status"]["telegramStatusMessage"],
+
         )
 
         recipe["status"]["telegramStatusMessage"] = appendToMessage(
@@ -88,11 +94,11 @@ def executeArbitrage(recipe, isRollback):
         toToken = stepSettings["to"]
 
         # Check If We Need To Top Up Wallet Before Starting Step
-        # recipe, toppedUpOccured = topUpWalletGas(
-        #     recipe=recipe,
-        #     topUpDirection=recipePosition,
-        #     topUpTokenToUse=fromToken
-        # )
+        recipe, toppedUpOccured = topUpWalletGas(
+            recipe=recipe,
+            topUpDirection=recipePosition,
+            topUpTokenToUse=fromToken
+        )
 
         # Get Wallet Balances
         recipe = getWalletsInformation(
@@ -222,3 +228,5 @@ def executeArbitrage(recipe, isRollback):
         profitPercentage=arbitragePercentage,
         wasRollback=isRollback
     )
+
+    return
