@@ -5,6 +5,7 @@ from src.utils.time.time_Calculations import getMinSecString
 
 logger = getProjectLogger()
 
+telegramSeperator = "-------------------------------"
 
 # Print the current round trip count
 def printRoundtrip(count):
@@ -44,10 +45,18 @@ def printArbitrageProfitable(recipe):
     sentMessage = sendMessage(
         msg=
         f"Arbitrage #{count} Profitable 🤑\n"
-        f"{networkPath}\n"
-        f"{tokenPath}\n"
-        f"${recipe['arbitrage']['predictions']['startingStables']} -> ${recipe['arbitrage']['predictions']['outStables']}\n"
-        f"Profit: ${recipe['arbitrage']['predictions']['profitLoss']} | {recipe['arbitrage']['predictions']['arbitragePercentage']}%"
+        f"{telegramSeperator}\n"
+        f"Network Path:\n"
+        f"- {networkPath}\n"
+        f"Token Path:\n"
+        f"- {tokenPath}\n"
+        f"Return:\n"
+        f"- ${recipe['arbitrage']['predictions']['startingStables']} -> ${recipe['arbitrage']['predictions']['outStables']}\n"
+        f"Profit\n"
+        f"- ${recipe['arbitrage']['predictions']['profitLoss']} ({recipe['arbitrage']['predictions']['arbitragePercentage']}%)\n"
+        f"{telegramSeperator}\n"
+        f"Execution ⏭\n"
+
     )
 
     recipe["status"]["telegramStatusMessage"] = sentMessage
@@ -79,11 +88,17 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
     if wasProfitable:
         logger.info(f"Made A Profit Of ${profitLoss} ({profitPercentage}%)")
         appendToMessage(messageToAppendTo=recipe["status"]["telegramStatusMessage"],
-                        messageToAppend=f"Made A Profit Of ${round(profitLoss, 2)} ({profitPercentage}%) 👍\n")
+                        messageToAppend=
+                        f"{telegramSeperator}\n"
+                        f"Results\n"
+                        f"- Profit Of ${round(profitLoss, 2)} | ({profitPercentage}%) 👍\n")
     else:
         logger.info(f"Made A Loss Of ${profitLoss} ({profitPercentage}%)")
         appendToMessage(messageToAppendTo=recipe["status"]["telegramStatusMessage"],
-                        messageToAppend=f"Made A Loss Of ${round(profitLoss, 2)} ({profitPercentage}%) 👎\n")
+                        messageToAppend=
+                        f"{telegramSeperator}\n"
+                        f"Results\n"
+                        f"- Loss Of ${round(profitLoss, 2)} | ({profitPercentage}%) 👎\n")
 
     logger.info(timeString)
     logger.info(separatorString)

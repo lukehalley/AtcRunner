@@ -45,7 +45,8 @@ def executeArbitrage(recipe, isRollback):
 
         recipe["status"]["telegramStatusMessage"] = appendToMessage(
             messageToAppendTo=recipe["status"]["telegramStatusMessage"],
-            messageToAppend=f"Rolling Back ‍⏮"
+            messageToAppend=
+                f"Rollback ‍⏮"
         )
 
     else:
@@ -116,7 +117,7 @@ def executeArbitrage(recipe, isRollback):
             # Update The Telegram Status Message
             recipe["status"]["telegramStatusMessage"] = appendToMessage(
                 messageToAppendTo=recipe["status"]["telegramStatusMessage"],
-                messageToAppend=f"{stepNumber}. Doing {recipePosition.title()} {stepCategory.title()} -> 📤"
+                messageToAppend=f"- {stepNumber}. {recipePosition.title()} {stepCategory.title()} -> 📤"
             )
 
             # Swap Step Actions

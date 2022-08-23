@@ -20,7 +20,10 @@ usernames, mentionStr = getTelegramStuckMentions()
 # Send a message to a Telegram channel
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def sendMessage(msg, channelId=telegramChannelID):
-    result = bot.send_message(channelId, msg)
+    result = bot.send_message(
+        chat_id=channelId,
+        text=msg
+    )
     return result
 
 
@@ -32,9 +35,11 @@ def appendToMessage(messageToAppendTo, messageToAppend):
     newText = f"{originalText}\n{messageToAppend}"
 
     try:
-        updatedMessage = bot.edit_message_text(chat_id=messageToAppendTo.chat_id,
-                                               message_id=messageToAppendTo.message_id,
-                                               text=newText)
+        updatedMessage = bot.edit_message_text(
+            chat_id=messageToAppendTo.chat_id,
+            message_id=messageToAppendTo.message_id,
+            text=newText
+        )
         return updatedMessage
     except Exception as e:
         isKnownTransactionError = "specified new message content and reply markup are exactly the same" in str(e)
@@ -47,7 +52,6 @@ def appendToMessage(messageToAppendTo, messageToAppend):
 # Update the emoji at the end of a message
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def updateStatusMessage(originalMessage, newStatus, lineIndex=-1):
-
     allowedStatusEmojis = ["✅", "⛔️", "📤", "⏳"]
 
     originalText = originalMessage["text"]
@@ -72,9 +76,11 @@ def updateStatusMessage(originalMessage, newStatus, lineIndex=-1):
                 return originalMessage
 
         try:
-            updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
-                                                   message_id=originalMessage.message_id,
-                                                   text=newText)
+            updatedMessage = bot.edit_message_text(
+                chat_id=originalMessage.chat_id,
+                message_id=originalMessage.message_id,
+                text=newText
+            )
             return updatedMessage
         except Exception as e:
             sameTextError = "specified new message content and reply markup are exactly the same" in str(e)
@@ -98,9 +104,11 @@ def removeStatusMessage(originalMessage, lineIndex=-1):
     newText = "\n".join(splitStatusText)
 
     try:
-        updatedMessage = bot.edit_message_text(chat_id=originalMessage.chat_id,
-                                               message_id=originalMessage.message_id,
-                                               text=newText)
+        updatedMessage = bot.edit_message_text(
+            chat_id=originalMessage.chat_id,
+            message_id=originalMessage.message_id,
+            text=newText
+        )
         return updatedMessage
     except Exception as e:
         sameTextError = "specified new message content and reply markup are exactly the same" in str(e)
