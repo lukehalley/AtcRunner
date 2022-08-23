@@ -101,6 +101,9 @@ def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
             approvalType=stepCategory
         )
 
+        if approvalOccured:
+            logger.info("Approval Complete - Continuing With Bridge")
+
     # Sign + Send The Bridge Transaction
     recipe, transactionResult = signAndSendTransaction(
         tx=tx,

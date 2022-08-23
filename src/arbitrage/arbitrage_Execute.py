@@ -135,7 +135,7 @@ def executeArbitrage(recipe, isRollback):
 
                 printSeparator()
                 logger.info(
-                    f'Output: {truncateDecimal(recipe[recipePosition]["wallet"]["balances"][toToken], 6)}'
+                    f'Output: {truncateDecimal(recipe[recipePosition]["wallet"]["balances"][toToken], 6)} '
                     f'{recipe[recipePosition][toToken]["name"]}'
                 )
 
@@ -160,7 +160,8 @@ def executeArbitrage(recipe, isRollback):
                     )
 
                     # Check If We Would Would Lose Money
-                    if quote < recipe["status"]["startingStables"]:
+                    if quote < recipe["status"]["startingStables"] and not isRollback and fromToken == "stablecoin":
+
                         # Rollback Arbitrage
                         executeArbitrage(
                             recipe=recipe,
