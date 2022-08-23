@@ -44,7 +44,10 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
 
     tx["nonce"] = initNonce
 
-    recipe["status"]["telegramStatusMessage"] = updateStatusMessage(originalMessage=recipe["status"]["telegramStatusMessage"], newStatus="⏳")
+    recipe["status"]["telegramStatusMessage"] = updateStatusMessage(
+        originalMessage=recipe["status"]["telegramStatusMessage"],
+        newStatus="⏳"
+    )
 
     printSeparator()
 
@@ -143,26 +146,25 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
         updateStatusMessage(originalMessage=recipe["status"]["telegramStatusMessage"], newStatus="⛔️")
         raise Exception(errMsg)
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
+def topUpWalletGas(recipe, topUpPosition, topUpTokenToUse):
     from src.chain.swap.swap_Querys import getSwapQuoteIn
     from src.chain.swap.swap_Actions import swapToken
 
-    minimumGasBalance = Decimal(recipe[topUpDirection]["chain"]["gasDetails"]["gasLimits"]["minGas"])
-    maximumGasBalance = Decimal(recipe[topUpDirection]["chain"]["gasDetails"]["gasLimits"]["maxGas"])
+    minimumGasBalance = Decimal(recipe[topUpPosition]["chain"]["gasDetails"]["gasLimits"]["minGas"])
+    maximumGasBalance = Decimal(recipe[topUpPosition]["chain"]["gasDetails"]["gasLimits"]["maxGas"])
 
-    gasBalance = recipe[topUpDirection]["wallet"]["balances"]["gas"]
+    gasBalance = recipe[topUpPosition]["wallet"]["balances"]["gas"]
 
     needsGas = gasBalance < minimumGasBalance
 
-    balanceBeforeBridge = getTokenBalance(
-        fromChainRPCUrl=recipe[topUpDirection]["chain"]["rpc"],
-        tokenAddress=recipe[topUpDirection][topUpTokenToUse]["address"],
-        tokenDecimals=recipe[topUpDirection][topUpTokenToUse]["decimals"],
-        wethContractABI=recipe[topUpDirection]["chain"]["contracts"]["weth"]["abi"]
+    balanceBeforeTopUp = getTokenBalance(
+        fromChainRPCUrl=recipe[topUpPosition]["chain"]["rpc"],
+        tokenAddress=recipe[topUpPosition][topUpTokenToUse]["address"],
+        tokenDecimals=recipe[topUpPosition][topUpTokenToUse]["decimals"],
+        wethContractABI=recipe[topUpPosition]["chain"]["contracts"]["weth"]["abi"]
     )
 
-    if topUpDirection == "origin":
+    if topUpPosition == "origin":
         gasTopUpCategory = f"gas_1"
     else:
         gasTopUpCategory = f"gas_2"
@@ -171,37 +173,39 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
 
         gasTokensNeeded = maximumGasBalance - gasBalance
 
-        routes = [recipe[topUpDirection][topUpTokenToUse]["address"], recipe[topUpDirection]["gas"]["address"]]
-
         amountInQuoted = getSwapQuoteIn(
-            amountOutNormal=gasTokensNeeded,
-            routes=routes
+            recipe=recipe,
+            recipePosition=topUpPosition,
+            tokenType=topUpTokenToUse,
+            tokenIsGas=recipe[topUpPosition][topUpTokenToUse]["isGas"],
+            tokenAmountOut=gasTokensNeeded,
+            swappingToGas=True
         )
 
-        amountOutMinWithSlippage = getValueWithSlippage(amount=gasTokensNeeded, slippage=0.5)
-
-        if amountInQuoted > balanceBeforeBridge:
-            errMsg = f'Error topping up {topUpDirection} ({recipe[topUpDirection]["chain"]["name"]}) wallet with gas: ' \
-                     f'Not enough {topUpTokenToUse}s (balance: {balanceBeforeBridge}) to purchase {gasTokensNeeded} {recipe[topUpDirection]["gas"]["symbol"]} ' \
-                     f'for {amountInQuoted} {recipe[topUpDirection][topUpTokenToUse]["symbol"]}'
+        if amountInQuoted > balanceBeforeTopUp:
+            errMsg = f'Error topping up {topUpPosition} ({recipe[topUpPosition]["chain"]["name"]}) wallet with gas: ' \
+                     f'Not enough {topUpTokenToUse}s (balance: {balanceBeforeTopUp}) to purchase {gasTokensNeeded} {recipe[topUpPosition]["gas"]["symbol"]} ' \
+                     f'for {amountInQuoted} {recipe[topUpPosition][topUpTokenToUse]["symbol"]}'
             logger.error(errMsg)
             raise Exception(errMsg)
 
+        printSeparator()
+
         logger.info(
-            f'{topUpDirection} wallet ({recipe[topUpDirection]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[topUpDirection]["gas"]["symbol"]} for {amountInQuoted} {recipe[topUpDirection][topUpTokenToUse]["symbol"]}')
+            f'{topUpPosition.title()} wallet ({recipe[topUpPosition]["chain"]["name"]}) needs gas - adding {gasTokensNeeded} {recipe[topUpPosition]["gas"]["symbol"]} for {amountInQuoted} {recipe[topUpPosition][topUpTokenToUse]["symbol"]}')
 
         try:
 
             recipe["status"]["telegramStatusMessage"] = appendToMessage(messageToAppendTo=recipe["status"]["telegramStatusMessage"],
-                                                    messageToAppend=f"⛽️ Topping Up {topUpDirection.title()} Wallet -> 📤")
+                                                    messageToAppend=f"- Top Up {topUpPosition.title()} -> 📤")
 
             recipe = swapToken(
                 recipe=recipe,
-                recipePosition=topUpDirection,
-                tokenInAmount=amountInQuoted,
-                tokenOutAmount=amountOutMinWithSlippage,
+                recipePosition=topUpPosition,
                 tokenType=topUpTokenToUse,
-                stepCategory=gasTopUpCategory
+                stepCategory=gasTopUpCategory,
+                stepNumber=0,
+                amountOverride=gasTokensNeeded
             )
 
             recipe["status"]["telegramStatusMessage"] = updateStatusMessage(
@@ -210,26 +214,19 @@ def topUpWalletGas(recipe, topUpDirection, topUpTokenToUse):
             )
 
         except Exception as err:
-            errMsg = f'Error topping up {topUpDirection} ({recipe[topUpDirection]["chain"]["name"]}) wallet with gas: {err}'
+            errMsg = f'Error topping up {topUpPosition} ({recipe[topUpPosition]["chain"]["name"]}) wallet with gas: {err}'
             logger.error(errMsg)
             raise Exception(err)
-
-        recipe[topUpDirection]["wallet"]["balances"]["gas"] = getWalletGasBalance(
-            rpcUrl=recipe[topUpDirection]["chain"]["rpc"],
-            walletAddress=recipe[topUpDirection]["wallet"]["address"],
-            wethContractABI=recipe[topUpDirection]["chain"]["contracts"]["weth"]["abi"]
-        )
 
         recipe = getWalletsInformation(
             recipe=recipe
         )
 
         logger.info(
-            f'{topUpDirection} wallet ({recipe[topUpDirection]["chain"]["name"]}) topped up successful - new balance is {recipe[topUpDirection]["wallet"]["balances"]["gas"]} {recipe[topUpDirection]["gas"]["symbol"]}')
+            f'{topUpPosition} wallet ({recipe[topUpPosition]["chain"]["name"]}) topped up successful - new balance is {recipe[topUpPosition]["wallet"]["balances"]["gas"]} {recipe[topUpPosition]["gas"]["symbol"]}')
 
     return recipe, needsGas
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def callMappedContractFunction(contract, functionToCall, functionParams=None):
     if functionParams:
         result = getattr(contract.functions, functionToCall)(*functionParams).call()
@@ -238,7 +235,6 @@ def callMappedContractFunction(contract, functionToCall, functionParams=None):
 
     return result
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def buildMappedContractFunction(contract, functionToCall, txParams, functionParams=None):
     if functionParams:
         result = getattr(contract.functions, functionToCall)(*functionParams).buildTransaction(txParams)
@@ -247,7 +243,6 @@ def buildMappedContractFunction(contract, functionToCall, txParams, functionPara
 
     return result
 
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory):
 
     # Dict Params ####################################################
@@ -272,7 +267,8 @@ def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory
 
     # Build Out Transaction Object
     nonce = web3.eth.getTransactionCount(walletAddress, 'pending')
-    tx = contract.functions.approve(spenderAddress, amountToApprove).buildTransaction({
+    safeSpenderAddress = web3.toChecksumAddress(spenderAddress)
+    tx = contract.functions.approve(safeSpenderAddress, amountToApprove).buildTransaction({
         'from': walletAddress,
         'nonce': nonce,
         'gasPrice': web3.eth.gas_price,
@@ -290,8 +286,10 @@ def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory
 
 def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNumber):
 
+    validSwapTypes = ["swap", "setup", "gas", "gas_1", "gas_2"]
+
     # Choose The Contract Address To Choose Based On If Its A Swap or Bridge Approval
-    if approvalType == "swap":
+    if approvalType in validSwapTypes:
         spenderAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
     elif approvalType == "bridge":
         spenderAddress = recipe[recipePosition]["chain"]["contracts"]["bridges"]["synapse"]["address"]
@@ -309,16 +307,13 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
     # If Token Is Not Approved - Approve It
     if not isApproved:
 
-        logger.info("\n")
-
         # Log That We Approving
         printSeparator()
-        logger.info(f'{stepNumber}.5 Approving {recipe[recipePosition][tokenType]["symbol"]}')
+        logger.info(f'Approving {recipe[recipePosition][tokenType]["symbol"]}')
         recipe["status"]["telegramStatusMessage"] = appendToMessage(
-            messageToAppend=f"{stepNumber} Approving {recipe[recipePosition][tokenType]['symbol']} 💸",
+            messageToAppend=f"  | Approving {recipe[recipePosition][tokenType]['symbol']} 💸",
             messageToAppendTo=recipe["status"]["telegramStatusMessage"]
         )
-        printSeparator()
 
         # Approve The Token
         recipe = approveToken(
@@ -331,6 +326,4 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
 
         printSeparator()
 
-        logger.info("\n")
-
-    return recipe
+    return recipe, not isApproved
