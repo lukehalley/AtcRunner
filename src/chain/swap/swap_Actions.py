@@ -59,7 +59,10 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
             f'{recipe[recipePosition][tokenTypeOpposite]["name"]}'
         )
 
-        recipe["status"]["telegramStatusMessage"] = updateStatusMessage(originalMessage=recipe["status"]["telegramStatusMessage"], newStatus="✅")
+        recipe["status"]["telegramStatusMessage"] = updateStatusMessage(
+            originalMessage=recipe["status"]["telegramStatusMessage"],
+            newStatus="✅"
+        )
 
         printSeparator(newLine=True)
 
@@ -149,10 +152,11 @@ def swapToken(recipe, recipePosition, tokenType, stepCategory, stepNumber):
         decimalPlaces=tokenDecimalsOut
     )
 
+    approvalOccured = False
     if not swappingFromGas:
 
         # Before We Swap Check If We Need To First Approve The Token To Be Spent
-        recipe = checkAndApproveToken(
+        recipe, approvalOccured = checkAndApproveToken(
             recipe=recipe,
             recipePosition=recipePosition,
             tokenType=tokenType,
@@ -245,5 +249,12 @@ def swapToken(recipe, recipePosition, tokenType, stepCategory, stepNumber):
             recipe=recipe
         )
         balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
+
+    if approvalOccured:
+        recipe["status"]["telegramStatusMessage"] = updateStatusMessage(
+            originalMessage=recipe["status"]["telegramStatusMessage"],
+            newStatus="✅",
+            lineIndex=-2
+        )
 
     return recipe

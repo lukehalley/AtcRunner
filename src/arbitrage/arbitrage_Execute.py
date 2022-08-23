@@ -5,18 +5,14 @@ from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatu
 from src.arbitrage.arbitrage_Simulate import simulateStep
 from src.arbitrage.arbitrage_Utils import getOppositePosition
 from src.chain.bridge.bridge_Actions import executeBridge
-from src.chain.network.network_Actions import topUpWalletGas, checkAndApproveToken
 from src.chain.network.network_Querys import getWalletsInformation
-from src.chain.swap.swap_Querys import getSwapQuoteOut
-from src.chain.swap.swap_Actions import swapToken, setupWallet
-from src.utils.chain.chain_Calculations import getValueWithSlippage
+from src.chain.swap.swap_Actions import swapToken
 from src.utils.logging.logging_Print import printSeparator, printArbitrageComplete
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
 from src.utils.math.math_Percentage import percentageDifference
 
 logger = getProjectLogger()
-
 
 # Execute an Arbitrage
 def executeArbitrage(recipe, isRollback):
@@ -44,13 +40,12 @@ def executeArbitrage(recipe, isRollback):
         )
 
         recipe["status"]["telegramStatusMessage"] = removeStatusMessage(
-            originalMessage=recipe["status"]["telegramStatusMessage"],
-
+            originalMessage=recipe["status"]["telegramStatusMessage"]
         )
 
         recipe["status"]["telegramStatusMessage"] = appendToMessage(
             messageToAppendTo=recipe["status"]["telegramStatusMessage"],
-            messageToAppend=f"Rolling Back Arbitrage #{recipe['status']['currentRoundTrip']} ‍⏮"
+            messageToAppend=f"Rolling Back ‍⏮"
         )
 
     else:
@@ -68,12 +63,6 @@ def executeArbitrage(recipe, isRollback):
         )
 
         recipe["status"]["startingStables"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]
-
-        # Used To Track Arb Balance
-        # currentFunds = {
-        #     "stablecoin": recipe["status"]["startingStables"],
-        #     "token": 0
-        # }
 
     printSeparator()
 
@@ -176,7 +165,7 @@ def executeArbitrage(recipe, isRollback):
                             isRollback=True
                         )
 
-                        break
+                        return
 
                 # Execute The Bridge
                 recipe = executeBridge(
