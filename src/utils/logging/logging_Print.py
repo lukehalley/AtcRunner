@@ -102,6 +102,8 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
     logger.info("Result written to Firebase ✅")
     printSeparator(newLine=True)
 
+    return
+
 # Print a separator line
 def printSeparator(newLine=False):
     if newLine:

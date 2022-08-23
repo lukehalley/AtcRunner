@@ -324,4 +324,4 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
 
         printSeparator()
 
-    return recipe
+    return recipe, not isApproved

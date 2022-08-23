@@ -4,6 +4,7 @@ from retry import retry
 from web3 import Web3
 
 from src.apis.synapseBridge.synapseBridge_Generate import generateUnsignedBridgeTransaction
+from src.apis.telegramBot.telegramBot_Action import updateStatusMessage
 from src.arbitrage.arbitrage_Utils import getOppositeToken, getOppositePosition
 from src.chain.bridge.bridge_Querys import waitForBridgeToComplete
 from src.chain.network.network_Actions import signAndSendTransaction, checkAndApproveToken
@@ -18,9 +19,9 @@ logger = getProjectLogger()
 transactionTimeout = getTransactionDeadline()
 transactionRetryLimit, transactionRetryDelay, = getRetryParams(retryType="transactionAction")
 
+
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
-
     # Dict Params ####################################################
     oppositePosition = getOppositePosition(direction=recipePosition)
     predictions = recipe["arbitrage"]["predictions"]
@@ -88,11 +89,11 @@ def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
 
     # Check If We Are Swapping From Gas
     # If We Are We Don't Have To Approve It
+    approvalOccured = False
     if not recipe[recipePosition][tokenType]["isGas"]:
-
         # Check If The The Token We Are Swapping To Needs To Be Approved
         # If So - Approve It
-        recipe = checkAndApproveToken(
+        recipe, approvalOccured = checkAndApproveToken(
             recipe=recipe,
             recipePosition=recipePosition,
             tokenType=tokenType,
@@ -120,6 +121,18 @@ def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
         predictions=predictions,
         stepNumber=stepNumber
     )
+
+    if approvalOccured:
+        recipe["status"]["telegramStatusMessage"] = updateStatusMessage(
+            originalMessage=recipe["status"]["telegramStatusMessage"],
+            newStatus="✅",
+            lineIndex=-1
+        )
+        recipe["status"]["telegramStatusMessage"] = updateStatusMessage(
+            originalMessage=recipe["status"]["telegramStatusMessage"],
+            newStatus="✅",
+            lineIndex=-2
+        )
 
     # Get Token Balance After We Bridge
     recipe = getWalletsInformation(
