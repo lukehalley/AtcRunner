@@ -17,8 +17,6 @@ transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 bridgeWaitTimeout = int(os.environ.get("BRIDGE_TIMEOUT_SECS"))
 bridgeStuckLimitMin = int(os.environ.get("BRIDGE_STUCK_MINS_LIMIT"))
 
-
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def waitForBridgeToComplete(transactionId, fromChain, toChain, toChainRPCURL, toTokenAddress, toTokenDecimals,
                             stepNumber, wethContractABI, predictions=None):
     timeout = bridgeWaitTimeout

@@ -19,8 +19,6 @@ logger = getProjectLogger()
 
 transactionRetryLimit, transactionRetryDelay = getRetryParams(retryType="transactionQuery")
 
-
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getNetworkWETH(chainDetails):
     from src.chain.network.network_Actions import callMappedContractFunction
 
@@ -39,15 +37,11 @@ def getNetworkWETH(chainDetails):
 
     return callMappedContractFunction(contract=contract, functionToCall=wethFunctionName)
 
-
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletAddressFromPrivateKey(rpcUrl):
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
     privateKey = getPrivateKey()
     return web3.eth.account.privateKeyToAccount(privateKey).address
 
-
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getGasPrice(rpcUrl):
     # Connect to our RPC.
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
@@ -56,8 +50,6 @@ def getGasPrice(rpcUrl):
 
     return gasPrice
 
-
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getTokenBalance(fromChainRPCUrl, tokenAddress, tokenDecimals, wethContractABI):
     walletAddress = getWalletAddressFromPrivateKey(rpcUrl=fromChainRPCUrl)
 
@@ -72,8 +64,6 @@ def getTokenBalance(fromChainRPCUrl, tokenAddress, tokenDecimals, wethContractAB
 
     return Decimal(balance)
 
-
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletsInformation(recipe, printBalances=False):
 
     directionList = ("origin", "destination")
@@ -145,8 +135,6 @@ def getWalletsInformation(recipe, printBalances=False):
 
     return recipe
 
-
-@retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def getWalletGasBalance(rpcUrl, walletAddress, wethContractABI):
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
 

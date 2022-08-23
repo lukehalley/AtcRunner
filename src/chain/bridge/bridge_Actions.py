@@ -19,9 +19,9 @@ logger = getProjectLogger()
 transactionTimeout = getTransactionDeadline()
 transactionRetryLimit, transactionRetryDelay, = getRetryParams(retryType="transactionAction")
 
-
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
 def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
+
     # Dict Params ####################################################
     oppositePosition = getOppositePosition(direction=recipePosition)
     predictions = recipe["arbitrage"]["predictions"]
