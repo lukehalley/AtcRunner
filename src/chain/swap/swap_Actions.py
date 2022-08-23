@@ -4,7 +4,7 @@ from decimal import Decimal
 from retry import retry
 from web3 import Web3
 
-from src.apis.telegramBot.telegramBot_Action import updateStatusMessage
+from src.apis.telegramBot.telegramBot_Action import updateStatusMessage, appendToMessage
 from src.arbitrage.arbitrage_Utils import getOppositeToken, getRoutes
 from src.chain.network.network_Actions import buildMappedContractFunction, signAndSendTransaction, checkAndApproveToken
 from src.chain.network.network_Querys import getWalletsInformation, getWalletGasBalance, getTokenBalance
@@ -40,6 +40,12 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
 
         recipe["status"]["telegramStatusMessage"] = printSettingUpWallet(recipe['status']['currentRoundTrip'])
 
+        # Update The Telegram Status Message
+        recipe["status"]["telegramStatusMessage"] = appendToMessage(
+            messageToAppendTo=recipe["status"]["telegramStatusMessage"],
+            messageToAppend=f"- 1. {recipePosition.title()} {stepCategory.title()} -> 📤"
+        )
+
         recipe = swapToken(
             recipe=recipe,
             recipePosition=recipePosition,
@@ -55,7 +61,7 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
         printSeparator()
 
         logger.info(
-            f'Output: {truncateDecimal(recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite], 6)}'
+            f'Output: {truncateDecimal(recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite], 6)} '
             f'{recipe[recipePosition][tokenTypeOpposite]["name"]}'
         )
 
@@ -163,6 +169,9 @@ def swapToken(recipe, recipePosition, tokenType, stepCategory, stepNumber):
             stepNumber=stepNumber,
             approvalType=stepCategory
         )
+
+        if approvalOccured:
+            logger.info("Approval Complete - Continuing With Swap")
 
     # Check If We Are Swapping To A Gas Token
     if swappingToGas:

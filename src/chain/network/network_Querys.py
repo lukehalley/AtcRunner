@@ -1,4 +1,5 @@
 import os
+import sys
 from decimal import Decimal
 
 from retry import retry
@@ -107,13 +108,19 @@ def getWalletsInformation(recipe, printBalances=False):
         tokenIsGas = recipe[direction]["token"]["isGas"]
 
         if tokenIsGas:
-            maximumGasBalance = Decimal(os.environ.get("MAX_GAS_BALANCE"))
 
-            if recipe[direction]["wallet"]["balances"]["gas"] > maximumGasBalance:
-                recipe[direction]["wallet"]["balances"]["token"] = abs(recipe[direction]["wallet"]["balances"]["gas"] - maximumGasBalance)
+            maximumGasBalance = Decimal(recipe[direction]["chain"]["gasDetails"]["gasLimits"]["maxGas"])
+            minimumGasBalance = Decimal(recipe[direction]["chain"]["gasDetails"]["gasLimits"]["minGas"])
+
+            currentGasBalance = recipe[direction]["wallet"]["balances"]["gas"]
+
+            if currentGasBalance < minimumGasBalance:
+                sys.exit(f"Current Gas Balance ({currentGasBalance}) Below Minimum Limit ({minimumGasBalance})")
+
+            if currentGasBalance > maximumGasBalance:
+                recipe[direction]["wallet"]["balances"]["token"] = abs(currentGasBalance - maximumGasBalance)
                 recipe[direction]["wallet"]["balances"]["gas"] = maximumGasBalance
             else:
-                recipe[direction]["wallet"]["balances"]["gas"] = maximumGasBalance
                 recipe[direction]["wallet"]["balances"]["token"] = 0
 
         else:
