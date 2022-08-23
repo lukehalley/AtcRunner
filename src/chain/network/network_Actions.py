@@ -303,8 +303,6 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
         spenderAddress=spenderAddress
     )
 
-    isApproved = False
-
     # If Token Is Not Approved - Approve It
     if not isApproved:
 
