@@ -7,6 +7,7 @@ logger = getProjectLogger()
 
 telegramSeperator = "-------------------------------"
 
+
 # Print the current round trip count
 def printRoundtrip(count):
     logger.info("################################")
@@ -44,18 +45,22 @@ def printArbitrageProfitable(recipe):
 
     sentMessage = sendMessage(
         msg=
-        f"Arbitrage #{count} Profitable 🤑\n"
         f"{telegramSeperator}\n"
-        f"Network Path:\n"
+        f"| Arbitrage #{count} Profitable 🤑 |\n"
+        f"{telegramSeperator}\n"
+        f"[ Network Path ]\n"
         f"- {networkPath}\n"
-        f"Token Path:\n"
+        f"\n"
+        f"[ Token Path ]\n"
         f"- {tokenPath}\n"
-        f"Return:\n"
+        f"\n"
+        f"[ Return ]\n"
         f"- ${recipe['arbitrage']['predictions']['startingStables']} -> ${recipe['arbitrage']['predictions']['outStables']}\n"
-        f"Profit\n"
+        f"\n"
+        f"[ Profit ]\n"
         f"- ${recipe['arbitrage']['predictions']['profitLoss']} ({recipe['arbitrage']['predictions']['arbitragePercentage']}%)\n"
         f"{telegramSeperator}\n"
-        f"Execution ⏭\n"
+        f"[ Execution ⏭ ] \n"
 
     )
 
@@ -66,10 +71,10 @@ def printArbitrageProfitable(recipe):
 
 # Print the Arbitrage is profitable alert
 def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profitPercentage):
-    
     from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
     from src.apis.firebaseDB.firebaseDB_Actions import writeResultToDB
 
+    newBalance = round(recipe["origin"]["wallet"]["balances"]["stablecoin"], 2)
     finishingTime = time.perf_counter()
     timeTook = finishingTime - recipe["status"]["startingTime"]
 
@@ -90,15 +95,25 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
         appendToMessage(messageToAppendTo=recipe["status"]["telegramStatusMessage"],
                         messageToAppend=
                         f"{telegramSeperator}\n"
-                        f"Results\n"
-                        f"- Profit Of ${round(profitLoss, 2)} | ({profitPercentage}%) 👍\n")
+                        f"[ Results ]\n"
+                        f"- Profit Of ${round(profitLoss, 2)} ({profitPercentage}%) 👍\n"
+                        f"\n"
+                        f"[ New Balance ]\n"
+                        f"- ${newBalance}\n"
+                        )
     else:
         logger.info(f"Made A Loss Of ${profitLoss} ({profitPercentage}%)")
         appendToMessage(messageToAppendTo=recipe["status"]["telegramStatusMessage"],
                         messageToAppend=
                         f"{telegramSeperator}\n"
-                        f"Results\n"
-                        f"- Loss Of ${round(profitLoss, 2)} | ({profitPercentage}%) 👎\n")
+                        f"[ Results ]\n"
+                        f"- Loss Of ${round(profitLoss, 2)} ({profitPercentage}%) 👎\n"
+                        f"\n"
+                        f"[ New Balance] \n"
+                        f"- ${newBalance}\n"
+                        )
+
+    logger.info(f"New Balance: ${newBalance}")
 
     logger.info(timeString)
     logger.info(separatorString)
@@ -118,6 +133,7 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
     printSeparator(newLine=True)
 
     return
+
 
 # Print a separator line
 def printSeparator(newLine=False):

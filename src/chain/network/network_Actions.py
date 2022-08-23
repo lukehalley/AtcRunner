@@ -266,7 +266,8 @@ def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory
 
     # Build Out Transaction Object
     nonce = web3.eth.getTransactionCount(walletAddress, 'pending')
-    tx = contract.functions.approve(spenderAddress, amountToApprove).buildTransaction({
+    safeSpenderAddress = web3.toChecksumAddress(spenderAddress)
+    tx = contract.functions.approve(safeSpenderAddress, amountToApprove).buildTransaction({
         'from': walletAddress,
         'nonce': nonce,
         'gasPrice': web3.eth.gas_price,
@@ -302,14 +303,16 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
         spenderAddress=spenderAddress
     )
 
+    isApproved = False
+
     # If Token Is Not Approved - Approve It
     if not isApproved:
 
         # Log That We Approving
         printSeparator()
-        logger.info(f'<|> Approving {recipe[recipePosition][tokenType]["symbol"]}')
+        logger.info(f'Approving {recipe[recipePosition][tokenType]["symbol"]}')
         recipe["status"]["telegramStatusMessage"] = appendToMessage(
-            messageToAppend=f"- Approving {recipe[recipePosition][tokenType]['symbol']} 💸",
+            messageToAppend=f"  | Approving {recipe[recipePosition][tokenType]['symbol']} 💸",
             messageToAppendTo=recipe["status"]["telegramStatusMessage"]
         )
 
