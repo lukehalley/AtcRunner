@@ -74,7 +74,18 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
     from src.apis.telegramBot.telegramBot_Action import appendToMessage, sendMessage
     from src.apis.firebaseDB.firebaseDB_Actions import writeResultToDB
 
-    newBalance = round(recipe["origin"]["wallet"]["balances"]["stablecoin"], 2)
+    profitLoss = round(profitLoss, 2)
+
+    originStables = round(recipe["origin"]["wallet"]["balances"]["stablecoin"], 2)
+
+    originGasBalance = round(recipe["origin"]["wallet"]["balances"]["gas"], 2)
+    originGasSymbol = recipe["origin"]["gas"]["symbol"]
+    originGasStr = f"{originGasBalance} {originGasSymbol}"
+
+    destinationGasBalance = round(recipe["destination"]["wallet"]["balances"]["gas"], 2)
+    destinationGasSymbol = recipe["destination"]["gas"]["symbol"]
+    destinationGasStr = f"{destinationGasBalance} {destinationGasSymbol}"
+
     finishingTime = time.perf_counter()
     timeTook = finishingTime - recipe["status"]["startingTime"]
 
@@ -98,8 +109,12 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
                         f"[ Results ]\n"
                         f"- Profit Of ${round(profitLoss, 2)} ({profitPercentage}%) 👍\n"
                         f"\n"
-                        f"[ New Balance ]\n"
-                        f"- ${newBalance}\n"
+                        f"[ Stable Balance ] \n"
+                        f"- ${originStables}\n"
+                        f"\n"
+                        f"[ Gas Balances ] \n"
+                        f"- Origin: {originGasStr}\n"
+                        f"- Destination: {destinationGasStr}\n"
                         )
     else:
         logger.info(f"Made A Loss Of ${profitLoss} ({profitPercentage}%)")
@@ -109,11 +124,17 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
                         f"[ Results ]\n"
                         f"- Loss Of ${round(profitLoss, 2)} ({profitPercentage}%) 👎\n"
                         f"\n"
-                        f"[ New Balance] \n"
-                        f"- ${newBalance}\n"
+                        f"[ Stable Balance ] \n"
+                        f"- ${originStables}\n"
+                        f"\n"
+                        f"[ Gas Balances ] \n"
+                        f"- Origin: {originGasStr}\n"
+                        f"- Destination: {destinationGasStr}\n"
                         )
 
-    logger.info(f"New Balance: ${newBalance}")
+    logger.info(f"New Stable Balance: ${originStables}")
+    logger.info(f"New Origin Gas Balance: {originGasStr}")
+    logger.info(f"New Destination Gas Balance: {destinationGasStr}")
 
     logger.info(timeString)
     logger.info(separatorString)
