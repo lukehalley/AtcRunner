@@ -71,7 +71,7 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
     except Exception as e:
         isKnownTransactionError = "known transaction" in e.args[0]["message"]
         isNonceTooLowError = "nonce too low" in e.args[0]["message"]
-        isTransactionUnderpriced = "transaction underpriced" in e.args[0]["message"]
+        isTransactionUnderpricedError = "transaction underpriced" in e.args[0]["message"]
         if isKnownTransactionError:
             logger.warning("Hit isKnownTransactionError but going ahead...")
             pass
