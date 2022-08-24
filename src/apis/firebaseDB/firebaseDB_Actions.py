@@ -14,14 +14,12 @@ def writeTransactionToDB(transaction: dict, currentRoundTrip: int, stepCategory:
         arbitrages = {}
 
     if arbitrageTitle not in arbitrages:
-
         arbitrages[arbitrageTitle] = {}
 
-        arbitrages[arbitrageTitle][stepCategory] = transaction
+    nextStepNumber = len(arbitrages[arbitrageTitle].keys()) + 1
+    stepTitle = f"{nextStepNumber}_{stepCategory}"
 
-    else:
-
-        arbitrages[arbitrageTitle][stepCategory] = transaction
+    arbitrages[arbitrageTitle][stepTitle] = transaction
 
     ref = fetchEnvCollection(collection="arbitrages")
 
