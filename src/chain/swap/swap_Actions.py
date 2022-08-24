@@ -49,7 +49,7 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
         recipe = swapToken(
             recipe=recipe,
             recipePosition=recipePosition,
-            tokenType=tokenType,
+            tokenInType=tokenType,
             stepCategory=stepCategory,
             stepNumber=0
         )
@@ -75,21 +75,24 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
         return recipe
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def swapToken(recipe, recipePosition, tokenType, stepCategory, stepNumber):
+def swapToken(recipe, recipePosition, tokenInType, stepCategory, stepNumber, overrideAmountIn=None, overrideSwappingToGas=False):
     
     # Dict Params ####################################################
     # Token Types
-    tokenTypeOpposite = getOppositeToken(tokenType)
-    tokenInDecimals = recipe[recipePosition][tokenType]["decimals"]
-    tokenDecimalsOut = recipe[recipePosition][tokenTypeOpposite]["decimals"]
-    swappingFromGas = recipe[recipePosition][tokenType]["isGas"]
-    swappingToGas = recipe[recipePosition][tokenTypeOpposite]["isGas"]
+    if overrideSwappingToGas:
+        tokenOutType = "gas"
+    else:
+        tokenOutType = getOppositeToken(tokenInType)
+
+    tokenInDecimals = recipe[recipePosition][tokenInType]["decimals"]
+    tokenOutDecimals = recipe[recipePosition][tokenOutType]["decimals"]
+    swappingFromGas = recipe[recipePosition][tokenInType]["isGas"]
+    swappingToGas = recipe[recipePosition][tokenOutType]["isGas"] or overrideSwappingToGas
     # Static Params
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
     routerAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
     routerABI = recipe[recipePosition]["chain"]["contracts"]["router"]["abi"]
     routerABIMappings = recipe[recipePosition]["chain"]["contracts"]["router"]["mapping"]
-    wethContractABI = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
     # Dict Params ####################################################
 
     # Get Wallet Balances
@@ -98,15 +101,20 @@ def swapToken(recipe, recipePosition, tokenType, stepCategory, stepNumber):
     )
 
     # Get Token Balance Before We Swap
-    balanceBeforeSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
+    balanceBeforeSwap = recipe[recipePosition]["wallet"]["balances"][tokenOutType]
+
+    if overrideAmountIn:
+        tokenInAmount = overrideAmountIn
+    else:
+        tokenInAmount = recipe[recipePosition]["wallet"]["balances"][tokenInType]
 
     # First Get A Quote
     amountOutQuoted = getSwapQuoteOut(
         recipe=recipe,
         recipePosition=recipePosition,
-        tokenType=tokenType,
-        tokenIsGas=recipe[recipePosition][tokenType]["isGas"],
-        tokenAmountIn=recipe[recipePosition]["wallet"]["balances"][tokenType]
+        tokenType=tokenInType,
+        tokenIsGas=recipe[recipePosition][tokenInType]["isGas"],
+        tokenAmountIn=tokenInAmount
     )
 
     # Calculate Min Out With Slippage
@@ -115,18 +123,20 @@ def swapToken(recipe, recipePosition, tokenType, stepCategory, stepNumber):
         slippage=0.5
     )
 
-    tokenInAmount = recipe[recipePosition]["wallet"]["balances"][tokenType]
     tokenOutAmount = amountOutMinWithSlippage
 
     # Get The Swap Routes For Our Token And Normalise Them
-    if swappingFromGas:
-        routes = [recipe[recipePosition]["gas"]["address"], recipe[recipePosition]["stablecoin"]["address"]]
+    if swappingToGas:
+        routes = [recipe[recipePosition][tokenInType]["address"], recipe[recipePosition]["gas"]["address"]]
+    elif swappingFromGas:
+        routes = [recipe[recipePosition]["gas"]["address"], recipe[recipePosition][tokenInType]["address"]]
     else:
         routes = getRoutes(
             recipe=recipe,
             recipePosition=recipePosition,
-            tokenType=tokenType
+            tokenType=tokenInType
         )
+
     normalisedRoutes = normaliseSwapRoutes(routes)
 
     # Setup Web3
@@ -155,7 +165,7 @@ def swapToken(recipe, recipePosition, tokenType, stepCategory, stepNumber):
     )
     amountOutWei = getTokenDecimalValue(
         amount=tokenOutAmount,
-        decimalPlaces=tokenDecimalsOut
+        decimalPlaces=tokenOutDecimals
     )
 
     approvalOccured = False
@@ -165,7 +175,7 @@ def swapToken(recipe, recipePosition, tokenType, stepCategory, stepNumber):
         recipe, approvalOccured = checkAndApproveToken(
             recipe=recipe,
             recipePosition=recipePosition,
-            tokenType=tokenType,
+            tokenType=tokenInType,
             stepNumber=stepNumber,
             approvalType=stepCategory
         )
@@ -249,15 +259,20 @@ def swapToken(recipe, recipePosition, tokenType, stepCategory, stepNumber):
         stepCategory=stepCategory
     )
 
+    # Get Wallet Balance After Top Up
+    recipe = getWalletsInformation(
+        recipe=recipe
+    )
+
     # Get The Balance After Swap So We Know How Much Tokens We Gained
-    balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
+    balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenOutType]
 
     # Wait For The Tokens To Arrive In Out Wallet
     while balanceAfterSwap == balanceBeforeSwap:
         recipe = getWalletsInformation(
             recipe=recipe
         )
-        balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenTypeOpposite]
+        balanceAfterSwap = recipe[recipePosition]["wallet"]["balances"][tokenOutType]
 
     if approvalOccured:
         recipe["status"]["telegramStatusMessage"] = updateStatusMessage(

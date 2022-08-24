@@ -145,7 +145,8 @@ def addChainGasInformation(recipeDetails, chainNumber, chainGasToken):
     recipeDetails[chainNumber]["gas"] = {}
     recipeDetails[chainNumber]["gas"]["symbol"] = recipeDetails[chainNumber]["chain"]["gasDetails"]["symbol"]
     recipeDetails[chainNumber]["gas"]["address"] = chainGasToken
-
+    recipeDetails[chainNumber]["gas"]["decimals"] = 18
+    recipeDetails[chainNumber]["gas"]["isGas"] = True
     recipeDetails[chainNumber]["chain"]["contracts"]["weth"]["address"] = chainGasToken
 
     return recipeDetails

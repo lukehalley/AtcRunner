@@ -5,6 +5,7 @@ from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatu
 from src.arbitrage.arbitrage_Simulate import simulateStep
 from src.arbitrage.arbitrage_Utils import getOppositePosition
 from src.chain.bridge.bridge_Actions import executeBridge
+from src.chain.network.network_Actions import topUpWalletGas
 from src.chain.network.network_Querys import getWalletsInformation
 from src.chain.swap.swap_Actions import swapToken
 from src.utils.logging.logging_Print import printSeparator, printArbitrageComplete
@@ -85,11 +86,11 @@ def executeArbitrage(recipe, isRollback):
         toToken = stepSettings["to"]
 
         # Check If We Need To Top Up Wallet Before Starting Step
-        # recipe, toppedUpOccured = topUpWalletGas(
-        #     recipe=recipe,
-        #     topUpDirection=recipePosition,
-        #     topUpTokenToUse=fromToken
-        # )
+        recipe, toppedUpOccured = topUpWalletGas(
+            recipe=recipe,
+            topUpPosition=recipePosition,
+            topUpTokenToUse=fromToken
+        )
 
         # Get Wallet Balances
         recipe = getWalletsInformation(
@@ -128,7 +129,7 @@ def executeArbitrage(recipe, isRollback):
                 recipe = swapToken(
                     recipe=recipe,
                     recipePosition=recipePosition,
-                    tokenType=fromToken,
+                    tokenInType=fromToken,
                     stepCategory=stepCategory,
                     stepNumber=stepNumber
                 )

@@ -138,10 +138,12 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
     logger.info("Writing result to Firebase...")
     result = {
         "wasProfitable": wasProfitable,
+        "arbitrageStrategy": recipe["arbitrage"]["strategies"]["arbitrage"],
         "profitLoss": profitLoss,
         "percentageDifference": profitPercentage,
         "timeTookSeconds": timeTook,
-        "wasRollback": wasRollback
+        "wasRollback": wasRollback,
+
     }
     writeResultToDB(result=result, currentRoundTrip=recipe['status']['currentRoundTrip'])
     logger.info("Result written to Firebase ✅")
