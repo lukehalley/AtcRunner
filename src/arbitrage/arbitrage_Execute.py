@@ -85,12 +85,13 @@ def executeArbitrage(recipe, isRollback):
         fromToken = stepSettings["from"]
         toToken = stepSettings["to"]
 
-        # Check If We Need To Top Up Wallet Before Starting Step
-        recipe, toppedUpOccured = topUpWalletGas(
-            recipe=recipe,
-            topUpPosition=recipePosition,
-            topUpTokenToUse=fromToken
-        )
+        if not recipe[recipePosition][fromToken]["isGas"]:
+            # Check If We Need To Top Up Wallet Before Starting Step
+            recipe, toppedUpOccured = topUpWalletGas(
+                recipe=recipe,
+                topUpPosition=recipePosition,
+                topUpTokenToUse=fromToken
+            )
 
         # Get Wallet Balances
         recipe = getWalletsInformation(
