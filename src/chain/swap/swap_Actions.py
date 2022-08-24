@@ -129,7 +129,7 @@ def swapToken(recipe, recipePosition, tokenInType, stepCategory, stepNumber, ove
     if swappingToGas:
         routes = [recipe[recipePosition][tokenInType]["address"], recipe[recipePosition]["gas"]["address"]]
     elif swappingFromGas:
-        routes = [recipe[recipePosition]["gas"]["address"], recipe[recipePosition][tokenInType]["address"]]
+        routes = [recipe[recipePosition]["gas"]["address"], recipe[recipePosition][tokenOutType]["address"]]
     else:
         routes = getRoutes(
             recipe=recipe,
