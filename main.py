@@ -13,6 +13,7 @@ from src.arbitrage.arbitrage_Execute import executeArbitrage
 # Chain Imports
 from src.chain.network.network_Querys import getWalletsInformation
 from src.chain.swap.swap_Actions import setupWallet
+from src.chain.network.network_Actions import topUpWalletGas
 
 # Recipe Imports
 from src.recipe.recipe_Data import getRecipeDetails
