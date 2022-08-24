@@ -50,18 +50,14 @@ def printArbitrageProfitable(recipe):
         f"{telegramSeperator}\n"
         f"[ Network Path ]\n"
         f"- {networkPath}\n"
-        f"\n"
         f"[ Token Path ]\n"
         f"- {tokenPath}\n"
-        f"\n"
         f"[ Return ]\n"
         f"- ${recipe['arbitrage']['predictions']['startingStables']} -> ${recipe['arbitrage']['predictions']['outStables']}\n"
-        f"\n"
         f"[ Profit ]\n"
         f"- ${recipe['arbitrage']['predictions']['profitLoss']} ({recipe['arbitrage']['predictions']['arbitragePercentage']}%)\n"
         f"{telegramSeperator}\n"
         f"[ Execution ⏭ ] \n"
-
     )
 
     recipe["status"]["telegramStatusMessage"] = sentMessage
@@ -108,13 +104,12 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
                         f"{telegramSeperator}\n"
                         f"[ Results ]\n"
                         f"- Profit Of ${round(profitLoss, 2)} ({profitPercentage}%) 👍\n"
-                        f"\n"
                         f"[ Stable Balance ] \n"
                         f"- ${originStables}\n"
-                        f"\n"
                         f"[ Gas Balances ] \n"
                         f"- Origin: {originGasStr}\n"
                         f"- Destination: {destinationGasStr}\n"
+                        f"{telegramSeperator}\n"
                         )
     else:
         logger.info(f"Made A Loss Of ${profitLoss} ({profitPercentage}%)")
@@ -123,13 +118,12 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
                         f"{telegramSeperator}\n"
                         f"[ Results ]\n"
                         f"- Loss Of ${round(profitLoss, 2)} ({profitPercentage}%) 👎\n"
-                        f"\n"
                         f"[ Stable Balance ] \n"
                         f"- ${originStables}\n"
-                        f"\n"
                         f"[ Gas Balances ] \n"
                         f"- Origin: {originGasStr}\n"
                         f"- Destination: {destinationGasStr}\n"
+                        f"{telegramSeperator}\n"
                         )
 
     logger.info(f"New Stable Balance: ${originStables}")
