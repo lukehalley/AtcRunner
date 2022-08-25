@@ -7,6 +7,7 @@ CONTRACT_ADDRESS = '0xa2D001C829328aa06a2DB2740c05ceE1bFA3c6bb'
 ABI = """
 # TODO: Add async support for better performance
 """Define crystal types, elemental properties, and combat effectiveness modifiers."""
+"""Crystal data structures and enhancement mechanics."""
 # TODO: Rebalance crystal drop rates for better progression flow
 # Refactor: simplify control flow
 # Crystals have unique rarity tiers and power attributes
