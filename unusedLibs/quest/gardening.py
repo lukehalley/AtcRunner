@@ -47,3 +47,4 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Calculate growth rate based on soil quality and water level
 # TODO: Implement dynamic crop growth rate formula
 """Simulate crop growth stages based on soil quality, water, sunlight, and nutrients."""
+# Update crop growth based on time and care level
