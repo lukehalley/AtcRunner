@@ -5,8 +5,7 @@ from num2words import num2words
 from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
 from src.chain.network.network_Querys import getNetworkWETH
 from src.recipe.recipe_Parse import fillRecipeFromTokenList, fillRecipeFromAPI, removeDisabledRecipes, \
-    addChainInformation, addChainDexs
-from src.tokens.tokens_Parse import parseTokenLists
+    addChainInformation, addDexContractAbis, parseDexTokenLists
 from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 
@@ -40,12 +39,16 @@ def getRecipeDetails():
             )
 
             # Get The Current Recipe Chain Details
-            recipeDetails[chainNumber]["dexs"] = addChainDexs(
+            recipeDetails[chainNumber]["dexs"] = addDexContractAbis(
                 dexList=allDexs,
                 chainName=chainName
             )
 
             chainGasToken = getNetworkWETH(
+                chainRecipe=recipeDetails[chainNumber]
+            )
+
+            recipeDetails[chainNumber] = parseDexTokenLists(
                 chainRecipe=recipeDetails[chainNumber]
             )
 
