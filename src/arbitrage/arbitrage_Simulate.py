@@ -20,6 +20,7 @@ def simulateStep(recipe, stepSettings, currentFunds):
         quote = getSwapQuoteOut(
             recipe=recipe,
             recipePosition=position,
+            recipeDex=recipe[position]["chain"]["primaryDex"],
             tokenType=toSwapFrom,
             tokenIsGas=recipe[position][toSwapFrom]["isGas"],
             tokenAmountIn=currentFunds[toSwapFrom]

@@ -8,7 +8,6 @@ from src.utils.web.web_URLs import buildApiURL
 
 dexscreenerAPIBaseURL = buildDexscreenerAPIBaseURL()
 
-
 # Get tokens pairs from Dexscreener
 def getPairs(chain: int, tokenAddress: str):
     initEndpoint = buildApiURL(baseUrl=dexscreenerAPIBaseURL, endpoint=os.getenv("DEXSCREENER_GET_PAIRS"))

@@ -24,15 +24,16 @@ def normaliseSwapRoutes(routes):
 
     return normalisedRoutes
 
-def getSwapQuoteOut(recipe, recipePosition, tokenType, tokenIsGas, tokenAmountIn):
+def getSwapQuoteOut(recipe, recipePosition, recipeDex, tokenType, tokenIsGas, tokenAmountIn):
+
     # Dict Params ####################################################
     oppositeRecipeToken = getOppositeToken(tokenType)
     amountInDecimals = recipe[recipePosition][tokenType]["decimals"]
     amountOutDecimals = recipe[recipePosition][oppositeRecipeToken]["decimals"]
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
-    routerAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
-    routerABI = recipe[recipePosition]["chain"]["contracts"]["router"]["abi"]
-    routerABIMappings = recipe[recipePosition]["chain"]["contracts"]["router"]["mapping"]
+    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["address"]
+    routerABI = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["abi"]
+    routerABIMappings = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["mapping"]
     # Dict Params ####################################################
 
     if tokenIsGas:
@@ -63,14 +64,14 @@ def getSwapQuoteOut(recipe, recipePosition, tokenType, tokenIsGas, tokenAmountIn
 
     return quote
 
-def getSwapQuoteIn(recipe, recipePosition, tokenInType, tokenOutType, tokenOutIsGas, tokenOutAmount):
+def getSwapQuoteIn(recipe, recipePosition, recipeDex, tokenInType, tokenOutType, tokenOutIsGas, tokenOutAmount):
 
     # Dict Params ####################################################
     amountInDecimals = recipe[recipePosition][tokenInType]["decimals"]
     amountOutDecimals = recipe[recipePosition][tokenOutType]["decimals"]
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
-    routerAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
-    routerABI = recipe[recipePosition]["chain"]["contracts"]["router"]["abi"]
+    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["address"]
+    routerABI = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["abi"]
     # Dict Params ####################################################
 
     if tokenOutIsGas:

@@ -94,6 +94,7 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
 
     timeString = f"Completed {typeString} In {getMinSecString(timeTook)}"
 
+    printSeparator()
     logger.info(separatorString)
     logger.info(f"{typeString} #{recipe['status']['currentRoundTrip']} Done")
 

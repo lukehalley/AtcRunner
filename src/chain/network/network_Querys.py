@@ -19,13 +19,16 @@ logger = getProjectLogger()
 
 transactionRetryLimit, transactionRetryDelay = getRetryParams(retryType="transactionQuery")
 
-def getNetworkWETH(chainDetails):
+def getNetworkWETH(chainRecipe):
     from src.chain.network.network_Actions import callMappedContractFunction
 
-    rpcUrl = chainDetails["rpc"]
-    routerAddress = chainDetails["contracts"]["router"]["address"]
-    routerABI = chainDetails["contracts"]["router"]["abi"]
-    routerABIMappings = chainDetails["contracts"]["router"]["mapping"]
+    rpcUrl = chainRecipe["chain"]["rpc"]
+    primaryDex = chainRecipe["chain"]["primaryDex"]
+
+    # We can always use the first dex to get the network ETH as they all will have this function
+    routerAddress = chainRecipe["dexs"][primaryDex]["contracts"]["router"]["address"]
+    routerABI = chainRecipe["dexs"][primaryDex]["contracts"]["router"]["abi"]
+    routerABIMappings = chainRecipe["dexs"][primaryDex]["contracts"]["router"]["mapping"]
 
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
 
@@ -82,17 +85,19 @@ def getWalletsInformation(recipe, printBalances=False):
 
         recipe[direction]["wallet"]["balances"] = {}
 
+        primaryDex = recipe[direction]["chain"]["primaryDex"]
+
         recipe[direction]["wallet"]["balances"]["gas"] = getWalletGasBalance(
             rpcUrl=recipe[direction]["chain"]["rpc"],
             walletAddress=recipe[direction]["wallet"]["address"],
-            wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
+            wethContractABI=recipe[direction]["dexs"][primaryDex]["contracts"]["weth"]["abi"]
         )
 
         recipe[direction]["wallet"]["balances"]["stablecoin"] = getTokenBalance(
             fromChainRPCUrl=recipe[direction]["chain"]["rpc"],
             tokenAddress=recipe[direction]["stablecoin"]["address"],
             tokenDecimals=recipe[direction]["stablecoin"]["decimals"],
-            wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
+            wethContractABI=recipe[direction]["dexs"][primaryDex]["contracts"]["weth"]["abi"]
         )
 
         tokenIsGas = recipe[direction]["token"]["isGas"]
@@ -118,7 +123,7 @@ def getWalletsInformation(recipe, printBalances=False):
                 fromChainRPCUrl=recipe[direction]["chain"]["rpc"],
                 tokenAddress=recipe[direction]["token"]["address"],
                 tokenDecimals=recipe[direction]["token"]["decimals"],
-                wethContractABI=recipe[direction]["chain"]["contracts"]["weth"]["abi"]
+                wethContractABI=recipe[direction]["dexs"][primaryDex]["contracts"]["weth"]["abi"]
             )
 
         if printBalances:
@@ -144,12 +149,12 @@ def getWalletGasBalance(rpcUrl, walletAddress, wethContractABI):
     return Decimal(balance)
 
 
-def getTokenApprovalStatus(recipe, recipePosition, tokenType, spenderAddress):
+def getTokenApprovalStatus(recipe, recipePosition, recipeDex, tokenType, spenderAddress):
     # Dict Params ####################################################
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
     walletAddress = recipe[recipePosition]["wallet"]["address"]
     tokenAddress = recipe[recipePosition][tokenType]["address"]
-    wethAbi = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
+    wethAbi = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["weth"]["abi"]
     # Dict Params ####################################################
 
     # Setup Web 3
