@@ -1,4 +1,7 @@
+import sys
+
 from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
+from src.apis.gitlab.gitlab_Querys import getDexABIFromGitlab
 from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeableTokens
 from src.tokens.tokens_Query import getTokenBySymbolAndChainID
 from src.utils.data.data_Booleans import strToBool
@@ -13,8 +16,8 @@ def removeDisabledRecipes(recipes):
     logger.info(f"Imported {len(recipes)}/{initLength} Recipes")
     return recipes
 
+def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken):
 
-def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, masterTokenList):
     toFill = {
         "token": recipeDetails[chainNumber]["token"],
         "stablecoin": recipeDetails[chainNumber]["stablecoin"]
@@ -85,7 +88,6 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, masterTok
 
     return recipeDetails
 
-
 def fillRecipeFromAPI(recipeDetails, chainNumber, chainGasToken):
     recipeToken = recipeDetails["arbitrage"]["token"]
     recipeStablecoin = recipeDetails["arbitrage"]["stablecoin"]
@@ -140,6 +142,53 @@ def fillRecipeFromAPI(recipeDetails, chainNumber, chainGasToken):
 
     return recipeDetails
 
+def addChainInformation(chainList, chainName):
+    # Get The Current Recipe Chain Details
+    if chainName in chainList:
+        return chainList[chainName]
+    else:
+        sys.exit(f"No Chain Details In DB For {chainName}")
+
+def addChainDexs(dexList, chainName):
+
+    finalDexList = []
+
+    # Get The Current Recipe Chain Details
+    if chainName in dexList:
+        chainDexs = dexList[chainName]
+
+        for dexName, dexDetails in chainDexs.items():
+
+            dexContracts = dexDetails["contracts"]
+
+            expectedKeys = ['factory', 'router', 'weth']
+            actualKeys = list(dexContracts.keys())
+
+            hasCorrectContracts = actualKeys == expectedKeys
+
+            if hasCorrectContracts:
+
+                for contractName in actualKeys:
+
+                    dexDetails["contracts"][contractName]["abi"] = getDexABIFromGitlab(
+                        chainName=chainName,
+                        dexName=dexName,
+                        abiName=contractName
+                    )
+
+                dexDetails["name"] = dexName
+
+                finalDexList.append(dexDetails)
+
+            else:
+
+                missingContracts = list(set(expectedKeys) - set(actualKeys))
+
+                sys.exit(f"The Dex '{dexName}' on Chain '{chainName}' is missing the following contract details: {missingContracts}")
+
+        return finalDexList
+    else:
+        sys.exit(f"No Dexs In DB For {chainName}")
 
 def addChainGasInformation(recipeDetails, chainNumber, chainGasToken):
     recipeDetails[chainNumber]["gas"] = {}
@@ -150,7 +199,6 @@ def addChainGasInformation(recipeDetails, chainNumber, chainGasToken):
     recipeDetails[chainNumber]["chain"]["contracts"]["weth"]["address"] = chainGasToken
 
     return recipeDetails
-
 
 def addChainStablecoinInformation(recipeDetails, chainNumber, dexId):
     recipeDetails[chainNumber]["stablecoin"]["price"] = \

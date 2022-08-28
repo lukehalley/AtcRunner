@@ -24,9 +24,6 @@ from src.utils.env.env_AWSSecrets import checkIsDocker
 from src.utils.logging.logging_Print import printSeparator, printRoundtrip, printArbitrageProfitable
 from src.utils.logging.logging_Setup import setupLogging
 
-# TODO: Remove
-from src.apis.gitlab.gitlab_Querys import buildGitlabAPIBaseURL
-
 # General Init
 isDocker = checkIsDocker()
 logger = setupLogging(isDocker)
