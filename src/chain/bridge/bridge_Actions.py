@@ -35,7 +35,8 @@ def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
     fromChainRPCUrl = recipe[recipePosition]["chain"]["rpc"]
     toChain = recipe[oppositePosition]["chain"]["id"]
     toChainRPCUrl = recipe[oppositePosition]["chain"]["rpc"]
-    wethContractABI = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
+    recipeDex = recipe[recipePosition]["chain"]["primaryDex"]
+    wethContractABI = recipe[recipePosition]["dexs"][recipeDex]["chain"]["contracts"]["weth"]["abi"]
     # Dict Params ####################################################
 
     # Get Wallet Address From Private Key
@@ -96,6 +97,7 @@ def executeBridge(recipe, recipePosition, tokenType, stepCategory, stepNumber):
         recipe, approvalOccured = checkAndApproveToken(
             recipe=recipe,
             recipePosition=recipePosition,
+            recipeDex=recipeDex,
             tokenType=tokenType,
             stepNumber=stepNumber,
             approvalType=stepCategory

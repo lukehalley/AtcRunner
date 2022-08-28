@@ -149,12 +149,12 @@ def getWalletGasBalance(rpcUrl, walletAddress, wethContractABI):
     return Decimal(balance)
 
 
-def getTokenApprovalStatus(recipe, recipePosition, tokenType, spenderAddress):
+def getTokenApprovalStatus(recipe, recipePosition, recipeDex, tokenType, spenderAddress):
     # Dict Params ####################################################
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
     walletAddress = recipe[recipePosition]["wallet"]["address"]
     tokenAddress = recipe[recipePosition][tokenType]["address"]
-    wethAbi = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
+    wethAbi = recipe[recipePosition]["dexs"][recipeDex]["chain"]["contracts"]["weth"]["abi"]
     # Dict Params ####################################################
 
     # Setup Web 3
