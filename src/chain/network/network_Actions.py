@@ -149,8 +149,11 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
 
 
 def topUpWalletGas(recipe, topUpPosition, topUpTokenToUse):
+
     from src.chain.swap.swap_Querys import getSwapQuoteIn
     from src.chain.swap.swap_Actions import swapToken
+
+    primaryDex = recipe[topUpPosition]["chain"]["primaryDex"]
 
     minimumGasBalance = Decimal(recipe[topUpPosition]["chain"]["gasDetails"]["gasLimits"]["minGas"])
     maximumGasBalance = Decimal(recipe[topUpPosition]["chain"]["gasDetails"]["gasLimits"]["maxGas"])
@@ -163,18 +166,22 @@ def topUpWalletGas(recipe, topUpPosition, topUpTokenToUse):
         fromChainRPCUrl=recipe[topUpPosition]["chain"]["rpc"],
         tokenAddress=recipe[topUpPosition][topUpTokenToUse]["address"],
         tokenDecimals=recipe[topUpPosition][topUpTokenToUse]["decimals"],
-        wethContractABI=recipe[topUpPosition]["chain"]["contracts"]["weth"]["abi"]
+        wethContractABI=recipe[topUpPosition]["dexs"][primaryDex]["contracts"]["weth"]["abi"]
     )
 
     stepCategory = f"gas"
 
     if needsGas:
 
+        # Get Network Primary Dex
+        recipeDex = recipe[topUpPosition]["chain"]["primaryDex"]
+
         gasTokensNeeded = maximumGasBalance - gasBalance
 
         amountInQuoted = getSwapQuoteIn(
             recipe=recipe,
             recipePosition=topUpPosition,
+            recipeDex=recipeDex,
             tokenInType=topUpTokenToUse,
             tokenOutType="gas",
             tokenOutIsGas=True,
@@ -204,6 +211,7 @@ def topUpWalletGas(recipe, topUpPosition, topUpTokenToUse):
             recipe = swapToken(
                 recipe=recipe,
                 recipePosition=topUpPosition,
+                recipeDex=recipeDex,
                 tokenInType=topUpTokenToUse,
                 stepCategory=stepCategory,
                 stepNumber=0,
@@ -249,12 +257,12 @@ def buildMappedContractFunction(contract, functionToCall, txParams, functionPara
     return result
 
 
-def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory):
+def approveToken(recipe, recipePosition, recipeDex, tokenType, spenderAddress, stepCategory):
     # Dict Params ####################################################
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
     walletAddress = recipe[recipePosition]["wallet"]["address"]
     tokenAddress = recipe[recipePosition][tokenType]["address"]
-    wethAbi = recipe[recipePosition]["chain"]["contracts"]["weth"]["abi"]
+    wethAbi = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["weth"]["abi"]
     # Dict Params ####################################################
 
     # Setup Web 3
@@ -290,14 +298,14 @@ def approveToken(recipe, recipePosition, tokenType, spenderAddress, stepCategory
     return recipe
 
 
-def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNumber):
+def checkAndApproveToken(recipe, recipePosition, recipeDex, tokenType, approvalType, stepNumber):
     validSwapTypes = ["swap", "setup", "gas", "gas_1", "gas_2"]
 
     # Choose The Contract Address To Choose Based On If Its A Swap or Bridge Approval
     if approvalType in validSwapTypes:
-        spenderAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
+        spenderAddress = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["address"]
     elif approvalType == "bridge":
-        spenderAddress = recipe[recipePosition]["chain"]["contracts"]["bridges"]["synapse"]["address"]
+        spenderAddress = recipe[recipePosition]["bridge"]["address"]
     else:
         sys.exit(f"Invalid Approval Type: {approvalType}")
 
@@ -305,6 +313,7 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
     isApproved = getTokenApprovalStatus(
         recipe=recipe,
         recipePosition=recipePosition,
+        recipeDex=recipeDex,
         tokenType=tokenType,
         spenderAddress=spenderAddress
     )
@@ -323,6 +332,7 @@ def checkAndApproveToken(recipe, recipePosition, tokenType, approvalType, stepNu
         recipe = approveToken(
             recipe=recipe,
             recipePosition=recipePosition,
+            recipeDex=recipeDex,
             tokenType=tokenType,
             spenderAddress=spenderAddress,
             stepCategory=f"{stepNumber}_5_{approvalType.lower()}"
