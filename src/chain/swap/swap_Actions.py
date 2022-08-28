@@ -27,6 +27,7 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
     
     # Dict Params ####################################################
     tokenTypeOpposite = getOppositeToken(tokenType)
+    recipeDex = recipe[recipePosition]["chain"]["primaryDex"]
     # Dict Params ####################################################
     
     originHasStablecoins = recipe["origin"]["wallet"]["balances"]["stablecoin"] > 0.1
@@ -49,6 +50,7 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
         recipe = swapToken(
             recipe=recipe,
             recipePosition=recipePosition,
+            recipeDex=recipeDex,
             tokenInType=tokenType,
             stepCategory=stepCategory,
             stepNumber=0
@@ -75,7 +77,7 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
         return recipe
 
 @retry(tries=transactionRetryLimit, delay=transactionRetryDelay, logger=logger)
-def swapToken(recipe, recipePosition, tokenInType, stepCategory, stepNumber, overrideAmountIn=None, overrideSwappingToGas=False):
+def swapToken(recipe, recipePosition, recipeDex, tokenInType, stepCategory, stepNumber, overrideAmountIn=None, overrideSwappingToGas=False):
     
     # Dict Params ####################################################
     # Token Types
@@ -90,9 +92,9 @@ def swapToken(recipe, recipePosition, tokenInType, stepCategory, stepNumber, ove
     swappingToGas = recipe[recipePosition][tokenOutType]["isGas"] or overrideSwappingToGas
     # Static Params
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
-    routerAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
-    routerABI = recipe[recipePosition]["chain"]["contracts"]["router"]["abi"]
-    routerABIMappings = recipe[recipePosition]["chain"]["contracts"]["router"]["mapping"]
+    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["address"]
+    routerABI = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["abi"]
+    routerABIMappings = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["mapping"]
     # Dict Params ####################################################
 
     # Get Wallet Balances
@@ -176,6 +178,7 @@ def swapToken(recipe, recipePosition, tokenInType, stepCategory, stepNumber, ove
         recipe, approvalOccured = checkAndApproveToken(
             recipe=recipe,
             recipePosition=recipePosition,
+            recipeDex=recipeDex,
             tokenType=tokenInType,
             stepNumber=stepNumber,
             approvalType=stepCategory

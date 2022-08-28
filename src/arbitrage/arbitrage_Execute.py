@@ -81,6 +81,9 @@ def executeArbitrage(recipe, isRollback):
         recipePosition = stepSettings["position"]
         oppositePosition = getOppositePosition(recipePosition)
 
+        # Get Network Primary Dex
+        recipeDex = recipe[recipePosition]["chain"]["primaryDex"]
+
         # Get Token We Are Swapping From To Gas Tokens
         fromToken = stepSettings["from"]
         toToken = stepSettings["to"]
@@ -129,6 +132,7 @@ def executeArbitrage(recipe, isRollback):
                 recipe = swapToken(
                     recipe=recipe,
                     recipePosition=recipePosition,
+                    recipeDex=recipeDex,
                     tokenInType=fromToken,
                     stepCategory=stepCategory,
                     stepNumber=stepNumber
