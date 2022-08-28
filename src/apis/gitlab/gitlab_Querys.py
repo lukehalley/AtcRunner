@@ -10,12 +10,4 @@ def getDexABIFromGitlab(chainName, dexName, abiName, abiBranch="master"):
         path=unencodedPath
     )
     endpoint = f"{gitlabAPIBaseURL}/{encodedPath}/raw?ref={abiBranch}"
-    return safeRequest(endpoint=endpoint, params=None, headers=gitlabToken)
-
-abi = getDexABIFromGitlab(
-    chainName="avalanche",
-    dexName="pangolin",
-    abiName="factory"
-)
-
-x = 1
+    return safeRequest(endpoint=endpoint, params=None, headers=gitlabToken)["abi"]

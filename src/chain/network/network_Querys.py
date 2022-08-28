@@ -19,13 +19,15 @@ logger = getProjectLogger()
 
 transactionRetryLimit, transactionRetryDelay = getRetryParams(retryType="transactionQuery")
 
-def getNetworkWETH(chainDetails):
+def getNetworkWETH(chainRecipe):
     from src.chain.network.network_Actions import callMappedContractFunction
 
-    rpcUrl = chainDetails["rpc"]
-    routerAddress = chainDetails["contracts"]["router"]["address"]
-    routerABI = chainDetails["contracts"]["router"]["abi"]
-    routerABIMappings = chainDetails["contracts"]["router"]["mapping"]
+    rpcUrl = chainRecipe["chain"]["rpc"]
+
+    # We can always use the first dex to get the network ETH as they all will have this function
+    routerAddress = chainRecipe["dexs"][0]["contracts"]["router"]["address"]
+    routerABI = chainRecipe["dexs"][0]["contracts"]["router"]["abi"]
+    routerABIMappings = chainRecipe["dexs"][0]["contracts"]["router"]["mapping"]
 
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
 
