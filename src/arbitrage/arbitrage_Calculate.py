@@ -27,6 +27,7 @@ def determineArbitrageStrategy(recipe):
     chainOneTokenPrice = getSwapQuoteOut(
         recipe=recipe,
         recipePosition="chainOne",
+        recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
         tokenType="token",
         tokenIsGas=False,
         tokenAmountIn=1.0
@@ -35,6 +36,7 @@ def determineArbitrageStrategy(recipe):
     chainTwoTokenPrice = getSwapQuoteOut(
         recipe=recipe,
         recipePosition="chainTwo",
+        recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
         tokenType="token",
         tokenIsGas=False,
         tokenAmountIn=1.0
@@ -43,6 +45,7 @@ def determineArbitrageStrategy(recipe):
     chainOneGasPrice = getSwapQuoteOut(
         recipe=recipe,
         recipePosition="chainOne",
+        recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
         tokenType="token",
         tokenIsGas=True,
         tokenAmountIn=1.0
@@ -51,6 +54,7 @@ def determineArbitrageStrategy(recipe):
     chainTwoGasPrice = getSwapQuoteOut(
         recipe=recipe,
         recipePosition="chainTwo",
+        recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
         tokenType="token",
         tokenIsGas=True,
         tokenAmountIn=1.0

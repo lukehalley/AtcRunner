@@ -1,9 +1,9 @@
 import sys
 
 from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
-from src.apis.gitlab.gitlab_Querys import getDexABIFromGitlab, getChainTokenListFromGitlab, getDexTokenListFromGitlab
+from src.apis.gitlab.gitlab_Querys import getDexABIFileFromGitlab, getChainTokenListURLsFromGitlab, \
+    getTokenListURLsFromGitlab, getTokenListFileFromGitlab
 from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeableTokens
-from src.recipe.recipe_Utils import getRecipePrimaryDex
 from src.tokens.tokens_Query import getTokenBySymbolAndChainID
 from src.tokens.tokens_Parse import parseTokenLists
 from src.utils.data.data_Booleans import strToBool
@@ -14,20 +14,19 @@ logger = getProjectLogger()
 
 def removeDisabledRecipes(recipes):
     initLength = len(recipes)
-    recipes = {recipeName: recipeDetail for recipeName, recipeDetail in recipes.items() if recipeDetail["enabled"]}
+    recipes = {
+        recipeName: recipeDetail for recipeName, recipeDetail in recipes.items() if recipeDetail["arbitrage"]["enabled"]}
     logger.info(f"Imported {len(recipes)}/{initLength} Recipes")
     return recipes
 
 def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken):
+    
+    primaryDex = recipeDetails[chainNumber]["chain"]["primaryDex"]
 
     toFill = {
         "token": recipeDetails[chainNumber]["token"],
         "stablecoin": recipeDetails[chainNumber]["stablecoin"]
     }
-
-    primaryDexIndex = getRecipePrimaryDex(
-        chainRecipe=recipeDetails[chainNumber]
-    )
 
     for tokenType, tokenDetails in toFill.items():
         tokenDetails["isGas"] = strToBool(tokenDetails["isGas"])
@@ -43,7 +42,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken):
             recipeDetails[chainNumber][tokenType] = recipeDetails[chainNumber][tokenType] | gasTokenDetails
         else:
             tokenDetails = getTokenBySymbolAndChainID(
-                tokenListDataframe=recipeDetails[chainNumber]["dexs"][primaryDexIndex]["tokenList"],
+                tokenListDataframe=recipeDetails[chainNumber]["dexs"][primaryDex]["tokenList"],
                 tokenSymbol=tokenDetails["symbol"],
                 tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
             )
@@ -67,7 +66,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken):
                     routeAddressList.append(chainGasToken)
                 else:
                     tokenDetails = getTokenBySymbolAndChainID(
-                        tokenListDataframe=recipeDetails[chainNumber]["dexs"][primaryDexIndex]["tokenList"],
+                        tokenListDataframe=recipeDetails[chainNumber]["dexs"][primaryDex]["tokenList"],
                         tokenSymbol=routeSymbol,
                         tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
                     )
@@ -148,16 +147,16 @@ def fillRecipeFromAPI(recipeDetails, chainNumber, chainGasToken):
 
     return recipeDetails
 
-def addChainInformation(chainList, chainName):
+def addChainInformation(recipe, chainList, chainName, chainNumber):
     # Get The Current Recipe Chain Details
     if chainName in chainList:
-        return chainList[chainName]
+        return recipe[chainNumber]["chain"] | chainList[chainName]
     else:
         sys.exit(f"No Chain Details In DB For {chainName}")
 
 def addDexContractAbis(dexList, chainName):
 
-    finalDexList = []
+    finalDexList = {}
 
     # Get The Current Recipe Chain Details
     if chainName in dexList:
@@ -176,15 +175,13 @@ def addDexContractAbis(dexList, chainName):
 
                 for contractName in actualKeys:
 
-                    dexDetails["contracts"][contractName]["abi"] = getDexABIFromGitlab(
+                    dexDetails["contracts"][contractName]["abi"] = getDexABIFileFromGitlab(
                         chainName=chainName,
                         dexName=dexName,
                         abiName=contractName
                     )
 
-                dexDetails["name"] = dexName
-
-                finalDexList.append(dexDetails)
+                finalDexList[dexName] = dexDetails
 
             else:
 
@@ -196,23 +193,29 @@ def addDexContractAbis(dexList, chainName):
     else:
         sys.exit(f"No Dexs In DB For {chainName}")
 
-def parseDexTokenLists(chainRecipe, chainName):
+def parseDexTokenLists(chainRecipe, chainName, chainId):
 
-    chainTokenList = getChainTokenListFromGitlab(
+    chainLocalTokenListURL = getTokenListFileFromGitlab(
         chainName=chainName
     )
 
-    for dex in chainRecipe["dexs"]:
+    chainExternalTokenList = getTokenListURLsFromGitlab(
+        path=f"{chainName}/common/external/external.json"
+    )
 
-        dexTokenList = getDexTokenListFromGitlab(
-            chainName=chainName,
-            dexName=dex["name"]
+    for dexName, dexDetails in chainRecipe["dexs"].items():
+
+        dexTokenList = getTokenListURLsFromGitlab(
+            path=f"{chainName}/{dexName}/external/external.json"
         )
 
-        tokenListURLs = chainTokenList + dexTokenList
+        tokenListURLs = chainExternalTokenList + dexTokenList
 
-        dex["tokenList"] = parseTokenLists(
-            urls=tokenListURLs
+        tokenListURLs.append(chainLocalTokenListURL)
+
+        dexDetails["tokenList"] = parseTokenLists(
+            tokenListURLs=tokenListURLs,
+            chainId = chainId
         )
 
     return chainRecipe
@@ -224,8 +227,9 @@ def addChainGasInformation(recipeDetails, chainNumber, chainGasToken):
     recipeDetails[chainNumber]["gas"]["address"] = chainGasToken
     recipeDetails[chainNumber]["gas"]["decimals"] = 18
     recipeDetails[chainNumber]["gas"]["isGas"] = True
-    for dex in recipeDetails[chainNumber]["dexs"]:
-        dex["contracts"]["weth"]["address"] = chainGasToken
+
+    for dexName, dexDetails in recipeDetails[chainNumber]["dexs"].items():
+        dexDetails["contracts"]["weth"]["address"] = chainGasToken
 
     return recipeDetails
 

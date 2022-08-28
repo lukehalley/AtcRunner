@@ -19,12 +19,7 @@ def getAuthRawGithubFile(url):
 
 
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
-def safeRequest(endpoint, params, headers):
-    try:
-        request = requests.get(endpoint, params=params, headers=headers)
-        request.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        error = f"Error calling {endpoint} API endpoint: {e}"
-        raise SystemExit(error)
-    else:
-        return request.json()
+def safeRequest(endpoint, params=None, headers=None):
+    request = requests.get(endpoint, params=params, headers=headers)
+    request.raise_for_status()
+    return request.json()

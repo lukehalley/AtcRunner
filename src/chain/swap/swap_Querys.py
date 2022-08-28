@@ -24,15 +24,16 @@ def normaliseSwapRoutes(routes):
 
     return normalisedRoutes
 
-def getSwapQuoteOut(recipe, recipePosition, tokenType, tokenIsGas, tokenAmountIn):
+def getSwapQuoteOut(recipe, recipePosition, recipeDex, tokenType, tokenIsGas, tokenAmountIn):
+
     # Dict Params ####################################################
     oppositeRecipeToken = getOppositeToken(tokenType)
     amountInDecimals = recipe[recipePosition][tokenType]["decimals"]
     amountOutDecimals = recipe[recipePosition][oppositeRecipeToken]["decimals"]
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
-    routerAddress = recipe[recipePosition]["chain"]["contracts"]["router"]["address"]
-    routerABI = recipe[recipePosition]["chain"]["contracts"]["router"]["abi"]
-    routerABIMappings = recipe[recipePosition]["chain"]["contracts"]["router"]["mapping"]
+    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["address"]
+    routerABI = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["abi"]
+    routerABIMappings = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["mapping"]
     # Dict Params ####################################################
 
     if tokenIsGas:

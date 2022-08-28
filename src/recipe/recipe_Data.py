@@ -14,6 +14,7 @@ logger = getProjectLogger()
 
 # Get the details of our recipe
 def getRecipeDetails():
+
     printSeparator()
     logger.info(f"Importing Recipes...")
     printSeparator()
@@ -22,7 +23,9 @@ def getRecipeDetails():
     allChains = fetchFromDatabase("chains")
     allRecipes = fetchFromDatabase("recipes")
 
-    for recipesTitle, recipeDetails in allRecipes.items():
+    recipes = removeDisabledRecipes(recipes=fetchFromDatabase("recipes"))
+
+    for recipesTitle, recipeDetails in recipes.items():
 
         recipeTokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
 
@@ -34,9 +37,13 @@ def getRecipeDetails():
 
             # Get The Current Recipe Chain Details
             recipeDetails[chainNumber]["chain"] = addChainInformation(
+                recipe=recipeDetails,
                 chainList=allChains,
-                chainName=chainName
+                chainName=chainName,
+                chainNumber=chainNumber
             )
+
+            chainId = recipeDetails[chainNumber]["chain"]["id"]
 
             # Get The Current Recipe Chain Details
             recipeDetails[chainNumber]["dexs"] = addDexContractAbis(
@@ -50,7 +57,8 @@ def getRecipeDetails():
 
             recipeDetails[chainNumber] = parseDexTokenLists(
                 chainRecipe=recipeDetails[chainNumber],
-                chainName=chainName
+                chainName=chainName,
+                chainId=chainId
             )
 
             if recipeTokenRetrievalMethod == "tokenList":
@@ -72,4 +80,4 @@ def getRecipeDetails():
             else:
                 raise Exception(F"Invalid Token Retrieval Method: {recipeTokenRetrievalMethod}")
 
-    return allRecipes
+    return recipes
