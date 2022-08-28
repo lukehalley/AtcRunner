@@ -3,7 +3,9 @@ import sys
 from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
 from src.apis.gitlab.gitlab_Querys import getDexABIFromGitlab
 from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeableTokens
+from src.recipe.recipe_Utils import getRecipePrimaryDex
 from src.tokens.tokens_Query import getTokenBySymbolAndChainID
+from src.tokens.tokens_Parse import parseTokenLists
 from src.utils.data.data_Booleans import strToBool
 from src.utils.logging.logging_Setup import getProjectLogger
 
@@ -23,6 +25,10 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken):
         "stablecoin": recipeDetails[chainNumber]["stablecoin"]
     }
 
+    primaryDexIndex = getRecipePrimaryDex(
+        chainRecipe=recipeDetails[chainNumber]
+    )
+
     for tokenType, tokenDetails in toFill.items():
         tokenDetails["isGas"] = strToBool(tokenDetails["isGas"])
         if tokenDetails["isGas"]:
@@ -37,7 +43,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken):
             recipeDetails[chainNumber][tokenType] = recipeDetails[chainNumber][tokenType] | gasTokenDetails
         else:
             tokenDetails = getTokenBySymbolAndChainID(
-                tokenListDataframe=masterTokenList,
+                tokenListDataframe=recipeDetails[chainNumber]["dexs"][primaryDexIndex]["tokenList"],
                 tokenSymbol=tokenDetails["symbol"],
                 tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
             )
@@ -61,7 +67,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken):
                     routeAddressList.append(chainGasToken)
                 else:
                     tokenDetails = getTokenBySymbolAndChainID(
-                        tokenListDataframe=masterTokenList,
+                        tokenListDataframe=recipeDetails[chainNumber]["dexs"][primaryDexIndex]["tokenList"],
                         tokenSymbol=routeSymbol,
                         tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
                     )
@@ -80,11 +86,11 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken):
         chainGasToken=chainGasToken
     )
 
-    recipeDetails = addChainStablecoinInformation(
-        recipeDetails=recipeDetails,
-        chainNumber=chainNumber,
-        dexId=recipeDetails["arbitrage"]["dexId"]
-    )
+    # recipeDetails = addChainStablecoinInformation(
+    #     recipeDetails=recipeDetails,
+    #     chainNumber=chainNumber,
+    #     dexId=recipeDetails["arbitrage"]["dexId"]
+    # )
 
     return recipeDetails
 
@@ -134,11 +140,11 @@ def fillRecipeFromAPI(recipeDetails, chainNumber, chainGasToken):
         chainGasToken=chainGasToken
     )
 
-    recipeDetails = addChainStablecoinInformation(
-        recipeDetails=recipeDetails,
-        chainNumber=chainNumber,
-        dexId=recipeDetails["arbitrage"]["dexId"]
-    )
+    # recipeDetails = addChainStablecoinInformation(
+    #     recipeDetails=recipeDetails,
+    #     chainNumber=chainNumber,
+    #     dexId=recipeDetails["arbitrage"]["dexId"]
+    # )
 
     return recipeDetails
 
@@ -149,7 +155,7 @@ def addChainInformation(chainList, chainName):
     else:
         sys.exit(f"No Chain Details In DB For {chainName}")
 
-def addChainDexs(dexList, chainName):
+def addDexContractAbis(dexList, chainName):
 
     finalDexList = []
 
@@ -190,13 +196,26 @@ def addChainDexs(dexList, chainName):
     else:
         sys.exit(f"No Dexs In DB For {chainName}")
 
+def parseDexTokenLists(chainRecipe):
+
+    for dex in chainRecipe["dexs"]:
+        tokenListURLs = dex["tokenLists"]
+        dex["tokenList"] = parseTokenLists(
+            urls=tokenListURLs
+        )
+        del dex["tokenLists"]
+
+    return chainRecipe
+
+
 def addChainGasInformation(recipeDetails, chainNumber, chainGasToken):
     recipeDetails[chainNumber]["gas"] = {}
     recipeDetails[chainNumber]["gas"]["symbol"] = recipeDetails[chainNumber]["chain"]["gasDetails"]["symbol"]
     recipeDetails[chainNumber]["gas"]["address"] = chainGasToken
     recipeDetails[chainNumber]["gas"]["decimals"] = 18
     recipeDetails[chainNumber]["gas"]["isGas"] = True
-    recipeDetails[chainNumber]["chain"]["contracts"]["weth"]["address"] = chainGasToken
+    for dex in recipeDetails[chainNumber]["dexs"]:
+        dex["contracts"]["weth"]["address"] = chainGasToken
 
     return recipeDetails
 

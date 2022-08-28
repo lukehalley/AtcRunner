@@ -5,6 +5,7 @@ from decimal import Decimal
 from retry import retry
 from web3 import Web3
 
+from src.recipe.recipe_Utils import getRecipePrimaryDex
 from src.utils.chain.chain_ABI import getMappedContractFunction, fillEmptyABIParams
 from src.utils.chain.chain_Addresses import checkWalletsMatch
 from src.utils.chain.chain_Wallet import getPrivateKey, checkIfStablesAreOnOrigin
@@ -23,11 +24,14 @@ def getNetworkWETH(chainRecipe):
     from src.chain.network.network_Actions import callMappedContractFunction
 
     rpcUrl = chainRecipe["chain"]["rpc"]
+    primaryDexIndex = getRecipePrimaryDex(
+        chainRecipe=chainRecipe
+    )
 
     # We can always use the first dex to get the network ETH as they all will have this function
-    routerAddress = chainRecipe["dexs"][0]["contracts"]["router"]["address"]
-    routerABI = chainRecipe["dexs"][0]["contracts"]["router"]["abi"]
-    routerABIMappings = chainRecipe["dexs"][0]["contracts"]["router"]["mapping"]
+    routerAddress = chainRecipe["dexs"][primaryDexIndex]["contracts"]["router"]["address"]
+    routerABI = chainRecipe["dexs"][primaryDexIndex]["contracts"]["router"]["abi"]
+    routerABIMappings = chainRecipe["dexs"][primaryDexIndex]["contracts"]["router"]["mapping"]
 
     web3 = Web3(Web3.HTTPProvider(rpcUrl))
 
