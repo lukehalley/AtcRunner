@@ -154,7 +154,7 @@ def getTokenApprovalStatus(recipe, recipePosition, recipeDex, tokenType, spender
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
     walletAddress = recipe[recipePosition]["wallet"]["address"]
     tokenAddress = recipe[recipePosition][tokenType]["address"]
-    wethAbi = recipe[recipePosition]["dexs"][recipeDex]["chain"]["contracts"]["weth"]["abi"]
+    wethAbi = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["weth"]["abi"]
     # Dict Params ####################################################
 
     # Setup Web 3
