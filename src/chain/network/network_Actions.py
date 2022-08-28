@@ -262,7 +262,7 @@ def approveToken(recipe, recipePosition, recipeDex, tokenType, spenderAddress, s
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
     walletAddress = recipe[recipePosition]["wallet"]["address"]
     tokenAddress = recipe[recipePosition][tokenType]["address"]
-    wethAbi = recipe[recipePosition]["dexs"][recipeDex]["chain"]["contracts"]["weth"]["abi"]
+    wethAbi = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["weth"]["abi"]
     # Dict Params ####################################################
 
     # Setup Web 3
@@ -303,9 +303,9 @@ def checkAndApproveToken(recipe, recipePosition, recipeDex, tokenType, approvalT
 
     # Choose The Contract Address To Choose Based On If Its A Swap or Bridge Approval
     if approvalType in validSwapTypes:
-        spenderAddress = recipe[recipePosition]["dexs"][recipeDex]["chain"]["contracts"]["router"]["address"]
+        spenderAddress = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["address"]
     elif approvalType == "bridge":
-        spenderAddress = recipe[recipePosition]["dexs"][recipeDex]["chain"]["contracts"]["bridges"]["synapse"]["address"]
+        spenderAddress = recipe[recipePosition]["bridge"]["address"]
     else:
         sys.exit(f"Invalid Approval Type: {approvalType}")
 
