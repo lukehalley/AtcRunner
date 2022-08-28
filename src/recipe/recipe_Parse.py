@@ -1,7 +1,7 @@
 import sys
 
 from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
-from src.apis.gitlab.gitlab_Querys import getDexABIFromGitlab
+from src.apis.gitlab.gitlab_Querys import getDexABIFromGitlab, getChainTokenListFromGitlab, getDexTokenListFromGitlab
 from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeableTokens
 from src.recipe.recipe_Utils import getRecipePrimaryDex
 from src.tokens.tokens_Query import getTokenBySymbolAndChainID
@@ -196,14 +196,24 @@ def addDexContractAbis(dexList, chainName):
     else:
         sys.exit(f"No Dexs In DB For {chainName}")
 
-def parseDexTokenLists(chainRecipe):
+def parseDexTokenLists(chainRecipe, chainName):
+
+    chainTokenList = getChainTokenListFromGitlab(
+        chainName=chainName
+    )
 
     for dex in chainRecipe["dexs"]:
-        tokenListURLs = dex["tokenLists"]
+
+        dexTokenList = getDexTokenListFromGitlab(
+            chainName=chainName,
+            dexName=dex["name"]
+        )
+
+        tokenListURLs = chainTokenList + dexTokenList
+
         dex["tokenList"] = parseTokenLists(
             urls=tokenListURLs
         )
-        del dex["tokenLists"]
 
     return chainRecipe
 
