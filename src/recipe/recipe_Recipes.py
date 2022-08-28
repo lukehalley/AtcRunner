@@ -25,72 +25,95 @@ def getRecipeDetails():
     logger.info(f"Importing Recipes...")
     printSeparator()
 
+    # Get All The Data From Firebase
     allDexs = fetchFromDatabase("dexs")
     allChains = fetchFromDatabase("chains")
     allRecipes = fetchFromDatabase("recipes")
     allBridges = fetchFromDatabase("bridges")
 
+    # Remove All Disabled Recipes For All Types Of Recipe Types
     recipes = removeDisabledRecipes(recipes=allRecipes)
 
-    for recipesTitle, recipeDetails in recipes.items():
+    # Valid Recipe Types
+    validRecipeTypes = ["crossChain", "internalChain"]
 
-        recipeBridge = recipeDetails["arbitrage"]["primaryBridge"]
-        recipeTokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
+    # Fill In All Recipe Data
+    for recipeType, recipeCollection in recipes.items():
 
-        for i in range(1, 3):
+        if recipeType not in validRecipeTypes:
+            sys.exit(f"Invalid Recipe Type: {recipeType} - Must Be One Of: {validRecipeTypes}")
 
-            num = num2words(i).title()
-            chainNumber = f"chain{num}"
-            chainName = recipeDetails[chainNumber]["chain"]["name"]
+        isCrossChain = recipeType == "crossChain"
 
-            # Get The Current Recipe Chain Details
-            recipeDetails[chainNumber]["chain"] = addChainInformation(
-                recipe=recipeDetails,
-                chainList=allChains,
-                chainName=chainName,
-                chainNumber=chainNumber
-            )
+        for recipeTitle, recipeDetails in recipeCollection.items():
 
-            chainId = recipeDetails[chainNumber]["chain"]["id"]
+            recipeTokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
+            recipeChains = sum('chain' in s for s in recipeDetails.keys())
 
-            # Get The Current Recipe Chain Details
-            recipeDetails[chainNumber]["dexs"] = addDexContractAbis(
-                dexList=allDexs,
-                chainName=chainName
-            )
-
-            # Get Bridge To Used
-            x = 1
-            recipeDetails[chainNumber]["bridge"] = allBridges[chainName][recipeBridge]
-
-            chainGasToken = getNetworkWETH(
-                chainRecipe=recipeDetails[chainNumber]
-            )
-
-            recipeDetails[chainNumber] = parseDexTokenLists(
-                chainRecipe=recipeDetails[chainNumber],
-                chainName=chainName,
-                chainId=chainId
-            )
-
-            if recipeTokenRetrievalMethod == "tokenList":
-
-                recipeDetails = fillRecipeFromTokenList(
-                    recipeDetails=recipeDetails,
-                    chainNumber=chainNumber,
-                    chainGasToken=chainGasToken
-                )
-
-            elif recipeTokenRetrievalMethod == "apis":
-
-                recipeDetails = fillRecipeFromAPI(
-                    recipeDetails=recipeDetails,
-                    chainNumber=chainNumber,
-                    chainGasToken=chainGasToken
-                )
-
+            if isCrossChain:
+                recipeBridge = recipeDetails["arbitrage"]["primaryBridge"]
             else:
-                raise Exception(F"Invalid Token Retrieval Method: {recipeTokenRetrievalMethod}")
+                recipeBridge = None
+
+            for i in range(0, recipeChains):
+
+                if isCrossChain:
+                    num = num2words(i + 1).title()
+                    chainKey = f"chain{num}"
+                else:
+                    x = 1
+                    chainKey = f"chain"
+
+                chainName = recipeDetails[chainKey]["chain"]["name"]
+
+                # Get The Current Recipe Chain Details
+                recipeDetails[chainKey]["chain"] = addChainInformation(
+                    recipe=recipeDetails,
+                    chainList=allChains,
+                    chainName=chainName,
+                    chainNumber=chainKey
+                )
+
+                chainId = recipeDetails[chainKey]["chain"]["id"]
+
+                # Get The Current Recipe Chain Details
+                recipeDetails[chainKey]["dexs"] = addDexContractAbis(
+                    dexList=allDexs,
+                    chainName=chainName
+                )
+
+                if isCrossChain:
+                    # Get Bridge To Used
+                    recipeDetails[chainKey]["bridge"] = allBridges[chainName][recipeBridge]
+
+                chainGasToken = getNetworkWETH(
+                    chainRecipe=recipeDetails[chainKey]
+                )
+
+                recipeDetails[chainKey] = parseDexTokenLists(
+                    chainRecipe=recipeDetails[chainKey],
+                    chainName=chainName,
+                    chainId=chainId
+                )
+
+                if recipeTokenRetrievalMethod == "tokenList":
+
+                    recipeDetails = fillRecipeFromTokenList(
+                        recipeDetails=recipeDetails,
+                        chainNumber=chainKey,
+                        chainGasToken=chainGasToken
+                    )
+
+                elif recipeTokenRetrievalMethod == "apis":
+
+                    recipeDetails = fillRecipeFromAPI(
+                        recipeDetails=recipeDetails,
+                        chainNumber=chainKey,
+                        chainGasToken=chainGasToken
+                    )
+
+                else:
+                    raise Exception(F"Invalid Token Retrieval Method: {recipeTokenRetrievalMethod}")
 
     return recipes
 
@@ -223,8 +246,8 @@ def fillRecipeFromAPI(recipeDetails, chainNumber, chainGasToken):
     return recipeDetails
 
 def removeDisabledRecipes(recipes):
-    initLength = len(recipes)
-    recipes = {
-        recipeName: recipeDetail for recipeName, recipeDetail in recipes.items() if recipeDetail["arbitrage"]["enabled"]}
-    logger.info(f"Imported {len(recipes)}/{initLength} Recipes")
+    for recipeType, recipeCollection in recipes.items():
+        initLength = len(recipeCollection)
+        recipes[recipeType] = {recipeName: recipeDetail for recipeName, recipeDetail in recipeCollection.items() if recipeDetail["arbitrage"]["enabled"]}
+        logger.info(f"Imported {len(recipes[recipeType])}/{initLength} {recipeType} Recipes")
     return recipes

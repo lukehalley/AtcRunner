@@ -91,7 +91,7 @@ while True:
         printSeparator(newLine=True)
 
         # If Our Arbitrage Is Profitable - Execute It
-        if (recipe["arbitrage"]["isProfitable"] or forceArb) and arbEnabled:
+        if recipe["arbitrage"]["isProfitable"]:
 
             # Start A Timer To Track How Long The Arbitrage Takes
             recipe["status"]["startingTime"] = time.perf_counter()
