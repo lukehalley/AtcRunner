@@ -46,9 +46,7 @@ def executeArbitrage(recipe, isRollback):
 
         recipe["status"]["telegramStatusMessage"] = appendToMessage(
             messageToAppendTo=recipe["status"]["telegramStatusMessage"],
-            messageToAppend=
-                f"\n"
-                f"[ Rollback ⏮ ]"
+            messageToAppend="[ Rollback ⏮ ]"
         )
 
     else:
