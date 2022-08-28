@@ -112,6 +112,7 @@ def swapToken(recipe, recipePosition, tokenInType, stepCategory, stepNumber, ove
     amountOutQuoted = getSwapQuoteOut(
         recipe=recipe,
         recipePosition=recipePosition,
+        recipeDex=recipe[recipePosition]["chain"]["primaryDex"],
         tokenType=tokenInType,
         tokenIsGas=recipe[recipePosition][tokenInType]["isGas"],
         tokenAmountIn=tokenInAmount
