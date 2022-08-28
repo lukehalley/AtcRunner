@@ -49,7 +49,8 @@ def getRecipeDetails():
             )
 
             recipeDetails[chainNumber] = parseDexTokenLists(
-                chainRecipe=recipeDetails[chainNumber]
+                chainRecipe=recipeDetails[chainNumber],
+                chainName=chainName
             )
 
             if recipeTokenRetrievalMethod == "tokenList":
