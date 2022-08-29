@@ -101,7 +101,8 @@ def getRecipeDetails():
                     recipeDetails = fillRecipeFromTokenList(
                         recipeDetails=recipeDetails,
                         chainNumber=chainKey,
-                        chainGasToken=chainGasToken
+                        chainGasToken=chainGasToken,
+                        isCrossChain=isCrossChain
                     )
 
                 elif recipeTokenRetrievalMethod == "apis":
@@ -117,14 +118,19 @@ def getRecipeDetails():
 
     return recipes
 
-def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken):
+def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossChain):
     
     primaryDex = recipeDetails[chainNumber]["chain"]["primaryDex"]
 
-    toFill = {
-        "token": recipeDetails[chainNumber]["token"],
-        "stablecoin": recipeDetails[chainNumber]["stablecoin"]
-    }
+    if isCrossChain:
+        toFill = {
+            "token": recipeDetails[chainNumber]["token"],
+            "stablecoin": recipeDetails[chainNumber]["stablecoin"]
+        }
+    else:
+        toFill = {
+            "stablecoin": recipeDetails[chainNumber]["stablecoin"]
+        }
 
     for tokenType, tokenDetails in toFill.items():
         tokenDetails["isGas"] = strToBool(tokenDetails["isGas"])
@@ -146,36 +152,38 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken):
             )
             recipeDetails[chainNumber][tokenType] = recipeDetails[chainNumber][tokenType] | tokenDetails
 
-    for routeDirection, routeContents in recipeDetails[chainNumber]["routes"].items():
+    if isCrossChain:
 
-        routeFirst = routeDirection.split("-")[0]
-        routeLast = routeDirection.split("-")[1]
+        for routeDirection, routeContents in recipeDetails[chainNumber]["routes"].items():
 
-        if routeContents != '':
-            routeSymbols = routeContents.split(",")
+            routeFirst = routeDirection.split("-")[0]
+            routeLast = routeDirection.split("-")[1]
 
-            routeSymbols.pop(0)
-            routeSymbols.pop(-1)
-            routeAddressList = [recipeDetails[chainNumber][routeFirst]["address"]]
+            if routeContents != '':
+                routeSymbols = routeContents.split(",")
 
-            for routeSymbol in routeSymbols:
+                routeSymbols.pop(0)
+                routeSymbols.pop(-1)
+                routeAddressList = [recipeDetails[chainNumber][routeFirst]["address"]]
 
-                if routeSymbol == "{NETWORK_GAS_TOKEN}":
-                    routeAddressList.append(chainGasToken)
-                else:
-                    tokenDetails = getTokenBySymbolAndChainID(
-                        tokenListDataframe=recipeDetails[chainNumber]["dexs"][primaryDex]["tokenList"],
-                        tokenSymbol=routeSymbol,
-                        tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
-                    )
-                    routeAddressList.append(tokenDetails["address"])
+                for routeSymbol in routeSymbols:
 
-            routeAddressList.append(recipeDetails[chainNumber][routeLast]["address"])
-        else:
-            routeAddressList = [recipeDetails[chainNumber][routeFirst]["address"],
-                                recipeDetails[chainNumber][routeLast]["address"]]
+                    if routeSymbol == "{NETWORK_GAS_TOKEN}":
+                        routeAddressList.append(chainGasToken)
+                    else:
+                        tokenDetails = getTokenBySymbolAndChainID(
+                            tokenListDataframe=recipeDetails[chainNumber]["dexs"][primaryDex]["tokenList"],
+                            tokenSymbol=routeSymbol,
+                            tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
+                        )
+                        routeAddressList.append(tokenDetails["address"])
 
-        recipeDetails[chainNumber]["routes"][routeDirection] = routeAddressList
+                routeAddressList.append(recipeDetails[chainNumber][routeLast]["address"])
+            else:
+                routeAddressList = [recipeDetails[chainNumber][routeFirst]["address"],
+                                    recipeDetails[chainNumber][routeLast]["address"]]
+
+            recipeDetails[chainNumber]["routes"][routeDirection] = routeAddressList
 
     recipeDetails = addChainGasInformation(
         recipeDetails=recipeDetails,
