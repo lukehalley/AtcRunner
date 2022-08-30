@@ -2,21 +2,17 @@ import sys
 
 from num2words import num2words
 
-from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
 from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
-from src.apis.gitlab.gitlab_Querys import getDexABIFileFromGitlab, getChainTokenListURLsFromGitlab, \
-    getTokenListURLsFromGitlab, getTokenListFileFromGitlab
+from src.apis.gitlab.gitlab_Bridges import getBridgeMetadataFromGitlab
 from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeableTokens
 from src.chain.network.network_Querys import getNetworkWETH
 from src.recipe.recipe_Chain import addChainInformation, addChainGasInformation
 from src.recipe.recipe_Dex import addDexContractAbis, parseDexTokenLists
 from src.recipe.recipe_Utils import getHumanReadableRecipeType
 from src.tokens.tokens_Query import getTokenBySymbolAndChainID
-from src.tokens.tokens_Parse import parseTokenLists
 from src.utils.data.data_Booleans import strToBool
 from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
-from src.utils.text.text_Transformation import camelCaseSplit
 
 logger = getProjectLogger()
 
@@ -31,7 +27,7 @@ def getRecipeDetails():
     allDexs = fetchFromDatabase("dexs")
     allChains = fetchFromDatabase("chains")
     allRecipes = fetchFromDatabase("recipes")
-    allBridges = fetchFromDatabase("bridges")
+    # allBridges = fetchFromDatabase("bridges")
 
     # Valid Recipe Types
     validRecipeTypes = ["crossChain", "internalChain"]
@@ -94,8 +90,16 @@ def getRecipeDetails():
                 )
 
                 if isCrossChain:
-                    # Get Bridge To Used
-                    recipeDetails[chainKey]["bridge"] = allBridges[chainName][recipeBridge]
+                    # Get Bridge To Use
+
+                    x = 1
+
+                    getBridgeMetadataFromGitlab(
+                        chainName=chainName,
+                        bridgeName=recipeBridge
+                    )
+
+                    # recipeDetails[chainKey]["bridge"] = allBridges[chainName][recipeBridge]
 
                 chainGasToken = getNetworkWETH(
                     chainRecipe=recipeDetails[chainKey]
