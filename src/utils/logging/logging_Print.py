@@ -9,9 +9,10 @@ telegramSeperator = "-------------------------------"
 
 
 # Print the current round trip count
-def printRoundtrip(count):
+def printRoundtrip(roundtrip):
+
     logger.info("################################")
-    logger.info(f"STARTING ARBITRAGE #{count}")
+    logger.info(f"STARTING ARBITRAGE #{roundtrip}")
     logger.info("################################\n")
 
 

@@ -1,13 +1,8 @@
 import sys
-import warnings
 
-from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
-from src.apis.gitlab.gitlab_Querys import getDexABIFileFromGitlab, getChainTokenListURLsFromGitlab, \
-    getTokenListURLsFromGitlab, getTokenListFileFromGitlab
-from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeableTokens
-from src.tokens.tokens_Query import getTokenBySymbolAndChainID
+from src.apis.gitlab.gitlab_ABIs import getDexABIFileFromGitlab
+from src.apis.gitlab.gitlab_TokenLists import getTokenListFromGitlab
 from src.tokens.tokens_Parse import parseTokenLists
-from src.utils.data.data_Booleans import strToBool
 from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
@@ -53,14 +48,6 @@ def addDexContractAbis(dexList, chainName):
 
 def parseDexTokenLists(chainRecipe, chainName, chainId, isCrossChain):
 
-    chainLocalTokenListURL = getTokenListFileFromGitlab(
-        chainName=chainName
-    )
-
-    chainExternalTokenList = getTokenListURLsFromGitlab(
-        path=f"{chainName}/common/external/external.json"
-    )
-
     if not isCrossChain:
         hasEnoughDexs = len(chainRecipe["dexs"]) > 1
         if not hasEnoughDexs:
@@ -69,17 +56,14 @@ def parseDexTokenLists(chainRecipe, chainName, chainId, isCrossChain):
 
     for dexName, dexDetails in chainRecipe["dexs"].items():
 
-        dexTokenList = getTokenListURLsFromGitlab(
+        dexTokenList = getTokenListFromGitlab(
             path=f"{chainName}/{dexName}/external/external.json"
         )
 
-        tokenListURLs = chainExternalTokenList + dexTokenList
-
-        tokenListURLs.append(chainLocalTokenListURL)
-
         dexDetails["tokenList"] = parseTokenLists(
-            tokenListURLs=tokenListURLs,
-            chainId = chainId
+            tokenListURLs=dexTokenList,
+            chainId = chainId,
+            chainName=chainName
         )
 
     return chainRecipe

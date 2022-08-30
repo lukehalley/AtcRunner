@@ -1,24 +1,28 @@
 import pandas as pd
 
-from src.apis.gitlab.gitlab_Querys import getFileFromGitlab
+from src.apis.gitlab.gitlab_TokenLists import getCommonTokenFilesFromGitlab
 from src.tokens.tokens_Query import getAllowedKeys
 from src.utils.web.web_Requests import getAuthRawGithubFile, safeRequest
 
 allowedKeys = getAllowedKeys()
 
-def parseTokenLists(tokenListURLs, chainId):
+def parseTokenLists(tokenListURLs, chainId, chainName):
     finalTokenList = []
 
     for url in tokenListURLs:
 
         if "raw.githubusercontent" in url:
             singleTokenListJSON = getAuthRawGithubFile(url)["tokens"]
-        elif "gitlab.com" in url:
-            singleTokenListJSON = getFileFromGitlab(url)["tokens"]
         else:
             singleTokenListJSON = safeRequest(endpoint=url, params=None, headers=None)["tokens"]
 
         finalTokenList = finalTokenList + singleTokenListJSON
+
+    localChainCommonTokens = getCommonTokenFilesFromGitlab(
+        chainName=chainName
+    )
+
+    finalTokenList = finalTokenList + localChainCommonTokens
 
     allKeys = list(set().union(*(d.keys() for d in finalTokenList)))
     keysToRemove = list(set(allKeys) - set(allowedKeys))

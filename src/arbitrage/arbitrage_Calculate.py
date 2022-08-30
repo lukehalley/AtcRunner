@@ -126,6 +126,8 @@ def determineArbitrageStrategy(recipe):
     else:
         logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Arbitrage Opportunity Identified')
 
+    printSeparator()
+
     logger.info(
         f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateDecimal(recipe["origin"]["token"]["price"], 6)} on '
         f'{recipe["origin"]["chain"]["name"]}'

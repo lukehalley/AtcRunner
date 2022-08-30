@@ -3,7 +3,6 @@ import os, urllib.parse
 # Build the base of our API endpoint url
 from src.utils.env.env_Docker import getAWSSecret
 
-
 def buildGitlabAPIBaseURL():
     gitlabAPIEndpoint = os.getenv("GITLAB_BASE_URL")
     gitlabAPIVersion = os.getenv("GITLAB_API_VERSION")

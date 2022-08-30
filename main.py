@@ -50,6 +50,10 @@ arbEnabled = strToBool(os.environ.get("ARB_ENABLED"))
 forceArb = strToBool(os.environ.get("FORCE_ARB"))
 pauseTime = int(os.environ.get("ARBITRAGE_INTERVAL"))
 
+# Loop Caches
+startingRoundtrip = None
+startingWalletBalance = None
+
 # Infinite Loop
 while True:
 
@@ -64,8 +68,15 @@ while True:
             # Determine Our Arbitrage Strategy
             recipe = determineArbitrageStrategy(recipe)
 
-            # Print The Current Round Trip Number
-            printRoundtrip(recipe["status"]["currentRoundTrip"])
+            # Output Roundtrip Only At Start or When It Changes
+            if not startingRoundtrip or recipe["status"]["currentRoundTrip"] != startingRoundtrip:
+
+                # Print The Current Round Trip Number
+                printRoundtrip(roundtrip=recipe["status"]["currentRoundTrip"])
+
+                # Set The Starting Roundtrip If It Hasn't Been Set
+                if not startingRoundtrip:
+                    startingRoundtrip = recipe["status"]["currentRoundTrip"]
 
             # Print A Separator
             printSeparator()
@@ -108,9 +119,9 @@ while True:
                 )
 
             else:
-                printSeparator()
-                logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Trip Not Profitable')
+                # printSeparator()
+                # logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Trip Not Profitable')
                 if pauseTime > 0:
                     logger.info(f'Waiting {pauseTime} seconds...')
-                printSeparator(newLine=True)
-                time.sleep(pauseTime)
+                # printSeparator(newLine=True)
+                # time.sleep(pauseTime)
