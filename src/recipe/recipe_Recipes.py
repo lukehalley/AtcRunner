@@ -128,6 +128,8 @@ def getRecipeDetails():
                 else:
                     raise Exception(F"Invalid Token Retrieval Method: {recipeTokenRetrievalMethod}")
 
+        allRecipes[recipeType] = recipeCollection
+
     return allRecipes
 
 def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossChain):

@@ -54,61 +54,63 @@ pauseTime = int(os.environ.get("ARBITRAGE_INTERVAL"))
 while True:
 
     # Iterate Through Recipe List
-    for recipesTitle, recipesDetails in recipes.items():
+    for recipeType, recipeCollection in recipes.items():
 
-        # Make A Copy Of The Current Recipe So We Don't Edit Original
-        recipe = recipesDetails.copy()
+        for recipeTitle, recipeDetails in recipeCollection.items():
 
-        # Determine Our Arbitrage Strategy
-        recipe = determineArbitrageStrategy(recipe)
+            # Make A Copy Of The Current Recipe So We Don't Edit Original
+            recipe = recipeDetails.copy()
 
-        # Print The Current Round Trip Number
-        printRoundtrip(recipe["status"]["currentRoundTrip"])
+            # Determine Our Arbitrage Strategy
+            recipe = determineArbitrageStrategy(recipe)
 
-        # Print A Separator
-        printSeparator()
+            # Print The Current Round Trip Number
+            printRoundtrip(recipe["status"]["currentRoundTrip"])
 
-        # Get The Current Wallet Token Balances
-        logger.info(f"[ARB #{recipe['status']['currentRoundTrip']}] Getting Wallet Details & Balance")
-        recipe = getWalletsInformation(recipe=recipe, printBalances=True)
+            # Print A Separator
+            printSeparator()
 
-        # Print A Separator
-        printSeparator(newLine=True)
+            # Get The Current Wallet Token Balances
+            logger.info(f"[ARB #{recipe['status']['currentRoundTrip']}] Getting Wallet Details & Balance")
+            recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
-        # Check If Our Wallet Is In The Correct State To Begin
-        # The Arbitrage - ie. Majority Stablecoins
-        setupWallet(
-            recipe=recipe,
-            recipePosition="origin",
-            tokenType="token",
-            stepCategory="setup"
-        )
+            # Print A Separator
+            printSeparator(newLine=True)
 
-        # Check If The Current Arbitrage Would Be Profitable
-        recipe = calculateArbitrageIsProfitable(recipe)
-
-        # Print A Separator
-        printSeparator(newLine=True)
-
-        # If Our Arbitrage Is Profitable - Execute It
-        if recipe["arbitrage"]["isProfitable"]:
-
-            # Start A Timer To Track How Long The Arbitrage Takes
-            recipe["status"]["startingTime"] = time.perf_counter()
-
-            # Print A Message Notifying The Arbitrage Is Profitable
-            recipe = printArbitrageProfitable(recipe)
-
-            # Execute The Arbitrage
-            executeArbitrage(
+            # Check If Our Wallet Is In The Correct State To Begin
+            # The Arbitrage - ie. Majority Stablecoins
+            setupWallet(
                 recipe=recipe,
-                isRollback=False
+                recipePosition="origin",
+                tokenType="token",
+                stepCategory="setup"
             )
 
-        else:
-            printSeparator()
-            logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Trip Not Profitable')
-            if pauseTime > 0:
-                logger.info(f'Waiting {pauseTime} seconds...')
+            # Check If The Current Arbitrage Would Be Profitable
+            recipe = calculateArbitrageIsProfitable(recipe)
+
+            # Print A Separator
             printSeparator(newLine=True)
-            time.sleep(pauseTime)
+
+            # If Our Arbitrage Is Profitable - Execute It
+            if recipe["arbitrage"]["isProfitable"]:
+
+                # Start A Timer To Track How Long The Arbitrage Takes
+                recipe["status"]["startingTime"] = time.perf_counter()
+
+                # Print A Message Notifying The Arbitrage Is Profitable
+                recipe = printArbitrageProfitable(recipe)
+
+                # Execute The Arbitrage
+                executeArbitrage(
+                    recipe=recipe,
+                    isRollback=False
+                )
+
+            else:
+                printSeparator()
+                logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Trip Not Profitable')
+                if pauseTime > 0:
+                    logger.info(f'Waiting {pauseTime} seconds...')
+                printSeparator(newLine=True)
+                time.sleep(pauseTime)
