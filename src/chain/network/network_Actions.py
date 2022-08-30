@@ -153,7 +153,7 @@ def topUpWalletGas(recipe, topUpPosition, topUpTokenToUse):
     from src.chain.swap.swap_Querys import getSwapQuoteIn
     from src.chain.swap.swap_Actions import swapToken
 
-    primaryDex = recipe[topUpPosition]["chain"]["primaryDex"]
+    dexToUse = recipe[topUpPosition]["chain"]["primaryDex"]
 
     minimumGasBalance = Decimal(recipe[topUpPosition]["chain"]["gasDetails"]["gasLimits"]["minGas"])
     maximumGasBalance = Decimal(recipe[topUpPosition]["chain"]["gasDetails"]["gasLimits"]["maxGas"])
@@ -166,7 +166,7 @@ def topUpWalletGas(recipe, topUpPosition, topUpTokenToUse):
         fromChainRPCUrl=recipe[topUpPosition]["chain"]["rpc"],
         tokenAddress=recipe[topUpPosition][topUpTokenToUse]["address"],
         tokenDecimals=recipe[topUpPosition][topUpTokenToUse]["decimals"],
-        wethContractABI=recipe[topUpPosition]["dexs"][primaryDex]["contracts"]["weth"]["abi"]
+        wethContractABI=recipe[topUpPosition]["dexs"][dexToUse]["contracts"]["weth"]["abi"]
     )
 
     stepCategory = f"gas"

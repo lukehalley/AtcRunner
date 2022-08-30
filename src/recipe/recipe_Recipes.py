@@ -10,11 +10,13 @@ from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeableTokens
 from src.chain.network.network_Querys import getNetworkWETH
 from src.recipe.recipe_Chain import addChainInformation, addChainGasInformation
 from src.recipe.recipe_Dex import addDexContractAbis, parseDexTokenLists
+from src.recipe.recipe_Utils import getHumanReadableRecipeType
 from src.tokens.tokens_Query import getTokenBySymbolAndChainID
 from src.tokens.tokens_Parse import parseTokenLists
 from src.utils.data.data_Booleans import strToBool
 from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.text.text_Transformation import camelCaseSplit
 
 logger = getProjectLogger()
 
@@ -31,27 +33,36 @@ def getRecipeDetails():
     allRecipes = fetchFromDatabase("recipes")
     allBridges = fetchFromDatabase("bridges")
 
-    # Remove All Disabled Recipes For All Types Of Recipe Types
-    recipes = removeDisabledRecipes(recipes=allRecipes)
-
     # Valid Recipe Types
     validRecipeTypes = ["crossChain", "internalChain"]
 
     # Fill In All Recipe Data
-    for recipeType, recipeCollection in recipes.items():
+    for recipeType, recipeCollection in allRecipes.items():
+
+        # Amount Of Recipes Before Removing Disabled Ones
+        initLength = len(recipeCollection)
+
+        # Remove All Disabled Recipes For All Types Of Recipe Types
+        recipeCollection = removeDisabledRecipes(recipes=recipeCollection)
 
         if recipeType not in validRecipeTypes:
             sys.exit(f"Invalid Recipe Type: {recipeType} - Must Be One Of: {validRecipeTypes}")
+
+        recipeTypeHuman = getHumanReadableRecipeType(recipeType=recipeType)
+        finalLength = len(recipeCollection)
+        logger.info(f"{recipeTypeHuman} [{finalLength}/{initLength}]")
 
         isCrossChain = recipeType == "crossChain"
 
         for recipeTitle, recipeDetails in recipeCollection.items():
 
+            logger.info(f"- {recipeTitle}")
+
             recipeTokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
             recipeChains = sum('chain' in s for s in recipeDetails.keys())
 
             if isCrossChain:
-                recipeBridge = recipeDetails["arbitrage"]["primaryBridge"]
+                recipeBridge = recipeDetails["arbitrage"]["bridgeToUse"]
             else:
                 recipeBridge = None
 
@@ -93,7 +104,8 @@ def getRecipeDetails():
                 recipeDetails[chainKey] = parseDexTokenLists(
                     chainRecipe=recipeDetails[chainKey],
                     chainName=chainName,
-                    chainId=chainId
+                    chainId=chainId,
+                    isCrossChain=isCrossChain
                 )
 
                 if recipeTokenRetrievalMethod == "tokenList":
@@ -116,11 +128,11 @@ def getRecipeDetails():
                 else:
                     raise Exception(F"Invalid Token Retrieval Method: {recipeTokenRetrievalMethod}")
 
-    return recipes
+    return allRecipes
 
 def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossChain):
     
-    primaryDex = recipeDetails[chainNumber]["chain"]["primaryDex"]
+    dexToUse = recipeDetails[chainNumber]["chain"]["primaryDex"]
 
     if isCrossChain:
         toFill = {
@@ -146,7 +158,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossCh
             recipeDetails[chainNumber][tokenType] = recipeDetails[chainNumber][tokenType] | gasTokenDetails
         else:
             tokenDetails = getTokenBySymbolAndChainID(
-                tokenListDataframe=recipeDetails[chainNumber]["dexs"][primaryDex]["tokenList"],
+                tokenListDataframe=recipeDetails[chainNumber]["dexs"][dexToUse]["tokenList"],
                 tokenSymbol=tokenDetails["symbol"],
                 tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
             )
@@ -172,7 +184,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossCh
                         routeAddressList.append(chainGasToken)
                     else:
                         tokenDetails = getTokenBySymbolAndChainID(
-                            tokenListDataframe=recipeDetails[chainNumber]["dexs"][primaryDex]["tokenList"],
+                            tokenListDataframe=recipeDetails[chainNumber]["dexs"][dexToUse]["tokenList"],
                             tokenSymbol=routeSymbol,
                             tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
                         )
@@ -254,8 +266,4 @@ def fillRecipeFromAPI(recipeDetails, chainNumber, chainGasToken):
     return recipeDetails
 
 def removeDisabledRecipes(recipes):
-    for recipeType, recipeCollection in recipes.items():
-        initLength = len(recipeCollection)
-        recipes[recipeType] = {recipeName: recipeDetail for recipeName, recipeDetail in recipeCollection.items() if recipeDetail["arbitrage"]["enabled"]}
-        logger.info(f"Imported {len(recipes[recipeType])}/{initLength} {recipeType} Recipes")
-    return recipes
+    return {recipeName: recipeDetail for recipeName, recipeDetail in recipes.items() if recipeDetail["arbitrage"]["enabled"]}
