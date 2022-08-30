@@ -153,6 +153,7 @@ requestLimit = float(os.environ.get("REQUEST_LIMIT"))
 # Discord Envs
 discordToken = os.environ.get("DISCORD_BOT_TOKEN")
 discordChannelID = int(os.environ.get("DISCORD_ALERT_CHANNEL_ID"))
+# TODO: Implement retry logic for API calls
 
 # Firebase Init
 cred = credentials.Certificate(pkeyPath)
