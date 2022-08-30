@@ -1,4 +1,5 @@
 import sys
+import warnings
 
 from src.apis.dexScreener.dexScreener_Querys import getTokenPriceByDexId
 from src.apis.gitlab.gitlab_Querys import getDexABIFileFromGitlab, getChainTokenListURLsFromGitlab, \
@@ -50,7 +51,7 @@ def addDexContractAbis(dexList, chainName):
     else:
         sys.exit(f"No Dexs In DB For {chainName}")
 
-def parseDexTokenLists(chainRecipe, chainName, chainId):
+def parseDexTokenLists(chainRecipe, chainName, chainId, isCrossChain):
 
     chainLocalTokenListURL = getTokenListFileFromGitlab(
         chainName=chainName
@@ -59,6 +60,12 @@ def parseDexTokenLists(chainRecipe, chainName, chainId):
     chainExternalTokenList = getTokenListURLsFromGitlab(
         path=f"{chainName}/common/external/external.json"
     )
+
+    if not isCrossChain:
+        hasEnoughDexs = len(chainRecipe["dexs"]) > 1
+        if not hasEnoughDexs:
+            x = 1
+            # logger.warn("   - Internal Chain Recipes Need At Least 2 Dexs!")
 
     for dexName, dexDetails in chainRecipe["dexs"].items():
 
