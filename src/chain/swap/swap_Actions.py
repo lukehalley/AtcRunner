@@ -92,9 +92,9 @@ def swapToken(recipe, recipePosition, recipeDex, tokenInType, stepCategory, step
     swappingToGas = recipe[recipePosition][tokenOutType]["isGas"] or overrideSwappingToGas
     # Static Params
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
-    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["address"]
-    routerABI = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["abi"]
-    routerABIMappings = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["mapping"]
+    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["router"]["address"]
+    routerABI = recipe[recipePosition]["dexs"][recipeDex]["router"]["abi"]
+    routerABIMappings = recipe[recipePosition]["dexs"][recipeDex]["router"]["mapping"]
     # Dict Params ####################################################
 
     # Get Wallet Balances

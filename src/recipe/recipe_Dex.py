@@ -1,50 +1,48 @@
 import sys
 
 from src.apis.gitlab.gitlab_ABIs import getDexABIFileFromGitlab
+from src.apis.gitlab.gitlab_Dexs import getDexsMetadataForChainFromGitlab
 from src.apis.gitlab.gitlab_TokenLists import getTokenListFromGitlab
 from src.tokens.tokens_Parse import parseTokenLists
 from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
-def addDexContractAbis(dexList, chainName):
+def addDexContractAbis(chainName):
 
     finalDexList = {}
 
+    chainDexs = getDexsMetadataForChainFromGitlab(
+        chainName=chainName
+    )
+
     # Get The Current Recipe Chain Details
-    if chainName in dexList:
-        chainDexs = dexList[chainName]
+    for dexName, dexDetails in chainDexs.items():
 
-        for dexName, dexDetails in chainDexs.items():
+        expectedKeys = ['factory', 'router', 'weth']
+        actualKeys = list(dexDetails.keys())
 
-            dexContracts = dexDetails["contracts"]
+        hasCorrectContracts = actualKeys == expectedKeys
 
-            expectedKeys = ['factory', 'router', 'weth']
-            actualKeys = list(dexContracts.keys())
+        if hasCorrectContracts:
 
-            hasCorrectContracts = actualKeys == expectedKeys
+            for contractName in actualKeys:
+                dexDetails[contractName]["abi"] = getDexABIFileFromGitlab(
+                    chainName=chainName,
+                    dexName=dexName,
+                    abiName=contractName
+                )
 
-            if hasCorrectContracts:
+            finalDexList[dexName] = dexDetails
 
-                for contractName in actualKeys:
+        else:
 
-                    dexDetails["contracts"][contractName]["abi"] = getDexABIFileFromGitlab(
-                        chainName=chainName,
-                        dexName=dexName,
-                        abiName=contractName
-                    )
+            missingContracts = list(set(expectedKeys) - set(actualKeys))
 
-                finalDexList[dexName] = dexDetails
+            sys.exit(
+                f"The Dex '{dexName}' on Chain '{chainName}' is missing the following contract details: {missingContracts}")
 
-            else:
-
-                missingContracts = list(set(expectedKeys) - set(actualKeys))
-
-                sys.exit(f"The Dex '{dexName}' on Chain '{chainName}' is missing the following contract details: {missingContracts}")
-
-        return finalDexList
-    else:
-        sys.exit(f"No Dexs In DB For {chainName}")
+    return finalDexList
 
 def parseDexTokenLists(chainRecipe, chainName, chainId, isCrossChain):
 
@@ -54,17 +52,15 @@ def parseDexTokenLists(chainRecipe, chainName, chainId, isCrossChain):
             x = 1
             # logger.warn("   - Internal Chain Recipes Need At Least 2 Dexs!")
 
-    for dexName, dexDetails in chainRecipe["dexs"].items():
+    chainTokenList = getTokenListFromGitlab(
+        path=f"{chainName}/external.json"
+    )
 
-        dexTokenList = getTokenListFromGitlab(
-            path=f"{chainName}/{dexName}/external/external.json"
-        )
-
-        dexDetails["tokenList"] = parseTokenLists(
-            tokenListURLs=dexTokenList,
-            chainId = chainId,
-            chainName=chainName
-        )
+    chainRecipe["tokenList"] = parseTokenLists(
+        tokenListURLs=chainTokenList,
+        chainId=chainId,
+        chainName=chainName
+    )
 
     return chainRecipe
 

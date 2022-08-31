@@ -7,7 +7,15 @@ def buildGitlabAPIBaseURL():
     gitlabAPIEndpoint = os.getenv("GITLAB_BASE_URL")
     gitlabAPIVersion = os.getenv("GITLAB_API_VERSION")
     gitlabDataProject = os.getenv("GITLAB_DATA_PROJECT_ID")
-    return f"{gitlabAPIEndpoint}/api/v{gitlabAPIVersion}/projects/{gitlabDataProject}/repository/files"
+    return f"{gitlabAPIEndpoint}/api/v{gitlabAPIVersion}/projects/{gitlabDataProject}/repository"
+
+def buildGitlabAPIFilesURL():
+    baseUrl = buildGitlabAPIBaseURL()
+    return f"{baseUrl}/files"
+
+def buildGitlabAPITreeURL():
+    baseUrl = buildGitlabAPIBaseURL()
+    return f"{baseUrl}/tree"
 
 def getGitlabTokenHeader():
     return {

@@ -31,9 +31,9 @@ def getSwapQuoteOut(recipe, recipePosition, recipeDex, tokenType, tokenIsGas, to
     amountInDecimals = recipe[recipePosition][tokenType]["decimals"]
     amountOutDecimals = recipe[recipePosition][oppositeRecipeToken]["decimals"]
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
-    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["address"]
-    routerABI = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["abi"]
-    routerABIMappings = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["mapping"]
+    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["router"]["address"]
+    routerABI = recipe[recipePosition]["dexs"][recipeDex]["router"]["abi"]
+    routerABIMappings = recipe[recipePosition]["dexs"][recipeDex]["router"]["mapping"]
     # Dict Params ####################################################
 
     if tokenIsGas:
@@ -70,8 +70,8 @@ def getSwapQuoteIn(recipe, recipePosition, recipeDex, tokenInType, tokenOutType,
     amountInDecimals = recipe[recipePosition][tokenInType]["decimals"]
     amountOutDecimals = recipe[recipePosition][tokenOutType]["decimals"]
     rpcUrl = recipe[recipePosition]["chain"]["rpc"]
-    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["address"]
-    routerABI = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["abi"]
+    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["router"]["address"]
+    routerABI = recipe[recipePosition]["dexs"][recipeDex]["router"]["abi"]
     # Dict Params ####################################################
 
     if tokenOutIsGas:

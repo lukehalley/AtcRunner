@@ -24,10 +24,8 @@ def getRecipeDetails():
     printSeparator()
 
     # Get All The Data From Firebase
-    allDexs = fetchFromDatabase("dexs")
-    allChains = fetchFromDatabase("chains")
+
     allRecipes = fetchFromDatabase("recipes")
-    # allBridges = fetchFromDatabase("bridges")
 
     # Valid Recipe Types
     validRecipeTypes = ["crossChain", "internalChain"]
@@ -68,7 +66,6 @@ def getRecipeDetails():
                     num = num2words(i + 1).title()
                     chainKey = f"chain{num}"
                 else:
-                    x = 1
                     chainKey = f"chain"
 
                 chainName = recipeDetails[chainKey]["chain"]["name"]
@@ -76,7 +73,6 @@ def getRecipeDetails():
                 # Get The Current Recipe Chain Details
                 recipeDetails[chainKey]["chain"] = addChainInformation(
                     recipe=recipeDetails,
-                    chainList=allChains,
                     chainName=chainName,
                     chainNumber=chainKey
                 )
@@ -85,21 +81,15 @@ def getRecipeDetails():
 
                 # Get The Current Recipe Chain Details
                 recipeDetails[chainKey]["dexs"] = addDexContractAbis(
-                    dexList=allDexs,
                     chainName=chainName
                 )
 
                 if isCrossChain:
                     # Get Bridge To Use
-
-                    x = 1
-
-                    getBridgeMetadataFromGitlab(
+                    recipeDetails[chainKey]["bridge"] = getBridgeMetadataFromGitlab(
                         chainName=chainName,
                         bridgeName=recipeBridge
                     )
-
-                    # recipeDetails[chainKey]["bridge"] = allBridges[chainName][recipeBridge]
 
                 chainGasToken = getNetworkWETH(
                     chainRecipe=recipeDetails[chainKey]
@@ -164,7 +154,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossCh
             recipeDetails[chainNumber][tokenType] = recipeDetails[chainNumber][tokenType] | gasTokenDetails
         else:
             tokenDetails = getTokenBySymbolAndChainID(
-                tokenListDataframe=recipeDetails[chainNumber]["dexs"][dexToUse]["tokenList"],
+                tokenListDataframe=recipeDetails[chainNumber]["tokenList"],
                 tokenSymbol=tokenDetails["symbol"],
                 tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
             )
@@ -190,7 +180,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossCh
                         routeAddressList.append(chainGasToken)
                     else:
                         tokenDetails = getTokenBySymbolAndChainID(
-                            tokenListDataframe=recipeDetails[chainNumber]["dexs"][dexToUse]["tokenList"],
+                            tokenListDataframe=recipeDetails[chainNumber]["tokenList"],
                             tokenSymbol=routeSymbol,
                             tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
                         )
