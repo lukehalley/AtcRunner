@@ -30,15 +30,3 @@ def fetchFromDatabase(reference: str, printInfo=False):
     queryResult = ref.get()
 
     return queryResult
-
-
-# Fetch an arbitrage strategy by its name
-def fetchStrategy(recipe, strategyType):
-    strategies = fetchFromDatabase("strategies")
-
-    strategyName = recipe["arbitrage"]["strategies"][strategyType]
-
-    if strategyName in strategies:
-        return strategies[strategyName]
-    else:
-        sys.exit(f"Strategy of type: {strategyType} with name: {strategyName} does not exist!")

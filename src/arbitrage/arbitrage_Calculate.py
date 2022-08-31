@@ -1,12 +1,11 @@
-import os, threading
+import os
 from decimal import Decimal
 from itertools import repeat
 
-from src.apis.firebaseDB.firebaseDB_Querys import fetchStrategy
 from src.arbitrage.arbitrage_Simulate import simulateStep
-from src.arbitrage.arbitrage_Utils import getNextArbitrageNumber
-from src.chain.swap.swap_Querys import getSwapQuoteOut
-from src.utils.data.data_Booleans import strToBool
+from src.arbitrage.arbitrage_Strategy import calculateCrossChainStrategy, calculateInternalChainStrategy
+from src.arbitrage.arbitrage_Utils import getNextArbitrageNumber, checkIfArbitrageIsCrosschain
+from src.recipe.recipe_Strategies import fetchStrategy
 from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
@@ -24,127 +23,18 @@ def determineArbitrageStrategy(recipe):
 
     recipe["status"]["currentRoundTrip"] = getNextArbitrageNumber()
 
-    chainOneTokenPrice = getSwapQuoteOut(
-        recipe=recipe,
-        recipePosition="chainOne",
-        recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=False,
-        tokenAmountIn=1.0
+    isCrossChain = checkIfArbitrageIsCrosschain(
+        recipe=recipe
     )
 
-    chainTwoTokenPrice = getSwapQuoteOut(
-        recipe=recipe,
-        recipePosition="chainTwo",
-        recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=False,
-        tokenAmountIn=1.0
-    )
-
-    chainOneGasPrice = getSwapQuoteOut(
-        recipe=recipe,
-        recipePosition="chainOne",
-        recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=True,
-        tokenAmountIn=1.0
-    )
-
-    chainTwoGasPrice = getSwapQuoteOut(
-        recipe=recipe,
-        recipePosition="chainTwo",
-        recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=True,
-        tokenAmountIn=1.0
-    )
-
-    priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
-
-    origin, destination = calculateArbitrageStrategy(chainOneTokenPrice, recipe["chainOne"]["chain"]["name"],
-                                                     chainTwoTokenPrice, recipe["chainTwo"]["chain"]["name"])
-    logger.debug(f"Calculating data origin and destination")
-
-    directionLockEnabled = strToBool(recipe["arbitrage"]["directionLock"]["lockEnabled"])
-
-    if directionLockEnabled:
-        directionlock = recipe["arbitrage"]["directionLock"]["direction"].split(",")
-
-        originLock = directionlock[0]
-        destinationLock = directionlock[1]
-
-        if recipe["chainOne"]["chain"]["name"] == originLock and recipe["chainTwo"]["chain"]["name"] == destinationLock:
-
-            recipe["origin"] = recipe["chainOne"]
-            recipe["origin"]["token"]["price"] = chainOneTokenPrice
-            recipe["origin"]["gas"]["price"] = chainOneGasPrice
-
-            recipe["destination"] = recipe["chainTwo"]
-            recipe["destination"]["token"]["price"] = chainTwoTokenPrice
-            recipe["destination"]["gas"]["price"] = chainTwoGasPrice
-
-        elif recipe["chainTwo"]["chain"]["name"] == originLock and recipe["chainOne"]["chain"][
-            "name"] == destinationLock:
-
-            recipe["origin"] = recipe["chainTwo"]
-            recipe["origin"]["token"]["price"] = chainTwoTokenPrice
-            recipe["origin"]["gas"]["price"] = chainTwoGasPrice
-
-            recipe["destination"] = recipe["chainOne"]
-            recipe["destination"]["token"]["price"] = chainOneTokenPrice
-            recipe["destination"]["gas"]["price"] = chainOneGasPrice
-
-        else:
-            errMsg = f'Invalid topUpDirection lock: {directionlock}'
-            logger.error(errMsg)
-            raise Exception(errMsg)
-
+    if isCrossChain:
+        recipe = calculateCrossChainStrategy(
+            recipe=recipe
+        )
     else:
-        if origin == recipe["chainOne"]["chain"]["name"]:
-
-            recipe["origin"] = recipe["chainOne"]
-            recipe["origin"]["token"]["price"] = chainOneTokenPrice
-            recipe["origin"]["gas"]["price"] = chainOneGasPrice
-
-            recipe["destination"] = recipe["chainTwo"]
-            recipe["destination"]["token"]["price"] = chainTwoTokenPrice
-            recipe["destination"]["gas"]["price"] = chainTwoGasPrice
-        else:
-            recipe["origin"] = recipe["chainTwo"]
-            recipe["origin"]["token"]["price"] = chainTwoTokenPrice
-            recipe["origin"]["gas"]["price"] = chainTwoGasPrice
-
-            recipe["destination"] = recipe["chainOne"]
-            recipe["destination"]["token"]["price"] = chainOneTokenPrice
-            recipe["destination"]["gas"]["price"] = chainOneGasPrice
-
-    printSeparator()
-
-    if directionLockEnabled:
-        logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Locked Arbitrage Opportunity Identified')
-    else:
-        logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Arbitrage Opportunity Identified')
-
-    printSeparator()
-
-    logger.info(
-        f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateDecimal(recipe["origin"]["token"]["price"], 6)} on '
-        f'{recipe["origin"]["chain"]["name"]}'
-    )
-
-    logger.info(
-        f'Sell: {recipe["destination"]["token"]["name"]} @ ${truncateDecimal(recipe["destination"]["token"]["price"], 6)} on '
-        f'{recipe["destination"]["chain"]["name"]} '
-    )
-
-    printSeparator()
-
-    logger.info(
-        f'Arbitrage: {priceDifference}% difference'
-    )
-
-    del recipe["chainOne"], recipe["chainTwo"]
+        recipe = calculateInternalChainStrategy(
+            recipe=recipe
+        )
 
     printSeparator(newLine=True)
 
@@ -153,7 +43,9 @@ def determineArbitrageStrategy(recipe):
 
 # Check if Arbitrage will be profitable
 def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
-    steps = fetchStrategy(recipe=recipe, strategyType="arbitrage")
+
+    # Fetch The Recipe Strategy
+    steps = fetchStrategy(recipe=recipe, strategyStepToFetch="arbitrage")
     isProfitable = False
 
     if not recipe["status"]["stablesAreOnOrigin"]:
@@ -316,7 +208,7 @@ def calculateDifference(pairOne, pairTwo):
 
 
 # Determine which token is the origin and destination
-def calculateArbitrageStrategy(n1Price, n1Name, n2Price, n2Name):
+def calculateCrosschainOriginDestinationTokens(n1Price, n1Name, n2Price, n2Name):
     if n1Price < n2Price:
         return n1Name, n2Name
     elif n2Price < n1Price:

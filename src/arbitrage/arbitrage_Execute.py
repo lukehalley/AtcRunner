@@ -1,6 +1,5 @@
 import sys
 
-from src.apis.firebaseDB.firebaseDB_Querys import fetchStrategy
 from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatusMessage, removeStatusMessage
 from src.arbitrage.arbitrage_Simulate import simulateStep
 from src.arbitrage.arbitrage_Utils import getOppositePosition
@@ -8,6 +7,7 @@ from src.chain.bridge.bridge_Actions import executeBridge
 from src.chain.network.network_Actions import topUpWalletGas
 from src.chain.network.network_Querys import getWalletsInformation
 from src.chain.swap.swap_Actions import swapToken
+from src.recipe.recipe_Strategies import fetchStrategy
 from src.utils.logging.logging_Print import printSeparator, printArbitrageComplete
 from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.math.math_Decimal import truncateDecimal
@@ -37,7 +37,7 @@ def executeArbitrage(recipe, isRollback):
         # Fetch Our Rollback Strategy
         steps = fetchStrategy(
             recipe=recipe,
-            strategyType="rollback"
+            strategyStepToFetch="rollback"
         )
 
         recipe["status"]["telegramStatusMessage"] = removeStatusMessage(
@@ -60,7 +60,7 @@ def executeArbitrage(recipe, isRollback):
         # Fetch Arbitrage Strategy
         steps = fetchStrategy(
             recipe=recipe,
-            strategyType="arbitrage"
+            strategyStepToFetch="arbitrage"
         )
 
         recipe["status"]["startingStables"] = recipe["origin"]["wallet"]["balances"]["stablecoin"]

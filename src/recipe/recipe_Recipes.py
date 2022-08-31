@@ -5,6 +5,7 @@ from num2words import num2words
 
 from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
 from src.apis.gitlab.gitlab_Bridges import getBridgeMetadataFromGitlab
+from src.apis.gitlab.gitlab_Strategies import getStrategiesFromGitlab
 from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeableTokens
 from src.chain.network.network_Querys import getNetworkWETH
 from src.recipe.recipe_Chain import addChainInformation, addChainGasInformation
@@ -46,6 +47,7 @@ def getRecipeDetails():
         # Remove All Disabled Recipes For All Types Of Recipe Types
         recipeCollection = removeDisabledRecipes(recipes=recipeCollection)
 
+        # Check If Recipe Type Is Valid
         if recipeType not in validRecipeTypes:
             sys.exit(f"Invalid Recipe Type: {recipeType} - Must Be One Of: {validRecipeTypes}")
 
@@ -61,6 +63,13 @@ def getRecipeDetails():
 
             recipeTokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
             recipeChains = sum('chain' in s for s in recipeDetails.keys())
+
+            # Add Arbitrage Strategy
+            recipeDetails["arbitrage"]["strategy"] = {}
+            recipeDetails["arbitrage"]["strategy"]["type"] = recipeType
+            recipeDetails["arbitrage"]["strategy"]["steps"] = getStrategiesFromGitlab(
+                recipeType=recipeType
+            )
 
             if isCrossChain:
                 recipeBridge = recipeDetails["arbitrage"]["bridgeToUse"]
