@@ -32,3 +32,6 @@ def getOppositeToken(token):
         return "stablecoin"
     else:
         return "token"
+
+def checkIfArbitrageIsCrosschain(recipe):
+    return recipe["arbitrage"]["strategy"]["type"] == "crossChain"
