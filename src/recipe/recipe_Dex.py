@@ -56,11 +56,11 @@ def parseDexTokenLists(chainRecipe, chainName, chainId, isCrossChain):
         path=f"{chainName}/external.json"
     )
 
-    chainRecipe["tokenList"] = parseTokenLists(
+    tokenList = parseTokenLists(
         tokenListURLs=chainTokenList,
         chainId=chainId,
         chainName=chainName
     )
 
-    return chainRecipe
+    return tokenList
 

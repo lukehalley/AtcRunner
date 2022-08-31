@@ -1,4 +1,5 @@
 import sys
+import time
 
 from num2words import num2words
 
@@ -29,6 +30,12 @@ def getRecipeDetails():
 
     # Valid Recipe Types
     validRecipeTypes = ["crossChain", "internalChain"]
+
+    # Caches For Already Processed Data
+    chainMetadataCache = {}
+    chainDexsCache = {}
+    chainBridgesCache = {}
+    chainTokenListCache = {}
 
     # Fill In All Recipe Data
     for recipeType, recipeCollection in allRecipes.items():
@@ -70,37 +77,69 @@ def getRecipeDetails():
 
                 chainName = recipeDetails[chainKey]["chain"]["name"]
 
-                # Get The Current Recipe Chain Details
-                recipeDetails[chainKey]["chain"] = addChainInformation(
-                    recipe=recipeDetails,
-                    chainName=chainName,
-                    chainNumber=chainKey
-                )
+                # Get The Current Recipe Chain's Metadata
+                # If We Already Have Got The Chains Metadata, Use That
+                # Otherwise Get All The Chains Metadata
+                if chainName in chainMetadataCache:
+                    recipeDetails[chainKey]["chain"] = chainMetadataCache[chainName]
+                else:
+                    # Get The Current Recipe Chain Details
+                    recipeDetails[chainKey]["chain"] = addChainInformation(
+                        recipe=recipeDetails,
+                        chainName=chainName,
+                        chainNumber=chainKey
+                    )
+                    chainMetadataCache[chainName] = recipeDetails[chainKey]["chain"]
 
                 chainId = recipeDetails[chainKey]["chain"]["id"]
 
-                # Get The Current Recipe Chain Details
-                recipeDetails[chainKey]["dexs"] = addDexContractAbis(
-                    chainName=chainName
-                )
+                # Get The Current Recipe Chain's Dexs
+                # If We Already Have Processed The Chains Dexs, Use That
+                # Otherwise Get All The Dexs Data
+                if chainName in chainDexsCache:
+                    recipeDetails[chainKey]["dexs"] = chainDexsCache[chainName]
+                else:
+                    recipeDetails[chainKey]["dexs"] = addDexContractAbis(
+                        chainName=chainName
+                    )
+                    chainDexsCache[chainName] = recipeDetails[chainKey]["dexs"]
 
                 if isCrossChain:
-                    # Get Bridge To Use
-                    recipeDetails[chainKey]["bridge"] = getBridgeMetadataFromGitlab(
-                        chainName=chainName,
-                        bridgeName=recipeBridge
-                    )
+
+                    # Create An Entry For The Bridge Cache
+                    if chainName not in chainBridgesCache:
+                        chainBridgesCache[chainName] = {}
+
+                    # Get The Current isCrossChain Recipe's Chosen Bridge
+                    # If We Already Have Retrieved The Chosen Bridge Details, Use That
+                    # Otherwise Get The Bridges Details
+                    if recipeBridge in chainBridgesCache[chainName]:
+                        recipeDetails[chainKey]["bridge"] = chainBridgesCache[chainName][recipeBridge]
+                    else:
+                        recipeDetails[chainKey]["bridge"] = getBridgeMetadataFromGitlab(
+                            chainName=chainName,
+                            bridgeName=recipeBridge
+                        )
+                        chainBridgesCache[chainName][recipeBridge] = recipeDetails[chainKey]["bridge"]
 
                 chainGasToken = getNetworkWETH(
                     chainRecipe=recipeDetails[chainKey]
                 )
 
-                recipeDetails[chainKey] = parseDexTokenLists(
-                    chainRecipe=recipeDetails[chainKey],
-                    chainName=chainName,
-                    chainId=chainId,
-                    isCrossChain=isCrossChain
-                )
+                # Get The Current Recipe Chain's Token List
+                # If We Already Have Got The Chains Token List, Use That
+                # Otherwise Get All The Chains Token List
+                if chainName in chainTokenListCache:
+                    recipeDetails[chainKey]["tokenList"] = chainTokenListCache[chainName]
+                else:
+                    # Get The Current Chains Token List
+                    recipeDetails[chainKey]["tokenList"] = parseDexTokenLists(
+                        chainRecipe=recipeDetails[chainKey],
+                        chainName=chainName,
+                        chainId=chainId,
+                        isCrossChain=isCrossChain
+                    )
+                    chainTokenListCache[chainName] = recipeDetails[chainKey]["tokenList"]
 
                 if recipeTokenRetrievalMethod == "tokenList":
 
@@ -127,8 +166,6 @@ def getRecipeDetails():
     return allRecipes
 
 def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossChain):
-    
-    dexToUse = recipeDetails[chainNumber]["chain"]["primaryDex"]
 
     if isCrossChain:
         toFill = {
