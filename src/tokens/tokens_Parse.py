@@ -40,7 +40,9 @@ def parseTokenLists(tokenListURLs, chainId, chainName):
         tokenListDataframe[tokenListDataframe['chainId'] != int(chainId)].index, inplace=True
     )
 
-    return tokenListDataframe
+    tokenListDictionary = tokenListDataframe.to_dict('records')
+
+    return tokenListDictionary
 
 
 def parseDataframeResult(result):

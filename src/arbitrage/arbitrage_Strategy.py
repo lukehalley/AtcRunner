@@ -14,36 +14,36 @@ def calculateCrossChainStrategy(recipe):
         recipe=recipe,
         recipePosition="chainOne",
         recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=False,
-        tokenAmountIn=1.0
+        tokenInType="token",
+        tokenInIsGas=False,
+        tokenInAmount=1.0
     )
 
     chainTwoTokenPrice = getSwapQuoteOut(
         recipe=recipe,
         recipePosition="chainTwo",
         recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=False,
-        tokenAmountIn=1.0
+        tokenInType="token",
+        tokenInIsGas=False,
+        tokenInAmount=1.0
     )
 
     chainOneGasPrice = getSwapQuoteOut(
         recipe=recipe,
         recipePosition="chainOne",
         recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=True,
-        tokenAmountIn=1.0
+        tokenInType="token",
+        tokenInIsGas=True,
+        tokenInAmount=1.0
     )
 
     chainTwoGasPrice = getSwapQuoteOut(
         recipe=recipe,
         recipePosition="chainTwo",
         recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=True,
-        tokenAmountIn=1.0
+        tokenInType="token",
+        tokenInIsGas=True,
+        tokenInAmount=1.0
     )
 
     priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
@@ -143,36 +143,37 @@ def calculateInternalChainStrategy(recipe):
         recipe=recipe,
         recipePosition="chainOne",
         recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=False,
-        tokenAmountIn=1.0
+        tokenInDetails=recipe["chainOne"]["token"],
+        tokenInAmount=1.0,
+        tokenInType="token",
+        tokenOutDetails=recipe["chainOne"]["stablecoin"]
     )
 
     chainTwoTokenPrice = getSwapQuoteOut(
         recipe=recipe,
         recipePosition="chainTwo",
         recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=False,
-        tokenAmountIn=1.0
+        tokenInType="token",
+        tokenInIsGas=False,
+        tokenInAmount=1.0
     )
 
     chainOneGasPrice = getSwapQuoteOut(
         recipe=recipe,
         recipePosition="chainOne",
         recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=True,
-        tokenAmountIn=1.0
+        tokenInType="token",
+        tokenInIsGas=True,
+        tokenInAmount=1.0
     )
 
     chainTwoGasPrice = getSwapQuoteOut(
         recipe=recipe,
         recipePosition="chainTwo",
         recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=True,
-        tokenAmountIn=1.0
+        tokenInType="token",
+        tokenInIsGas=True,
+        tokenInAmount=1.0
     )
 
     priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)

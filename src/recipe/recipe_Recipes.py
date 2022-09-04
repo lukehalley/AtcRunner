@@ -1,5 +1,5 @@
+import os
 import sys
-import time
 
 from num2words import num2words
 
@@ -28,9 +28,10 @@ def getRecipeDetails():
     logger.info(f"Importing Recipes...")
     printSeparator()
 
+    recipeCacheEnabled = strToBool(os.environ.get("CACHE_ENABLED"))
     recipeCacheExists = checkRecipeCacheExists()
 
-    if isDocker or not recipeCacheExists:
+    if isDocker or not recipeCacheExists or not recipeCacheEnabled:
 
         # Get All The Data From Firebase
         allRecipes = fetchFromDatabase("recipes")
@@ -88,7 +89,7 @@ def getRecipeDetails():
                         num = num2words(i + 1).title()
                         chainKey = f"chain{num}"
                     else:
-                        chainKey = f"chain"
+                        chainKey = f"chainOne"
 
                     chainName = recipeDetails[chainKey]["chain"]["name"]
 
@@ -223,7 +224,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossCh
             recipeDetails[chainNumber][tokenType] = recipeDetails[chainNumber][tokenType] | gasTokenDetails
         else:
             tokenDetails = getTokenBySymbolAndChainID(
-                tokenListDataframe=recipeDetails[chainNumber]["tokenList"],
+                tokenList=recipeDetails[chainNumber]["tokenList"],
                 tokenSymbol=tokenDetails["symbol"],
                 tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
             )
@@ -249,7 +250,7 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossCh
                         routeAddressList.append(chainGasToken)
                     else:
                         tokenDetails = getTokenBySymbolAndChainID(
-                            tokenListDataframe=recipeDetails[chainNumber]["tokenList"],
+                            tokenList=recipeDetails[chainNumber]["tokenList"],
                             tokenSymbol=routeSymbol,
                             tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
                         )
