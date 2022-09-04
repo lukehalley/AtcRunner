@@ -1,12 +1,14 @@
 import pandas as pd
+from web3 import Web3
 
 from src.apis.gitlab.gitlab_TokenLists import getCommonTokenFilesFromGitlab
 from src.tokens.tokens_Query import getAllowedKeys
+from src.utils.chain.chain_Wei import getSupportedWei
 from src.utils.web.web_Requests import getAuthRawGithubFile, safeRequest
 
 allowedKeys = getAllowedKeys()
 
-def parseTokenLists(tokenListURLs, chainId, chainName):
+def parseTokenLists(tokenListURLs, chainId, chainName, chainGasToken):
     finalTokenList = []
 
     for url in tokenListURLs:
@@ -36,22 +38,29 @@ def parseTokenLists(tokenListURLs, chainId, chainName):
         subset=['chainId', 'symbol'],
         keep='last').sort_values('chainId')
 
+
+
+    # Drop Tokens Which Is On Current Chain
     tokenListDataframe.drop(
-        tokenListDataframe[tokenListDataframe['chainId'] != int(chainId)].index, inplace=True
+        tokenListDataframe[
+            tokenListDataframe['chainId'] != int(chainId)
+
+        ].index, inplace=True
     )
+
+    # Only Keep Tokens That Have Supported Certain Decimal Places
+    supportedWei = getSupportedWei()
+    tokenListDataframe = tokenListDataframe[tokenListDataframe['decimals'].isin(supportedWei)]
 
     tokenListDictionary = tokenListDataframe.to_dict('records')
 
+    for token in tokenListDictionary:
+
+        safeTokenAddress = Web3.toChecksumAddress(token["address"])
+
+        if safeTokenAddress == chainGasToken:
+            token["isGas"] = True
+        else:
+            token["isGas"] = False
+
     return tokenListDictionary
-
-
-def parseDataframeResult(result):
-    results = []
-
-    for index, row in result.iterrows():
-        resultDict = {}
-        for key in allowedKeys:
-            resultDict[key] = row[key]
-        results.append(resultDict)
-
-    return results

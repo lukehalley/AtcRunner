@@ -1,3 +1,4 @@
+import asyncio
 import os
 from decimal import Decimal
 from itertools import repeat
@@ -15,8 +16,7 @@ logger = getProjectLogger()
 
 
 # Determine our arbitrage strategy
-def determineArbitrageStrategy(recipe):
-    logger.debug(f"Calling Dexscreener API to find current price of pair")
+async def determineArbitrageStrategy(recipe):
 
     if not "status" in recipe:
         recipe["status"] = {}
@@ -32,7 +32,8 @@ def determineArbitrageStrategy(recipe):
             recipe=recipe
         )
     else:
-        recipe = calculateInternalChainStrategy(
+
+        await calculateInternalChainStrategy(
             recipe=recipe
         )
 

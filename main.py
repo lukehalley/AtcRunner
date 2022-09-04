@@ -1,3 +1,4 @@
+import asyncio
 import os, time
 from dotenv import load_dotenv
 
@@ -23,105 +24,111 @@ from src.utils.env.env_AWSSecrets import checkIsDocker
 from src.utils.logging.logging_Print import printSeparator, printRoundtrip, printArbitrageProfitable
 from src.utils.logging.logging_Setup import setupLogging
 
-# General Init
-isDocker = checkIsDocker()
-logger = setupLogging(isDocker)
-useFallbackRoutes = strToBool(os.getenv("USE_FALLBACK_ROUTES"))
+async def arb():
 
-# Test Settings
-forceRun = False
-useTestCapital = False
-startingCapitalTestAmount = 10
+    # General Init
+    isDocker = checkIsDocker()
+    logger = setupLogging(isDocker)
+    useFallbackRoutes = strToBool(os.getenv("USE_FALLBACK_ROUTES"))
 
-# Print A Separator
-printSeparator()
+    # Test Settings
+    forceRun = False
+    useTestCapital = False
+    startingCapitalTestAmount = 10
 
-# Firebase Setup
-logger.info(f"Getting Data From Firebase")
-printSeparator()
-createDatabaseConnection()
-recipes = getRecipeDetails()
+    # Print A Separator
+    printSeparator()
 
-# Print A Separator
-printSeparator(newLine=True)
+    # Firebase Setup
+    logger.info(f"Getting Data From Firebase")
+    printSeparator()
+    createDatabaseConnection()
+    recipes = getRecipeDetails()
 
-# Interval Set-Up
-arbEnabled = strToBool(os.environ.get("ARB_ENABLED"))
-forceArb = strToBool(os.environ.get("FORCE_ARB"))
-pauseTime = int(os.environ.get("ARBITRAGE_INTERVAL"))
+    # Print A Separator
+    printSeparator(newLine=True)
 
-# Loop Caches
-startingRoundtrip = None
-startingWalletBalance = None
+    # Interval Set-Up
+    arbEnabled = strToBool(os.environ.get("ARB_ENABLED"))
+    forceArb = strToBool(os.environ.get("FORCE_ARB"))
+    pauseTime = int(os.environ.get("ARBITRAGE_INTERVAL"))
 
-# Infinite Loop
-while True:
+    # Loop Caches
+    startingRoundtrip = None
+    startingWalletBalance = None
 
-    # Iterate Through Recipe List
-    for recipeType, recipeCollection in recipes.items():
+    # Infinite Loop
+    while True:
 
-        for recipeTitle, recipeDetails in recipeCollection.items():
+        # Iterate Through Recipe List
+        for recipeType, recipeCollection in recipes.items():
 
-            # Make A Copy Of The Current Recipe So We Don't Edit Original
-            recipe = recipeDetails.copy()
+            for recipeTitle, recipeDetails in recipeCollection.items():
 
-            # Determine Our Arbitrage Strategy
-            recipe = determineArbitrageStrategy(recipe)
+                # Make A Copy Of The Current Recipe So We Don't Edit Original
+                recipe = recipeDetails.copy()
 
-            # Output Roundtrip Only At Start or When It Changes
-            if not startingRoundtrip or recipe["status"]["currentRoundTrip"] != startingRoundtrip:
+                # Determine Our Arbitrage Strategy
+                recipe = await determineArbitrageStrategy(recipe)
 
-                # Print The Current Round Trip Number
-                printRoundtrip(roundtrip=recipe["status"]["currentRoundTrip"])
+                # Output Roundtrip Only At Start or When It Changes
+                if not startingRoundtrip or recipe["status"]["currentRoundTrip"] != startingRoundtrip:
 
-                # Set The Starting Roundtrip If It Hasn't Been Set
-                if not startingRoundtrip:
-                    startingRoundtrip = recipe["status"]["currentRoundTrip"]
+                    # Print The Current Round Trip Number
+                    printRoundtrip(roundtrip=recipe["status"]["currentRoundTrip"])
 
-            # Print A Separator
-            printSeparator()
+                    # Set The Starting Roundtrip If It Hasn't Been Set
+                    if not startingRoundtrip:
+                        startingRoundtrip = recipe["status"]["currentRoundTrip"]
 
-            # Get The Current Wallet Token Balances
-            logger.info(f"[ARB #{recipe['status']['currentRoundTrip']}] Getting Wallet Details & Balance")
-            recipe = getWalletsInformation(recipe=recipe, printBalances=True)
+                # Print A Separator
+                printSeparator()
 
-            # Print A Separator
-            printSeparator(newLine=True)
+                # Get The Current Wallet Token Balances
+                logger.info(f"[ARB #{recipe['status']['currentRoundTrip']}] Getting Wallet Details & Balance")
+                recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
-            # Check If Our Wallet Is In The Correct State To Begin
-            # The Arbitrage - ie. Majority Stablecoins
-            setupWallet(
-                recipe=recipe,
-                recipePosition="origin",
-                tokenType="token",
-                stepCategory="setup"
-            )
+                # Print A Separator
+                printSeparator(newLine=True)
 
-            # Check If The Current Arbitrage Would Be Profitable
-            recipe = calculateArbitrageIsProfitable(recipe)
-
-            # Print A Separator
-            printSeparator(newLine=True)
-
-            # If Our Arbitrage Is Profitable - Execute It
-            if recipe["arbitrage"]["isProfitable"]:
-
-                # Start A Timer To Track How Long The Arbitrage Takes
-                recipe["status"]["startingTime"] = time.perf_counter()
-
-                # Print A Message Notifying The Arbitrage Is Profitable
-                recipe = printArbitrageProfitable(recipe)
-
-                # Execute The Arbitrage
-                executeArbitrage(
+                # Check If Our Wallet Is In The Correct State To Begin
+                # The Arbitrage - ie. Majority Stablecoins
+                setupWallet(
                     recipe=recipe,
-                    isRollback=False
+                    recipePosition="origin",
+                    tokenType="token",
+                    stepCategory="setup"
                 )
 
-            else:
-                # printSeparator()
-                # logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Trip Not Profitable')
-                if pauseTime > 0:
-                    logger.info(f'Waiting {pauseTime} seconds...')
-                # printSeparator(newLine=True)
-                # time.sleep(pauseTime)
+                # Check If The Current Arbitrage Would Be Profitable
+                recipe = calculateArbitrageIsProfitable(recipe)
+
+                # Print A Separator
+                printSeparator(newLine=True)
+
+                # If Our Arbitrage Is Profitable - Execute It
+                if recipe["arbitrage"]["isProfitable"]:
+
+                    # Start A Timer To Track How Long The Arbitrage Takes
+                    recipe["status"]["startingTime"] = time.perf_counter()
+
+                    # Print A Message Notifying The Arbitrage Is Profitable
+                    recipe = printArbitrageProfitable(recipe)
+
+                    # Execute The Arbitrage
+                    executeArbitrage(
+                        recipe=recipe,
+                        isRollback=False
+                    )
+
+                else:
+                    # printSeparator()
+                    # logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Trip Not Profitable')
+                    if pauseTime > 0:
+                        logger.info(f'Waiting {pauseTime} seconds...')
+                    # printSeparator(newLine=True)
+                    # time.sleep(pauseTime)
+
+if __name__ == "__main__":
+    asyncio.run(arb())
+    # arb()
