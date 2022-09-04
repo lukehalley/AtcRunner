@@ -44,7 +44,7 @@ def addDexContractAbis(chainName):
 
     return finalDexList
 
-def parseDexTokenLists(chainRecipe, chainName, chainId, isCrossChain):
+def parseDexTokenLists(chainRecipe, chainName, chainId, chainGasToken, isCrossChain):
 
     if not isCrossChain:
         hasEnoughDexs = len(chainRecipe["dexs"]) > 1
@@ -59,7 +59,8 @@ def parseDexTokenLists(chainRecipe, chainName, chainId, isCrossChain):
     tokenList = parseTokenLists(
         tokenListURLs=chainTokenList,
         chainId=chainId,
-        chainName=chainName
+        chainName=chainName,
+        chainGasToken=chainGasToken
     )
 
     return tokenList

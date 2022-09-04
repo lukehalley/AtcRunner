@@ -153,6 +153,7 @@ def getRecipeDetails():
                             chainRecipe=recipeDetails[chainKey],
                             chainName=chainName,
                             chainId=chainId,
+                            chainGasToken=chainGasToken,
                             isCrossChain=isCrossChain
                         )
                         chainTokenListCache[chainName] = recipeDetails[chainKey]["tokenList"]
@@ -263,17 +264,29 @@ def fillRecipeFromTokenList(recipeDetails, chainNumber, chainGasToken, isCrossCh
 
             recipeDetails[chainNumber]["routes"][routeDirection] = routeAddressList
 
+    else:
+
+        stablecoinDetails = getTokenBySymbolAndChainID(
+            tokenList=recipeDetails[chainNumber]["tokenList"],
+            tokenSymbol=recipeDetails[chainNumber]["stablecoin"]["symbol"],
+            tokenChainId=recipeDetails[chainNumber]["chain"]["id"]
+        )
+
+        recipeDetails[chainNumber]["routes"] = {}
+        recipeDetails[chainNumber]["routes"]["stablecoin-token"] = [
+            stablecoinDetails["address"],
+            "{TOKEN_ADDRESS}"
+        ]
+        recipeDetails[chainNumber]["routes"]["token-stablecoin"] = [
+            "{TOKEN_ADDRESS}",
+            stablecoinDetails["address"]
+        ]
+
     recipeDetails = addChainGasInformation(
         recipeDetails=recipeDetails,
         chainNumber=chainNumber,
         chainGasToken=chainGasToken
     )
-
-    # recipeDetails = addChainStablecoinInformation(
-    #     recipeDetails=recipeDetails,
-    #     chainNumber=chainNumber,
-    #     dexId=recipeDetails["arbitrage"]["dexId"]
-    # )
 
     return recipeDetails
 
