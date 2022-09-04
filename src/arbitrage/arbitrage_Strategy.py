@@ -153,7 +153,7 @@ async def calculateInternalChainStrategy(recipe):
     tasks = [getTokenQuote(recipe=recipe, tokenDetails=token) for token in tokenList]
     prices = await asyncio.gather(*tasks)
 
-    finalPrices = [item for item in prices if item and len(item.keys()) > 1]
+    finalPrices = [item for item in prices if item["prices"] and len(item["prices"].keys()) > 1]
 
     # priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
     #
@@ -276,4 +276,9 @@ async def getTokenQuote(recipe, tokenDetails):
     if len(tokenPrices.keys()) > 1:
         print(tokenSymbol, tokenPrices)
 
-    return tokenPrices
+    resultObject = {
+        "token": tokenSymbol,
+        "prices": tokenPrices
+    }
+
+    return resultObject
