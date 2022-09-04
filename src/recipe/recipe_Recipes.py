@@ -8,15 +8,18 @@ from src.apis.gitlab.gitlab_Bridges import getBridgeMetadataFromGitlab
 from src.apis.gitlab.gitlab_Strategies import getStrategiesFromGitlab
 from src.apis.synapseBridge.synapseBridge_Querys import queryBridgeableTokens
 from src.chain.network.network_Querys import getNetworkWETH
+from src.recipe.recipe_Cache import saveRecipeCache, loadRecipeCache, checkRecipeCacheExists
 from src.recipe.recipe_Chain import addChainInformation, addChainGasInformation
 from src.recipe.recipe_Dex import addDexContractAbis, parseDexTokenLists
 from src.recipe.recipe_Utils import getHumanReadableRecipeType
 from src.tokens.tokens_Query import getTokenBySymbolAndChainID
 from src.utils.data.data_Booleans import strToBool
+from src.utils.env.env_AWSSecrets import checkIsDocker
 from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
+isDocker = checkIsDocker()
 
 # Get the details of our recipe
 def getRecipeDetails():
@@ -25,152 +28,172 @@ def getRecipeDetails():
     logger.info(f"Importing Recipes...")
     printSeparator()
 
-    # Get All The Data From Firebase
+    recipeCacheExists = checkRecipeCacheExists()
 
-    allRecipes = fetchFromDatabase("recipes")
+    if isDocker or not recipeCacheExists:
 
-    # Valid Recipe Types
-    validRecipeTypes = ["crossChain", "internalChain"]
+        # Get All The Data From Firebase
+        allRecipes = fetchFromDatabase("recipes")
 
-    # Caches For Already Processed Data
-    chainMetadataCache = {}
-    chainDexsCache = {}
-    chainBridgesCache = {}
-    chainTokenListCache = {}
+        # Valid Recipe Types
+        validRecipeTypes = ["crossChain", "internalChain"]
 
-    # Fill In All Recipe Data
-    for recipeType, recipeCollection in allRecipes.items():
+        # Caches For Already Processed Data
+        chainMetadataCache = {}
+        chainDexsCache = {}
+        chainBridgesCache = {}
+        chainTokenListCache = {}
 
-        # Amount Of Recipes Before Removing Disabled Ones
-        initLength = len(recipeCollection)
+        # Fill In All Recipe Data
+        for recipeType, recipeCollection in allRecipes.items():
 
-        # Remove All Disabled Recipes For All Types Of Recipe Types
-        recipeCollection = removeDisabledRecipes(recipes=recipeCollection)
+            # Amount Of Recipes Before Removing Disabled Ones
+            initLength = len(recipeCollection)
 
-        # Check If Recipe Type Is Valid
-        if recipeType not in validRecipeTypes:
-            sys.exit(f"Invalid Recipe Type: {recipeType} - Must Be One Of: {validRecipeTypes}")
+            # Remove All Disabled Recipes For All Types Of Recipe Types
+            recipeCollection = removeDisabledRecipes(recipes=recipeCollection)
 
-        recipeTypeHuman = getHumanReadableRecipeType(recipeType=recipeType)
-        finalLength = len(recipeCollection)
-        logger.info(f"{recipeTypeHuman} [{finalLength}/{initLength}]")
+            # Check If Recipe Type Is Valid
+            if recipeType not in validRecipeTypes:
+                sys.exit(f"Invalid Recipe Type: {recipeType} - Must Be One Of: {validRecipeTypes}")
 
-        isCrossChain = recipeType == "crossChain"
+            recipeTypeHuman = getHumanReadableRecipeType(recipeType=recipeType)
+            finalLength = len(recipeCollection)
+            logger.info(f"{recipeTypeHuman} [{finalLength}/{initLength}]")
 
-        for recipeTitle, recipeDetails in recipeCollection.items():
+            isCrossChain = recipeType == "crossChain"
 
-            logger.info(f"- {recipeTitle}")
+            for recipeTitle, recipeDetails in recipeCollection.items():
 
-            recipeTokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
-            recipeChains = sum('chain' in s for s in recipeDetails.keys())
+                logger.info(f"- {recipeTitle}")
 
-            # Add Arbitrage Strategy
-            recipeDetails["arbitrage"]["strategy"] = {}
-            recipeDetails["arbitrage"]["strategy"]["type"] = recipeType
-            recipeDetails["arbitrage"]["strategy"]["steps"] = getStrategiesFromGitlab(
-                recipeType=recipeType
-            )
+                recipeTokenRetrievalMethod = recipeDetails["arbitrage"]["tokenRetrievalMethod"]
+                recipeChains = sum('chain' in s for s in recipeDetails.keys())
 
-            if isCrossChain:
-                recipeBridge = recipeDetails["arbitrage"]["bridgeToUse"]
-            else:
-                recipeBridge = None
-
-            for i in range(0, recipeChains):
-
-                if isCrossChain:
-                    num = num2words(i + 1).title()
-                    chainKey = f"chain{num}"
-                else:
-                    chainKey = f"chain"
-
-                chainName = recipeDetails[chainKey]["chain"]["name"]
-
-                # Get The Current Recipe Chain's Metadata
-                # If We Already Have Got The Chains Metadata, Use That
-                # Otherwise Get All The Chains Metadata
-                if chainName in chainMetadataCache:
-                    recipeDetails[chainKey]["chain"] = chainMetadataCache[chainName]
-                else:
-                    # Get The Current Recipe Chain Details
-                    recipeDetails[chainKey]["chain"] = addChainInformation(
-                        recipe=recipeDetails,
-                        chainName=chainName,
-                        chainNumber=chainKey
-                    )
-                    chainMetadataCache[chainName] = recipeDetails[chainKey]["chain"]
-
-                chainId = recipeDetails[chainKey]["chain"]["id"]
-
-                # Get The Current Recipe Chain's Dexs
-                # If We Already Have Processed The Chains Dexs, Use That
-                # Otherwise Get All The Dexs Data
-                if chainName in chainDexsCache:
-                    recipeDetails[chainKey]["dexs"] = chainDexsCache[chainName]
-                else:
-                    recipeDetails[chainKey]["dexs"] = addDexContractAbis(
-                        chainName=chainName
-                    )
-                    chainDexsCache[chainName] = recipeDetails[chainKey]["dexs"]
-
-                if isCrossChain:
-
-                    # Create An Entry For The Bridge Cache
-                    if chainName not in chainBridgesCache:
-                        chainBridgesCache[chainName] = {}
-
-                    # Get The Current isCrossChain Recipe's Chosen Bridge
-                    # If We Already Have Retrieved The Chosen Bridge Details, Use That
-                    # Otherwise Get The Bridges Details
-                    if recipeBridge in chainBridgesCache[chainName]:
-                        recipeDetails[chainKey]["bridge"] = chainBridgesCache[chainName][recipeBridge]
-                    else:
-                        recipeDetails[chainKey]["bridge"] = getBridgeMetadataFromGitlab(
-                            chainName=chainName,
-                            bridgeName=recipeBridge
-                        )
-                        chainBridgesCache[chainName][recipeBridge] = recipeDetails[chainKey]["bridge"]
-
-                chainGasToken = getNetworkWETH(
-                    chainRecipe=recipeDetails[chainKey]
+                # Add Arbitrage Strategy
+                recipeDetails["arbitrage"]["strategy"] = {}
+                recipeDetails["arbitrage"]["strategy"]["type"] = recipeType
+                recipeDetails["arbitrage"]["strategy"]["steps"] = getStrategiesFromGitlab(
+                    recipeType=recipeType
                 )
 
-                # Get The Current Recipe Chain's Token List
-                # If We Already Have Got The Chains Token List, Use That
-                # Otherwise Get All The Chains Token List
-                if chainName in chainTokenListCache:
-                    recipeDetails[chainKey]["tokenList"] = chainTokenListCache[chainName]
+                if isCrossChain:
+                    recipeBridge = recipeDetails["arbitrage"]["bridgeToUse"]
                 else:
-                    # Get The Current Chains Token List
-                    recipeDetails[chainKey]["tokenList"] = parseDexTokenLists(
-                        chainRecipe=recipeDetails[chainKey],
-                        chainName=chainName,
-                        chainId=chainId,
-                        isCrossChain=isCrossChain
+                    recipeBridge = None
+
+                for i in range(0, recipeChains):
+
+                    if isCrossChain:
+                        num = num2words(i + 1).title()
+                        chainKey = f"chain{num}"
+                    else:
+                        chainKey = f"chain"
+
+                    chainName = recipeDetails[chainKey]["chain"]["name"]
+
+                    # Get The Current Recipe Chain's Metadata
+                    # If We Already Have Got The Chains Metadata, Use That
+                    # Otherwise Get All The Chains Metadata
+                    if chainName in chainMetadataCache:
+                        recipeDetails[chainKey]["chain"] = chainMetadataCache[chainName]
+                    else:
+                        # Get The Current Recipe Chain Details
+                        recipeDetails[chainKey]["chain"] = addChainInformation(
+                            recipe=recipeDetails,
+                            chainName=chainName,
+                            chainNumber=chainKey
+                        )
+                        chainMetadataCache[chainName] = recipeDetails[chainKey]["chain"]
+
+                    chainId = recipeDetails[chainKey]["chain"]["id"]
+
+                    # Get The Current Recipe Chain's Dexs
+                    # If We Already Have Processed The Chains Dexs, Use That
+                    # Otherwise Get All The Dexs Data
+                    if chainName in chainDexsCache:
+                        recipeDetails[chainKey]["dexs"] = chainDexsCache[chainName]
+                    else:
+                        recipeDetails[chainKey]["dexs"] = addDexContractAbis(
+                            chainName=chainName
+                        )
+                        chainDexsCache[chainName] = recipeDetails[chainKey]["dexs"]
+
+                    if isCrossChain:
+
+                        # Create An Entry For The Bridge Cache
+                        if chainName not in chainBridgesCache:
+                            chainBridgesCache[chainName] = {}
+
+                        # Get The Current isCrossChain Recipe's Chosen Bridge
+                        # If We Already Have Retrieved The Chosen Bridge Details, Use That
+                        # Otherwise Get The Bridges Details
+                        if recipeBridge in chainBridgesCache[chainName]:
+                            recipeDetails[chainKey]["bridge"] = chainBridgesCache[chainName][recipeBridge]
+                        else:
+                            recipeDetails[chainKey]["bridge"] = getBridgeMetadataFromGitlab(
+                                chainName=chainName,
+                                bridgeName=recipeBridge
+                            )
+                            chainBridgesCache[chainName][recipeBridge] = recipeDetails[chainKey]["bridge"]
+
+                    chainGasToken = getNetworkWETH(
+                        chainRecipe=recipeDetails[chainKey]
                     )
-                    chainTokenListCache[chainName] = recipeDetails[chainKey]["tokenList"]
 
-                if recipeTokenRetrievalMethod == "tokenList":
+                    # Get The Current Recipe Chain's Token List
+                    # If We Already Have Got The Chains Token List, Use That
+                    # Otherwise Get All The Chains Token List
+                    if chainName in chainTokenListCache:
+                        recipeDetails[chainKey]["tokenList"] = chainTokenListCache[chainName]
+                    else:
+                        # Get The Current Chains Token List
+                        recipeDetails[chainKey]["tokenList"] = parseDexTokenLists(
+                            chainRecipe=recipeDetails[chainKey],
+                            chainName=chainName,
+                            chainId=chainId,
+                            isCrossChain=isCrossChain
+                        )
+                        chainTokenListCache[chainName] = recipeDetails[chainKey]["tokenList"]
 
-                    recipeDetails = fillRecipeFromTokenList(
-                        recipeDetails=recipeDetails,
-                        chainNumber=chainKey,
-                        chainGasToken=chainGasToken,
-                        isCrossChain=isCrossChain
-                    )
+                    if recipeTokenRetrievalMethod == "tokenList":
 
-                elif recipeTokenRetrievalMethod == "apis":
+                        recipeDetails = fillRecipeFromTokenList(
+                            recipeDetails=recipeDetails,
+                            chainNumber=chainKey,
+                            chainGasToken=chainGasToken,
+                            isCrossChain=isCrossChain
+                        )
 
-                    recipeDetails = fillRecipeFromAPI(
-                        recipeDetails=recipeDetails,
-                        chainNumber=chainKey,
-                        chainGasToken=chainGasToken
-                    )
+                    elif recipeTokenRetrievalMethod == "apis":
 
-                else:
-                    raise Exception(F"Invalid Token Retrieval Method: {recipeTokenRetrievalMethod}")
+                        recipeDetails = fillRecipeFromAPI(
+                            recipeDetails=recipeDetails,
+                            chainNumber=chainKey,
+                            chainGasToken=chainGasToken
+                        )
 
-        allRecipes[recipeType] = recipeCollection
+                    else:
+                        raise Exception(F"Invalid Token Retrieval Method: {recipeTokenRetrievalMethod}")
+
+            allRecipes[recipeType] = recipeCollection
+
+        saveRecipeCache(
+            recipe=allRecipes
+        )
+
+    else:
+
+        allRecipes = loadRecipeCache()
+
+        for recipeType, recipeCollection in allRecipes.items():
+            initLength = len(recipeCollection)
+            recipeTypeHuman = getHumanReadableRecipeType(recipeType=recipeType)
+            finalLength = len(recipeCollection)
+            logger.info(f"{recipeTypeHuman} [{finalLength}/{initLength}] [Cache]")
+
+            for recipeTitle, recipeDetails in recipeCollection.items():
+                logger.info(f"- {recipeTitle}")
 
     return allRecipes
 
