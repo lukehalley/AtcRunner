@@ -150,8 +150,10 @@ async def calculateInternalChainStrategy(recipe):
 
     s = time.perf_counter()
 
-    tasks = [getTokenQuote(recipe=recipe, tokenDetails=token) for token in shortTokenList]
-    res = await asyncio.gather(*tasks)
+    tasks = [getTokenQuote(recipe=recipe, tokenDetails=token) for token in tokenList]
+    prices = await asyncio.gather(*tasks)
+
+    finalPrices = [item for item in prices if item and len(item.keys()) > 1]
 
     # priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
     #
@@ -257,7 +259,7 @@ async def getTokenQuote(recipe, tokenDetails):
     tokenSymbol = tokenDetails["symbol"]
 
     for dexName, dexDetails in recipe["chainOne"]["dexs"].items():
-        tokenPrices[dexName] = await getSwapQuoteOutAsync(
+        quote = await getSwapQuoteOutAsync(
             recipe=recipe,
             recipePosition="chainOne",
             recipeDex=dexDetails,
@@ -268,6 +270,10 @@ async def getTokenQuote(recipe, tokenDetails):
             routeOverride=tokenRoute
         )
 
-    print(tokenSymbol, tokenPrices)
+        if quote > 0:
+            tokenPrices[dexName] = quote
+
+    if len(tokenPrices.keys()) > 1:
+        print(tokenSymbol, tokenPrices)
 
     return tokenPrices
