@@ -115,9 +115,9 @@ def swapToken(recipe, recipePosition, recipeDex, tokenInType, stepCategory, step
         recipe=recipe,
         recipePosition=recipePosition,
         recipeDex=recipe[recipePosition]["chain"]["primaryDex"],
-        tokenType=tokenInType,
-        tokenIsGas=recipe[recipePosition][tokenInType]["isGas"],
-        tokenAmountIn=tokenInAmount
+        tokenInType=tokenInType,
+        tokenInIsGas=recipe[recipePosition][tokenInType]["isGas"],
+        tokenInAmount=tokenInAmount
     )
 
     # Calculate Min Out With Slippage

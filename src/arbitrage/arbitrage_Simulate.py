@@ -21,9 +21,9 @@ def simulateStep(recipe, stepSettings, currentFunds):
             recipe=recipe,
             recipePosition=position,
             recipeDex=recipe[position]["chain"]["primaryDex"],
-            tokenType=toSwapFrom,
-            tokenIsGas=recipe[position][toSwapFrom]["isGas"],
-            tokenAmountIn=currentFunds[toSwapFrom]
+            tokenInType=toSwapFrom,
+            tokenInIsGas=recipe[position][toSwapFrom]["isGas"],
+            tokenInAmount=currentFunds[toSwapFrom]
         )
 
     elif stepType == "bridge":
