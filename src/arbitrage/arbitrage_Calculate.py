@@ -22,7 +22,7 @@ def determineArbitrageStrategy(recipe):
     if not "status" in recipe:
         recipe["status"] = {}
 
-    recipe["status"]["currentRoundTrip"] = getNextArbitrageNumber()
+    recipe["status"]["arbitrageNumber"] = getNextArbitrageNumber()
 
     chainOneTokenPrice = getSwapQuoteOut(
         recipe=recipe,
@@ -122,9 +122,9 @@ def determineArbitrageStrategy(recipe):
     printSeparator()
 
     if directionLockEnabled:
-        logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Locked Arbitrage Opportunity Identified')
+        logger.info(f'[ARB #{recipe["status"]["arbitrageNumber"]}] Locked Arbitrage Opportunity Identified')
     else:
-        logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Arbitrage Opportunity Identified')
+        logger.info(f'[ARB #{recipe["status"]["arbitrageNumber"]}] Arbitrage Opportunity Identified')
 
     logger.info(
         f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateDecimal(recipe["origin"]["token"]["price"], 6)} on '
@@ -161,7 +161,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
 
     if printInfo:
         printSeparator()
-        logger.info(f"[ARB #{recipe['status']['currentRoundTrip']}] "
+        logger.info(f"[ARB #{recipe['status']['arbitrageNumber']}] "
                     f"Simulating Arbitrage")
         printSeparator()
 

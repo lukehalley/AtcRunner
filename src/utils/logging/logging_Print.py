@@ -35,7 +35,7 @@ def printSettingUpWallet(count):
 def printArbitrageProfitable(recipe):
     from src.apis.telegramBot.telegramBot_Action import sendMessage
 
-    count = recipe['status']['currentRoundTrip']
+    count = recipe['status']['arbitrageNumber']
     networkPath = f'{recipe["origin"]["chain"]["name"]} -> {recipe["destination"]["chain"]["name"]}'
     tokenPath = f'{recipe["origin"]["token"]["symbol"]} -> {recipe["destination"]["token"]["symbol"]}'
 
@@ -96,7 +96,7 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
 
     printSeparator()
     logger.info(separatorString)
-    logger.info(f"{typeString} #{recipe['status']['currentRoundTrip']} Done")
+    logger.info(f"{typeString} #{recipe['status']['arbitrageNumber']} Done")
 
     if wasProfitable:
         logger.info(f"Made A Profit Of ${profitLoss} ({profitPercentage}%)")
@@ -146,7 +146,7 @@ def printArbitrageComplete(recipe, wasRollback, wasProfitable, profitLoss, profi
         "wasRollback": wasRollback,
 
     }
-    writeResultToDB(result=result, currentRoundTrip=recipe['status']['currentRoundTrip'])
+    writeResultToDB(result=result, arbitrageNumber=recipe['status']['arbitrageNumber'])
     logger.info("Result written to Firebase ✅")
     printSeparator(newLine=True)
 

@@ -5,8 +5,8 @@ logger = getProjectLogger()
 
 
 # Write a transaction to Firebase
-def writeTransactionToDB(transaction: dict, currentRoundTrip: int, stepCategory: str):
-    arbitrageTitle = f"arbitrage_{currentRoundTrip}"
+def writeTransactionToDB(transaction: dict, arbitrageNumber: int, stepCategory: str):
+    arbitrageTitle = f"arbitrage_{arbitrageNumber}"
 
     arbitrages = fetchFromDatabase("arbitrages")
 
@@ -27,8 +27,8 @@ def writeTransactionToDB(transaction: dict, currentRoundTrip: int, stepCategory:
 
 
 # Write a arbitrage result to Firebase
-def writeResultToDB(result: dict, currentRoundTrip: int):
-    arbitrageTitle = f"arbitrage_{currentRoundTrip}"
+def writeResultToDB(result: dict, arbitrageNumber: int):
+    arbitrageTitle = f"arbitrage_{arbitrageNumber}"
 
     arbitrages = fetchFromDatabase("arbitrages")
 
