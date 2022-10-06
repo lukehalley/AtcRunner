@@ -63,13 +63,13 @@ while True:
         recipe = determineArbitrageStrategy(recipe)
 
         # Print The Current Round Trip Number
-        printRoundtrip(recipe["status"]["currentRoundTrip"])
+        printRoundtrip(recipe["status"]["arbitrageNumber"])
 
         # Print A Separator
         printSeparator()
 
         # Get The Current Wallet Token Balances
-        logger.info(f"[ARB #{recipe['status']['currentRoundTrip']}] Getting Wallet Details & Balance")
+        logger.info(f"[ARB #{recipe['status']['arbitrageNumber']}] Getting Wallet Details & Balance")
         recipe = getWalletsInformation(recipe=recipe, printBalances=True)
 
         # Print A Separator
@@ -106,8 +106,9 @@ while True:
             )
 
         else:
+            
             printSeparator()
-            logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Trip Not Profitable')
+            logger.info(f'[ARB #{recipe["status"]["arbitrageNumber"]}] Trip Not Profitable')
             if pauseTime > 0:
                 logger.info(f'Waiting {pauseTime} seconds...')
             printSeparator(newLine=True)

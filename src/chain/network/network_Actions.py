@@ -31,7 +31,7 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
 
     # Dict Params ####################################################
     RPCUrl = recipe[recipePosition]["chain"]["rpc"]
-    currentRoundTrip = recipe["status"]["currentRoundTrip"]
+    arbitrageNumber = recipe["status"]["arbitrageNumber"]
     explorerUrl = recipe[recipePosition]["chain"]["blockExplorer"]["txBaseURL"]
     # Dict Params ####################################################
 
@@ -134,7 +134,7 @@ def signAndSendTransaction(tx, recipe, recipePosition, stepCategory):
 
     writeTransactionToDB(
         transaction=result,
-        currentRoundTrip=currentRoundTrip,
+        arbitrageNumber=arbitrageNumber,
         stepCategory=stepCategory
     )
 

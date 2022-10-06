@@ -30,7 +30,7 @@ def executeArbitrage(recipe, isRollback):
 
         # Print Arb Info
         logger.info(
-            f"[ARB #{recipe['status']['currentRoundTrip']}] "
+            f"[ARB #{recipe['status']['arbitrageNumber']}] "
             f"Executing Rollback"
         )
 
@@ -53,7 +53,7 @@ def executeArbitrage(recipe, isRollback):
 
         # Print Arb Info
         logger.info(
-            f"[ARB #{recipe['status']['currentRoundTrip']}] "
+            f"[ARB #{recipe['status']['arbitrageNumber']}] "
             f"Executing Arbitrage"
         )
 

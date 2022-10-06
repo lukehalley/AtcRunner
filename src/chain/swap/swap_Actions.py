@@ -39,7 +39,7 @@ def setupWallet(recipe, recipePosition, tokenType, stepCategory):
         raise Exception(errMsg)
     elif not originHasStablecoins:
 
-        recipe["status"]["telegramStatusMessage"] = printSettingUpWallet(recipe['status']['currentRoundTrip'])
+        recipe["status"]["telegramStatusMessage"] = printSettingUpWallet(recipe['status']['arbitrageNumber'])
 
         # Update The Telegram Status Message
         recipe["status"]["telegramStatusMessage"] = appendToMessage(
