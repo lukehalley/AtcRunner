@@ -1,5 +1,6 @@
 import asyncio
 import time
+from decimal import Decimal
 
 from src.chain.swap.swap_Querys import getSwapQuoteOut, getSwapQuoteOutAsync
 from src.utils.data.data_Booleans import strToBool
@@ -11,7 +12,7 @@ logger = getProjectLogger()
 
 def calculateCrossChainStrategy(recipe):
 
-    from src.arbitrage.arbitrage_Calculate import calculateDifference, calculateCrosschainOriginDestinationTokens
+    from src.arbitrage.arbitrage_Calculate import calculatePairDifference, calculateCrosschainOriginDestinationTokens
 
     chainOneTokenPrice = getSwapQuoteOut(
         recipe=recipe,
@@ -48,7 +49,7 @@ def calculateCrossChainStrategy(recipe):
         tokenInAmount=1.0
     )
 
-    priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
+    priceDifference = calculatePairDifference(chainOneTokenPrice, chainTwoTokenPrice)
 
     origin, destination = calculateCrosschainOriginDestinationTokens(chainOneTokenPrice, recipe["chainOne"]["chain"]["name"],
                                                                      chainTwoTokenPrice, recipe["chainTwo"]["chain"]["name"])
@@ -139,24 +140,26 @@ def calculateCrossChainStrategy(recipe):
 
 async def calculateInternalChainStrategy(recipe):
 
-    from src.arbitrage.arbitrage_Calculate import calculateDifference, calculateCrosschainOriginDestinationTokens
+
 
     priceDict = {}
 
     # for tokenDetails in recipe["chainOne"]["tokenList"]:
 
     tokenList = recipe["chainOne"]["tokenList"]
-    shortTokenList = tokenList[0:29]
+    shortTokenList = tokenList[0:9]
 
     s = time.perf_counter()
 
     tasks = [getTokenQuote(recipe=recipe, tokenDetails=token) for token in tokenList]
     prices = await asyncio.gather(*tasks)
 
-    finalPrices = [item for item in prices if item["prices"] and len(item["prices"].keys()) > 1]
+    filteredPrices = [item for item in prices if item["prices"] and len(item["prices"]) > 1]
 
-    # priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
-    #
+    sortedPrices = sorted(filteredPrices, key=lambda d: d['difference'], reverse=True)
+
+    x = 1
+
     # origin, destination = calculateCrosschainOriginDestinationTokens(chainOneTokenPrice, recipe["chainOne"]["chain"]["name"],
     #                                                                  chainTwoTokenPrice, recipe["chainTwo"]["chain"]["name"])
     #
@@ -251,7 +254,9 @@ async def calculateInternalChainStrategy(recipe):
 
 async def getTokenQuote(recipe, tokenDetails):
 
-    tokenPrices = {}
+    from src.arbitrage.arbitrage_Calculate import calculatePairDifference
+
+    tokenPrices = []
 
     tokenRoute = [routeSymbol.replace('{TOKEN_ADDRESS}', tokenDetails["address"]) for routeSymbol in
                   recipe["chainOne"]["routes"]["token-stablecoin"]]
@@ -270,15 +275,37 @@ async def getTokenQuote(recipe, tokenDetails):
             routeOverride=tokenRoute
         )
 
+        priceObject = {
+            "price": quote,
+            "dex": dexName
+        }
+
         if quote > 0:
-            tokenPrices[dexName] = quote
+            tokenPrices.append(priceObject)
 
-    if len(tokenPrices.keys()) > 1:
-        print(tokenSymbol, tokenPrices)
 
-    resultObject = {
-        "token": tokenSymbol,
-        "prices": tokenPrices
-    }
+
+    if len(tokenPrices) > 1:
+
+        sortedPrices = sorted(tokenPrices, key=lambda d: d['price'], reverse=True)
+
+        firstToLastDifference = calculatePairDifference(
+            pairOne=sortedPrices[0]["price"],
+            pairTwo=sortedPrices[-1]["price"],
+        )
+
+        resultObject = {
+            "token": tokenSymbol,
+            "difference": firstToLastDifference,
+            "prices": sortedPrices
+        }
+
+    else:
+
+        resultObject = {
+            "token": tokenSymbol,
+            "difference": Decimal(0),
+            "prices": tokenPrices
+        }
 
     return resultObject

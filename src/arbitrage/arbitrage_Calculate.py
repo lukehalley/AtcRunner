@@ -132,7 +132,7 @@ def calculateArbitrageIsProfitable(recipe, printInfo=True, position="origin"):
             startingStablesReadable = truncateDecimal(startingStables, 2)
             outStablesReadable = truncateDecimal(currentFunds["stablecoin"], 2)
 
-            calculateDifference(outStablesReadable, startingStablesReadable)
+            calculatePairDifference(outStablesReadable, startingStablesReadable)
 
             if profitLossReadable > 0:
                 amountStr = f"${profitLossReadable}"
@@ -200,7 +200,7 @@ def calculatePotentialProfit(recipe, trips="1,2,5,10,20,100,250,500,1000"):
 
 
 # Calculate the difference between two token
-def calculateDifference(pairOne, pairTwo):
+def calculatePairDifference(pairOne, pairTwo):
     logger.debug(f"Calculating pair difference")
 
     ans = abs(((pairOne - pairTwo) / ((pairOne + pairTwo) / 2)) * 100)
