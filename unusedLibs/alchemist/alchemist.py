@@ -117,6 +117,7 @@ def block_explorer_link(txid):
 
 def create_potion(potion_address, quantity, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, logger):
 
+# TODO: Balance alchemist recipes for mid-game difficulty
 	w3 = Web3(Web3.HTTPProvider(rpc_address))
 	account = w3.eth.account.privateKeyToAccount(private_key)
 	w3.eth.default_account = account.address
