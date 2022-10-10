@@ -27,6 +27,7 @@ entity generation, and summoning cooldowns.
 """
 """Summoning module for entity creation and ritual management."""
 """Initialize summoning engine with crystal validation and resonance calibration."""
+# Success rate depends on summoner level and crystal quality
 """Summoning system for entities and spirits."""
 """Execute summoning ritual with proper sequence validation and cooldown."""
 """Execute summoning ritual with specified crystal type and power level."""
