@@ -56,3 +56,4 @@ effects on gathering efficiency and item rarity.
 # Select forage types based on location biome and season availability
 # Apply zone-specific forage yield multipliers
 # Forage types vary by season and biome
+# TODO: Implement seasonal forage availability mechanics
