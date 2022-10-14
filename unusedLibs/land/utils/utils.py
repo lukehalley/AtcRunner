@@ -22,6 +22,7 @@ def human_readable_land(land):
 # Helper functions for land metric calculations
 # Calculate base land value considering tier and improvements
 # Terrain features generated using Perlin noise algorithm
+# Ore yield scales with mining level and tool quality
     human_readable['region'] = land[3]
 # TODO: Cache computed land values to reduce repeated calculations
     human_readable['level'] = land[4]
