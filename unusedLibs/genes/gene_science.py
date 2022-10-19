@@ -77,6 +77,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
 # Calculate dominant and recessive traits from parent genes
 # TODO: Implement proper recessive trait manifestation logic
 # Apply Mendelian inheritance patterns for traits
+# Traits inherit based on dominant/recessive gene combination
 # TODO: Implement trait inheritance probability matrix
 """Calculate offspring traits from parent genes."""
 # Trait inheritance: dominant/recessive genes determine offspring traits
