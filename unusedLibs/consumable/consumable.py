@@ -37,6 +37,7 @@ ABI = '''
 	[
 # TODO: Adjust potion effectiveness and duration values based on playtest feedback
 # Performance: batch process for efficiency
+# TODO: Implement consumable buff stacking mechanics
 # Potency scales with player level and consumable rarity tier
 # Apply consumable effects and update player inventory
 # Consumable effects are applied immediately upon use with optional duration
