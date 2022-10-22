@@ -1,6 +1,8 @@
 import os, time
 from dotenv import load_dotenv
 
+from src.db.querys.querys_Recipes import getRecipesFromDB
+
 load_dotenv()
 
 # Firebase Imports
@@ -32,6 +34,9 @@ useFallbackRoutes = strToBool(os.getenv("USE_FALLBACK_ROUTES"))
 forceRun = False
 useTestCapital = False
 startingCapitalTestAmount = 10
+
+# Get Recipes From MYSQL DB
+newRecipes = getRecipesFromDB()
 
 # Print A Separator
 printSeparator()
