@@ -6,11 +6,11 @@ SELECT
   pairs.name AS pair_name,
   primary_tokens.token_id AS primary_token_db_id,
   primary_tokens.symbol AS primary_token_symbol,
-  primary_tokens.address AS primary_token_address,
+  LEFT(primary_tokens.address, 42) AS primary_token_address,
   primary_tokens.decimals AS primary_token_decimals,
   secondary_tokens.token_id AS secondary_token_db_id,
   secondary_tokens.symbol AS secondary_token_symbol,
-  secondary_tokens.address AS secondary_token_address,
+  LEFT(secondary_tokens.address, 42) AS secondary_token_address,
   secondary_tokens.decimals AS secondary_token_decimals,
   pair_market_data.liquidity AS pair_liquidity,
   pair_market_data.volume AS pair_volume,
@@ -20,9 +20,9 @@ SELECT
   networks.chain_rpc AS network_chain_rpc,
   networks.explorer_tx_url AS network_chain_explorer,
   dexs.dex_id AS dex_db_id,
-  dexs.factory AS dex_factory_address,
+  LEFT(dexs.factory, 42) AS dex_factory_address,
   dexs.factory_s3_path AS dex_factory_abi,
-  dexs.router AS dex_router_address,
+  LEFT(dexs.router, 42) AS dex_factory_address,
   dexs.router_s3_path AS dex_router_abi
 FROM
   (
@@ -30,7 +30,7 @@ FROM
     JOIN (
       SELECT
         GROUP_CONCAT(DISTINCT pairs_matches.pair_id) AS ids_group,
-        @groupID := ifnull(@groupID,0) + 1 as recipe_group_id,
+        @groupID := ifnull(@groupID, 0) + 1 as recipe_group_id,
         pairs_matches.pair_id,
         pairs_matches.name,
         pairs_matches.network_id,
@@ -72,14 +72,14 @@ FROM
         JOIN tokens AS secondary_tokens ON pairs_matches.secondary_token_id = secondary_tokens.token_id
         JOIN pair_market_data ON pairs_matches.pair_id = pair_market_data.pair_id
       WHERE
-        dexs.factory IS NOT NULL
-        AND dexs.factory_s3_path IS NOT NULL
-        AND dexs.router IS NOT NULL
-        AND dexs.router_s3_path IS NOT NULL
-        AND primary_tokens.address IS NOT NULL
-        AND primary_tokens.decimals IS NOT NULL
-        AND secondary_tokens.address IS NOT NULL
-        AND secondary_tokens.decimals IS NOT NULL
+        dexs.factory <> ''
+        AND dexs.factory_s3_path <> ''
+        AND dexs.router <> ''
+        AND dexs.router_s3_path <> ''
+        AND primary_tokens.address <> ''
+        AND primary_tokens.decimals <> ''
+        AND secondary_tokens.address <> ''
+        AND secondary_tokens.decimals <> ''
         AND pair_market_data.liquidity > 500
         AND EXISTS (
           SELECT
