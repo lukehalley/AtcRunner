@@ -2,7 +2,7 @@ import os, json, collections
 from src.db.actions.actions_Setup import getCursor, initDBConnection
 from src.utils.data.data_Booleans import strToBool
 from src.utils.sql.sql_File import executeScriptsFromFile
-
+import os.path
 
 def getRecipesFromDB():
 
@@ -13,9 +13,10 @@ def getRecipesFromDB():
     )
 
     cacheLocation = "src/db/cache/recipes-cache.json"
+    cacheExists = os.path.isfile(cacheLocation)
     USE_RECIPE_CACHE = strToBool(os.getenv("USE_RECIPE_CACHE"))
 
-    if USE_RECIPE_CACHE:
+    if USE_RECIPE_CACHE and cacheExists:
 
         recipes = json.load(open(cacheLocation))
 

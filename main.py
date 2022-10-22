@@ -36,7 +36,9 @@ useTestCapital = False
 startingCapitalTestAmount = 10
 
 # Get Recipes From MYSQL DB
-newRecipes = getRecipesFromDB()
+splitRecipes = getRecipesFromDB()
+
+x = 1
 
 # Print A Separator
 printSeparator()
