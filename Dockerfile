@@ -7,6 +7,7 @@ WORKDIR /$HOME_DIR
 
 # Move and setup files in container.
 COPY src/ /$HOME_DIR/src/
+RUN mkdir -p /$HOME_DIR/data
 RUN mkdir -p /$HOME_DIR/log
 
 # Setup python files
