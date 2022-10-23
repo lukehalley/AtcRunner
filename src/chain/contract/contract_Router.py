@@ -61,22 +61,23 @@ def getAmountOut(amount_out, reserve_in, reserve_out, rpc_address, routerAddress
 
     return contract.functions.getAmountOut(amount_out, reserve_in, reserve_out).call()
 
-def getAmountsOut(token_AmountIn, addresses, rpc_address, routerAddress, routerABI, routerABIMappings):
-    web3 = Web3(Web3.HTTPProvider(rpc_address))
+def getAmountsOut(token_AmountIn, route_Addresses, network_RPCUrl, router_Address, router_ABI, router_Mapping):
 
-    hasDuplicateAddresses = len(addresses) != len(set(addresses))
+    web3 = Web3(Web3.HTTPProvider(network_RPCUrl))
+
+    hasDuplicateAddresses = len(route_Addresses) != len(set(route_Addresses))
 
     if not hasDuplicateAddresses:
 
-        contract_address = Web3.toChecksumAddress(routerAddress)
-        contract = web3.eth.contract(contract_address, abi=routerABI)
+        contract_address = Web3.toChecksumAddress(router_Address)
+        contract = web3.eth.contract(contract_address, abi=router_ABI)
 
         getAmountsOutFunctionName = getMappedContractFunction(functionName="getAmountsOut",
-                                                              abiMapping=routerABIMappings)
+                                                              abiMapping=router_Mapping)
 
         params = [
-            token_AmountIn,
-            addresses
+            int(token_AmountIn),
+            route_Addresses
         ]
 
         return callMappedContractFunction(contract=contract, functionToCall=getAmountsOutFunctionName,
@@ -84,4 +85,4 @@ def getAmountsOut(token_AmountIn, addresses, rpc_address, routerAddress, routerA
 
     else:
 
-        raise Exception(f"getAmountsOut - has duplicate addresses: {addresses}")
+        raise Exception(f"getAmountsOut - has duplicate addresses: {route_Addresses}")

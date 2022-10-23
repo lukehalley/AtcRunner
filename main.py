@@ -1,4 +1,5 @@
 import os
+import time
 
 from dotenv import load_dotenv
 
@@ -43,7 +44,7 @@ startingCapitalTestAmount = 10
 #
 #     return lenRecipes
 
-def startATCRunner():
+def initRunner():
 
     # Get Recipes From MYSQL DB
     printSeparator()
@@ -61,12 +62,16 @@ def startATCRunner():
     printSeparator(newLine=True)
 
     # TODO: Remove - Limit For Testing
-    splitRecipes = splitRecipes[0:3]
+    # results = results[0:20]
+
+    return splitRecipes
+
+def startATCRunner(splitRecipes):
 
     # Simulate All Recipes
     printSeparator()
     logger.info(f"Simulating Recipes")
-    printSeparator()
+    printSeparator(newLine=True)
 
     # Create A Pool For Recipe Simulation
     recipeSimulationPool = Pool(processes=len(splitRecipes))
@@ -74,11 +79,41 @@ def startATCRunner():
     # Map Our Recipes To The Pool An Run
     simulationResults = recipeSimulationPool.map(determineArbitrageStrategy, splitRecipes)
 
-    x = 1
+    # Simulate All Recipes
+    printSeparator()
+    logger.info(f"Simulation Results")
+
+    count = 0
+    for result in simulationResults:
+
+        if len(result["pairs"]) > 1:
+
+            count = count + 1
+
+            printSeparator()
+            logger.info(f'{result["common"]["pair_name"]} on {result["common"]["network_name"].title()}')
+            printSeparator()
+
+            secondaryTokenSymbol = result["common"]["pair_name"].split("/")[-1]
+
+            for pair in result["pairs"]:
+                logger.info(f'- {pair["dex_name"].title()}: {pair["price"]} {secondaryTokenSymbol}')
+
+            x = 1
+
+    printSeparator()
+
+    logger.info(f"Number Of Results: {count}")
+
+    printSeparator()
 
 # Driver code
 if __name__ == '__main__':
-    startATCRunner()
+    splitRecipes = initRunner()
+    tic = time.perf_counter()
+    startATCRunner(splitRecipes=splitRecipes)
+    toc = time.perf_counter()
+    print(f"Took {toc - tic:0.4f} seconds")
 #
 # # Print A Separator
 # printSeparator()

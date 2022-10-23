@@ -1,5 +1,9 @@
 # When our ABIs imported, if there is a blank field its not added.
 # This causes errors, so this fills em back in.
+import json
+import os.path
+
+
 def fillEmptyABIParams(abi, contractFunctionName):
     contractFunctionFields = {"inputs": [],
                               "name": "",
@@ -25,3 +29,7 @@ def getMappedContractFunction(functionName, abiMapping):
         return abiMapping[functionName]
     else:
         return functionName
+
+def loadLocalABI(abiPath):
+
+    return json.load(open(os.path.join("data", "mapped-abis", abiPath)))

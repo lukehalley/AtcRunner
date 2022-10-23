@@ -17,13 +17,12 @@ logger = getProjectLogger()
 
 # Determine our arbitrage strategy
 def determineArbitrageStrategy(recipe):
-    x = 1
 
     commonRecipeInfo = recipe["common"]
 
     for pair in recipe["pairs"]:
 
-        chainOneTokenPrice = getSwapQuoteOut(
+        pairQuote = getSwapQuoteOut(
             inToken_AmountIn=1.0,
             inToken_Address=commonRecipeInfo["primary_token_address"],
             inToken_Decimals=commonRecipeInfo["primary_token_decimals"],
@@ -32,126 +31,132 @@ def determineArbitrageStrategy(recipe):
             dex_Routes=pair["routes"],
             dex_RouterAddress=pair["dex_router_address"],
             dex_RouterABI=pair["dex_router_abi"],
+            dex_RouterMapping=pair["dex_router_mapping"],
             dex_FactoryAddress=pair["dex_factory_address"],
+            dex_FactoryMapping=pair["dex_factory_mapping"],
             dex_FactoryABI=pair["dex_factory_abi"],
             network_RPCUrl=commonRecipeInfo["network_chain_rpc"]
         )
 
-    chainTwoTokenPrice = getSwapQuoteOut(
-        recipe=recipe,
-        recipePosition="chainTwo",
-        recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=False,
-        tokenAmountIn=1.0
-    )
-
-    chainOneGasPrice = getSwapQuoteOut(
-        recipe=recipe,
-        recipePosition="chainOne",
-        recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=True,
-        tokenAmountIn=1.0
-    )
-
-    chainTwoGasPrice = getSwapQuoteOut(
-        recipe=recipe,
-        recipePosition="chainTwo",
-        recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=True,
-        tokenAmountIn=1.0
-    )
-
-    priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
-
-    origin, destination = calculateArbitrageStrategy(chainOneTokenPrice, recipe["chainOne"]["chain"]["name"],
-                                                     chainTwoTokenPrice, recipe["chainTwo"]["chain"]["name"])
-    logger.debug(f"Calculating data origin and destination")
-
-    directionLockEnabled = strToBool(recipe["arbitrage"]["directionLock"]["lockEnabled"])
-
-    if directionLockEnabled:
-        directionlock = recipe["arbitrage"]["directionLock"]["direction"].split(",")
-
-        originLock = directionlock[0]
-        destinationLock = directionlock[1]
-
-        if recipe["chainOne"]["chain"]["name"] == originLock and recipe["chainTwo"]["chain"][
-            "name"] == destinationLock:
-
-            recipe["origin"] = recipe["chainOne"]
-            recipe["origin"]["token"]["price"] = chainOneTokenPrice
-            recipe["origin"]["gas"]["price"] = chainOneGasPrice
-
-            recipe["destination"] = recipe["chainTwo"]
-            recipe["destination"]["token"]["price"] = chainTwoTokenPrice
-            recipe["destination"]["gas"]["price"] = chainTwoGasPrice
-
-        elif recipe["chainTwo"]["chain"]["name"] == originLock and recipe["chainOne"]["chain"][
-            "name"] == destinationLock:
-
-            recipe["origin"] = recipe["chainTwo"]
-            recipe["origin"]["token"]["price"] = chainTwoTokenPrice
-            recipe["origin"]["gas"]["price"] = chainTwoGasPrice
-
-            recipe["destination"] = recipe["chainOne"]
-            recipe["destination"]["token"]["price"] = chainOneTokenPrice
-            recipe["destination"]["gas"]["price"] = chainOneGasPrice
-
-        else:
-            errMsg = f'Invalid topUpDirection lock: {directionlock}'
-            logger.error(errMsg)
-            raise Exception(errMsg)
-
-    else:
-        if origin == recipe["chainOne"]["chain"]["name"]:
-
-            recipe["origin"] = recipe["chainOne"]
-            recipe["origin"]["token"]["price"] = chainOneTokenPrice
-            recipe["origin"]["gas"]["price"] = chainOneGasPrice
-
-            recipe["destination"] = recipe["chainTwo"]
-            recipe["destination"]["token"]["price"] = chainTwoTokenPrice
-            recipe["destination"]["gas"]["price"] = chainTwoGasPrice
-        else:
-            recipe["origin"] = recipe["chainTwo"]
-            recipe["origin"]["token"]["price"] = chainTwoTokenPrice
-            recipe["origin"]["gas"]["price"] = chainTwoGasPrice
-
-            recipe["destination"] = recipe["chainOne"]
-            recipe["destination"]["token"]["price"] = chainOneTokenPrice
-            recipe["destination"]["gas"]["price"] = chainOneGasPrice
-
-    printSeparator()
-
-    if directionLockEnabled:
-        logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Locked Arbitrage Opportunity Identified')
-    else:
-        logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Arbitrage Opportunity Identified')
-
-    logger.info(
-        f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateDecimal(recipe["origin"]["token"]["price"], 6)} on '
-        f'{recipe["origin"]["chain"]["name"]}'
-    )
-
-    logger.info(
-        f'Sell: {recipe["destination"]["token"]["name"]} @ ${truncateDecimal(recipe["destination"]["token"]["price"], 6)} on '
-        f'{recipe["destination"]["chain"]["name"]} '
-    )
-
-    printSeparator()
-
-    logger.info(
-        f'Arbitrage: {priceDifference}% difference'
-    )
-
-    del recipe["chainOne"], recipe["chainTwo"]
-
-    printSeparator(newLine=True)
+        pair["price"] = pairQuote
 
     return recipe
+
+    # chainTwoTokenPrice = getSwapQuoteOut(
+    #     recipe=recipe,
+    #     recipePosition="chainTwo",
+    #     recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
+    #     tokenType="token",
+    #     tokenIsGas=False,
+    #     tokenAmountIn=1.0
+    # )
+    #
+    # chainOneGasPrice = getSwapQuoteOut(
+    #     recipe=recipe,
+    #     recipePosition="chainOne",
+    #     recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
+    #     tokenType="token",
+    #     tokenIsGas=True,
+    #     tokenAmountIn=1.0
+    # )
+    #
+    # chainTwoGasPrice = getSwapQuoteOut(
+    #     recipe=recipe,
+    #     recipePosition="chainTwo",
+    #     recipeDex=recipe["chainTwo"]["chain"]["primaryDex"],
+    #     tokenType="token",
+    #     tokenIsGas=True,
+    #     tokenAmountIn=1.0
+    # )
+    #
+    # priceDifference = calculateDifference(chainOneTokenPrice, chainTwoTokenPrice)
+    #
+    # origin, destination = calculateArbitrageStrategy(chainOneTokenPrice, recipe["chainOne"]["chain"]["name"],
+    #                                                  chainTwoTokenPrice, recipe["chainTwo"]["chain"]["name"])
+    # logger.debug(f"Calculating data origin and destination")
+    #
+    # directionLockEnabled = strToBool(recipe["arbitrage"]["directionLock"]["lockEnabled"])
+    #
+    # if directionLockEnabled:
+    #     directionlock = recipe["arbitrage"]["directionLock"]["direction"].split(",")
+    #
+    #     originLock = directionlock[0]
+    #     destinationLock = directionlock[1]
+    #
+    #     if recipe["chainOne"]["chain"]["name"] == originLock and recipe["chainTwo"]["chain"][
+    #         "name"] == destinationLock:
+    #
+    #         recipe["origin"] = recipe["chainOne"]
+    #         recipe["origin"]["token"]["price"] = chainOneTokenPrice
+    #         recipe["origin"]["gas"]["price"] = chainOneGasPrice
+    #
+    #         recipe["destination"] = recipe["chainTwo"]
+    #         recipe["destination"]["token"]["price"] = chainTwoTokenPrice
+    #         recipe["destination"]["gas"]["price"] = chainTwoGasPrice
+    #
+    #     elif recipe["chainTwo"]["chain"]["name"] == originLock and recipe["chainOne"]["chain"][
+    #         "name"] == destinationLock:
+    #
+    #         recipe["origin"] = recipe["chainTwo"]
+    #         recipe["origin"]["token"]["price"] = chainTwoTokenPrice
+    #         recipe["origin"]["gas"]["price"] = chainTwoGasPrice
+    #
+    #         recipe["destination"] = recipe["chainOne"]
+    #         recipe["destination"]["token"]["price"] = chainOneTokenPrice
+    #         recipe["destination"]["gas"]["price"] = chainOneGasPrice
+    #
+    #     else:
+    #         errMsg = f'Invalid topUpDirection lock: {directionlock}'
+    #         logger.error(errMsg)
+    #         raise Exception(errMsg)
+    #
+    # else:
+    #     if origin == recipe["chainOne"]["chain"]["name"]:
+    #
+    #         recipe["origin"] = recipe["chainOne"]
+    #         recipe["origin"]["token"]["price"] = chainOneTokenPrice
+    #         recipe["origin"]["gas"]["price"] = chainOneGasPrice
+    #
+    #         recipe["destination"] = recipe["chainTwo"]
+    #         recipe["destination"]["token"]["price"] = chainTwoTokenPrice
+    #         recipe["destination"]["gas"]["price"] = chainTwoGasPrice
+    #     else:
+    #         recipe["origin"] = recipe["chainTwo"]
+    #         recipe["origin"]["token"]["price"] = chainTwoTokenPrice
+    #         recipe["origin"]["gas"]["price"] = chainTwoGasPrice
+    #
+    #         recipe["destination"] = recipe["chainOne"]
+    #         recipe["destination"]["token"]["price"] = chainOneTokenPrice
+    #         recipe["destination"]["gas"]["price"] = chainOneGasPrice
+    #
+    # printSeparator()
+    #
+    # if directionLockEnabled:
+    #     logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Locked Arbitrage Opportunity Identified')
+    # else:
+    #     logger.info(f'[ARB #{recipe["status"]["currentRoundTrip"]}] Arbitrage Opportunity Identified')
+    #
+    # logger.info(
+    #     f'Buy: {recipe["origin"]["token"]["name"]} @ ${truncateDecimal(recipe["origin"]["token"]["price"], 6)} on '
+    #     f'{recipe["origin"]["chain"]["name"]}'
+    # )
+    #
+    # logger.info(
+    #     f'Sell: {recipe["destination"]["token"]["name"]} @ ${truncateDecimal(recipe["destination"]["token"]["price"], 6)} on '
+    #     f'{recipe["destination"]["chain"]["name"]} '
+    # )
+    #
+    # printSeparator()
+    #
+    # logger.info(
+    #     f'Arbitrage: {priceDifference}% difference'
+    # )
+    #
+    # del recipe["chainOne"], recipe["chainTwo"]
+    #
+    # printSeparator(newLine=True)
+    #
+    # return recipe
 
 
 # Check if Arbitrage will be profitable
