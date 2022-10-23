@@ -8,7 +8,7 @@ from src.utils.logging.logging_Setup import getProjectLogger
 
 logger = getProjectLogger()
 
-def initDBConnection():
+def getDBConnection():
 
     DB_USER = getAWSSecret("username")
     DB_PASSWORD = getAWSSecret("password")

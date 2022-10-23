@@ -17,21 +17,25 @@ logger = getProjectLogger()
 
 # Determine our arbitrage strategy
 def determineArbitrageStrategy(recipe):
-    logger.debug(f"Calling Dexscreener API to find current price of pair")
+    x = 1
 
-    if not "status" in recipe:
-        recipe["status"] = {}
+    commonRecipeInfo = recipe["common"]
 
-    recipe["status"]["currentRoundTrip"] = getNextArbitrageNumber()
+    for pair in recipe["pairs"]:
 
-    chainOneTokenPrice = getSwapQuoteOut(
-        recipe=recipe,
-        recipePosition="chainOne",
-        recipeDex=recipe["chainOne"]["chain"]["primaryDex"],
-        tokenType="token",
-        tokenIsGas=False,
-        tokenAmountIn=1.0
-    )
+        chainOneTokenPrice = getSwapQuoteOut(
+            inToken_AmountIn=1.0,
+            inToken_Address=commonRecipeInfo["primary_token_address"],
+            inToken_Decimals=commonRecipeInfo["primary_token_decimals"],
+            outToken_Address=commonRecipeInfo["secondary_token_address"],
+            outToken_Decimals=commonRecipeInfo["secondary_token_decimals"],
+            dex_Routes=pair["routes"],
+            dex_RouterAddress=pair["dex_router_address"],
+            dex_RouterABI=pair["dex_router_abi"],
+            dex_FactoryAddress=pair["dex_factory_address"],
+            dex_FactoryABI=pair["dex_factory_abi"],
+            network_RPCUrl=commonRecipeInfo["network_chain_rpc"]
+        )
 
     chainTwoTokenPrice = getSwapQuoteOut(
         recipe=recipe,
@@ -74,7 +78,8 @@ def determineArbitrageStrategy(recipe):
         originLock = directionlock[0]
         destinationLock = directionlock[1]
 
-        if recipe["chainOne"]["chain"]["name"] == originLock and recipe["chainTwo"]["chain"]["name"] == destinationLock:
+        if recipe["chainOne"]["chain"]["name"] == originLock and recipe["chainTwo"]["chain"][
+            "name"] == destinationLock:
 
             recipe["origin"] = recipe["chainOne"]
             recipe["origin"]["token"]["price"] = chainOneTokenPrice

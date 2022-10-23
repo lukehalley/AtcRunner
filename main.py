@@ -1,4 +1,5 @@
-import os, time
+import os
+
 from dotenv import load_dotenv
 
 from src.db.querys.querys_Recipes import getRecipesFromDB
@@ -7,18 +8,13 @@ from src.utils.aws.aws_S3 import downloadAbisFromS3
 load_dotenv()
 
 # Firebase Imports
-from src.apis.firebaseDB.firebaseDB_Utils import createDatabaseConnection
 
 # Arbitrage Imports
-from src.arbitrage.arbitrage_Calculate import calculateArbitrageIsProfitable, determineArbitrageStrategy
-from src.arbitrage.arbitrage_Execute import executeArbitrage
+from src.arbitrage.arbitrage_Calculate import determineArbitrageStrategy
 
 # Chain Imports
-from src.chain.network.network_Querys import getWalletsInformation
-from src.chain.swap.swap_Actions import setupWallet
 
 # Recipe Imports
-from src.recipe.recipe_Recipes import getRecipeDetails
 
 # Multiprocessing Imports
 from multiprocessing import Pool
@@ -26,7 +22,7 @@ from multiprocessing import Pool
 # Util Imports
 from src.utils.data.data_Booleans import strToBool
 from src.utils.env.env_AWSSecrets import checkIsDocker
-from src.utils.logging.logging_Print import printSeparator, printRoundtrip, printArbitrageProfitable
+from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import setupLogging
 
 # General Init
@@ -39,13 +35,13 @@ forceRun = False
 useTestCapital = False
 startingCapitalTestAmount = 10
 
-def processRecipes(splitRecipes):
-
-    lenRecipes = len(splitRecipes)
-
-    logger.info(lenRecipes)
-
-    return lenRecipes
+# def processRecipes(splitRecipes):
+#
+#     lenRecipes = len(splitRecipes)
+#
+#     logger.info(lenRecipes)
+#
+#     return lenRecipes
 
 def startATCRunner():
 
@@ -76,14 +72,14 @@ def startATCRunner():
     recipeSimulationPool = Pool(processes=len(splitRecipes))
 
     # Map Our Recipes To The Pool An Run
-    simulationResults = recipeSimulationPool.map(processRecipes, splitRecipes)
+    simulationResults = recipeSimulationPool.map(determineArbitrageStrategy, splitRecipes)
 
     x = 1
 
 # Driver code
 if __name__ == '__main__':
     startATCRunner()
-
+#
 # # Print A Separator
 # printSeparator()
 #
