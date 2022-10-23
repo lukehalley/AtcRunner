@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 
 from retry import retry
 from web3 import Web3
@@ -27,27 +28,39 @@ def normaliseSwapRoutes(routes):
 
 
 def getSwapQuoteOut(inToken_AmountIn, inToken_Address, inToken_Decimals, outToken_Address, outToken_Decimals,
-                    dex_Routes, dex_RouterAddress, dex_RouterABI, dex_FactoryAddress, dex_FactoryABI,
+                    dex_Routes, dex_RouterAddress, dex_RouterABI, dex_RouterMapping, dex_FactoryAddress, dex_FactoryMapping, dex_FactoryABI,
                     network_RPCUrl):
 
-    amountInWei = int(getTokenDecimalValue(inToken_AmountIn, inToken_Decimals))
+    try:
 
-    normalisedRoutes = normaliseSwapRoutes(dex_Routes)
+        amountInWei = Decimal(getTokenDecimalValue(inToken_AmountIn, inToken_Decimals))
 
-    out = getAmountsOut(
-        token_AmountIn=amountInWei,
-        addresses=normalisedRoutes,
-        rpc_address=rpcUrl,
-        routerAddress=routerAddress,
-        routerABI=routerABI,
-        routerABIMappings=routerABIMappings
-    )
+        suitableRoute = min(dex_Routes, key=lambda x:abs(amountInWei))
 
-    amountOutWei = out[-1]
+        routeList = suitableRoute["route"].split("-")
 
-    quote = getTokenNormalValue(amountOutWei, amountOutDecimals)
+        normalisedRoutes = normaliseSwapRoutes(routeList)
 
-    return quote
+        out = getAmountsOut(
+            token_AmountIn=amountInWei,
+            route_Addresses=normalisedRoutes,
+            network_RPCUrl=network_RPCUrl,
+            router_Address=dex_RouterAddress,
+            router_ABI=dex_RouterABI,
+            router_Mapping=dex_RouterMapping
+        )
+
+        amountOutWei = out[-1]
+
+        quote = getTokenNormalValue(amountOutWei, outToken_Decimals)
+
+        return quote
+
+    except:
+
+        # logger.info("Nope")
+
+        return None
 
 
 def getSwapQuoteIn(recipe, recipePosition, recipeDex, tokenInType, tokenOutType, tokenOutIsGas, tokenOutAmount):

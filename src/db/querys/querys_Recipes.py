@@ -1,13 +1,17 @@
 import collections
 import json
+import logging
 import os
 import os.path
 
 from src.db.actions.actions_Setup import getCursor, getDBConnection
 from src.db.querys.querys_Routes import getRoutesFromDB
+from src.utils.chain.chain_ABI import loadLocalABI
 from src.utils.data.data_Booleans import strToBool
+from src.utils.logging.logging_Setup import getProjectLogger
 from src.utils.sql.sql_File import executeScriptsFromFile
 
+logger = getProjectLogger()
 
 def getRecipesFromDB():
 
@@ -61,6 +65,9 @@ def getRecipesFromDB():
         # List Of Pairs
         finalPairs = []
 
+        # Pairs Added Count
+        pairsAddedCount = 0
+
         # Remove Common Pairs And Get Routes For Pairs For Their Dex
         for dexPair in splitRecipe:
 
@@ -75,12 +82,26 @@ def getRecipesFromDB():
                 outToken_DbId=commonRecipeInfo["secondary_token_db_id"]
             )
 
+            # Load Factory ABI + Mapping
+            factoryAbi = loadLocalABI(
+                abiPath=dexPair["dex_factory_abi"]
+            )
+            dexPair["dex_factory_abi"] = factoryAbi["abi"]
+            dexPair["dex_factory_mapping"] = factoryAbi["mapping"]
+
+            # Load Router ABI + Mapping
+            routerAbi = loadLocalABI(
+                abiPath=dexPair["dex_router_abi"]
+            )
+            dexPair["dex_router_abi"] = routerAbi["abi"]
+            dexPair["dex_router_mapping"] = routerAbi["mapping"]
+
             if dexPair["routes"]:
                 finalPairs.append(dexPair)
 
         finalGroup["pairs"] = finalPairs
 
-        if finalGroup["pairs"]:
+        if len(finalGroup["pairs"]) > 1:
             finalSplitRecipes.append(finalGroup)
 
     return finalSplitRecipes
