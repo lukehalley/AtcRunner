@@ -61,7 +61,7 @@ def getAmountOut(amount_out, reserve_in, reserve_out, rpc_address, routerAddress
 
     return contract.functions.getAmountOut(amount_out, reserve_in, reserve_out).call()
 
-def getAmountsOut(amount_in, addresses, rpc_address, routerAddress, routerABI, routerABIMappings):
+def getAmountsOut(token_AmountIn, addresses, rpc_address, routerAddress, routerABI, routerABIMappings):
     web3 = Web3(Web3.HTTPProvider(rpc_address))
 
     hasDuplicateAddresses = len(addresses) != len(set(addresses))
@@ -75,7 +75,7 @@ def getAmountsOut(amount_in, addresses, rpc_address, routerAddress, routerABI, r
                                                               abiMapping=routerABIMappings)
 
         params = [
-            amount_in,
+            token_AmountIn,
             addresses
         ]
 

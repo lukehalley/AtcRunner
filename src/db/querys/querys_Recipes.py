@@ -3,19 +3,13 @@ import json
 import os
 import os.path
 
-from src.db.actions.actions_Setup import getCursor, initDBConnection
+from src.db.actions.actions_Setup import getCursor, getDBConnection
+from src.db.querys.querys_Routes import getRoutesFromDB
 from src.utils.data.data_Booleans import strToBool
 from src.utils.sql.sql_File import executeScriptsFromFile
 
 
 def getRecipesFromDB():
-    # Get The SQL DB Connection
-    dBConnection = initDBConnection()
-
-    # Get The SQL Cursor
-    cursor = getCursor(
-        dbConnection=dBConnection
-    )
 
     # Configure The Recipe Cache
     cacheLocation = "src/db/cache/recipes-cache.json"
@@ -32,8 +26,7 @@ def getRecipesFromDB():
 
         # Execute Arb SQL Query
         recipes = executeScriptsFromFile(
-            cursor=cursor,
-            filename="get-recipes.sql"
+            sqlFilename="get-recipes.sql"
         )
 
         # Write The Retrieved Recipes To The DB
@@ -44,30 +37,50 @@ def getRecipesFromDB():
     splitDict = collections.defaultdict(list)
 
     # First Split By Group Id
-    for recipe in recipes:
-        splitDict[recipe['recipe_group_id']].append(recipe)
+    for dexPair in recipes:
+        splitDict[dexPair['recipe_group_id']].append(dexPair)
 
+    # Split Recipes By Their Group Id
     splitRecipes = list(splitDict.values())
 
+    # The Final List Of Recipes
     finalSplitRecipes = []
+
+    # Loop Through Recipes
     for splitRecipe in splitRecipes:
 
+        # Final Recipe Group Dict
         finalGroup = {}
 
+        # Get The Common Keys And Keep Them In A Separate Dict
         listOfRecipes = [x.items() for x in splitRecipe]
         commonRecipeInfo = dict(set(listOfRecipes[0]).intersection(*listOfRecipes))
         keysToPop = list(commonRecipeInfo.keys())
+        finalGroup["common"] = commonRecipeInfo
 
+        # List Of Pairs
         finalPairs = []
 
-        for recipe in splitRecipe:  # my_list if the list that you have in your question
-            for key in keysToPop:
-                del recipe[key]
-            finalPairs.append(recipe)
+        # Remove Common Pairs And Get Routes For Pairs For Their Dex
+        for dexPair in splitRecipe:
 
-        finalGroup["common"] = commonRecipeInfo
+            for key in keysToPop:
+                del dexPair[key]
+
+            # Get Pair Routes
+            dexPair["routes"] = getRoutesFromDB(
+                network_DbId=commonRecipeInfo["network_db_id"],
+                dex_DbId=dexPair["dex_db_id"],
+                inToken_DbId=commonRecipeInfo["primary_token_db_id"],
+                outToken_DbId=commonRecipeInfo["secondary_token_db_id"]
+            )
+
+            if dexPair["routes"]:
+                finalPairs.append(dexPair)
+
         finalGroup["pairs"] = finalPairs
 
-        finalSplitRecipes.append(finalGroup)
+        if finalGroup["pairs"]:
+            finalSplitRecipes.append(finalGroup)
 
     return finalSplitRecipes

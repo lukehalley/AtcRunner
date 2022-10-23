@@ -13,6 +13,7 @@ logger = getProjectLogger()
 transactionRetryLimit = int(os.environ.get("TRANSACTION_QUERY_RETRY_LIMIT"))
 transactionRetryDelay = int(os.environ.get("TRANSACTION_QUERY_RETRY_DELAY"))
 
+
 def normaliseSwapRoutes(routes):
     normalisedRoutes = []
 
@@ -24,33 +25,17 @@ def normaliseSwapRoutes(routes):
 
     return normalisedRoutes
 
-def getSwapQuoteOut(recipe, recipePosition, recipeDex, tokenType, tokenIsGas, tokenAmountIn):
 
-    # Dict Params ####################################################
-    oppositeRecipeToken = getOppositeToken(tokenType)
-    amountInDecimals = recipe[recipePosition][tokenType]["decimals"]
-    amountOutDecimals = recipe[recipePosition][oppositeRecipeToken]["decimals"]
-    rpcUrl = recipe[recipePosition]["chain"]["rpc"]
-    routerAddress = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["address"]
-    routerABI = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["abi"]
-    routerABIMappings = recipe[recipePosition]["dexs"][recipeDex]["contracts"]["router"]["mapping"]
-    # Dict Params ####################################################
+def getSwapQuoteOut(inToken_AmountIn, inToken_Address, inToken_Decimals, outToken_Address, outToken_Decimals,
+                    dex_Routes, dex_RouterAddress, dex_RouterABI, dex_FactoryAddress, dex_FactoryABI,
+                    network_RPCUrl):
 
-    if tokenIsGas:
-        routes = [recipe[recipePosition]["gas"]["address"], recipe[recipePosition]["stablecoin"]["address"]]
-    else:
-        routes = getRoutes(
-            recipe=recipe,
-            recipePosition=recipePosition,
-            tokenType=tokenType
-        )
+    amountInWei = int(getTokenDecimalValue(inToken_AmountIn, inToken_Decimals))
 
-    normalisedRoutes = normaliseSwapRoutes(routes)
-
-    amountInWei = int(getTokenDecimalValue(tokenAmountIn, amountInDecimals))
+    normalisedRoutes = normaliseSwapRoutes(dex_Routes)
 
     out = getAmountsOut(
-        amount_in=amountInWei,
+        token_AmountIn=amountInWei,
         addresses=normalisedRoutes,
         rpc_address=rpcUrl,
         routerAddress=routerAddress,
@@ -64,8 +49,8 @@ def getSwapQuoteOut(recipe, recipePosition, recipeDex, tokenType, tokenIsGas, to
 
     return quote
 
-def getSwapQuoteIn(recipe, recipePosition, recipeDex, tokenInType, tokenOutType, tokenOutIsGas, tokenOutAmount):
 
+def getSwapQuoteIn(recipe, recipePosition, recipeDex, tokenInType, tokenOutType, tokenOutIsGas, tokenOutAmount):
     # Dict Params ####################################################
     amountInDecimals = recipe[recipePosition][tokenInType]["decimals"]
     amountOutDecimals = recipe[recipePosition][tokenOutType]["decimals"]
