@@ -21,8 +21,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -47,8 +48,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -73,8 +75,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -99,8 +102,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 6,
-        "dex_factory_address": "0x53e0e51b5ed9202110d7ecd637a4581db8b9879f",
+        "dex_factory_address": "0x1e895bfe59e3a5103e8b7da3897d1f2391476f3c",
         "dex_factory_abi": "ethereum/stepn/factory.json",
+        "dex_router_address": "0x53e0e51b5ed9202110d7ecd637a4581db8b9879f",
         "dex_router_abi": "ethereum/stepn/router.json"
     },
     {
@@ -125,8 +129,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 7,
-        "dex_factory_address": "0x1fdD76e18dD21046b7e7D54C8254Bf08B239e4D9",
+        "dex_factory_address": "0x9Cf2f35E3656D4C68474525d67D9459Da3A000CD",
         "dex_factory_abi": "ethereum/safemoonswap/factory.json",
+        "dex_router_address": "0x1fdD76e18dD21046b7e7D54C8254Bf08B239e4D9",
         "dex_router_abi": "ethereum/safemoonswap/router.json"
     },
     {
@@ -151,8 +156,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 8,
-        "dex_factory_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
+        "dex_factory_address": "0xd34971bab6e5e356fd250715f5de0492bb070452",
         "dex_factory_abi": "ethereum/swapr/factory.json",
+        "dex_router_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
         "dex_router_abi": "ethereum/swapr/router.json"
     },
     {
@@ -177,8 +183,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 27,
-        "dex_factory_address": "0x51aba405de2b25e5506dea32a6697f450ceb1a17",
+        "dex_factory_address": "0x7cFB780010e9C861e03bCbC7AC12E013137D47A5",
         "dex_factory_abi": "polygon/mmfinance/factory.json",
+        "dex_router_address": "0x51aba405de2b25e5506dea32a6697f450ceb1a17",
         "dex_router_abi": "polygon/mmfinance/router.json"
     },
     {
@@ -203,8 +210,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 28,
-        "dex_factory_address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
+        "dex_factory_address": "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32",
         "dex_factory_abi": "polygon/quickswap/factory.json",
+        "dex_router_address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
         "dex_router_abi": "polygon/quickswap/router.json"
     },
     {
@@ -229,8 +237,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 31,
-        "dex_factory_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
+        "dex_factory_address": "0xCf083Be4164828f00cAE704EC15a36D711491284",
         "dex_factory_abi": "polygon/apeswap/factory.json",
+        "dex_router_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
         "dex_router_abi": "polygon/apeswap/router.json"
     },
     {
@@ -255,8 +264,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 32,
-        "dex_factory_address": "0xA102072A4C07F06EC3B4900FDC4C7B80b6c57429",
+        "dex_factory_address": "0xE7Fb3e833eFE5F9c441105EB65Ef8b261266423B",
         "dex_factory_abi": "polygon/dfyn/factory.json",
+        "dex_router_address": "0xA102072A4C07F06EC3B4900FDC4C7B80b6c57429",
         "dex_router_abi": "polygon/dfyn/router.json"
     },
     {
@@ -281,8 +291,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 34,
-        "dex_factory_address": "0xbE75Dd16D029c6B32B7aD57A0FD9C1c20Dd2862e",
+        "dex_factory_address": "0x1d21Db6cde1b18c7E47B0F7F42f4b3F68b9beeC9",
         "dex_factory_abi": "polygon/dystopia/factory.json",
+        "dex_router_address": "0xbE75Dd16D029c6B32B7aD57A0FD9C1c20Dd2862e",
         "dex_router_abi": "polygon/dystopia/router.json"
     },
     {
@@ -307,8 +318,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 36,
-        "dex_factory_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
+        "dex_factory_address": "0x668ad0ed2622C62E24f0d5ab6B6Ac1b9D2cD4AC7",
         "dex_factory_abi": "polygon/jetswap/factory.json",
+        "dex_router_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
         "dex_router_abi": "polygon/jetswap/router.json"
     },
     {
@@ -333,8 +345,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 38,
-        "dex_factory_address": "0x57dE98135e8287F163c59cA4fF45f1341b680248",
+        "dex_factory_address": "0x3ed75AfF4094d2Aaa38FaFCa64EF1C152ec1Cf20",
         "dex_factory_abi": "polygon/gravityfinance/factory.json",
+        "dex_router_address": "0x57dE98135e8287F163c59cA4fF45f1341b680248",
         "dex_router_abi": "polygon/gravityfinance/router.json"
     },
     {
@@ -359,8 +372,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 40,
-        "dex_factory_address": "0x93bcDc45f7e62f89a8e901DC4A0E2c6C427D9F25",
+        "dex_factory_address": "0x800b052609c355ca8103e06f022aa30647ead60a",
         "dex_factory_abi": "polygon/comethswap/factory.json",
+        "dex_router_address": "0x93bcDc45f7e62f89a8e901DC4A0E2c6C427D9F25",
         "dex_router_abi": "polygon/comethswap/router.json"
     },
     {
@@ -385,8 +399,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 42,
-        "dex_factory_address": "0xf6fa9ea1f64f1bbfa8d71f7f43faf6d45520bfac",
+        "dex_factory_address": "0x5de74546d3b86c8df7feec30253865e1149818c8",
         "dex_factory_abi": "polygon/firebird/factory.json",
+        "dex_router_address": "0xf6fa9ea1f64f1bbfa8d71f7f43faf6d45520bfac",
         "dex_router_abi": "polygon/firebird/router.json"
     },
     {
@@ -411,8 +426,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 44,
-        "dex_factory_address": "0xdBe30E8742fBc44499EB31A19814429CECeFFaA0",
+        "dex_factory_address": "0x56CfC115e04dFCdA3ad47eAE1db86f70C1F8D8A5",
         "dex_factory_abi": "polygon/jamonswap/factory.json",
+        "dex_router_address": "0xdBe30E8742fBc44499EB31A19814429CECeFFaA0",
         "dex_router_abi": "polygon/jamonswap/router.json"
     },
     {
@@ -437,8 +453,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 46,
-        "dex_factory_address": "0x6AC823102CB347e1f5925C634B80a98A3aee7E03",
+        "dex_factory_address": "0x624Ccf581371F8A4493e6AbDE46412002555A1b6",
         "dex_factory_abi": "polygon/dinoswap/factory.json",
+        "dex_router_address": "0x6AC823102CB347e1f5925C634B80a98A3aee7E03",
         "dex_router_abi": "polygon/dinoswap/router.json"
     },
     {
@@ -463,8 +480,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 47,
-        "dex_factory_address": "0x4237a813604bD6815430d55141EA2C24D4543e44",
+        "dex_factory_address": "0x1B44bf43111A26206F9735319A0c438dd1c030b2",
         "dex_factory_abi": "polygon/nachofinance/factory.json",
+        "dex_router_address": "0x4237a813604bD6815430d55141EA2C24D4543e44",
         "dex_router_abi": "polygon/nachofinance/router.json"
     },
     {
@@ -489,8 +507,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 48,
-        "dex_factory_address": "0x4aAEC1FA8247F85Dc3Df20F4e03FEAFdCB087Ae9",
+        "dex_factory_address": "0x34De5ce6c9a395dB5710119419A7a29baa435C88",
         "dex_factory_abi": "polygon/polyzap/factory.json",
+        "dex_router_address": "0x4aAEC1FA8247F85Dc3Df20F4e03FEAFdCB087Ae9",
         "dex_router_abi": "polygon/polyzap/router.json"
     },
     {
@@ -515,8 +534,9 @@
         "network_chain_rpc": "https://evm.cronos.org",
         "network_chain_explorer": "https://cronoscan.com",
         "dex_db_id": 135,
-        "dex_factory_address": "0x145863Eb42Cf62847A6Ca784e6416C1682b1b2Ae",
+        "dex_factory_address": "0x3b44b2a187a7b3824131f8db5a74194d0a42fc15",
         "dex_factory_abi": "cronos/vvsfinance/factory.json",
+        "dex_router_address": "0x145863Eb42Cf62847A6Ca784e6416C1682b1b2Ae",
         "dex_router_abi": "cronos/vvsfinance/router.json"
     },
     {
@@ -541,8 +561,9 @@
         "network_chain_rpc": "https://evm.cronos.org",
         "network_chain_explorer": "https://cronoscan.com",
         "dex_db_id": 136,
-        "dex_factory_address": "0xcd7d16fB918511BF7269eC4f48d61D79Fb26f918",
+        "dex_factory_address": "0x73A48f8f521EB31c55c0e1274dB0898dE599Cb11",
         "dex_factory_abi": "cronos/cronaswap/factory.json",
+        "dex_router_address": "0xcd7d16fB918511BF7269eC4f48d61D79Fb26f918",
         "dex_router_abi": "cronos/cronaswap/router.json"
     },
     {
@@ -567,8 +588,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -593,8 +615,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -619,8 +642,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -645,8 +669,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 8,
-        "dex_factory_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
+        "dex_factory_address": "0xd34971bab6e5e356fd250715f5de0492bb070452",
         "dex_factory_abi": "ethereum/swapr/factory.json",
+        "dex_router_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
         "dex_router_abi": "ethereum/swapr/router.json"
     },
     {
@@ -671,8 +696,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 28,
-        "dex_factory_address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
+        "dex_factory_address": "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32",
         "dex_factory_abi": "polygon/quickswap/factory.json",
+        "dex_router_address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
         "dex_router_abi": "polygon/quickswap/router.json"
     },
     {
@@ -697,8 +723,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 38,
-        "dex_factory_address": "0x57dE98135e8287F163c59cA4fF45f1341b680248",
+        "dex_factory_address": "0x3ed75AfF4094d2Aaa38FaFCa64EF1C152ec1Cf20",
         "dex_factory_abi": "polygon/gravityfinance/factory.json",
+        "dex_router_address": "0x57dE98135e8287F163c59cA4fF45f1341b680248",
         "dex_router_abi": "polygon/gravityfinance/router.json"
     },
     {
@@ -723,8 +750,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -749,8 +777,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -775,8 +804,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 28,
-        "dex_factory_address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
+        "dex_factory_address": "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32",
         "dex_factory_abi": "polygon/quickswap/factory.json",
+        "dex_router_address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
         "dex_router_abi": "polygon/quickswap/router.json"
     },
     {
@@ -801,8 +831,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 31,
-        "dex_factory_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
+        "dex_factory_address": "0xCf083Be4164828f00cAE704EC15a36D711491284",
         "dex_factory_abi": "polygon/apeswap/factory.json",
+        "dex_router_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
         "dex_router_abi": "polygon/apeswap/router.json"
     },
     {
@@ -827,8 +858,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 32,
-        "dex_factory_address": "0xA102072A4C07F06EC3B4900FDC4C7B80b6c57429",
+        "dex_factory_address": "0xE7Fb3e833eFE5F9c441105EB65Ef8b261266423B",
         "dex_factory_abi": "polygon/dfyn/factory.json",
+        "dex_router_address": "0xA102072A4C07F06EC3B4900FDC4C7B80b6c57429",
         "dex_router_abi": "polygon/dfyn/router.json"
     },
     {
@@ -853,8 +885,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 34,
-        "dex_factory_address": "0xbE75Dd16D029c6B32B7aD57A0FD9C1c20Dd2862e",
+        "dex_factory_address": "0x1d21Db6cde1b18c7E47B0F7F42f4b3F68b9beeC9",
         "dex_factory_abi": "polygon/dystopia/factory.json",
+        "dex_router_address": "0xbE75Dd16D029c6B32B7aD57A0FD9C1c20Dd2862e",
         "dex_router_abi": "polygon/dystopia/router.json"
     },
     {
@@ -879,8 +912,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 38,
-        "dex_factory_address": "0x57dE98135e8287F163c59cA4fF45f1341b680248",
+        "dex_factory_address": "0x3ed75AfF4094d2Aaa38FaFCa64EF1C152ec1Cf20",
         "dex_factory_abi": "polygon/gravityfinance/factory.json",
+        "dex_router_address": "0x57dE98135e8287F163c59cA4fF45f1341b680248",
         "dex_router_abi": "polygon/gravityfinance/router.json"
     },
     {
@@ -905,8 +939,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/fantom",
         "network_chain_explorer": "https://ftmscan.com",
         "dex_db_id": 49,
-        "dex_factory_address": "0xF491e7B69E4244ad4002BC14e878a34207E38c29",
+        "dex_factory_address": "0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3",
         "dex_factory_abi": "fantom/spookyswap/factory.json",
+        "dex_router_address": "0xF491e7B69E4244ad4002BC14e878a34207E38c29",
         "dex_router_abi": "fantom/spookyswap/router.json"
     },
     {
@@ -931,8 +966,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/fantom",
         "network_chain_explorer": "https://ftmscan.com",
         "dex_db_id": 50,
-        "dex_factory_address": "0xa38cd27185a464914D3046f0AB9d43356B34829D",
+        "dex_factory_address": "0x3fAaB499b519fdC5819e3D7ed0C26111904cbc28",
         "dex_factory_abi": "fantom/solidly/factory.json",
+        "dex_router_address": "0xa38cd27185a464914D3046f0AB9d43356B34829D",
         "dex_router_abi": "fantom/solidly/router.json"
     },
     {
@@ -957,8 +993,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/fantom",
         "network_chain_explorer": "https://ftmscan.com",
         "dex_db_id": 51,
-        "dex_factory_address": "0x16327E3FbDaCA3bcF7E38F5Af2599D2DDc33aE52",
+        "dex_factory_address": "0xEF45d134b73241eDa7703fa787148D9C9F4950b0",
         "dex_factory_abi": "fantom/spiritswap/factory.json",
+        "dex_router_address": "0x16327E3FbDaCA3bcF7E38F5Af2599D2DDc33aE52",
         "dex_router_abi": "fantom/spiritswap/router.json"
     },
     {
@@ -983,8 +1020,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/fantom",
         "network_chain_explorer": "https://ftmscan.com",
         "dex_db_id": 55,
-        "dex_factory_address": "0xF4C587a0972Ac2039BFF67Bc44574bB403eF5235",
+        "dex_factory_address": "0x39720E5Fe53BEEeb9De4759cb91d8E7d42c17b76",
         "dex_factory_abi": "fantom/protofi/factory.json",
+        "dex_router_address": "0xF4C587a0972Ac2039BFF67Bc44574bB403eF5235",
         "dex_router_abi": "fantom/protofi/router.json"
     },
     {
@@ -1009,8 +1047,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/fantom",
         "network_chain_explorer": "https://ftmscan.com",
         "dex_db_id": 57,
-        "dex_factory_address": "0x5023882f4d1ec10544fcb2066abe9c1645e95aa0",
+        "dex_factory_address": "0xc831a5cbfb4ac2da5ed5b194385dfd9bf5bfcba7",
         "dex_factory_abi": "fantom/wigoswap/factory.json",
+        "dex_router_address": "0x5023882f4d1ec10544fcb2066abe9c1645e95aa0",
         "dex_router_abi": "fantom/wigoswap/router.json"
     },
     {
@@ -1035,8 +1074,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/fantom",
         "network_chain_explorer": "https://ftmscan.com",
         "dex_db_id": 69,
-        "dex_factory_address": "0xcdA8f0fB4132D977AD427d18555E0cb1b1dfA363",
+        "dex_factory_address": "0xA01C3d760738c79e10334408aE59684Aa36B1131",
         "dex_factory_abi": "fantom/degenhaus/factory.json",
+        "dex_router_address": "0xcdA8f0fB4132D977AD427d18555E0cb1b1dfA363",
         "dex_router_abi": "fantom/degenhaus/router.json"
     },
     {
@@ -1061,8 +1101,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -1087,8 +1128,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -1113,8 +1155,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -1139,8 +1182,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -1165,8 +1209,9 @@
         "network_chain_rpc": "https://evm.cronos.org",
         "network_chain_explorer": "https://cronoscan.com",
         "dex_db_id": 136,
-        "dex_factory_address": "0xcd7d16fB918511BF7269eC4f48d61D79Fb26f918",
+        "dex_factory_address": "0x73A48f8f521EB31c55c0e1274dB0898dE599Cb11",
         "dex_factory_abi": "cronos/cronaswap/factory.json",
+        "dex_router_address": "0xcd7d16fB918511BF7269eC4f48d61D79Fb26f918",
         "dex_router_abi": "cronos/cronaswap/router.json"
     },
     {
@@ -1191,8 +1236,9 @@
         "network_chain_rpc": "https://evm.cronos.org",
         "network_chain_explorer": "https://cronoscan.com",
         "dex_db_id": 137,
-        "dex_factory_address": "0xeC0A7a0C2439E8Cb67b992b12ecd020Ea943c7Be",
+        "dex_factory_address": "0xe9c29cB475C0ADe80bE0319B74AD112F1e80058F",
         "dex_factory_abi": "cronos/crodex/factory.json",
+        "dex_router_address": "0xeC0A7a0C2439E8Cb67b992b12ecd020Ea943c7Be",
         "dex_router_abi": "cronos/crodex/router.json"
     },
     {
@@ -1217,8 +1263,9 @@
         "network_chain_rpc": "https://evm.cronos.org",
         "network_chain_explorer": "https://cronoscan.com",
         "dex_db_id": 138,
-        "dex_factory_address": "0x3c1997d8738dcaB7Ed099105fCd61A9fe5f351Dd",
+        "dex_factory_address": "0x1CE8f3c99835eA3AaA888Df682d33F7E6eA0B3F4",
         "dex_factory_abi": "cronos/cougar/factory.json",
+        "dex_router_address": "0x3c1997d8738dcaB7Ed099105fCd61A9fe5f351Dd",
         "dex_router_abi": "cronos/cougar/router.json"
     },
     {
@@ -1243,8 +1290,9 @@
         "network_chain_rpc": "https://evm.cronos.org",
         "network_chain_explorer": "https://cronoscan.com",
         "dex_db_id": 140,
-        "dex_factory_address": "0x5bFc95C3BbF50579bD57957cD074fa96a4d5fF9F",
+        "dex_factory_address": "0x6C50Ee65CFcfC59B09C570e55D76daa7c67D6da5",
         "dex_factory_abi": "cronos/cyborgswap/factory.json",
+        "dex_router_address": "0x5bFc95C3BbF50579bD57957cD074fa96a4d5fF9F",
         "dex_router_abi": "cronos/cyborgswap/router.json"
     },
     {
@@ -1269,8 +1317,9 @@
         "network_chain_rpc": "https://rpc.api.moonbeam.network",
         "network_chain_explorer": "https://moonbeam.moonscan.io",
         "dex_db_id": 150,
-        "dex_factory_address": "0x70085a09d30d6f8c4ecf6ee10120d1847383bb57",
+        "dex_factory_address": "0x68A384D826D3678f78BB9FB1533c7E9577dACc0E",
         "dex_factory_abi": "moonbeam/stellaswap/factory.json",
+        "dex_router_address": "0x70085a09d30d6f8c4ecf6ee10120d1847383bb57",
         "dex_router_abi": "moonbeam/stellaswap/router.json"
     },
     {
@@ -1295,8 +1344,9 @@
         "network_chain_rpc": "https://rpc.api.moonbeam.network",
         "network_chain_explorer": "https://moonbeam.moonscan.io",
         "dex_db_id": 152,
-        "dex_factory_address": "0x96b244391D98B62D19aE89b1A4dCcf0fc56970C7",
+        "dex_factory_address": "0x985BcA32293A7A496300a48081947321177a86FD",
         "dex_factory_abi": "moonbeam/beamswap/factory.json",
+        "dex_router_address": "0x96b244391D98B62D19aE89b1A4dCcf0fc56970C7",
         "dex_router_abi": "moonbeam/beamswap/router.json"
     },
     {
@@ -1321,8 +1371,9 @@
         "network_chain_rpc": "https://astar.public.blastapi.io",
         "network_chain_explorer": "https://astar.subscan.io/extrinsic",
         "dex_db_id": 178,
-        "dex_factory_address": "0xE915D2393a08a00c5A463053edD31bAe2199b9e7",
+        "dex_factory_address": "0xA9473608514457b4bF083f9045fA63ae5810A03E",
         "dex_factory_abi": "astar/arthswap/factory.json",
+        "dex_router_address": "0xE915D2393a08a00c5A463053edD31bAe2199b9e7",
         "dex_router_abi": "astar/arthswap/router.json"
     },
     {
@@ -1347,8 +1398,9 @@
         "network_chain_rpc": "https://astar.public.blastapi.io",
         "network_chain_explorer": "https://astar.subscan.io/extrinsic",
         "dex_db_id": 180,
-        "dex_factory_address": "0xD38F0bC4a0728d2a1fCAaFa364F7c8422Ba1CD14",
+        "dex_factory_address": "0x95f506E72777efCB3C54878bB4160b00Cd11cd84",
         "dex_factory_abi": "astar/astarexchange/factory.json",
+        "dex_router_address": "0xD38F0bC4a0728d2a1fCAaFa364F7c8422Ba1CD14",
         "dex_router_abi": "astar/astarexchange/router.json"
     },
     {
@@ -1373,8 +1425,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -1399,8 +1452,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -1425,8 +1479,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -1451,8 +1506,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 8,
-        "dex_factory_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
+        "dex_factory_address": "0xd34971bab6e5e356fd250715f5de0492bb070452",
         "dex_factory_abi": "ethereum/swapr/factory.json",
+        "dex_router_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
         "dex_router_abi": "ethereum/swapr/router.json"
     },
     {
@@ -1477,8 +1533,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 28,
-        "dex_factory_address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
+        "dex_factory_address": "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32",
         "dex_factory_abi": "polygon/quickswap/factory.json",
+        "dex_router_address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
         "dex_router_abi": "polygon/quickswap/router.json"
     },
     {
@@ -1503,8 +1560,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 38,
-        "dex_factory_address": "0x57dE98135e8287F163c59cA4fF45f1341b680248",
+        "dex_factory_address": "0x3ed75AfF4094d2Aaa38FaFCa64EF1C152ec1Cf20",
         "dex_factory_abi": "polygon/gravityfinance/factory.json",
+        "dex_router_address": "0x57dE98135e8287F163c59cA4fF45f1341b680248",
         "dex_router_abi": "polygon/gravityfinance/router.json"
     },
     {
@@ -1529,8 +1587,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -1555,8 +1614,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -1581,8 +1641,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -1607,8 +1668,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -1633,8 +1695,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 8,
-        "dex_factory_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
+        "dex_factory_address": "0xd34971bab6e5e356fd250715f5de0492bb070452",
         "dex_factory_abi": "ethereum/swapr/factory.json",
+        "dex_router_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
         "dex_router_abi": "ethereum/swapr/router.json"
     },
     {
@@ -1659,8 +1722,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -1685,8 +1749,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -1711,8 +1776,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -1737,8 +1803,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 8,
-        "dex_factory_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
+        "dex_factory_address": "0xd34971bab6e5e356fd250715f5de0492bb070452",
         "dex_factory_abi": "ethereum/swapr/factory.json",
+        "dex_router_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
         "dex_router_abi": "ethereum/swapr/router.json"
     },
     {
@@ -1763,8 +1830,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 27,
-        "dex_factory_address": "0x51aba405de2b25e5506dea32a6697f450ceb1a17",
+        "dex_factory_address": "0x7cFB780010e9C861e03bCbC7AC12E013137D47A5",
         "dex_factory_abi": "polygon/mmfinance/factory.json",
+        "dex_router_address": "0x51aba405de2b25e5506dea32a6697f450ceb1a17",
         "dex_router_abi": "polygon/mmfinance/router.json"
     },
     {
@@ -1789,8 +1857,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 28,
-        "dex_factory_address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
+        "dex_factory_address": "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32",
         "dex_factory_abi": "polygon/quickswap/factory.json",
+        "dex_router_address": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
         "dex_router_abi": "polygon/quickswap/router.json"
     },
     {
@@ -1815,8 +1884,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 32,
-        "dex_factory_address": "0xA102072A4C07F06EC3B4900FDC4C7B80b6c57429",
+        "dex_factory_address": "0xE7Fb3e833eFE5F9c441105EB65Ef8b261266423B",
         "dex_factory_abi": "polygon/dfyn/factory.json",
+        "dex_router_address": "0xA102072A4C07F06EC3B4900FDC4C7B80b6c57429",
         "dex_router_abi": "polygon/dfyn/router.json"
     },
     {
@@ -1841,8 +1911,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 34,
-        "dex_factory_address": "0xbE75Dd16D029c6B32B7aD57A0FD9C1c20Dd2862e",
+        "dex_factory_address": "0x1d21Db6cde1b18c7E47B0F7F42f4b3F68b9beeC9",
         "dex_factory_abi": "polygon/dystopia/factory.json",
+        "dex_router_address": "0xbE75Dd16D029c6B32B7aD57A0FD9C1c20Dd2862e",
         "dex_router_abi": "polygon/dystopia/router.json"
     },
     {
@@ -1867,8 +1938,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 36,
-        "dex_factory_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
+        "dex_factory_address": "0x668ad0ed2622C62E24f0d5ab6B6Ac1b9D2cD4AC7",
         "dex_factory_abi": "polygon/jetswap/factory.json",
+        "dex_router_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
         "dex_router_abi": "polygon/jetswap/router.json"
     },
     {
@@ -1893,8 +1965,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 38,
-        "dex_factory_address": "0x57dE98135e8287F163c59cA4fF45f1341b680248",
+        "dex_factory_address": "0x3ed75AfF4094d2Aaa38FaFCa64EF1C152ec1Cf20",
         "dex_factory_abi": "polygon/gravityfinance/factory.json",
+        "dex_router_address": "0x57dE98135e8287F163c59cA4fF45f1341b680248",
         "dex_router_abi": "polygon/gravityfinance/router.json"
     },
     {
@@ -1919,8 +1992,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 39,
-        "dex_factory_address": "0x94930a328162957FF1dd48900aF67B5439336cBD",
+        "dex_factory_address": "0x477Ce834Ae6b7aB003cCe4BC4d8697763FF456FA",
         "dex_factory_abi": "polygon/polycat/factory.json",
+        "dex_router_address": "0x94930a328162957FF1dd48900aF67B5439336cBD",
         "dex_router_abi": "polygon/polycat/router.json"
     },
     {
@@ -1945,8 +2019,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 42,
-        "dex_factory_address": "0xf6fa9ea1f64f1bbfa8d71f7f43faf6d45520bfac",
+        "dex_factory_address": "0x5de74546d3b86c8df7feec30253865e1149818c8",
         "dex_factory_abi": "polygon/firebird/factory.json",
+        "dex_router_address": "0xf6fa9ea1f64f1bbfa8d71f7f43faf6d45520bfac",
         "dex_router_abi": "polygon/firebird/router.json"
     },
     {
@@ -1971,8 +2046,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 44,
-        "dex_factory_address": "0xdBe30E8742fBc44499EB31A19814429CECeFFaA0",
+        "dex_factory_address": "0x56CfC115e04dFCdA3ad47eAE1db86f70C1F8D8A5",
         "dex_factory_abi": "polygon/jamonswap/factory.json",
+        "dex_router_address": "0xdBe30E8742fBc44499EB31A19814429CECeFFaA0",
         "dex_router_abi": "polygon/jamonswap/router.json"
     },
     {
@@ -1997,8 +2073,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -2023,8 +2100,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 102,
-        "dex_factory_address": "0x76437234D29f84D9A12820A137c6c6A719138C24",
+        "dex_factory_address": "0xB836017ACf10b8A7c6c6C9e99eFE0f5B0250FC45",
         "dex_factory_abi": "bsc/padswap/factory.json",
+        "dex_router_address": "0x76437234D29f84D9A12820A137c6c6A719138C24",
         "dex_router_abi": "bsc/padswap/router.json"
     },
     {
@@ -2049,8 +2127,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2075,8 +2154,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -2101,8 +2181,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2127,8 +2208,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -2153,8 +2235,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2179,8 +2262,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -2205,8 +2289,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -2231,8 +2316,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2257,8 +2343,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -2283,8 +2370,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2309,8 +2397,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -2335,8 +2424,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2361,8 +2451,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -2387,8 +2478,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -2413,8 +2505,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 7,
-        "dex_factory_address": "0x1fdD76e18dD21046b7e7D54C8254Bf08B239e4D9",
+        "dex_factory_address": "0x9Cf2f35E3656D4C68474525d67D9459Da3A000CD",
         "dex_factory_abi": "ethereum/safemoonswap/factory.json",
+        "dex_router_address": "0x1fdD76e18dD21046b7e7D54C8254Bf08B239e4D9",
         "dex_router_abi": "ethereum/safemoonswap/router.json"
     },
     {
@@ -2439,8 +2532,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2465,8 +2559,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -2491,8 +2586,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2517,8 +2613,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -2543,8 +2640,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -2569,8 +2667,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -2595,8 +2694,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -2621,8 +2721,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -2647,8 +2748,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2673,8 +2775,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -2699,8 +2802,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2725,8 +2829,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -2751,8 +2856,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -2777,8 +2883,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2803,8 +2910,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -2829,8 +2937,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2855,8 +2964,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -2881,8 +2991,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 8,
-        "dex_factory_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
+        "dex_factory_address": "0xd34971bab6e5e356fd250715f5de0492bb070452",
         "dex_factory_abi": "ethereum/swapr/factory.json",
+        "dex_router_address": "0xb9960d9bca016e9748be75dd52f02188b9d0829f",
         "dex_router_abi": "ethereum/swapr/router.json"
     },
     {
@@ -2907,8 +3018,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2933,8 +3045,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -2959,8 +3072,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -2985,8 +3099,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -3011,8 +3126,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -3037,8 +3153,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -3063,8 +3180,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -3089,8 +3207,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -3115,8 +3234,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -3141,8 +3261,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -3167,8 +3288,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -3193,8 +3315,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     },
     {
@@ -3219,8 +3342,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -3245,8 +3369,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -3271,8 +3396,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 79,
-        "dex_factory_address": "0xD654953D746f0b114d1F85332Dc43446ac79413d",
+        "dex_factory_address": "0xd6715A8be3944ec72738F0BFDC739d48C3c29349",
         "dex_factory_abi": "bsc/nomiswap/factory.json",
+        "dex_router_address": "0xD654953D746f0b114d1F85332Dc43446ac79413d",
         "dex_router_abi": "bsc/nomiswap/router.json"
     },
     {
@@ -3297,8 +3423,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -3323,8 +3450,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 79,
-        "dex_factory_address": "0xD654953D746f0b114d1F85332Dc43446ac79413d",
+        "dex_factory_address": "0xd6715A8be3944ec72738F0BFDC739d48C3c29349",
         "dex_factory_abi": "bsc/nomiswap/factory.json",
+        "dex_router_address": "0xD654953D746f0b114d1F85332Dc43446ac79413d",
         "dex_router_abi": "bsc/nomiswap/router.json"
     },
     {
@@ -3349,8 +3477,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 31,
-        "dex_factory_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
+        "dex_factory_address": "0xCf083Be4164828f00cAE704EC15a36D711491284",
         "dex_factory_abi": "polygon/apeswap/factory.json",
+        "dex_router_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
         "dex_router_abi": "polygon/apeswap/router.json"
     },
     {
@@ -3375,8 +3504,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 36,
-        "dex_factory_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
+        "dex_factory_address": "0x668ad0ed2622C62E24f0d5ab6B6Ac1b9D2cD4AC7",
         "dex_factory_abi": "polygon/jetswap/factory.json",
+        "dex_router_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
         "dex_router_abi": "polygon/jetswap/router.json"
     },
     {
@@ -3401,8 +3531,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -3427,8 +3558,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -3453,8 +3585,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -3479,8 +3612,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 76,
-        "dex_factory_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
+        "dex_factory_address": "0x86407bea2078ea5f5eb5a52b2caa963bc1f889da",
         "dex_factory_abi": "bsc/babyswap/factory.json",
+        "dex_router_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
         "dex_router_abi": "bsc/babyswap/router.json"
     },
     {
@@ -3505,8 +3639,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 79,
-        "dex_factory_address": "0xD654953D746f0b114d1F85332Dc43446ac79413d",
+        "dex_factory_address": "0xd6715A8be3944ec72738F0BFDC739d48C3c29349",
         "dex_factory_abi": "bsc/nomiswap/factory.json",
+        "dex_router_address": "0xD654953D746f0b114d1F85332Dc43446ac79413d",
         "dex_router_abi": "bsc/nomiswap/router.json"
     },
     {
@@ -3531,8 +3666,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 80,
-        "dex_factory_address": "0xC2426F2018f13Fdc5b260Bd0A88be753ee7FaFc5",
+        "dex_factory_address": "0xFf9A4E72405Df3ca3D909523229677e6B2b8dC71",
         "dex_factory_abi": "bsc/pandora/factory.json",
+        "dex_router_address": "0xC2426F2018f13Fdc5b260Bd0A88be753ee7FaFc5",
         "dex_router_abi": "bsc/pandora/router.json"
     },
     {
@@ -3557,8 +3693,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 83,
-        "dex_factory_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
+        "dex_factory_address": "0x01bF7C66c6BD861915CdaaE475042d3c4BaE16A7",
         "dex_factory_abi": "bsc/bakeryswap/factory.json",
+        "dex_router_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
         "dex_router_abi": "bsc/bakeryswap/router.json"
     },
     {
@@ -3583,8 +3720,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 85,
-        "dex_factory_address": "0x9F088377BcdC220CB0E1Ad15aE6Bc75074beE9F6",
+        "dex_factory_address": "0xa053582601214FEb3778031a002135cbBB7DBa18",
         "dex_factory_abi": "bsc/planetfinance/factory.json",
+        "dex_router_address": "0x9F088377BcdC220CB0E1Ad15aE6Bc75074beE9F6",
         "dex_router_abi": "bsc/planetfinance/router.json"
     },
     {
@@ -3609,8 +3747,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 89,
-        "dex_factory_address": "0x6B45064F128cA5ADdbf79825186F4e3e3c9E7EB5",
+        "dex_factory_address": "0x1A04Afe9778f95829017741bF46C9524B91433fB",
         "dex_factory_abi": "bsc/orbitalswap/factory.json",
+        "dex_router_address": "0x6B45064F128cA5ADdbf79825186F4e3e3c9E7EB5",
         "dex_router_abi": "bsc/orbitalswap/router.json"
     },
     {
@@ -3635,8 +3774,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 95,
-        "dex_factory_address": "0x0C8094a69e8e44404371676f07B2C32923B5699c",
+        "dex_factory_address": "0x8BA1a4C24DE655136DEd68410e222cCA80d43444",
         "dex_factory_abi": "bsc/sphynx/factory.json",
+        "dex_router_address": "0x0C8094a69e8e44404371676f07B2C32923B5699c",
         "dex_router_abi": "bsc/sphynx/router.json"
     },
     {
@@ -3661,8 +3801,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 102,
-        "dex_factory_address": "0x76437234D29f84D9A12820A137c6c6A719138C24",
+        "dex_factory_address": "0xB836017ACf10b8A7c6c6C9e99eFE0f5B0250FC45",
         "dex_factory_abi": "bsc/padswap/factory.json",
+        "dex_router_address": "0x76437234D29f84D9A12820A137c6c6A719138C24",
         "dex_router_abi": "bsc/padswap/router.json"
     },
     {
@@ -3687,8 +3828,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -3713,8 +3855,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -3739,8 +3882,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 79,
-        "dex_factory_address": "0xD654953D746f0b114d1F85332Dc43446ac79413d",
+        "dex_factory_address": "0xd6715A8be3944ec72738F0BFDC739d48C3c29349",
         "dex_factory_abi": "bsc/nomiswap/factory.json",
+        "dex_router_address": "0xD654953D746f0b114d1F85332Dc43446ac79413d",
         "dex_router_abi": "bsc/nomiswap/router.json"
     },
     {
@@ -3765,8 +3909,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 80,
-        "dex_factory_address": "0xC2426F2018f13Fdc5b260Bd0A88be753ee7FaFc5",
+        "dex_factory_address": "0xFf9A4E72405Df3ca3D909523229677e6B2b8dC71",
         "dex_factory_abi": "bsc/pandora/factory.json",
+        "dex_router_address": "0xC2426F2018f13Fdc5b260Bd0A88be753ee7FaFc5",
         "dex_router_abi": "bsc/pandora/router.json"
     },
     {
@@ -3791,8 +3936,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 85,
-        "dex_factory_address": "0x9F088377BcdC220CB0E1Ad15aE6Bc75074beE9F6",
+        "dex_factory_address": "0xa053582601214FEb3778031a002135cbBB7DBa18",
         "dex_factory_abi": "bsc/planetfinance/factory.json",
+        "dex_router_address": "0x9F088377BcdC220CB0E1Ad15aE6Bc75074beE9F6",
         "dex_router_abi": "bsc/planetfinance/router.json"
     },
     {
@@ -3817,8 +3963,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -3843,8 +3990,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 83,
-        "dex_factory_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
+        "dex_factory_address": "0x01bF7C66c6BD861915CdaaE475042d3c4BaE16A7",
         "dex_factory_abi": "bsc/bakeryswap/factory.json",
+        "dex_router_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
         "dex_router_abi": "bsc/bakeryswap/router.json"
     },
     {
@@ -3869,8 +4017,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 31,
-        "dex_factory_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
+        "dex_factory_address": "0xCf083Be4164828f00cAE704EC15a36D711491284",
         "dex_factory_abi": "polygon/apeswap/factory.json",
+        "dex_router_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
         "dex_router_abi": "polygon/apeswap/router.json"
     },
     {
@@ -3895,8 +4044,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 36,
-        "dex_factory_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
+        "dex_factory_address": "0x668ad0ed2622C62E24f0d5ab6B6Ac1b9D2cD4AC7",
         "dex_factory_abi": "polygon/jetswap/factory.json",
+        "dex_router_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
         "dex_router_abi": "polygon/jetswap/router.json"
     },
     {
@@ -3921,8 +4071,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -3947,8 +4098,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -3973,8 +4125,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -3999,8 +4152,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 76,
-        "dex_factory_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
+        "dex_factory_address": "0x86407bea2078ea5f5eb5a52b2caa963bc1f889da",
         "dex_factory_abi": "bsc/babyswap/factory.json",
+        "dex_router_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
         "dex_router_abi": "bsc/babyswap/router.json"
     },
     {
@@ -4025,8 +4179,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 79,
-        "dex_factory_address": "0xD654953D746f0b114d1F85332Dc43446ac79413d",
+        "dex_factory_address": "0xd6715A8be3944ec72738F0BFDC739d48C3c29349",
         "dex_factory_abi": "bsc/nomiswap/factory.json",
+        "dex_router_address": "0xD654953D746f0b114d1F85332Dc43446ac79413d",
         "dex_router_abi": "bsc/nomiswap/router.json"
     },
     {
@@ -4051,8 +4206,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 83,
-        "dex_factory_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
+        "dex_factory_address": "0x01bF7C66c6BD861915CdaaE475042d3c4BaE16A7",
         "dex_factory_abi": "bsc/bakeryswap/factory.json",
+        "dex_router_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
         "dex_router_abi": "bsc/bakeryswap/router.json"
     },
     {
@@ -4077,8 +4233,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 89,
-        "dex_factory_address": "0x6B45064F128cA5ADdbf79825186F4e3e3c9E7EB5",
+        "dex_factory_address": "0x1A04Afe9778f95829017741bF46C9524B91433fB",
         "dex_factory_abi": "bsc/orbitalswap/factory.json",
+        "dex_router_address": "0x6B45064F128cA5ADdbf79825186F4e3e3c9E7EB5",
         "dex_router_abi": "bsc/orbitalswap/router.json"
     },
     {
@@ -4103,8 +4260,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 94,
-        "dex_factory_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
+        "dex_factory_address": "0x73D9F93D53505cB8C4c7f952ae42450d9E859D10",
         "dex_factory_abi": "bsc/dinosaureggs/factory.json",
+        "dex_router_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
         "dex_router_abi": "bsc/dinosaureggs/router.json"
     },
     {
@@ -4129,8 +4287,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -4155,8 +4314,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -4181,8 +4341,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -4207,8 +4368,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 80,
-        "dex_factory_address": "0xC2426F2018f13Fdc5b260Bd0A88be753ee7FaFc5",
+        "dex_factory_address": "0xFf9A4E72405Df3ca3D909523229677e6B2b8dC71",
         "dex_factory_abi": "bsc/pandora/factory.json",
+        "dex_router_address": "0xC2426F2018f13Fdc5b260Bd0A88be753ee7FaFc5",
         "dex_router_abi": "bsc/pandora/router.json"
     },
     {
@@ -4233,8 +4395,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 94,
-        "dex_factory_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
+        "dex_factory_address": "0x73D9F93D53505cB8C4c7f952ae42450d9E859D10",
         "dex_factory_abi": "bsc/dinosaureggs/factory.json",
+        "dex_router_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
         "dex_router_abi": "bsc/dinosaureggs/router.json"
     },
     {
@@ -4259,8 +4422,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -4285,8 +4449,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -4311,8 +4476,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 31,
-        "dex_factory_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
+        "dex_factory_address": "0xCf083Be4164828f00cAE704EC15a36D711491284",
         "dex_factory_abi": "polygon/apeswap/factory.json",
+        "dex_router_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
         "dex_router_abi": "polygon/apeswap/router.json"
     },
     {
@@ -4337,8 +4503,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 36,
-        "dex_factory_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
+        "dex_factory_address": "0x668ad0ed2622C62E24f0d5ab6B6Ac1b9D2cD4AC7",
         "dex_factory_abi": "polygon/jetswap/factory.json",
+        "dex_router_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
         "dex_router_abi": "polygon/jetswap/router.json"
     },
     {
@@ -4363,8 +4530,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -4389,8 +4557,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -4415,8 +4584,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -4441,8 +4611,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 80,
-        "dex_factory_address": "0xC2426F2018f13Fdc5b260Bd0A88be753ee7FaFc5",
+        "dex_factory_address": "0xFf9A4E72405Df3ca3D909523229677e6B2b8dC71",
         "dex_factory_abi": "bsc/pandora/factory.json",
+        "dex_router_address": "0xC2426F2018f13Fdc5b260Bd0A88be753ee7FaFc5",
         "dex_router_abi": "bsc/pandora/router.json"
     },
     {
@@ -4467,8 +4638,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 94,
-        "dex_factory_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
+        "dex_factory_address": "0x73D9F93D53505cB8C4c7f952ae42450d9E859D10",
         "dex_factory_abi": "bsc/dinosaureggs/factory.json",
+        "dex_router_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
         "dex_router_abi": "bsc/dinosaureggs/router.json"
     },
     {
@@ -4493,8 +4665,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -4519,8 +4692,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -4545,8 +4719,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -4571,8 +4746,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 80,
-        "dex_factory_address": "0xC2426F2018f13Fdc5b260Bd0A88be753ee7FaFc5",
+        "dex_factory_address": "0xFf9A4E72405Df3ca3D909523229677e6B2b8dC71",
         "dex_factory_abi": "bsc/pandora/factory.json",
+        "dex_router_address": "0xC2426F2018f13Fdc5b260Bd0A88be753ee7FaFc5",
         "dex_router_abi": "bsc/pandora/router.json"
     },
     {
@@ -4597,8 +4773,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 83,
-        "dex_factory_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
+        "dex_factory_address": "0x01bF7C66c6BD861915CdaaE475042d3c4BaE16A7",
         "dex_factory_abi": "bsc/bakeryswap/factory.json",
+        "dex_router_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
         "dex_router_abi": "bsc/bakeryswap/router.json"
     },
     {
@@ -4623,8 +4800,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 107,
-        "dex_factory_address": "0x939ffC5a4f3e9DF85e1036A8C86b18599A403F3B",
+        "dex_factory_address": "0x338D43c1D897B8e833fF22a8de732d161F069bF8",
         "dex_factory_abi": "bsc/mochiswap/factory.json",
+        "dex_router_address": "0x939ffC5a4f3e9DF85e1036A8C86b18599A403F3B",
         "dex_router_abi": "bsc/mochiswap/router.json"
     },
     {
@@ -4649,8 +4827,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 31,
-        "dex_factory_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
+        "dex_factory_address": "0xCf083Be4164828f00cAE704EC15a36D711491284",
         "dex_factory_abi": "polygon/apeswap/factory.json",
+        "dex_router_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
         "dex_router_abi": "polygon/apeswap/router.json"
     },
     {
@@ -4675,8 +4854,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 36,
-        "dex_factory_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
+        "dex_factory_address": "0x668ad0ed2622C62E24f0d5ab6B6Ac1b9D2cD4AC7",
         "dex_factory_abi": "polygon/jetswap/factory.json",
+        "dex_router_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
         "dex_router_abi": "polygon/jetswap/router.json"
     },
     {
@@ -4701,8 +4881,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -4727,8 +4908,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -4753,8 +4935,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -4779,8 +4962,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 90,
-        "dex_factory_address": "0xb68825C810E67D4e444ad5B9DeB55BA56A66e72D",
+        "dex_factory_address": "0x6f12482D9869303B998C54D91bCD8bCcba81f3bE",
         "dex_factory_abi": "bsc/marsecosystem/factory.json",
+        "dex_router_address": "0xb68825C810E67D4e444ad5B9DeB55BA56A66e72D",
         "dex_router_abi": "bsc/marsecosystem/router.json"
     },
     {
@@ -4805,8 +4989,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 94,
-        "dex_factory_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
+        "dex_factory_address": "0x73D9F93D53505cB8C4c7f952ae42450d9E859D10",
         "dex_factory_abi": "bsc/dinosaureggs/factory.json",
+        "dex_router_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
         "dex_router_abi": "bsc/dinosaureggs/router.json"
     },
     {
@@ -4831,8 +5016,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -4857,8 +5043,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -4883,8 +5070,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -4909,8 +5097,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 83,
-        "dex_factory_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
+        "dex_factory_address": "0x01bF7C66c6BD861915CdaaE475042d3c4BaE16A7",
         "dex_factory_abi": "bsc/bakeryswap/factory.json",
+        "dex_router_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
         "dex_router_abi": "bsc/bakeryswap/router.json"
     },
     {
@@ -4935,8 +5124,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 94,
-        "dex_factory_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
+        "dex_factory_address": "0x73D9F93D53505cB8C4c7f952ae42450d9E859D10",
         "dex_factory_abi": "bsc/dinosaureggs/factory.json",
+        "dex_router_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
         "dex_router_abi": "bsc/dinosaureggs/router.json"
     },
     {
@@ -4961,8 +5151,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 107,
-        "dex_factory_address": "0x939ffC5a4f3e9DF85e1036A8C86b18599A403F3B",
+        "dex_factory_address": "0x338D43c1D897B8e833fF22a8de732d161F069bF8",
         "dex_factory_abi": "bsc/mochiswap/factory.json",
+        "dex_router_address": "0x939ffC5a4f3e9DF85e1036A8C86b18599A403F3B",
         "dex_router_abi": "bsc/mochiswap/router.json"
     },
     {
@@ -4987,8 +5178,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -5013,8 +5205,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5039,8 +5232,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -5065,8 +5259,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 31,
-        "dex_factory_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
+        "dex_factory_address": "0xCf083Be4164828f00cAE704EC15a36D711491284",
         "dex_factory_abi": "polygon/apeswap/factory.json",
+        "dex_router_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
         "dex_router_abi": "polygon/apeswap/router.json"
     },
     {
@@ -5091,8 +5286,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 36,
-        "dex_factory_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
+        "dex_factory_address": "0x668ad0ed2622C62E24f0d5ab6B6Ac1b9D2cD4AC7",
         "dex_factory_abi": "polygon/jetswap/factory.json",
+        "dex_router_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
         "dex_router_abi": "polygon/jetswap/router.json"
     },
     {
@@ -5117,8 +5313,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -5143,8 +5340,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -5169,8 +5367,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -5195,8 +5394,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -5221,8 +5421,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 94,
-        "dex_factory_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
+        "dex_factory_address": "0x73D9F93D53505cB8C4c7f952ae42450d9E859D10",
         "dex_factory_abi": "bsc/dinosaureggs/factory.json",
+        "dex_router_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
         "dex_router_abi": "bsc/dinosaureggs/router.json"
     },
     {
@@ -5247,8 +5448,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -5273,8 +5475,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5299,8 +5502,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -5325,8 +5529,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5351,8 +5556,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -5377,8 +5583,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -5403,8 +5610,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 83,
-        "dex_factory_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
+        "dex_factory_address": "0x01bF7C66c6BD861915CdaaE475042d3c4BaE16A7",
         "dex_factory_abi": "bsc/bakeryswap/factory.json",
+        "dex_router_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
         "dex_router_abi": "bsc/bakeryswap/router.json"
     },
     {
@@ -5429,8 +5637,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5455,8 +5664,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -5481,8 +5691,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -5507,8 +5718,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5533,8 +5745,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5559,8 +5772,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 76,
-        "dex_factory_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
+        "dex_factory_address": "0x86407bea2078ea5f5eb5a52b2caa963bc1f889da",
         "dex_factory_abi": "bsc/babyswap/factory.json",
+        "dex_router_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
         "dex_router_abi": "bsc/babyswap/router.json"
     },
     {
@@ -5585,8 +5799,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5611,8 +5826,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 76,
-        "dex_factory_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
+        "dex_factory_address": "0x86407bea2078ea5f5eb5a52b2caa963bc1f889da",
         "dex_factory_abi": "bsc/babyswap/factory.json",
+        "dex_router_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
         "dex_router_abi": "bsc/babyswap/router.json"
     },
     {
@@ -5637,8 +5853,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5663,8 +5880,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 76,
-        "dex_factory_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
+        "dex_factory_address": "0x86407bea2078ea5f5eb5a52b2caa963bc1f889da",
         "dex_factory_abi": "bsc/babyswap/factory.json",
+        "dex_router_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
         "dex_router_abi": "bsc/babyswap/router.json"
     },
     {
@@ -5689,8 +5907,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 89,
-        "dex_factory_address": "0x6B45064F128cA5ADdbf79825186F4e3e3c9E7EB5",
+        "dex_factory_address": "0x1A04Afe9778f95829017741bF46C9524B91433fB",
         "dex_factory_abi": "bsc/orbitalswap/factory.json",
+        "dex_router_address": "0x6B45064F128cA5ADdbf79825186F4e3e3c9E7EB5",
         "dex_router_abi": "bsc/orbitalswap/router.json"
     },
     {
@@ -5715,8 +5934,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5741,8 +5961,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 76,
-        "dex_factory_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
+        "dex_factory_address": "0x86407bea2078ea5f5eb5a52b2caa963bc1f889da",
         "dex_factory_abi": "bsc/babyswap/factory.json",
+        "dex_router_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
         "dex_router_abi": "bsc/babyswap/router.json"
     },
     {
@@ -5767,8 +5988,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5793,8 +6015,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 94,
-        "dex_factory_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
+        "dex_factory_address": "0x73D9F93D53505cB8C4c7f952ae42450d9E859D10",
         "dex_factory_abi": "bsc/dinosaureggs/factory.json",
+        "dex_router_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
         "dex_router_abi": "bsc/dinosaureggs/router.json"
     },
     {
@@ -5819,8 +6042,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5845,8 +6069,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 75,
-        "dex_factory_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
+        "dex_factory_address": "0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8",
         "dex_factory_abi": "bsc/mdex/factory.json",
+        "dex_router_address": "0x0384E9ad329396C3A6A401243Ca71633B2bC4333",
         "dex_router_abi": "bsc/mdex/router.json"
     },
     {
@@ -5871,8 +6096,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 76,
-        "dex_factory_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
+        "dex_factory_address": "0x86407bea2078ea5f5eb5a52b2caa963bc1f889da",
         "dex_factory_abi": "bsc/babyswap/factory.json",
+        "dex_router_address": "0x325e343f1de602396e256b67efd1f61c3a6b38bd",
         "dex_router_abi": "bsc/babyswap/router.json"
     },
     {
@@ -5897,8 +6123,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 94,
-        "dex_factory_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
+        "dex_factory_address": "0x73D9F93D53505cB8C4c7f952ae42450d9E859D10",
         "dex_factory_abi": "bsc/dinosaureggs/factory.json",
+        "dex_router_address": "0xE9C7650b97712C0Ec958FF270FBF4189fB99C071",
         "dex_router_abi": "bsc/dinosaureggs/router.json"
     },
     {
@@ -5923,8 +6150,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -5949,8 +6177,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -5975,8 +6204,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -6001,8 +6231,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -6027,8 +6258,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 31,
-        "dex_factory_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
+        "dex_factory_address": "0xCf083Be4164828f00cAE704EC15a36D711491284",
         "dex_factory_abi": "polygon/apeswap/factory.json",
+        "dex_router_address": "0xC0788A3aD43d79aa53B09c2EaCc313A787d1d607",
         "dex_router_abi": "polygon/apeswap/router.json"
     },
     {
@@ -6053,8 +6285,9 @@
         "network_chain_rpc": "https://polygon-rpc.com/",
         "network_chain_explorer": "https://polygonscan.com",
         "dex_db_id": 36,
-        "dex_factory_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
+        "dex_factory_address": "0x668ad0ed2622C62E24f0d5ab6B6Ac1b9D2cD4AC7",
         "dex_factory_abi": "polygon/jetswap/factory.json",
+        "dex_router_address": "0x5C6EC38fb0e2609672BDf628B1fD605A523E5923",
         "dex_router_abi": "polygon/jetswap/router.json"
     },
     {
@@ -6079,8 +6312,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -6105,8 +6339,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 83,
-        "dex_factory_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
+        "dex_factory_address": "0x01bF7C66c6BD861915CdaaE475042d3c4BaE16A7",
         "dex_factory_abi": "bsc/bakeryswap/factory.json",
+        "dex_router_address": "0xcde540d7eafe93ac5fe6233bee57e1270d3e330f",
         "dex_router_abi": "bsc/bakeryswap/router.json"
     },
     {
@@ -6131,8 +6366,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 163,
-        "dex_factory_address": "0x2d4F788fDb262a25161Aa6D6e8e1f18458da8441",
+        "dex_factory_address": "0x633a093C9e94f64500FC8fCBB48e90dd52F6668F",
         "dex_factory_abi": "metis/hermesprotocol/factory.json",
+        "dex_router_address": "0x2d4F788fDb262a25161Aa6D6e8e1f18458da8441",
         "dex_router_abi": "metis/hermesprotocol/router.json"
     },
     {
@@ -6157,8 +6393,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 164,
-        "dex_factory_address": "0x81b9FA50D5f5155Ee17817C21702C3AE4780AD09",
+        "dex_factory_address": "0x2CdFB20205701FF01689461610C9F321D1d00F80",
         "dex_factory_abi": "metis/tethys/factory.json",
+        "dex_router_address": "0x81b9FA50D5f5155Ee17817C21702C3AE4780AD09",
         "dex_router_abi": "metis/tethys/router.json"
     },
     {
@@ -6183,8 +6420,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 165,
-        "dex_factory_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
+        "dex_factory_address": "0x70f51d68D16e8f9e418441280342BD43AC9Dff9f",
         "dex_factory_abi": "metis/netswap/factory.json",
+        "dex_router_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
         "dex_router_abi": "metis/netswap/router.json"
     },
     {
@@ -6209,8 +6447,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 163,
-        "dex_factory_address": "0x2d4F788fDb262a25161Aa6D6e8e1f18458da8441",
+        "dex_factory_address": "0x633a093C9e94f64500FC8fCBB48e90dd52F6668F",
         "dex_factory_abi": "metis/hermesprotocol/factory.json",
+        "dex_router_address": "0x2d4F788fDb262a25161Aa6D6e8e1f18458da8441",
         "dex_router_abi": "metis/hermesprotocol/router.json"
     },
     {
@@ -6235,8 +6474,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 164,
-        "dex_factory_address": "0x81b9FA50D5f5155Ee17817C21702C3AE4780AD09",
+        "dex_factory_address": "0x2CdFB20205701FF01689461610C9F321D1d00F80",
         "dex_factory_abi": "metis/tethys/factory.json",
+        "dex_router_address": "0x81b9FA50D5f5155Ee17817C21702C3AE4780AD09",
         "dex_router_abi": "metis/tethys/router.json"
     },
     {
@@ -6261,8 +6501,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 165,
-        "dex_factory_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
+        "dex_factory_address": "0x70f51d68D16e8f9e418441280342BD43AC9Dff9f",
         "dex_factory_abi": "metis/netswap/factory.json",
+        "dex_router_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
         "dex_router_abi": "metis/netswap/router.json"
     },
     {
@@ -6287,8 +6528,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 163,
-        "dex_factory_address": "0x2d4F788fDb262a25161Aa6D6e8e1f18458da8441",
+        "dex_factory_address": "0x633a093C9e94f64500FC8fCBB48e90dd52F6668F",
         "dex_factory_abi": "metis/hermesprotocol/factory.json",
+        "dex_router_address": "0x2d4F788fDb262a25161Aa6D6e8e1f18458da8441",
         "dex_router_abi": "metis/hermesprotocol/router.json"
     },
     {
@@ -6313,8 +6555,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 164,
-        "dex_factory_address": "0x81b9FA50D5f5155Ee17817C21702C3AE4780AD09",
+        "dex_factory_address": "0x2CdFB20205701FF01689461610C9F321D1d00F80",
         "dex_factory_abi": "metis/tethys/factory.json",
+        "dex_router_address": "0x81b9FA50D5f5155Ee17817C21702C3AE4780AD09",
         "dex_router_abi": "metis/tethys/router.json"
     },
     {
@@ -6339,8 +6582,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 165,
-        "dex_factory_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
+        "dex_factory_address": "0x70f51d68D16e8f9e418441280342BD43AC9Dff9f",
         "dex_factory_abi": "metis/netswap/factory.json",
+        "dex_router_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
         "dex_router_abi": "metis/netswap/router.json"
     },
     {
@@ -6365,8 +6609,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 163,
-        "dex_factory_address": "0x2d4F788fDb262a25161Aa6D6e8e1f18458da8441",
+        "dex_factory_address": "0x633a093C9e94f64500FC8fCBB48e90dd52F6668F",
         "dex_factory_abi": "metis/hermesprotocol/factory.json",
+        "dex_router_address": "0x2d4F788fDb262a25161Aa6D6e8e1f18458da8441",
         "dex_router_abi": "metis/hermesprotocol/router.json"
     },
     {
@@ -6391,8 +6636,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 165,
-        "dex_factory_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
+        "dex_factory_address": "0x70f51d68D16e8f9e418441280342BD43AC9Dff9f",
         "dex_factory_abi": "metis/netswap/factory.json",
+        "dex_router_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
         "dex_router_abi": "metis/netswap/router.json"
     },
     {
@@ -6417,8 +6663,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 163,
-        "dex_factory_address": "0x2d4F788fDb262a25161Aa6D6e8e1f18458da8441",
+        "dex_factory_address": "0x633a093C9e94f64500FC8fCBB48e90dd52F6668F",
         "dex_factory_abi": "metis/hermesprotocol/factory.json",
+        "dex_router_address": "0x2d4F788fDb262a25161Aa6D6e8e1f18458da8441",
         "dex_router_abi": "metis/hermesprotocol/router.json"
     },
     {
@@ -6443,8 +6690,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 165,
-        "dex_factory_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
+        "dex_factory_address": "0x70f51d68D16e8f9e418441280342BD43AC9Dff9f",
         "dex_factory_abi": "metis/netswap/factory.json",
+        "dex_router_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
         "dex_router_abi": "metis/netswap/router.json"
     },
     {
@@ -6469,8 +6717,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -6495,8 +6744,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 4,
-        "dex_factory_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
+        "dex_factory_address": "0x115934131916C8b277DD010Ee02de363c09d037c",
         "dex_factory_abi": "ethereum/shibaswap/factory.json",
+        "dex_router_address": "0x03f7724180AA6b939894B5Ca4314783B0b36b329",
         "dex_router_abi": "ethereum/shibaswap/router.json"
     },
     {
@@ -6521,8 +6771,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 72,
-        "dex_factory_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+        "dex_factory_address": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
         "dex_factory_abi": "bsc/pancakeswap/factory.json",
+        "dex_router_address": "0x10ED43C718714eb63d5aA57B78B54704E256024E",
         "dex_router_abi": "bsc/pancakeswap/router.json"
     },
     {
@@ -6547,8 +6798,9 @@
         "network_chain_rpc": "https://bsc-dataseed1.binance.org",
         "network_chain_explorer": "https://bscscan.com",
         "dex_db_id": 74,
-        "dex_factory_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
+        "dex_factory_address": "0x858E3312ed3A876947EA49d572A7C42DE08af7EE",
         "dex_factory_abi": "bsc/biswap/factory.json",
+        "dex_router_address": "0x3a6d8cA21D1CF76F653A67577FA0D27453350dD8",
         "dex_router_abi": "bsc/biswap/router.json"
     },
     {
@@ -6573,8 +6825,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 164,
-        "dex_factory_address": "0x81b9FA50D5f5155Ee17817C21702C3AE4780AD09",
+        "dex_factory_address": "0x2CdFB20205701FF01689461610C9F321D1d00F80",
         "dex_factory_abi": "metis/tethys/factory.json",
+        "dex_router_address": "0x81b9FA50D5f5155Ee17817C21702C3AE4780AD09",
         "dex_router_abi": "metis/tethys/router.json"
     },
     {
@@ -6599,8 +6852,9 @@
         "network_chain_rpc": "https://andromeda.metis.io/?owner=1088",
         "network_chain_explorer": "https://andromeda-explorer.metis.io",
         "dex_db_id": 165,
-        "dex_factory_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
+        "dex_factory_address": "0x70f51d68D16e8f9e418441280342BD43AC9Dff9f",
         "dex_factory_abi": "metis/netswap/factory.json",
+        "dex_router_address": "0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56",
         "dex_router_abi": "metis/netswap/router.json"
     },
     {
@@ -6625,8 +6879,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 1,
-        "dex_factory_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "dex_factory_address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
         "dex_factory_abi": "ethereum/uniswap/factory.json",
+        "dex_router_address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
         "dex_router_abi": "ethereum/uniswap/router.json"
     },
     {
@@ -6651,8 +6906,9 @@
         "network_chain_rpc": "https://rpc.ankr.com/eth",
         "network_chain_explorer": "https://etherscan.io",
         "dex_db_id": 2,
-        "dex_factory_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+        "dex_factory_address": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
         "dex_factory_abi": "ethereum/sushiswap/factory.json",
+        "dex_router_address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
         "dex_router_abi": "ethereum/sushiswap/router.json"
     }
 ]

@@ -6,3 +6,4 @@ __pycache__/
 .DS_Store
 *.pem
 key.txt
+/data/

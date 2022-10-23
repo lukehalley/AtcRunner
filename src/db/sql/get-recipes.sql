@@ -22,7 +22,7 @@ SELECT
   dexs.dex_id AS dex_db_id,
   LEFT(dexs.factory, 42) AS dex_factory_address,
   dexs.factory_s3_path AS dex_factory_abi,
-  LEFT(dexs.router, 42) AS dex_factory_address,
+  LEFT(dexs.router, 42) AS dex_router_address,
   dexs.router_s3_path AS dex_router_abi
 FROM
   (
