@@ -90,3 +90,4 @@ across various quest types including combat, exploration, and collection.
     
     def get_current_stamina(self, hero_id):
         return quest_core.get_current_stamina(hero_id, self.rpc_address)
+# Quest rewards scale with player level and difficulty tier
