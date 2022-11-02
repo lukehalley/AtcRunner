@@ -1,3 +1,4 @@
+"""Discord bot main entry point and initialization."""
 """Discord bot main module for AtcRunner."""
 # Discord bot main entry point
 """Initialize and configure the Discord bot with required intents and event handlers."""
