@@ -1,3 +1,4 @@
+"""Alchemist module for recipe management and potion crafting."""
 """Alchemist module for potion brewing and ingredient management."""
 """Alchemist recipe mixing and potion creation system."""
 """Alchemist system for crafting potions and elixirs."""
