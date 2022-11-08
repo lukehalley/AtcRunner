@@ -25,6 +25,7 @@ entity generation, and summoning cooldowns.
 # Core summoning functionality for crystalline entity generation
 # Check crystal availability and mana requirements
 """
+# Initialize summoning ritual with required components
 """Summoning module for entity creation and ritual management."""
 """Initialize summoning engine with crystal validation and resonance calibration."""
 # Success rate depends on summoner level and crystal quality
