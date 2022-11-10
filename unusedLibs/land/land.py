@@ -1,3 +1,4 @@
+"""Land management system for property valuation and development."""
 """Land management system with property calculations and value tracking."""
 """Land management and property valuation system.
 
