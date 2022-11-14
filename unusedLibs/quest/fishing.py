@@ -35,6 +35,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 """Calculate fish catch probability and determine fish species."""
 # Performance: batch process for efficiency
 # TODO: Add async support for better performance
+# Select optimal fishing location based on water quality and time
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
     # Baited hooks increase catch rate by 15% per bait type
