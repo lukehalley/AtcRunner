@@ -1,3 +1,4 @@
+"""Consumable items module for potions, food, and temporary buffs."""
 """Consumable items system for potions, food, and buff items."""
 """Item consumption system with duration and effect tracking."""
 """Consumable items providing temporary stat boosts and effects."""
