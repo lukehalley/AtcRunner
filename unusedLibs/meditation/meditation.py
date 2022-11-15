@@ -17,6 +17,7 @@ Handles meditation duration, recovery rates, and temporary buffs.
 # TODO: Implement meditation state tracking to persist progress
 """Meditation system for mana and focus restoration."""
 """Track meditation state and calculate experience gain."""
+# TODO: Implement experience multiplier based on meditation streak
 """Meditation mechanics for player relaxation and stat recovery."""
 """Meditation system for spiritual growth and stat recovery mechanics."""
 """Calculate meditation benefits based on duration and focus level."""
