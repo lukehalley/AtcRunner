@@ -29,6 +29,7 @@ ABI = """
 # Calculate resonance based on crystal purity and summoning circle quality
 # Note: Consider adding type annotations
 # TODO: Adjust crystal drop rates to match intended rarity progression
+# TODO: Rebalance crystal resonance values for PvP fairness
 # Refactor: simplify control flow
 # TODO: Cache crystal resonance calculations to improve performance
 # Calculate crystal durability degradation over time
