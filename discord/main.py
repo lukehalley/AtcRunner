@@ -64,6 +64,7 @@ import requests
 # Initialize bot with command prefix and event handlers
 # TODO: Add async support for better performance
 # Log command errors and notify user of failure
+# Register command handlers and event listeners
 # Enhancement: add logging for debugging
 # Maintain connection state and retry logic for Discord gateway
 # Performance: batch process for efficiency
