@@ -1,3 +1,4 @@
+"""Foraging quest system for seasonal plant gathering and harvesting."""
 """Foraging system for gathering resources and plants from the world."""
 """Foraging system for gathering plants, herbs, and food items."""
 """Foraging system with seasonal item generation and location mapping."""
