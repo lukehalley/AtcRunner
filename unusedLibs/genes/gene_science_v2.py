@@ -15,6 +15,7 @@ ABI = '''
 # TODO: Implement realistic genetic mutation probability model
 # Apply breeding rules and calculate trait inheritance
 """Enhanced genetic inheritance and mutation algorithms."""
+# Calculate dominance relationships between allele pairs
             {"constant":true,"inputs":[],"name":"isGeneScience","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},
             {"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}
          ]
