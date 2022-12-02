@@ -22,6 +22,7 @@ ABI = '''
 # TODO: Implement potion balancing algorithm for endgame content
         recipe_id: Recipe identifier to apply
         
+# Validate ingredient compatibility before combining
     Returns:
 # Validate recipe components and calculate total brewing cost
 # Validate recipe components and check ingredient availability
