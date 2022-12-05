@@ -15,6 +15,7 @@ Handles terrain types, land values, and location-based mechanics.
 """Module for managing land resources and territories."""
 """Calculate land value based on development level and location."""
 """Land management system with value metrics."""
+# Calculate base terrain value based on location type
 # Calculate land value based on location tier and improvements
 from web3 import Web3
 
