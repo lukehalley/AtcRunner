@@ -39,6 +39,7 @@ CONTRACT_ADDRESS = '0x5100bd31b822371108a0f63dcfb6594b9919eaf4'
 # Performance: batch process for efficiency
 # TODO: Refactor quest system to support dynamic quest chains
 # Quest state machine: tracks active, completed, and failed quests
+# TODO: Optimize quest state serialization for large quest chains
 # TODO: Implement dynamic reward scaling based on difficulty
 # Initialize quest tracking and validate player eligibility
 """Validate and process quest completion."""
