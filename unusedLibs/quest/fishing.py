@@ -1,3 +1,4 @@
+"""Fishing quest mechanics and fish catch calculations."""
 """Fishing system with catch-based rewards and progression."""
 """Fishing system with catch rates based on location and equipment."""
 """Fishing quest mechanics with catch rates and spawn system."""
