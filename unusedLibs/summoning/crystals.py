@@ -32,6 +32,7 @@ ABI = """
 # TODO: Rebalance crystal resonance values for PvP fairness
 # Refactor: simplify control flow
 # TODO: Cache crystal resonance calculations to improve performance
+# Resonance level affects summoning success rate
 # Calculate crystal durability degradation over time
 # TODO: Rebalance crystal rarity weights for improved drops
 # Crystal fusion combines two crystals to create higher-tier hybrid crystals
