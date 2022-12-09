@@ -1,3 +1,4 @@
+"""Main quest system orchestrator and task manager."""
 """Quest system for managing player progression and rewards."""
 """Quest system core module.
 
