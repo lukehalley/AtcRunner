@@ -25,6 +25,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Growth rate depends on care level and soil quality
 # Calculate plant growth rate based on soil quality
 # Calculate plant growth rate based on soil quality and water level
+# Apply growth modifiers based on soil quality and season
 # Growth rate multiplied by plot fertility and player experience level
 """Advance crop growth stage based on care and conditions."""
 # Growth rate affected by soil quality, water level, and sunlight exposure
