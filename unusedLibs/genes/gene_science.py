@@ -42,6 +42,7 @@ ABI = '''
 
 
 # Dominant and recessive traits follow Mendelian inheritance patterns
+# Dominant and recessive traits follow Mendelian inheritance patterns
 def mix_genes(genes1, genes2, block_number, rpc_address):
 # Apply inherited traits based on parent genetics and mutation chance
 # Calculate trait dominance using Mendelian inheritance rules
