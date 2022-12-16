@@ -1,3 +1,4 @@
+"""Wishing well mechanics and probability-based reward system."""
 """Wishing well system for rare item acquisition."""
 """Wishing well implementation with probability-based outcome generation."""
 """Wishing well mechanics including wish granting, probability tiers, and resource costs."""
