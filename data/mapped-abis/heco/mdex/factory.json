@@ -1,0 +1,619 @@
+{
+    "abi": [
+        {
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "_feeToSetter",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "anonymous": false,
+            "type": "constructor"
+        },
+        {
+            "funcSign": "0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9",
+            "inputs": [
+                {
+                    "indexed": true,
+                    "name": "token0",
+                    "internalType": "address",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "name": "token1",
+                    "internalType": "address",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "pair",
+                    "internalType": "address",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "name": "PairCreated",
+            "anonymous": false,
+            "text": "PairCreated(address,address,address,uint256)",
+            "type": "event",
+            "textView": "PairCreated (index_topic_1 address token0, index_topic_2 address token1, address pair, uint256 )"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "funcSign": "0x1e3dd18b",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "name": "allPairs",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "address@allPairs(uint256)",
+            "type": "function",
+            "textView": "allPairs (uint256 )"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "funcSign": "0x574f2ba3",
+            "inputs": [],
+            "name": "allPairsLength",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "uint256@allPairsLength()",
+            "type": "function",
+            "textView": "allPairsLength ()"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "pair",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "funcSign": "0xc9c65396",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "tokenA",
+                    "internalType": "address",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "tokenB",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "name": "createPair",
+            "stateMutability": "nonpayable",
+            "anonymous": false,
+            "text": "address@createPair(address,address)",
+            "type": "function",
+            "textView": "createPair (address tokenA, address tokenB)"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "funcSign": "0x017e7e58",
+            "inputs": [],
+            "name": "feeTo",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "address@feeTo()",
+            "type": "function",
+            "textView": "feeTo ()"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "funcSign": "0xdeba86e3",
+            "inputs": [],
+            "name": "feeToRate",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "uint256@feeToRate()",
+            "type": "function",
+            "textView": "feeToRate ()"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "funcSign": "0x094b7415",
+            "inputs": [],
+            "name": "feeToSetter",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "address@feeToSetter()",
+            "type": "function",
+            "textView": "feeToSetter ()"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "amountIn",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "funcSign": "0x85f8c259",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "amountOut",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "reserveIn",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "reserveOut",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getAmountIn",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "uint256@getAmountIn(uint256,uint256,uint256)",
+            "type": "function",
+            "textView": "getAmountIn (uint256 amountOut, uint256 reserveIn, uint256 reserveOut)"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "amountOut",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "funcSign": "0x054d50d4",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "amountIn",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "reserveIn",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "reserveOut",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getAmountOut",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "uint256@getAmountOut(uint256,uint256,uint256)",
+            "type": "function",
+            "textView": "getAmountOut (uint256 amountIn, uint256 reserveIn, uint256 reserveOut)"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "amounts",
+                    "internalType": "uint256[]",
+                    "type": "uint256[]"
+                }
+            ],
+            "funcSign": "0x1f00ca74",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "amountOut",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "path",
+                    "internalType": "address[]",
+                    "type": "address[]"
+                }
+            ],
+            "name": "getAmountsIn",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "uint256[]@getAmountsIn(uint256,address[])",
+            "type": "function",
+            "textView": "getAmountsIn (uint256 amountOut, address[] path)"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "amounts",
+                    "internalType": "uint256[]",
+                    "type": "uint256[]"
+                }
+            ],
+            "funcSign": "0xd06ca61f",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "amountIn",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "path",
+                    "internalType": "address[]",
+                    "type": "address[]"
+                }
+            ],
+            "name": "getAmountsOut",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "uint256[]@getAmountsOut(uint256,address[])",
+            "type": "function",
+            "textView": "getAmountsOut (uint256 amountIn, address[] path)"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "",
+                    "internalType": "bytes32",
+                    "type": "bytes32"
+                }
+            ],
+            "funcSign": "0x5431927d",
+            "inputs": [],
+            "name": "getInitCodeHash",
+            "stateMutability": "pure",
+            "anonymous": false,
+            "text": "bytes32@getInitCodeHash()",
+            "type": "function",
+            "textView": "getInitCodeHash ()"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "funcSign": "0xe6a43905",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "",
+                    "internalType": "address",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "name": "getPair",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "address@getPair(address,address)",
+            "type": "function",
+            "textView": "getPair (address , address )"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "reserveA",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                },
+                {
+                    "name": "reserveB",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "funcSign": "0xd52bb6f4",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "tokenA",
+                    "internalType": "address",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "tokenB",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "name": "getReserves",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "uint256,uint256@getReserves(address,address)",
+            "type": "function",
+            "textView": "getReserves (address tokenA, address tokenB)"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "",
+                    "internalType": "bool",
+                    "type": "bool"
+                }
+            ],
+            "funcSign": "0xa926e7c7",
+            "inputs": [],
+            "name": "initCode",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "bool@initCode()",
+            "type": "function",
+            "textView": "initCode ()"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "",
+                    "internalType": "bytes32",
+                    "type": "bytes32"
+                }
+            ],
+            "funcSign": "0xdb4c545e",
+            "inputs": [],
+            "name": "initCodeHash",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "bytes32@initCodeHash()",
+            "type": "function",
+            "textView": "initCodeHash ()"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "pair",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "funcSign": "0x96ed28f9",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "tokenA",
+                    "internalType": "address",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "tokenB",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "name": "pairFor",
+            "stateMutability": "view",
+            "anonymous": false,
+            "text": "address@pairFor(address,address)",
+            "type": "function",
+            "textView": "pairFor (address tokenA, address tokenB)"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "amountB",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "funcSign": "0xad615dec",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "amountA",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "reserveA",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "reserveB",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "name": "quote",
+            "stateMutability": "pure",
+            "anonymous": false,
+            "text": "uint256@quote(uint256,uint256,uint256)",
+            "type": "function",
+            "textView": "quote (uint256 amountA, uint256 reserveA, uint256 reserveB)"
+        },
+        {
+            "outputs": [],
+            "funcSign": "0xf46901ed",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "_feeTo",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "name": "setFeeTo",
+            "stateMutability": "nonpayable",
+            "anonymous": false,
+            "text": "setFeeTo(address)",
+            "type": "function",
+            "textView": "setFeeTo (address _feeTo)"
+        },
+        {
+            "outputs": [],
+            "funcSign": "0xb5e4aa72",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "_rate",
+                    "internalType": "uint256",
+                    "type": "uint256"
+                }
+            ],
+            "name": "setFeeToRate",
+            "stateMutability": "nonpayable",
+            "anonymous": false,
+            "text": "setFeeToRate(uint256)",
+            "type": "function",
+            "textView": "setFeeToRate (uint256 _rate)"
+        },
+        {
+            "outputs": [],
+            "funcSign": "0xa2e74af6",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "_feeToSetter",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "name": "setFeeToSetter",
+            "stateMutability": "nonpayable",
+            "anonymous": false,
+            "text": "setFeeToSetter(address)",
+            "type": "function",
+            "textView": "setFeeToSetter (address _feeToSetter)"
+        },
+        {
+            "outputs": [],
+            "funcSign": "0x2c9dc159",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "_initCodeHash",
+                    "internalType": "bytes32",
+                    "type": "bytes32"
+                }
+            ],
+            "name": "setInitCodeHash",
+            "stateMutability": "nonpayable",
+            "anonymous": false,
+            "text": "setInitCodeHash(bytes32)",
+            "type": "function",
+            "textView": "setInitCodeHash (bytes32 _initCodeHash)"
+        },
+        {
+            "outputs": [
+                {
+                    "name": "token0",
+                    "internalType": "address",
+                    "type": "address"
+                },
+                {
+                    "name": "token1",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "funcSign": "0x544caa56",
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "tokenA",
+                    "internalType": "address",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "tokenB",
+                    "internalType": "address",
+                    "type": "address"
+                }
+            ],
+            "name": "sortTokens",
+            "stateMutability": "pure",
+            "anonymous": false,
+            "text": "address,address@sortTokens(address,address)",
+            "type": "function",
+            "textView": "sortTokens (address tokenA, address tokenB)"
+        }
+    ],
+    "mapping": {
+        "PairCreated": "PairCreated",
+        "allPairs": "allPairs",
+        "allPairsLength": "allPairsLength",
+        "createPair": "createPair",
+        "feeTo": "feeTo",
+        "feeToRate": "feeToRate",
+        "feeToSetter": "feeToSetter",
+        "getAmountIn": "getAmountIn",
+        "getAmountOut": "getAmountOut",
+        "getAmountsIn": "getAmountsIn",
+        "getAmountsOut": "getAmountsOut",
+        "getInitCodeHash": "getInitCodeHash",
+        "getPair": "getPair",
+        "getReserves": "getReserves",
+        "initCode": "initCode",
+        "initCodeHash": "initCodeHash",
+        "pairFor": "pairFor",
+        "quote": "quote",
+        "setFeeTo": "setFeeTo",
+        "setFeeToRate": "setFeeToRate",
+        "setFeeToSetter": "setFeeToSetter",
+        "setInitCodeHash": "setInitCodeHash",
+        "sortTokens": "sortTokens"
+    }
+}
