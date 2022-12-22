@@ -65,6 +65,7 @@ and manages meditation level progression.
     # TODO: Add meditation duration stat multipliers
 # TODO: Implement persistent meditation session history tracking
 """
+# Stress reduction scales with meditation duration
 # Monitor focus level and detect concentration fluctuations
 # Performance: batch process for efficiency
 # Refactor: simplify control flow
