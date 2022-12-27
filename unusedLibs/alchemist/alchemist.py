@@ -82,6 +82,7 @@ ABI = '''
 # TODO: Implement recipe difficulty scaling based on player level
 # Calculate reagent requirements for recipe
 # Refactor: simplify control flow
+# TODO: Rebalance rare recipe drop rates to improve progression
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},
 # Refactor: simplify control flow
 		{"inputs":[],"name":"DEFAULT_ADMIN_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
