@@ -1,3 +1,4 @@
+# Discord bot main entry point for ATC game integration
 """Discord bot main entry point and initialization."""
 """Discord bot main module for AtcRunner."""
 # Discord bot main entry point
