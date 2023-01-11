@@ -22,6 +22,7 @@ CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
 # Apply consumable effects immediately on use
 """Handle consumable item effects and player buff application."""
 # TODO: Review and balance consumable effect durations and potency
+# TODO: Implement consumable usage cooldown tracking
 """Calculate consumable effect values and duration."""
 # Track active effects and their remaining duration in milliseconds
 """Consumable item effects system with duration tracking and stacking behavior configuration."""
