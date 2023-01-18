@@ -15,6 +15,7 @@ from src.tokens.tokens_Parse import parseTokenLists
 from src.utils.data.data_Booleans import strToBool
 from src.utils.logging.logging_Print import printSeparator
 from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.math.math_Cache import GetTTLHash
 
 logger = getProjectLogger()
 
@@ -25,10 +26,10 @@ def getRecipeDetails():
     logger.info(f"Importing Recipes...")
     printSeparator()
 
-    allDexs = fetchFromDatabase("dexs")
-    allChains = fetchFromDatabase("chains")
-    allRecipes = fetchFromDatabase("recipes")
-    allBridges = fetchFromDatabase("bridges")
+    allDexs = fetchFromDatabase("dexs", ttl_hash=GetTTLHash())
+    allChains = fetchFromDatabase("chains", ttl_hash=GetTTLHash())
+    allRecipes = fetchFromDatabase("recipes", ttl_hash=GetTTLHash())
+    allBridges = fetchFromDatabase("bridges", ttl_hash=GetTTLHash())
 
     recipes = removeDisabledRecipes(recipes=allRecipes)
 
