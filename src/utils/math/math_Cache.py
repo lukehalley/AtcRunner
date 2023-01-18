@@ -1,4 +1,4 @@
 import time
 
-def GetTTLHash(seconds=3600):
+def GetTTLHash(seconds=86400):
     return round(time.time() / seconds)
