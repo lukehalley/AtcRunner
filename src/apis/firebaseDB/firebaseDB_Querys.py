@@ -1,9 +1,12 @@
 import sys
 
+import cachetools
 from firebase_admin import db
+from functools import lru_cache
 
 from src.utils.env.env_AWSSecrets import checkIsDocker
 from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.math.math_Cache import GetTTLHash
 
 logger = getProjectLogger()
 
@@ -21,7 +24,11 @@ def fetchEnvCollection(collection):
 
 
 # Fetch a collection from Firebase
-def fetchFromDatabase(reference: str, printInfo=False):
+# @time_cache(86400)
+@lru_cache()
+def fetchFromDatabase(reference: str, printInfo=False, ttl_hash=None):
+    del ttl_hash
+
     if printInfo:
         logger.info(f"Getting '{reference}' from Firebase")
 
@@ -34,7 +41,7 @@ def fetchFromDatabase(reference: str, printInfo=False):
 
 # Fetch an arbitrage strategy by its name
 def fetchStrategy(recipe, strategyType):
-    strategies = fetchFromDatabase("strategies")
+    strategies = fetchFromDatabase("strategies", ttl_hash=GetTTLHash())
 
     strategyName = recipe["arbitrage"]["strategies"][strategyType]
 

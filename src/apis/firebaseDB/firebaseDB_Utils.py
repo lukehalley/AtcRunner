@@ -15,17 +15,30 @@ def createDatabaseConnection():
 
     firebaseKey = getAWSSecret(key="FIREBASE_KEY").replace("\\n", "\n")
 
+    # firebaseAuth = {
+    #     "type": "service_account",
+    #     "project_id": "dfk-arbitrage",
+    #     "private_key_id": "3c7781d9851753c4fbe43203b0aacfd7f5a8c921",
+    #     "private_key": firebaseKey,
+    #     "client_email": "firebase-adminsdk-w91wo@dfk-arbitrage.iam.gserviceaccount.com",
+    #     "client_id": "117235103434626746458",
+    #     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    #     "token_uri": "https://oauth2.googleapis.com/token",
+    #     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    #     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-w91wo%40dfk-arbitrage.iam.gserviceaccount.com"
+    # }
+
     firebaseAuth = {
         "type": "service_account",
-        "project_id": "dfk-arbitrage",
-        "private_key_id": "3c7781d9851753c4fbe43203b0aacfd7f5a8c921",
+        "project_id": "atcfirebase-b2bfe",
+        "private_key_id": "51e5feb12afe1a1b792b197a72554ab883f8a59a",
         "private_key": firebaseKey,
-        "client_email": "firebase-adminsdk-w91wo@dfk-arbitrage.iam.gserviceaccount.com",
-        "client_id": "117235103434626746458",
+        "client_email": "firebase-adminsdk-wxk7u@atcfirebase-b2bfe.iam.gserviceaccount.com",
+        "client_id": "107837275555518114337",
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
         "token_uri": "https://oauth2.googleapis.com/token",
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-w91wo%40dfk-arbitrage.iam.gserviceaccount.com"
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-wxk7u%40atcfirebase-b2bfe.iam.gserviceaccount.com"
     }
 
     logger.info(f"Creating connection to Firebase...")

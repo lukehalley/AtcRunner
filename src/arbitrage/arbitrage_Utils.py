@@ -1,12 +1,13 @@
 from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
 from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.math.math_Cache import GetTTLHash
 
 logger = getProjectLogger()
 
 
 # Get the next arbitrage number using the arbitrages collection in Firebase
 def getNextArbitrageNumber():
-    arbitrages = fetchFromDatabase("arbitrages")
+    arbitrages = fetchFromDatabase("arbitrages", ttl_hash=GetTTLHash())
     if arbitrages:
         return sorted([int(w.replace('arbitrage_', '')) for w in list(arbitrages.keys())])[-1] + 1
     else:

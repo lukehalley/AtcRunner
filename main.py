@@ -5,6 +5,7 @@ load_dotenv()
 
 # Firebase Imports
 from src.apis.firebaseDB.firebaseDB_Utils import createDatabaseConnection
+from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase
 
 # Arbitrage Imports
 from src.arbitrage.arbitrage_Calculate import calculateArbitrageIsProfitable, determineArbitrageStrategy
@@ -104,6 +105,12 @@ while True:
                 recipe=recipe,
                 isRollback=False
             )
+
+            # Invalidate Cache
+            fetchFromDatabase.cache_clear()
+
+            # Sleep
+            # time.sleep(600)
 
         else:
             printSeparator()

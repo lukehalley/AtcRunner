@@ -1,5 +1,6 @@
 from src.apis.firebaseDB.firebaseDB_Querys import fetchFromDatabase, fetchEnvCollection
 from src.utils.logging.logging_Setup import getProjectLogger
+from src.utils.math.math_Cache import GetTTLHash
 
 logger = getProjectLogger()
 
@@ -8,7 +9,7 @@ logger = getProjectLogger()
 def writeTransactionToDB(transaction: dict, currentRoundTrip: int, stepCategory: str):
     arbitrageTitle = f"arbitrage_{currentRoundTrip}"
 
-    arbitrages = fetchFromDatabase("arbitrages")
+    arbitrages = fetchFromDatabase("arbitrages", ttl_hash=GetTTLHash())
 
     if not arbitrages:
         arbitrages = {}
@@ -30,7 +31,7 @@ def writeTransactionToDB(transaction: dict, currentRoundTrip: int, stepCategory:
 def writeResultToDB(result: dict, currentRoundTrip: int):
     arbitrageTitle = f"arbitrage_{currentRoundTrip}"
 
-    arbitrages = fetchFromDatabase("arbitrages")
+    arbitrages = fetchFromDatabase("arbitrages", ttl_hash=GetTTLHash())
 
     if arbitrages:
 

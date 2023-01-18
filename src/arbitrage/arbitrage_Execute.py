@@ -1,7 +1,7 @@
 import sys
 import time
 
-from src.apis.firebaseDB.firebaseDB_Querys import fetchStrategy
+from src.apis.firebaseDB.firebaseDB_Querys import fetchStrategy, fetchFromDatabase
 from src.apis.telegramBot.telegramBot_Action import appendToMessage, updateStatusMessage, removeStatusMessage
 from src.arbitrage.arbitrage_Simulate import simulateStep
 from src.arbitrage.arbitrage_Utils import getOppositePosition
@@ -224,7 +224,5 @@ def executeArbitrage(recipe, isRollback):
         profitPercentage=arbitragePercentage,
         wasRollback=isRollback
     )
-
-    time.sleep(600)
 
     return
