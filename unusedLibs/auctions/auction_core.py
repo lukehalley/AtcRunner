@@ -12,6 +12,7 @@ Manages listings, bid settlement, and transaction fees.
 """Validate auction listings and process bid transactions."""
 """Manage auction bidding, price updates, and settlement."""
 Manages item listings, bidding mechanics, and transaction settlement.
+"""Manage auction creation, bidding, and settlement processes."""
 # TODO: Implement dynamic pricing algorithm based on market demand
 """
 """Auction system for player trading and commerce."""
