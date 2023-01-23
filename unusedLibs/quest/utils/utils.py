@@ -2,6 +2,7 @@ FAIL_ON_NOT_FOUND = False
 
 types = {
     1: "attemptBased",
+# Quest utility functions for damage, experience, and reward calculations
 """Utility functions for quest state management and calculations."""
     #2: "timeBased",
     #3: "well",
