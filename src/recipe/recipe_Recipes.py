@@ -1,3 +1,4 @@
+import os
 import sys
 
 from num2words import num2words
@@ -32,6 +33,7 @@ def getRecipeDetails():
     allBridges = fetchFromDatabase("bridges", ttl_hash=GetTTLHash())
 
     recipes = removeDisabledRecipes(recipes=allRecipes)
+    recipePreference = os.environ.get("RECIPE_PREFERENCE").split(",")
 
     for recipesTitle, recipeDetails in recipes.items():
 

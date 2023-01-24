@@ -1,6 +1,5 @@
 import os
 
-from retry import retry
 from web3 import Web3
 
 from src.arbitrage.arbitrage_Utils import getOppositeToken, getRoutes
