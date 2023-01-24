@@ -46,7 +46,7 @@ def appendToMessage(messageToAppendTo, messageToAppend):
         if isKnownTransactionError:
             pass
         else:
-            raise Exception(str(e))
+            pass
 
 
 # Update the emoji at the end of a message
@@ -88,7 +88,7 @@ def updateStatusMessage(originalMessage, newStatus, lineIndex=-1):
                 return originalMessage
                 pass
             else:
-                raise Exception(str(e))
+                pass
     else:
         logger.info("Telegram message same as before - not updating.")
         return originalMessage
@@ -116,7 +116,7 @@ def removeStatusMessage(originalMessage, lineIndex=-1):
             return originalMessage
             pass
         else:
-            raise Exception(str(e))
+            pass
 
 
 # Send a alert of a stuck bridge into the Synapse bridge support chat
