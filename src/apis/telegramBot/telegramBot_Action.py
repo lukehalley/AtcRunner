@@ -43,10 +43,11 @@ def appendToMessage(messageToAppendTo, messageToAppend):
         return updatedMessage
     except Exception as e:
         isKnownTransactionError = "specified new message content and reply markup are exactly the same" in str(e)
-        if isKnownTransactionError:
-            pass
-        else:
-            pass
+        # if isKnownTransactionError:
+        #     pass
+        # else:
+        #     pass
+        pass
 
 
 # Update the emoji at the end of a message
@@ -84,11 +85,13 @@ def updateStatusMessage(originalMessage, newStatus, lineIndex=-1):
             return updatedMessage
         except Exception as e:
             sameTextError = "specified new message content and reply markup are exactly the same" in str(e)
-            if sameTextError:
-                return originalMessage
-                pass
-            else:
-                pass
+            # if sameTextError:
+            #     return originalMessage
+            #     pass
+            # else:
+            #     pass
+            return originalMessage
+            pass
     else:
         logger.info("Telegram message same as before - not updating.")
         return originalMessage
@@ -112,11 +115,8 @@ def removeStatusMessage(originalMessage, lineIndex=-1):
         return updatedMessage
     except Exception as e:
         sameTextError = "specified new message content and reply markup are exactly the same" in str(e)
-        if sameTextError:
-            return originalMessage
-            pass
-        else:
-            pass
+        return originalMessage
+        pass
 
 
 # Send a alert of a stuck bridge into the Synapse bridge support chat
