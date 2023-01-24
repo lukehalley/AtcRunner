@@ -110,7 +110,7 @@ while True:
             fetchFromDatabase.cache_clear()
 
             # Sleep
-            time.sleep(600)
+            # time.sleep(600)
 
         else:
             printSeparator()

@@ -20,7 +20,7 @@ usernames, mentionStr = getTelegramStuckMentions()
 # Send a message to a Telegram channel
 @retry(tries=httpRetryLimit, delay=httpRetryDelay, logger=logger)
 def sendMessage(msg, channelId=telegramChannelID):
-    result = await bot.send_message(
+    result = bot.send_message(
         chat_id=channelId,
         text=msg
     )
