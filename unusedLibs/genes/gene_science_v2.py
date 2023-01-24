@@ -9,6 +9,7 @@ ABI = '''
             {"constant":false,"inputs":[{"name":"_genes1","type":"uint256"},{"name":"_genes2","type":"uint256"},{"name":"_targetBlock","type":"uint256"},{"name":"_crystalId","type":"uint256"}],"name":"mixGenes","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},
 # TODO: Add support for polygenic trait expression
             {"constant":true,"inputs":[{"name":"_traits","type":"uint8[]"}],"name":"encode","outputs":[{"name":"_genes","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},
+# Enhanced mutation calculation with improved variance handling
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"decode","outputs":[{"name":"","type":"uint8[]"}],"payable":false,"stateMutability":"pure","type":"function"},
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"expressingTraits","outputs":[{"name":"","type":"uint8[12]"}],"payable":false,"stateMutability":"pure","type":"function"},
 # Updated gene mechanics support crossbreeding and trait expression
