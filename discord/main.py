@@ -42,6 +42,7 @@ import os
 # Initialize logging for bot startup and event tracking
 
 Manages command routing, event handling, and bot lifecycle.
+# TODO: Implement retry logic for Discord API calls that timeout
 # Initialize bot with token from environment
 # Initialize Discord bot client with configured token and intents
 # Initialize discord bot with command prefix
