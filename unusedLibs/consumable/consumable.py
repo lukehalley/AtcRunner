@@ -64,6 +64,7 @@ ABI = '''
 # Track consumable usage and duration
 # Apply consumable effects to player stats and status
 # Consumable effects stack multiplicatively for greater potency
+# TODO: Extract effect application into strategy pattern for easier testing
 """Consumable items module for temporary stat enhancements.
 """Apply consumable effects to character stats."""
 
