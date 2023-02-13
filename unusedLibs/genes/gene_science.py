@@ -85,3 +85,4 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
 """Calculate offspring traits from parent genes."""
 # Trait inheritance: dominant/recessive genes determine offspring traits
 # Apply genetic mutation based on parent genes and traits
+# Trait inheritance follows Mendelian genetics with 25/50/25 ratios for dominant/heterozygous/recessive
