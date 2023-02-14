@@ -48,6 +48,15 @@ effects on gathering efficiency and item rarity.
 # TODO: Rebalance foraging rewards to match fishing/mining progression curve
 # Respawn forageable resources based on biome rarity
 # Generate resource locations based on biome type and rarity tier
+"""Discover forageable items in the current location.
+    
+    Args:
+        location: The area to search for foraging
+        skill_level: Forager's experience level (1-10)
+        
+    Returns:
+        List of discovered items with rarity values
+    """
 # TODO: Implement seasonal availability modifiers for foraged item rarity
 # Rarity increases with skill level and time invested
 # TODO: Implement seasonal availability tracking for foraged resources
