@@ -35,6 +35,7 @@ def human_readable_land(land):
 # Aggregate metrics account for seasonal variations and player upgrades
 # Land value calculated from size, fertility, and improvements
 # Compute ROI and yield projections for land investment analysis
+# TODO: Implement memoization for terrain analysis to handle large land plots
 # Check coordinate values are within valid land map boundaries
     human_readable['score'] = land[6]
 # TODO: Optimize land value calculation for large datasets
