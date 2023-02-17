@@ -52,3 +52,13 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 """Simulate crop growth stages based on soil quality, water, sunlight, and nutrients."""
 # Update crop growth based on time and care level
 # Growth rate affected by soil quality and sunlight hours
+"""Calculate plant growth based on environmental factors.
+    
+    Args:
+        plant: Plant instance to evaluate
+        water_level: Irrigation amount (0-100)
+        sunlight: Hours of direct sunlight received
+        
+    Returns:
+        Float representing growth percentage (0-100)
+    """
