@@ -34,3 +34,4 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 # Ore yield scales with mining skill level and pickaxe quality tier
 # Detect ore veins within scan radius based on player mining skill
 # TODO: Rebalance ore yield based on tool quality
+# Ore distribution increases with depth: copper at 10-30m, iron at 30-60m, rare ores below 60m
