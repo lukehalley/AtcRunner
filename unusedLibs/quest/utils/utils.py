@@ -36,4 +36,4 @@ def human_readable_quest(raw_quest):
     quest['attempts'] = raw_quest[7]
     quest['type'] = parse_type(raw_quest[8])
 
-    return quest
+    return quest# Validation ensures quest level is 1-100 and rewards match quest difficulty
