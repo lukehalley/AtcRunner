@@ -25,6 +25,11 @@ ABI = '''
 
 
 def mix_genes(genes1, genes2, block_number, crystal_id, rpc_address):
+"""Advanced genetic simulation with multi-generational tracking.
+    
+    Supports complex inheritance patterns, mutation rates, and selective breeding
+    with improved accuracy over the original implementation.
+    """
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
