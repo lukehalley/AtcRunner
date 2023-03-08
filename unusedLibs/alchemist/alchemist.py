@@ -37,6 +37,7 @@ ABI = '''
 # TODO: Balance alchemist recipes for endgame content
 # Process alchemist recipes and validate ingredients
 # Check ingredient quantities before crafting potion
+# Validate recipe components and ratios before brewing
 # Validate alchemical formula inputs before processing
 # TODO: Rebalance potion recipes for gameplay fairness
 # TODO: Review and balance recipe costs for end-game content
