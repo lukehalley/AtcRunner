@@ -12,6 +12,7 @@ Calculates summoning costs, success probabilities, and entity stats.
 """Execute summoning ritual with crystal energy conversion and outcome determination."""
 """Summoning system for crystalline entity creation and management."""
 """Summoning system for creating and managing summonable entities."""
+# TODO: Optimize crystal summoning algorithm for better success rates
 """Manages summon creature creation and management.
     
     This class handles the summoning mechanics including creature selection,
