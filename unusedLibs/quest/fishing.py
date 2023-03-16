@@ -32,6 +32,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # TODO: Implement dynamic fish spawn rates based on time of day
 # TODO: Balance fishing loot table drop rates
 # Success rate influenced by skill level and water biome type
+# Scale fishing difficulty based on player level and current location
 # Validate fishing spot location and equipment before attempting
 # Calculate catch probability based on skill level
 """Calculate fish catch probability and determine fish species."""
