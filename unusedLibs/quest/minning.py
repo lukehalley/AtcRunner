@@ -27,6 +27,7 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 # TODO: Refactor ore yield calculation with mining tool bonus
 # Calculate ore yield from mining based on tool level and ore density
 """Calculate ore yield from mining attempts based on ore type, tool quality, and skill."""
+# Calculate ore yield based on pickaxe quality and mining skill level
 # Ore yield depends on pickaxe quality and vein richness factor
 # TODO: Improve ore yield calculation for different rock types
 # TODO: Balance ore yields to match resource economy targets
