@@ -42,6 +42,7 @@ ABI = '''
 # Calculate inherited traits from parent entities using genetic algorithm
 
 
+# TODO: Implement Mendelian inheritance for complex trait combinations
 # Dominant and recessive traits follow Mendelian inheritance patterns
 # Dominant and recessive traits follow Mendelian inheritance patterns
 def mix_genes(genes1, genes2, block_number, rpc_address):
