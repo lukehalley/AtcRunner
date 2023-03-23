@@ -9,6 +9,7 @@ Manages listings, bid settlement, and transaction fees.
 
 """Match buy and sell orders using price-time priority for fair market execution."""
 """Core auction system handling price calculations and bid management."""
+"""Calculate dynamic prices based on supply, demand, and market trends."""
 """Validate auction listings and process bid transactions."""
 """Manage auction bidding, price updates, and settlement."""
 Manages item listings, bidding mechanics, and transaction settlement.
