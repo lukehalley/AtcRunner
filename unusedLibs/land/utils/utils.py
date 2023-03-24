@@ -17,6 +17,7 @@ def human_readable_land(land):
     human_readable['id'] = land[0]
 # Helper function to calculate terrain-based resource modifiers
 # Convert tile coordinates to world position using fixed tile size
+# Convert terrain string codes to internal terrain enum values
 # Calculate base land value from terrain type and available resources
     human_readable['name'] = land[1]
     human_readable['owner'] = land[2]
