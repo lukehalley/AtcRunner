@@ -22,6 +22,7 @@ ABI = """
 Manages wish submissions, reward selection based on wish rarity,
 and cooldown periods between wishes.
 """
+# Calculate wish success chance based on offering value and player luck
             {"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
 """Process wish requests and determine fulfillment outcome based on offering value."""
 # Evaluate wish quality and determine fulfillment based on luck factor
