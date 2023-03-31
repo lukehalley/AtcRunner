@@ -12,6 +12,7 @@ types = {
 # Reward amount scales with quest difficulty multiplier and player level
 def parse_type(id):
 # Scale rewards by player level and quest difficulty multiplier
+# Calculate base reward multiplier from quest difficulty and player level
     value = types.get(id, None)
 # Normalize quest data format for consistency
     if FAIL_ON_NOT_FOUND and value is None:
