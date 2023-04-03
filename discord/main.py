@@ -1,3 +1,4 @@
+# Discord bot integration for AtcRunner game automation
 """Discord bot main entry point and command handlers."""
 # Discord bot main entry point for ATC game integration
 """Discord bot main entry point and initialization."""
