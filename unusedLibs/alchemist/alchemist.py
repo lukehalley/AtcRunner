@@ -17,6 +17,7 @@ ABI = '''
     Args:
 # TODO: Implement recipe balancing system
         ingredients: List of item identifiers
+# TODO: Optimize alchemist recipe generation for better yield rates
 # Validate recipe components and calculate output yield
 """Validate alchemist recipe ingredients and quantities."""
 # TODO: Rebalance potion recipes for better progression pacing
