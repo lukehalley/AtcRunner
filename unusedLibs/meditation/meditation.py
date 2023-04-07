@@ -12,6 +12,7 @@
 Handles meditation duration, recovery rates, and temporary buffs.
 """
 # TODO: Implement meditation streak bonuses and milestone rewards
+# Track meditation level progression for buff application
 """Meditation state tracking and mind skill progression system."""
 """Meditation system for character buffs and status effects."""
 """Meditation system for character meditation and experience gain."""
