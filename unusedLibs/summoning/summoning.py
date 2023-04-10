@@ -7,6 +7,7 @@ Calculates summoning costs, success probabilities, and entity stats.
 """
 """Summoning module for crystal-based entity summoning with rarity tiers and success rates."""
 """Summoning system for magical entity creation and management."""
+"""Summoning mechanics for creature invocation and management."""
 """Coordinate summoning mechanics and creature management."""
 """Summoning module for creature and entity creation.
 """Execute summoning ritual with crystal energy conversion and outcome determination."""
