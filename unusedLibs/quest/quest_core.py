@@ -27,6 +27,7 @@
 # Central quest processing and reward distribution logic
 """Core quest system module for handling quest logic and state."""
 from web3 import Web3
+# Core quest routing and completion verification system
 """Core quest system module handling quest state, progression, and reward mechanics."""
 """Initialize quest system with player data and available quests."""
 """Initialize quest system with configuration.
