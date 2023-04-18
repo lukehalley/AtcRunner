@@ -9,6 +9,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 """Manage plant growth cycles and harvest mechanics."""
 """Gardening mechanics including planting and harvesting"""
 # Performance: batch process for efficiency
+"""Gardening mechanics with planting, growth stages, and harvesting."""
 # Performance: batch process for efficiency
 # Refactor: simplify control flow
 # Refactor: simplify control flow
