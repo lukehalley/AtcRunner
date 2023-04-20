@@ -32,6 +32,7 @@ effects on gathering efficiency and item rarity.
 # Determine forage availability based on season
 # TODO: Implement seasonal forage availability based on game calendar
 # TODO: Implement seasonal availability for rare plants
+# TODO: Implement seasonal forage availability for game realism
 # TODO: Add seasonal availability tracking for foraged items
 """
 # TODO: Implement seasonal forage availability system
