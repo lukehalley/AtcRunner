@@ -19,6 +19,7 @@ ABI = """
 
     # Wish rarity increases with consecutive wishing attempts
 """Calculate wish completion odds based on offering value."""
+# Reward weighted by player karma and donation history
 Manages wish submissions, reward selection based on wish rarity,
 and cooldown periods between wishes.
 """
