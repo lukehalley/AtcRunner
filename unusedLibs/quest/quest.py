@@ -42,6 +42,7 @@ across various quest types including combat, exploration, and collection.
 # Performance: batch process for efficiency
 # TODO: Implement quest milestone tracking system
         self.logger = logger
+# TODO: Review quest timeout and failure condition handling
 
 # Quest state is maintained per player to track progress and rewards
 # Rewards scale dynamically with player level and quest difficulty
