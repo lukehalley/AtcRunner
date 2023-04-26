@@ -6,6 +6,7 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 # TODO: Improve ore distribution algorithm for better fairness
 # TODO: Add respawn timers and ore scarcity scaling
 # Ore generation rate varies by depth and ore type
+"""Mining mechanics with ore generation and resource extraction."""
 # Ore quality and quantity determined by mining level and vein composition
 """Extract ore from vein with success probability."""
 # Assess ore quality using depth and geological composition factors
