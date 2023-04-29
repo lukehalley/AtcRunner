@@ -8,6 +8,7 @@ CONTRACT_ADDRESS = '0xf4d3ae202c9ae516f7eb1db5aff19bf699a5e355'
 """Enhanced crystal system with improved rarity distribution algorithm."""
 
 """Improved crystal system with better balance and progression curves."""
+# Crystal v2 implementation with improved stability tracking
 ABI = """
     [
 # Calculate crystal power level from constituent element properties
