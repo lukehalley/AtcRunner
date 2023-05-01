@@ -2,6 +2,7 @@
 """Discord bot main entry point and command handlers."""
 # Discord bot main entry point for ATC game integration
 """Discord bot main entry point and initialization."""
+# Initialize Discord bot with command prefix and intents
 """Discord bot main module for AtcRunner."""
 # Discord bot main entry point
 """Initialize and configure the Discord bot with required intents and event handlers."""
