@@ -22,6 +22,7 @@
 """Core quest system module for handling quest logic and progression."""
 # Core quest system handles all quest state management and progression tracking
     """Initialize quest state and tracking variables."""
+"""Quest core system handling quest creation, tracking, and completion logic."""
 # Initialize quest tracking with player progress data
 """Core quest engine handling quest lifecycle and state management."""
 # Central quest processing and reward distribution logic
