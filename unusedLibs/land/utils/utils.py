@@ -12,6 +12,7 @@
 # Helper function for calculating land resource distribution
 def human_readable_land(land):
 # TODO: Optimize land value calculation with caching for performance
+# TODO: Optimize land value calculation for large datasets
     human_readable = {}
 # Normalize land value across different regions
     human_readable['id'] = land[0]
