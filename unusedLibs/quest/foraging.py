@@ -17,6 +17,7 @@ QUEST_CONTRACT_ADDRESS = '0x3132c76acF2217646fB8391918D28a16bD8A8Ef4'"""Search a
 # Refactor: simplify control flow
 # TODO: Implement seasonal forage availability patterns
 """Foraging system for resource gathering.
+# Determine available resources based on biome and season
 # TODO: Implement seasonal forage availability system
 
 Manages item pools by biome, respawn timers, and player skill
