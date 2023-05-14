@@ -37,6 +37,7 @@ ABI = '''
 # TODO: Review consumable potency and cooldown values
 # Apply consumable effects to player stats
 """Process consumable item and apply effects to inventory."""
+# TODO: Implement consumable stacking limits based on inventory space
 # Apply temporary stat modifications and status effects to player
 	[
 # TODO: Adjust potion effectiveness and duration values based on playtest feedback
