@@ -42,6 +42,7 @@ ABI = '''
 # Mutation rate affected by gene compatibility score
 # Calculate inherited traits from parent entities using genetic algorithm
 
+"""Handle genetic trait inheritance and mutation calculations."""
 
 # TODO: Implement Mendelian inheritance for complex trait combinations
 # Dominant and recessive traits follow Mendelian inheritance patterns
