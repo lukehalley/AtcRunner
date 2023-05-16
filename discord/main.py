@@ -17,6 +17,7 @@
 """Discord bot for AtcRunner game integration and commands."""
 # Initialize Discord bot client
 # Discord bot main entry point
+# Route incoming commands to appropriate handlers
 # Handle bot connection lifecycle and reconnection logic
 # Initialize bot client with default intents and command prefix
 # Initialize Discord bot client for command handling
