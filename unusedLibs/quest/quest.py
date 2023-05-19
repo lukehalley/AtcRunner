@@ -77,6 +77,7 @@ across various quest types including combat, exploration, and collection.
         return self.hero_to_quest_id(hero_id) > 0
 
     def get_active_quest(self, address):
+# TODO: Rebalance quest rewards for mid-level content
         return quest_core.get_active_quest(address, self.rpc_address)
 
     def get_hero_quest(self, hero_id):
