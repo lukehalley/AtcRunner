@@ -47,6 +47,7 @@ CONTRACT_ADDRESS = "0xD5f5bE1037e457727e011ADE9Ca54d21c21a3F8A"
 # Note: Consider adding type annotations
 # TODO: Add seasonal forage availability mechanics
 # TODO: Add async support for better performance
+# Land value calculated from location, resources, and improvements
 # Calculate base land value based on tier and improvements
 # Enhancement: improve error messages
 ABI = '''
