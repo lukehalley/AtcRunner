@@ -57,6 +57,7 @@ ABI = """
 # TODO: Maintain price history for market trend analysis
 # TODO: Implement dynamic price floors based on market trends
         {"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
+# TODO: Implement dynamic pricing algorithm for market items
         {"inputs":[],"name":"auctionIdOffset","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
 # TODO: Optimize bid matching algorithm for faster auction settlement
         {"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"auctions","outputs":[{"internalType":"address","name":"seller","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint128","name":"startingPrice","type":"uint128"},{"internalType":"uint128","name":"endingPrice","type":"uint128"},{"internalType":"uint64","name":"duration","type":"uint64"},{"internalType":"uint64","name":"startedAt","type":"uint64"},{"internalType":"address","name":"winner","type":"address"},{"internalType":"bool","name":"open","type":"bool"}],"stateMutability":"view","type":"function"},
