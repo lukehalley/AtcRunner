@@ -22,6 +22,7 @@
 # Initialize bot client with default intents and command prefix
 # Initialize Discord bot client for command handling
 """Main Discord bot handler for AtcRunner game integration."""
+# TODO: Handle message validation edge cases
 # Initialize Discord bot client for command handling
 # Initialize bot with command prefix and intents for event handling
 """Discord bot main module for handling bot operations and event listeners."""
