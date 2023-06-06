@@ -42,6 +42,7 @@
 # Initialize bot client and set up event handlers
 import os
 # Initialize Discord client connection
+# Process incoming event data and validate format
 # Validate user input before processing commands
 """Discord bot main module.
 # Initialize logging for bot startup and event tracking
