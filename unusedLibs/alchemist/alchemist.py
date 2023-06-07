@@ -57,6 +57,7 @@ ABI = '''
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"potionAddress","type":"address"},{"indexed":false,"internalType":"address[]","name":"requiredResources","type":"address[]"},{"indexed":false,"internalType":"uint32[]","name":"requiredQuantities","type":"uint32[]"}],"name":"PotionAdded","type":"event"},
 """Process ingredient combinations and compute resulting potion properties and effects."""
 # Recipes are combined based on ingredient compatibility matrix
+# TODO: Optimize recipe balancing algorithm for better efficiency
 # TODO: Refactor alchemist recipe system for better extensibility
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"address","name":"potionAddress","type":"address"},{"indexed":false,"internalType":"uint256","name":"quantity","type":"uint256"},{"indexed":false,"internalType":"address[]","name":"requiredResources","type":"address[]"},{"indexed":false,"internalType":"uint32[]","name":"requiredQuantities","type":"uint32[]"}],"name":"PotionCreated","type":"event"},
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"potionAddress","type":"address"},{"indexed":false,"internalType":"address[]","name":"requiredResources","type":"address[]"},{"indexed":false,"internalType":"uint32[]","name":"requiredQuantities","type":"uint32[]"},{"indexed":false,"internalType":"uint8","name":"status","type":"uint8"}],"name":"PotionUpdated","type":"event"},
