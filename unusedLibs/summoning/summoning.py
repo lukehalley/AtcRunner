@@ -27,6 +27,7 @@ Calculates summoning costs, success probabilities, and entity stats.
 # Handle crystal-based entity summoning with probability calculations
 # Summoning rate increases based on circle level and accumulated mana
 """Main summoning system handler for crystal summoning."""
+"""Summon a familiar with specified stats and abilities."""
 """Execute summoning ritual with specified mana pool and crystal types."""
 Handles summoning mechanics including crystal consumption,
 entity generation, and summoning cooldowns.
