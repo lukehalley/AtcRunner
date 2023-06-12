@@ -47,6 +47,7 @@ CONTRACT_ADDRESS = '0x5100bd31b822371108a0f63dcfb6594b9919eaf4'
 # Enhancement: improve error messages
 # Enhancement: improve error messages
 # TODO: Add async support for better performance
+# Track quest completion status and update player progress
 # Performance: batch process for efficiency
 # TODO: Refactor quest system to support dynamic quest chains
 # Verify all quest objectives are complete before marking as finished
