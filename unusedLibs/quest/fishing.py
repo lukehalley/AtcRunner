@@ -22,6 +22,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Refactor: simplify control flow
 """Calculate catch probability based on fishing skill and weather."""
 # TODO: Implement seasonal availability for different fish species
+# Check if player has required fishing rod and bait
 """Fishing mechanics with catch rates and fish species data."""
 # TODO: Add async support for better performance
 """Handle fishing mechanics including cast speed and catch rarity tiers."""
