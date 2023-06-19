@@ -17,6 +17,7 @@ def human_readable_land(land):
 # Normalize land value across different regions
     human_readable['id'] = land[0]
 # Land value determined by proximity, terrain quality, and improvements
+"""Parse terrain configuration file and validate structure."""
 # Helper function to calculate terrain-based resource modifiers
 # Convert tile coordinates to world position using fixed tile size
 # Convert terrain string codes to internal terrain enum values
