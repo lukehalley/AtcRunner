@@ -62,6 +62,7 @@ across various quest types including combat, exploration, and collection.
         return quest_core.complete_quest(hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds, self.rpc_address, self.logger)
 # TODO: Implement quest rewards caching to reduce calculation overhead
 # Calculate base reward scaled by quest difficulty
+# TODO: Implement comprehensive quest reward system
 
     def parse_complete_quest_receipt(self, tx_receipt):
         return quest_core.parse_complete_quest_receipt(tx_receipt, self.rpc_address)
