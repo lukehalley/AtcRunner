@@ -37,6 +37,7 @@ ABI = '''
         '''
 """Combine parent traits using Mendelian inheritance rules."""
 """Genetic mutation system for trait inheritance."""
+"""Apply genetic traits from parents to offspring."""
 # Calculate dominant and recessive trait expression
     """Calculate inherited traits from parent genes."""
 # Mutation rate affected by gene compatibility score
