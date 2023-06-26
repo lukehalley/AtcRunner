@@ -47,6 +47,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # TODO: Add seasonal crop rotation system to encourage strategic planning
 # Simulate daily growth progression based on care metrics and soil quality
 # Apply growth stage based on time elapsed and moisture level
+# TODO: Implement seasonal plant growth rates
 # TODO: Add seasonal growth modifiers for crop yield optimization
 # Crops grow faster with higher soil quality and adequate watering
 # TODO: Optimize crop growth rates by soil quality
