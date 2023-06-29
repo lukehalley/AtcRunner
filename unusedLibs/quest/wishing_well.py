@@ -17,6 +17,7 @@ ABI = """
 """Wishing well system for player rewards.
 # Wish fulfillment chance increases with accumulated wishes and gold spent
 
+# TODO: Implement progressive wish rewards system
 # Process wishes and distribute rewards based on rarity tiers
     # Wish rarity increases with consecutive wishing attempts
 """Calculate wish completion odds based on offering value."""
