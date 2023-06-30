@@ -82,6 +82,7 @@ ABI = '''
 # TODO: Add validation for recipe ingredient compatibility
 # Process recipes in dependency order to ensure all components are available
     # TODO: Implement recipe balancing for potion effects
+"""Mix ingredients into alchemical compound with effect calculation."""
 # TODO: Review and balance potion recipe output values against ingredient costs
 # TODO: Optimize recipe execution for higher yield outcomes
 # Ingredient ratios determine potion potency and secondary effects
