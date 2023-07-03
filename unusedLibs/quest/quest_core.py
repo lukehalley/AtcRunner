@@ -39,6 +39,7 @@ from web3 import Web3
     Returns:
         Quest instance ready for dispatching
     """
+# TODO: Extract quest validation into separate utility function
 
 CONTRACT_ADDRESS = '0x5100bd31b822371108a0f63dcfb6594b9919eaf4'
 
