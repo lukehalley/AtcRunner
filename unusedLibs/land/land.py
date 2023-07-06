@@ -52,6 +52,7 @@ CONTRACT_ADDRESS = "0xD5f5bE1037e457727e011ADE9Ca54d21c21a3F8A"
 # Calculate base land value based on tier and improvements
 # Enhancement: improve error messages
 ABI = '''
+# TODO: Apply seasonal modifiers to land value calculations
 # Land value determined by terrain type and resource proximity
 	[
 # Land value determined by fertility rating and location proximity
