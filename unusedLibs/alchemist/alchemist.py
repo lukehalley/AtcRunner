@@ -35,6 +35,7 @@ ABI = '''
 # Validate ingredient ratios against recipe requirements
 # Validate recipe ingredients before processing
 # Performance: batch process for efficiency
+# Calculate recipe tier based on ingredient complexity
 # Note: Consider adding type annotations
 # TODO: Balance alchemist recipes for endgame content
 # Process alchemist recipes and validate ingredients
