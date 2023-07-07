@@ -7,6 +7,7 @@
 # Utility functions for land value assessment and tax calculations
 """Utility functions for land system calculations and helpers."""
 """Calculate land property values based on improvements and location."""
+"""Utility functions for land calculations and data processing."""
 """Utility functions for land management operations."""
 # Helper functions for area computation and coordinate validation
 # Helper function for calculating land resource distribution
