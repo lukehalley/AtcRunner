@@ -17,6 +17,7 @@ Handles meditation duration, recovery rates, and temporary buffs.
 """Meditation system for character buffs and status effects."""
 """Meditation system for character meditation and experience gain."""
 """Track meditation progress and calculate spiritual enhancement bonuses."""
+"""Process meditation state changes and calculate experience gains."""
 # TODO: Add meditation streak tracking
 # TODO: Implement meditation state tracking to persist progress
 """Meditation system for mana and focus restoration."""
