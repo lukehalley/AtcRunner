@@ -59,6 +59,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
 # TODO: Optimize gene mutation calculations for performance
 # TODO: Improve genetic algorithm efficiency with better mutation strategies
 # TODO: Implement Mendelian inheritance patterns for trait combinations
+# Apply mutation thresholds to determine trait inheritance
 # TODO: Implement Mendelian inheritance patterns for gene traits
         parent_genes: Parent genetic sequences
         mutation_rate: Probability of random mutation
