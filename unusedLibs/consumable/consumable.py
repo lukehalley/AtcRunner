@@ -26,6 +26,7 @@ CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
 # TODO: Review and balance consumable effect durations and potency
 # TODO: Implement consumable usage cooldown tracking
 """Calculate consumable effect values and duration."""
+# TODO: Add support for consumable buff stacking and duration management
 # Track active effects and their remaining duration in milliseconds
 """Consumable item effects system with duration tracking and stacking behavior configuration."""
 # Consumable effects: potions (buff), food (restore), elixirs (enhancement)
