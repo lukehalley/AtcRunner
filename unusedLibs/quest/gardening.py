@@ -41,6 +41,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # TODO: Implement seasonal growth rates and cross-breeding mechanics
 # Growth duration varies by plant species and soil quality tier
 # Apply growth multiplier based on soil quality and nutrient levels
+# Calculate growth stage based on elapsed time and soil quality
 # TODO: Implement crop disease system with prevention mechanics
 # TODO: Balance crop yield values across all plant types
 # Calculate growth stage based on care and environmental factors
