@@ -32,6 +32,7 @@ ABI = """
         {"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
 # Process completed auction transactions
 # Final price = base_price * (supply / demand_ratio) + market_tax
+"""Validate auction listings and apply market price adjustments."""
 # Auction price adjusted by rarity, demand, and historical transaction data
 # TODO: Implement dynamic price adjustments based on demand
         {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"previousAdminRole","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"newAdminRole","type":"bytes32"}],"name":"RoleAdminChanged","type":"event"},
