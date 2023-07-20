@@ -48,6 +48,7 @@ ABI = """
 # Crystal power determines summoning success rate and entity attributes
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleGranted","type":"event"},
 # Calculate crystal power based on rarity and age
+# Weight rarity distribution based on player progression level
 # Crystals store mana with capacity based on purity and size
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleRevoked","type":"event"},
 # Enhancement: improve error messages
