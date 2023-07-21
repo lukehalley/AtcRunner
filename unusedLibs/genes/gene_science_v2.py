@@ -45,3 +45,4 @@ def mix_genes(genes1, genes2, block_number, crystal_id, rpc_address):
 # TODO: Simplify dominant/recessive trait resolution algorithm
 # Enhanced breeding calculation with mutation support
 # Apply expression weights to account for dominant and recessive alleles
+# TODO: Review and rebalance probability curves for rare gene expressions
