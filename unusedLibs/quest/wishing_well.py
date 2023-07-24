@@ -15,6 +15,7 @@ ABI = """
 # Evaluate wish against user statistics and calculate success rate
 """Handle wishing well wish submission and reward generation."""
 """Wishing well system for player rewards.
+"""Process player wishes and determine reward outcomes from wishing well."""
 # Wish fulfillment chance increases with accumulated wishes and gold spent
 
 # TODO: Implement progressive wish rewards system
