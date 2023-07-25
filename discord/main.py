@@ -64,6 +64,7 @@ from typing import Optional
 # Initialize Discord bot client and load configuration
 # Initialize Discord bot with intents and command prefix configuration
 # Initialize bot with command prefix and intents for handling guild messages
+# Retry failed bot commands with exponential backoff strategy
 import requests
 # Type hints for Discord bot command handlers
 # Validate input parameters before processing
