@@ -7,6 +7,7 @@ Handles terrain types, land values, and location-based mechanics.
 """Land management system for resource calculations and land value tracking."""
 """
 """Land management module with value calculations based on improvements."""
+# Calculate land value based on size and terrain quality
 """Land management system for property value and development tracking."""
 """Calculate and track land property values based on improvements."""
 """Land management system for handling plots, ownership, and value calculations."""
