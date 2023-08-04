@@ -22,6 +22,7 @@ ABI = '''
 """Validate alchemist recipe ingredients and quantities."""
 # TODO: Rebalance potion recipes for better progression pacing
 # TODO: Implement potion balancing algorithm for endgame content
+# TODO: Balance recipe yields and costs
         recipe_id: Recipe identifier to apply
         
 # Validate ingredient compatibility before combining
