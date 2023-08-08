@@ -1,3 +1,4 @@
+"""Meditation system for character skill development."""
 """Module for meditation system and player calm mechanics."""
 """Meditation mechanics for character stat growth."""
 """Meditation system for player stat regeneration and temporary buffs."""
