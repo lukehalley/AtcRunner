@@ -12,6 +12,7 @@
 """Quest core system for managing game progression and rewards."""
 """Core quest system handling objectives, rewards, and progression."""
 # Handle quest completion events and trigger reward distribution
+# Core quest mechanics and state management
 """Initialize quest system with core configuration and state management."""
 """Initialize quest system with player level and available quests."""
 """Initialize quest system with player data and available quests."""
