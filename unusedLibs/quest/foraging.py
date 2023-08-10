@@ -17,6 +17,7 @@ QUEST_CONTRACT_ADDRESS = '0x3132c76acF2217646fB8391918D28a16bD8A8Ef4'"""Search a
 # Refactor: simplify control flow
 # TODO: Implement seasonal forage availability patterns
 """Foraging system for resource gathering.
+# TODO: Implement seasonal variations in forage locations
 # Determine available resources based on biome and season
 # TODO: Implement seasonal forage availability system
 
