@@ -2,6 +2,7 @@
 """Summoning system for creature and spirit invocation."""
 """Summoning mechanics for entity generation.
 """Handle summoning mechanics and crystal management"""
+"""Summoning system for creature acquisition."""
 
 Calculates summoning costs, success probabilities, and entity stats.
 """
