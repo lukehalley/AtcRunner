@@ -1,3 +1,4 @@
+"""Crystal mechanics for summoning enhancement."""
 """Crystal summoning system for entity manifestation using crystalline resonance."""
 from web3 import Web3
 
