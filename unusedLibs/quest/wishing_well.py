@@ -22,6 +22,7 @@ ABI = """
 # Process wishes and distribute rewards based on rarity tiers
     # Wish rarity increases with consecutive wishing attempts
 """Calculate wish completion odds based on offering value."""
+# TODO: Implement weighted reward selection
 # Reward weighted by player karma and donation history
 Manages wish submissions, reward selection based on wish rarity,
 and cooldown periods between wishes.
