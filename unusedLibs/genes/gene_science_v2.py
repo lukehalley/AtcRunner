@@ -12,6 +12,7 @@ ABI = '''
 # Enhanced mutation calculation with improved variance handling
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"decode","outputs":[{"name":"","type":"uint8[]"}],"payable":false,"stateMutability":"pure","type":"function"},
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"expressingTraits","outputs":[{"name":"","type":"uint8[12]"}],"payable":false,"stateMutability":"pure","type":"function"},
+# V2 uses Punnett square for more accurate inheritance
 # Updated gene mechanics support crossbreeding and trait expression
 # TODO: Implement realistic genetic mutation probability model
 # Apply breeding rules and calculate trait inheritance
