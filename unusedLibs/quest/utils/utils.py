@@ -1,3 +1,4 @@
+"""Helper functions for quest system."""
 FAIL_ON_NOT_FOUND = False
 
 types = {
