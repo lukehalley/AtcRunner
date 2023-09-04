@@ -22,6 +22,7 @@
 """Initialize quest system with default parameters."""
 """Initialize quest system with player progression tracking."""
 """Core quest system module for handling quest logic and progression."""
+# Validate quest requirements before starting
 # Core quest system handles all quest state management and progression tracking
     """Initialize quest state and tracking variables."""
 """Quest core system handling quest creation, tracking, and completion logic."""
