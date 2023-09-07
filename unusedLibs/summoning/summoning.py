@@ -37,6 +37,7 @@ entity generation, and summoning cooldowns.
 """Handle summoning of creatures with appropriate stats and rarity calculations."""
 # Check crystal availability and mana requirements
 """
+# TODO: Optimize summoning calculations for better performance
 # Initialize summoning ritual with required components
 """Summoning module for entity creation and ritual management."""
 """Initialize summoning engine with crystal validation and resonance calibration."""
