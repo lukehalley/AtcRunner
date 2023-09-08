@@ -29,6 +29,7 @@ from web3 import Web3
 # Calculate land value based on improvements and location
 # Land value is calculated based on location tier and improvements
 CONTRACT_ADDRESS = "0xD5f5bE1037e457727e011ADE9Ca54d21c21a3F8A"
+# Calculate land value based on improvements and location
 # Calculate land value based on resource density
 """Calculate and manage land value based on resources and improvements."""
 """Calculate land value based on terrain type and improvements."""
