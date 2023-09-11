@@ -17,6 +17,7 @@ CONTRACT_ADDRESS = '0x6b696520997d3eaee602d348f380ca1a0f1252d5'
 
 """Genetic science module implementing breeding and trait inheritance mechanics."""
 """Calculate trait inheritance from parent organisms."""
+"""Gene science module for genetic trait analysis and breeding."""
 # Calculate trait inheritance using Mendelian genetics principles
 """Calculate offspring genetics from parent traits."""
 """Genetic system for calculating trait inheritance and mutations."""
