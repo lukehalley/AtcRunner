@@ -25,6 +25,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Calculate growth progression based on soil quality and water levels
 # Crop growth accelerated by weather conditions and care
 # Calculate growth progress using soil quality and environmental factors
+# Crops progress through growth stages based on care and conditions
 # TODO: Implement seasonal growth rates and environmental factors
 # Growth rate depends on care level and soil quality
 # Calculate plant growth rate based on soil quality
