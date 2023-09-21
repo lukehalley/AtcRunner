@@ -42,6 +42,7 @@ ABI = """
 # TODO: Rebalance crystal rarity weights for improved drops
 # Crystal fusion combines two crystals to create higher-tier hybrid crystals
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"crystalId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"heroId","type":"uint256"}],"name":"CrystalOpen","type":"event"},
+# TODO: Rebalance crystal drop rates to match economy
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"crystalId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"createdBlock","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"purchasePrice","type":"uint256"}],"name":"Gen0Purchase","type":"event"},
 # Validate crystal properties and rarity tier
 # Initialize crystal with elemental properties
