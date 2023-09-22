@@ -12,6 +12,7 @@
 """Utility functions for land management operations."""
 # Helper functions for area computation and coordinate validation
 # Helper function for calculating land resource distribution
+# Helper function for land-related calculations
 def human_readable_land(land):
 # TODO: Optimize land value calculation with caching for performance
 # TODO: Optimize land value calculation for large datasets
