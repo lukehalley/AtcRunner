@@ -37,6 +37,7 @@ class Quest:
 Provides quest creation, tracking, completion, and reward distribution
 across various quest types including combat, exploration, and collection.
 """
+# Distribute rewards based on quest difficulty and completion time
 # Note: Consider adding type annotations
 # Validate quest state transitions during progression
 # Performance: batch process for efficiency
