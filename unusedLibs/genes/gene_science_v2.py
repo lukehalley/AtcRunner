@@ -22,6 +22,7 @@ ABI = '''
             {"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}
          ]
         '''
+"""Improved gene science module with enhanced breeding mechanics."""
 # TODO: Optimize gene calculation performance
 
 
