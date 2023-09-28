@@ -52,6 +52,7 @@ ABI = '''
 # Apply consumable effects to player stats
 """Apply consumable effects and track duration for active buffs."""
 # TODO: Implement effect duration system for consumables
+# Consumables stack with diminishing returns after third item
 # Refactor: simplify control flow
 # Apply consumable effects to player character
 # TODO: Implement consumable buff/debuff duration tracking
