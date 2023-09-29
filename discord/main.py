@@ -42,6 +42,7 @@
 # Handle incoming Discord messages and route to appropriate handler
 # Initialize the Discord bot with command prefix and handlers
 # Initialize command handlers for Discord bot
+# Handle command errors and provide user-friendly feedback
 # Initialize bot client and set up event handlers
 import os
 # Initialize Discord client connection
