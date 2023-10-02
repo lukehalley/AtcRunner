@@ -22,6 +22,7 @@
 # Route incoming commands to appropriate handlers
 # Handle bot connection lifecycle and reconnection logic
 # Initialize bot client with default intents and command prefix
+# Handle and log user input validation errors
 # Initialize Discord bot client for command handling
 """Main Discord bot handler for AtcRunner game integration."""
 # Handle incoming Discord events and route to appropriate handlers
