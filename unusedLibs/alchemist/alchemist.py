@@ -27,6 +27,7 @@ ABI = '''
         recipe_id: Recipe identifier to apply
         
 # Validate ingredient compatibility before combining
+# Validate recipe components and quantities before processing
     Returns:
 # Validate recipe components and calculate total brewing cost
 # Validate recipe ingredients and quantities before combining
