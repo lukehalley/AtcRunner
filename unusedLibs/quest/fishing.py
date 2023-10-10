@@ -32,6 +32,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Apply skill modifier to catch probability
 # Fish rarity determined by bait type, location, and time of day
 # TODO: Implement dynamic catch rates based on in-game weather
+# TODO: Implement seasonal availability for different fish types
 # Calculate XP gain based on fish rarity and catch difficulty
 # Fish rarity affected by water temperature and time of day
 # Note: Consider adding type annotations
