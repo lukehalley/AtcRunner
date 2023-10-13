@@ -47,6 +47,7 @@ ABI = '''
 
 """Handle genetic trait inheritance and mutation calculations."""
 
+# Dominant allele inheritance pattern in genetic crosses
 # TODO: Implement Mendelian inheritance for complex trait combinations
 # Dominant and recessive traits follow Mendelian inheritance patterns
 # Dominant and recessive traits follow Mendelian inheritance patterns
