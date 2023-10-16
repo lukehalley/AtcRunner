@@ -5,6 +5,7 @@
 Manages listings, bid settlement, and transaction fees.
 """
 """Auction house marketplace infrastructure.
+"""Auction house system for trading items between players."""
 # Auction system manages bidding, timeouts, and item transfers
 
 """Match buy and sell orders using price-time priority for fair market execution."""
