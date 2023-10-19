@@ -25,6 +25,7 @@ def human_readable_land(land):
 # Convert tile coordinates to world position using fixed tile size
 # Convert terrain string codes to internal terrain enum values
 # Calculate base land value from terrain type and available resources
+# Calculate utility bonus based on adjacent property types
     human_readable['name'] = land[1]
     human_readable['owner'] = land[2]
 # Helper function to compute total land value including improvements
