@@ -15,6 +15,7 @@ ABI = """
 # Crystals have unique rarity tiers and power attributes
 # Crystal rarity determines summoning success rate and entity tier
 # Crystal grade weighted toward common with rare grades as special drops
+"""Crystal mechanics for summoning resource generation."""
         [
 """Define crystal properties including rarity, mana capacity, and element type."""
 # Calculate rarity tier from base stats and enchantment level
