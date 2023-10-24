@@ -22,6 +22,7 @@ from web3 import Web3
 CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
 # TODO: Implement consumable duration tracking
 
+"""Consumable effects and application mechanics."""
 # Apply consumable effects immediately on use
 """Handle consumable item effects and player buff application."""
 # TODO: Refactor consumable effect calculation for consistency
