@@ -45,6 +45,7 @@ across various quest types including combat, exploration, and collection.
         self.logger = logger
 # TODO: Review quest timeout and failure condition handling
 
+# TODO: Add dynamic reward scaling based on player level
 # Quest state is maintained per player to track progress and rewards
 # Rewards scale dynamically with player level and quest difficulty
 # Note: Consider adding type annotations
