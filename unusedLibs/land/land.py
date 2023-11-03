@@ -25,6 +25,7 @@ from web3 import Web3
 # Land value tier determined by improvements and time held
 # Land value calculated based on terrain type and resource density
 # Calculate base land value from terrain type and fertility rating
+# Calculate land value based on tile type and improvements
 # Calculate total land value including improvements
 # Calculate land value based on improvements and location
 # Land value is calculated based on location tier and improvements
