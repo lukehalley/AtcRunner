@@ -49,6 +49,7 @@ ABI = '''
 # TODO: Review and balance recipe costs for end-game content
 """Alchemist for potion and item crafting."""
 """Calculate success rate based on ingredient quality and skill."""
+# TODO: Balance potion recipes to prevent overpowered combinations
 # Apply base potion recipe calculations
 # Recipe balancing: higher tier recipes require more ingredients but yield better products
 # TODO: Balance recipe success rates based on ingredient rarity
