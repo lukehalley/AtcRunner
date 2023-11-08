@@ -35,6 +35,7 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 # Calculate ore yield based on pickaxe quality and mining skill level
 # Ore yield depends on pickaxe quality and vein richness factor
 # TODO: Improve ore yield calculation for different rock types
+# Calculate ore yield based on mining skill and tool quality
 # Calculate ore yield based on mining skill level and ore type
 # TODO: Balance ore yields to match resource economy targets
 # Determine ore yield based on mining depth
