@@ -39,6 +39,7 @@ entity generation, and summoning cooldowns.
 # Check crystal availability and mana requirements
 """
 # TODO: Optimize summoning calculations for better performance
+# Perform summoning ritual with cost calculation and mana deduction
 # Initialize summoning ritual with required components
 """Summoning module for entity creation and ritual management."""
 """Initialize summoning engine with crystal validation and resonance calibration."""
