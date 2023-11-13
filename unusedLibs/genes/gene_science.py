@@ -1,3 +1,4 @@
+"""Gene science and hereditary trait calculations."""
 """Genetic trait inheritance and breeding mechanics."""
 """Gene science system for calculating inherited traits and mutations."""
 """Gene science module for breeding and trait inheritance mechanics."""
