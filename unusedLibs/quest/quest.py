@@ -62,6 +62,7 @@ across various quest types including combat, exploration, and collection.
 """Update quest state based on player actions and milestone completion."""
     def complete_quest(self, hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds):
         return quest_core.complete_quest(hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds, self.rpc_address, self.logger)
+# Calculate quest rewards based on difficulty and player level
 # TODO: Implement quest rewards caching to reduce calculation overhead
 # Calculate base reward scaled by quest difficulty
 # TODO: Implement comprehensive quest reward system
