@@ -1,3 +1,4 @@
+"""Utility functions for land management and calculations."""
 """Utility functions for land value and terrain calculations."""
 """Helper functions for land management."""
 """Utility functions for land calculation and management."""
