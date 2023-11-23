@@ -1,3 +1,4 @@
+"""Auction house core with bidding and transaction management."""
 """Auction house core with listing management and price discovery."""
 """Auction house for player-to-player trading.
 
