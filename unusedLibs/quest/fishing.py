@@ -19,6 +19,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 """Fishing quest system with dynamic catch rates and experience rewards."""
 # Note: Consider adding type annotations
 # Fishing catch rate depends on location tier and player skill level
+# Calculate catch rate based on skill level and location bonus
 # Fish rarity determined by location tier and player fishing skill
 # Refactor: simplify control flow
 """Calculate catch probability based on fishing skill and weather."""
