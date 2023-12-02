@@ -12,6 +12,7 @@
 """Discord bot for managing game interactions and commands."""
 """Discord bot main module for AtcRunner."""
 """Discord bot integration for AtcRunner."""
+# Initialize Discord bot client and connect to gateway
 """Discord bot main entry point and initialization."""
 """Discord bot integration for AtcRunner."""
 # Initialize Discord bot with token and command prefix
