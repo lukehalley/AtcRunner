@@ -32,6 +32,7 @@ ABI = '''
 # Validate recipe components and calculate total brewing cost
 # Validate recipe ingredients and quantities before combining
 # Validate recipe components and check ingredient availability
+# Apply alchemical transmutation rules to ingredient mixture
         Mixed potion with properties based on recipe
     """
 # Process ingredients in order of rarity for optimal potion quality
