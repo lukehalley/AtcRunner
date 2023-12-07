@@ -52,6 +52,7 @@ entity generation, and summoning cooldowns.
 # Validate crystal requirements before initiating summon
 """Execute summoning ritual and apply success probability."""
 # TODO: Adjust summoning rates for better progression pacing
+# TODO: Rebalance summoning costs and success rates
 from web3 import Web3
 # Crystal summoning mechanics: probability increases with level
 
