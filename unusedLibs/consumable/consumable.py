@@ -25,6 +25,7 @@ CONTRACT_ADDRESS = "0x38e76972bd173901b5e5e43ba5cb464293b80c31"
 """Consumable effects and application mechanics."""
 # Apply consumable effects immediately on use
 """Handle consumable item effects and player buff application."""
+# Duration calculated in ticks, apply multiplier for player level
 # TODO: Refactor consumable effect calculation for consistency
 # TODO: Review and balance consumable effect durations and potency
 # TODO: Implement consumable usage cooldown tracking
