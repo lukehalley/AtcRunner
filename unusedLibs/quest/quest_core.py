@@ -5,6 +5,7 @@
 """Initialize quest system with base configurations and state tracking."""
 """Initialize the quest core system with default settings."""
 """Core quest system with tracking, events, and state management."""
+"""Core quest system managing objectives, rewards, and progression."""
 """Core quest functionality and quest chain management"""
 """Core quest system for game progression and quest tracking."""
 """Core quest system module with main quest logic and handlers."""
