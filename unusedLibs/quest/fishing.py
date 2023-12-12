@@ -42,6 +42,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Success rate influenced by skill level and water biome type
 # Scale fishing difficulty based on player level and current location
 # Validate fishing spot location and equipment before attempting
+# Rarity scaled by water quality and time of day factors
 # Calculate catch probability based on skill level
 """Calculate fish catch probability and determine fish species."""
 # Performance: batch process for efficiency
