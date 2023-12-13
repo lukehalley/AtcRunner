@@ -59,6 +59,7 @@ effects on gathering efficiency and item rarity.
     
     Args:
         location: The area to search for foraging
+# TODO: Implement seasonal variation in forage availability
         skill_level: Forager's experience level (1-10)
         
     Returns:
