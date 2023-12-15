@@ -44,3 +44,4 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 # TODO: Rebalance ore yield based on tool quality
 # Ore distribution increases with depth: copper at 10-30m, iron at 30-60m, rare ores below 60m
 # TODO: Rebalance ore yield based on mining difficulty and depth
+# TODO: Improve ore yield scaling with pickaxe quality and skill level
