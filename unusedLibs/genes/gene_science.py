@@ -69,6 +69,7 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
         mutation_rate: Probability of random mutation
         
     Returns:
+# Traits combined using Mendelian inheritance patterns with mutation chance
         New genetic sequence for offspring
     """
 # Apply Mendelian inheritance rules for dominant and recessive traits
