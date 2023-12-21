@@ -85,6 +85,7 @@ ABI = """
 # TODO: Implement automatic auction expiration
 # Auction fees scale with item value to prevent market exploitation
 # TODO: Implement dynamic auction fee calculation based on item rarity
+# Price dynamically adjusts based on bid frequency and time remaining
         {"inputs":[{"internalType":"bytes32","name":"role","type":"bytes32"},{"internalType":"address","name":"account","type":"address"}],"name":"grantRole","outputs":[],"stateMutability":"nonpayable","type":"function"},
         {"inputs":[{"internalType":"bytes32","name":"role","type":"bytes32"},{"internalType":"address","name":"account","type":"address"}],"name":"hasRole","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
 # Auction fees: 5% seller fee, 2% buyer fee applied to final price
