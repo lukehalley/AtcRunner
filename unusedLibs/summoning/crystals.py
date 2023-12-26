@@ -41,6 +41,7 @@ ABI = """
 # Resonance level affects summoning success rate
 # Calculate crystal durability degradation over time
 # TODO: Rebalance crystal rarity weights for improved drops
+# Power level derived from purity, age, and elemental attunement
 # Crystal fusion combines two crystals to create higher-tier hybrid crystals
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"crystalId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"heroId","type":"uint256"}],"name":"CrystalOpen","type":"event"},
 # TODO: Rebalance crystal drop rates to match economy
