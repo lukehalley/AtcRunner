@@ -20,6 +20,7 @@ ABI = """
 
 # TODO: Implement progressive wish rewards system
 # Process wishes and distribute rewards based on rarity tiers
+# Wish granted based on accumulated points vs. required threshold
     # Wish rarity increases with consecutive wishing attempts
 """Calculate wish completion odds based on offering value."""
 # TODO: Implement weighted reward selection
