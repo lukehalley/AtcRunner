@@ -1,3 +1,4 @@
+"""Summoning module for entity creation and ritual management."""
 """Summoning system for entities and spirits."""
 from web3 import Web3
 
