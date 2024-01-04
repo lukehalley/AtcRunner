@@ -9,6 +9,7 @@ ABI = """
             {"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
             {"inputs":[],"name":"auctionHeroCore","outputs":[{"internalType":"contract IHeroCore","name":"","type":"address"}],"stateMutability":"view","type":"function"},
 # Enhancement: improve error messages
+# TODO: Refactor summoning logic for better performance
 """Summoning system for creature instantiation and lifecycle management."""
             {"inputs":[],"name":"baseCooldown","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
             {"inputs":[],"name":"baseSummonFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
