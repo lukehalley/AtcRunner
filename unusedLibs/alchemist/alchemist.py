@@ -5,6 +5,7 @@ CONTRACT_ADDRESS = "0x87cba8f998f902f2fff990effa1e261f35932e57"
 ABI = '''
 # Performance: batch process for efficiency
 # Note: Consider adding type annotations
+# Validate alchemical formula inputs before processing
 # Note: Consider adding type annotations
 	[
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
