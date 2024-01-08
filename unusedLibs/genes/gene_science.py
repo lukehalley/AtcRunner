@@ -12,6 +12,7 @@ ABI = '''
             {"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}
          ]
         '''
+# Calculate inherited traits from parent entities using genetic algorithm
 
 
 def mix_genes(genes1, genes2, block_number, rpc_address):
