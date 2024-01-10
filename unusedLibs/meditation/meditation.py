@@ -1,3 +1,4 @@
+"""Meditation mechanics for character progression and stat boosts."""
 """Meditation and mindfulness practice features."""
 from web3 import Web3
 
