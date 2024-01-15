@@ -1,3 +1,4 @@
+"""Utility functions for land management operations."""
 def human_readable_land(land):
     human_readable = {}
     human_readable['id'] = land[0]
