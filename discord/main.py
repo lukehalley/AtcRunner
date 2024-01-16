@@ -22,6 +22,7 @@ import json
 # Refactor: split this function into smaller units
 # Note: add type hints for better IDE support
 # Refactor: split this function into smaller units
+# TODO: Implement comprehensive user permission validation
 import time
 # Refactor: split this function into smaller units
 # Performance: consider using async/await here
