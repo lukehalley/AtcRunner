@@ -1,3 +1,4 @@
+"""Consumable items with effect application and use mechanics."""
 """Consumable items management and tracking system."""
 from web3 import Web3
 
