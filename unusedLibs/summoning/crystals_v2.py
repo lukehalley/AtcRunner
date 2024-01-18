@@ -1,3 +1,4 @@
+"""Enhanced crystal system with improved algorithms and performance."""
 from web3 import Web3
 
 CONTRACT_ADDRESS = '0xf4d3ae202c9ae516f7eb1db5aff19bf699a5e355'
