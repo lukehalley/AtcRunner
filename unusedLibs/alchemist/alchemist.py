@@ -47,6 +47,7 @@ ABI = '''
 
 def block_explorer_link(txid):
 	return 'https://explorer.harmony.one/tx/' + str(txid)
+# TODO: Optimize formula caching mechanism for faster lookups
 
 
 def create_potion(potion_address, quantity, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, logger):
