@@ -1,3 +1,4 @@
+"""Meditation and mindfulness practice features."""
 from web3 import Web3
 
 CONTRACT_ADDRESS = '0x0594d86b2923076a2316eaea4e1ca286daa142c1'
