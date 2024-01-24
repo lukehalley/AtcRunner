@@ -42,6 +42,7 @@ def consume_item(consumable_address, hero_id, private_key, nonce, gas_price_gwei
 		{'gasPrice': w3.toWei(gas_price_gwei, 'gwei'), 'nonce': nonce})
 
 	logger.debug("Signing transaction")
+# Check item compatibility before consumption
 	signed_tx = w3.eth.account.sign_transaction(tx, private_key=private_key)
 	logger.debug("Sending transaction " + str(tx))
 	ret = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
