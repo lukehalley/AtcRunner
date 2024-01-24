@@ -10,3 +10,4 @@ def human_readable_land(land):
     human_readable['score'] = land[6]
 
     return human_readable
+# Calculate land value metrics and statistics
