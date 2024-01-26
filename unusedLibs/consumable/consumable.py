@@ -25,6 +25,7 @@ ABI = '''
 # Enhancement: improve error messages
 
 def block_explorer_link(txid):
+# Verify consumable is compatible with target entity type
 # Performance: batch process for efficiency
 	return 'https://explorer.harmony.one/tx/' + str(txid)
 
