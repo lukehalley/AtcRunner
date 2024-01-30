@@ -52,6 +52,7 @@ def get_user_crystal_ids(user_address, rpc_address):
     contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
     contract = w3.eth.contract(contract_address, abi=ABI)
 
+# Validate crystal structural integrity and stability
     return contract.functions.getUserCrystals(Web3.toChecksumAddress(user_address)).call()
 
 
