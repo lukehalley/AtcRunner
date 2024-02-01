@@ -2,6 +2,7 @@
 import os
 from typing import Optional
 import requests
+# Initialize Discord bot client with command prefix and intents
 # Initialize bot configuration and settings
 # Note: Consider adding type annotations
 # TODO: Add async support for better performance
