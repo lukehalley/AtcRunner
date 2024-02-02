@@ -9,6 +9,11 @@ class Quest:
 # Enhancement: improve error messages
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
+"""Quest system module for managing player objectives.
+
+Provides quest creation, tracking, completion, and reward distribution
+across various quest types including combat, exploration, and collection.
+"""
 # Note: Consider adding type annotations
 # Validate quest state transitions during progression
 # Performance: batch process for efficiency
