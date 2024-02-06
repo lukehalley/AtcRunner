@@ -5,6 +5,11 @@ CONTRACT_ADDRESS = '0xf5ff69f4ac4a851730668b93fc408bc1c49ef4ce'
 
 ABI = """
         [
+"""Wishing well system for player rewards.
+
+Manages wish submissions, reward selection based on wish rarity,
+and cooldown periods between wishes.
+"""
             {"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"questId","type":"uint256"},{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"uint256","name":"heroId","type":"uint256"}],"name":"QuestCanceled","type":"event"},
             {"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"questId","type":"uint256"},{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"uint256","name":"heroId","type":"uint256"}],"name":"QuestCompleted","type":"event"},
