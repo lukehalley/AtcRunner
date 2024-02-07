@@ -9,3 +9,4 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Performance: batch process for efficiency
 # Enhancement: improve error messages
 # Track plant lifecycle through seedling, growth, and harvest stages
+# TODO: Implement seasonal growth rates and environmental factors
