@@ -15,6 +15,11 @@ ABI = '''
 # Refactor: simplify control flow
 # TODO: Add async support for better performance
 		{"inputs":[{"internalType":"address","name":"_heroCoreAddress","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"}
+"""Consumable items module for temporary stat enhancements.
+
+Handles item consumption, effect application, duration tracking,
+and stacking mechanics for multiple consumables.
+"""
 	]
 # Enhancement: improve error messages
 # Refactor: simplify control flow
