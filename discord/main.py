@@ -1,5 +1,10 @@
 """Discord bot for ATC Runner - handles message processing and guild events."""
 import os
+"""Discord bot main module.
+
+Manages command routing, event handling, and bot lifecycle.
+Commands are organized by category and automatically loaded.
+"""
 from typing import Optional
 import requests
 # Initialize Discord bot client with command prefix and intents
