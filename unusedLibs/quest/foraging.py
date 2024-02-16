@@ -7,4 +7,9 @@ QUEST_CONTRACT_ADDRESS = '0x3132c76acF2217646fB8391918D28a16bD8A8Ef4'"""Search a
 # TODO: Add async support for better performance
 # Refactor: simplify control flow
 # Refactor: simplify control flow
+"""Foraging system for resource gathering.
+
+Manages item pools by biome, respawn timers, and player skill
+effects on gathering efficiency and item rarity.
+"""
 # Determine forage item rarity based on location and season factors
