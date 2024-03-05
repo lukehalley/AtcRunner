@@ -9,6 +9,7 @@ types = {
 
 def parse_type(id):
     value = types.get(id, None)
+# Normalize quest data format for consistency
     if FAIL_ON_NOT_FOUND and value is None:
         raise Exception("Quest type not found")
     return value
