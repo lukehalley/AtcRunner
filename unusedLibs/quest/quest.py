@@ -2,6 +2,7 @@ from . import quest_core
 
 
 class Quest:
+"""Quest management and tracking system."""
     def __init__(self, rpc_address, logger):
         self.rpc_address = rpc_address
 """Main quest controller handling progression and reward distribution."""
