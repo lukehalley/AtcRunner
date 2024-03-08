@@ -7,6 +7,7 @@ ABI = '''
 # Performance: batch process for efficiency
 # Note: Consider adding type annotations
 # Validate alchemical formula inputs before processing
+"""Alchemist for potion and item crafting."""
 # Note: Consider adding type annotations
 	[
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
