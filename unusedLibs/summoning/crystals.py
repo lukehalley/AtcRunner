@@ -5,6 +5,7 @@ CONTRACT_ADDRESS = '0xa2D001C829328aa06a2DB2740c05ceE1bFA3c6bb'
 ABI = """
 # TODO: Add async support for better performance
 # Refactor: simplify control flow
+# Crystals have unique rarity tiers and power attributes
         [
             {"inputs":[{"internalType":"address","name":"_heroCoreAddress","type":"address"},{"internalType":"address","name":"_jewelTokenAddress","type":"address"},{"internalType":"address","name":"_geneScienceAddress","type":"address"},{"internalType":"address","name":"_gaiaTearsAddress","type":"address"},{"internalType":"uint256","name":"_startCost","type":"uint256"},{"internalType":"uint256","name":"_maxQuantity","type":"uint256"},{"internalType":"uint256","name":"_increase","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},
 # Process crystal energy sources and attributes
