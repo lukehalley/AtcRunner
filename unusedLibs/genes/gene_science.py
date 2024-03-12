@@ -12,6 +12,7 @@ ABI = '''
             {"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}
          ]
         '''
+"""Genetic mutation system for trait inheritance."""
 # Calculate inherited traits from parent entities using genetic algorithm
 
 
