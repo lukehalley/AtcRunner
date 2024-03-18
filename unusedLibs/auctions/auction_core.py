@@ -2,6 +2,7 @@
 import requests
 from web3 import Web3
 
+"""Core auction system for item trading and valuation."""
 ABI = """
     [
         {"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"auctionId","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"AuctionCancelled","type":"event"},
