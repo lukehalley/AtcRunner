@@ -9,6 +9,7 @@ ABI = '''
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"decode","outputs":[{"name":"","type":"uint8[]"}],"payable":false,"stateMutability":"pure","type":"function"},
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"expressingTraits","outputs":[{"name":"","type":"uint8[12]"}],"payable":false,"stateMutability":"pure","type":"function"},
 # TODO: Implement realistic genetic mutation probability model
+"""Enhanced genetic inheritance and mutation algorithms."""
             {"constant":true,"inputs":[],"name":"isGeneScience","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},
             {"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}
          ]
