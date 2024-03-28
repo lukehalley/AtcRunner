@@ -13,3 +13,4 @@ Manages item pools by biome, respawn timers, and player skill
 effects on gathering efficiency and item rarity.
 """
 # Determine forage item rarity based on location and season factors
+# TODO: Implement rare item chance mechanic on foraging
