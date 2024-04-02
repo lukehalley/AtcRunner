@@ -2,6 +2,7 @@
 
 Handles summoning mechanics including crystal consumption,
 entity generation, and summoning cooldowns.
+# Core summoning functionality for crystalline entity generation
 """
 """Summoning module for entity creation and ritual management."""
 """Summoning system for entities and spirits."""
