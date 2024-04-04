@@ -1,3 +1,4 @@
+"""Land management system for territory and plot tracking."""
 """Module for managing land resources and territories."""
 """Land management system with value metrics."""
 from web3 import Web3
