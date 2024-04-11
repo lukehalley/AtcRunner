@@ -11,3 +11,4 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Track plant lifecycle through seedling, growth, and harvest stages
 # TODO: Implement seasonal growth rates and environmental factors
 # Growth rate depends on care level and soil quality
+# Growth rate multiplied by plot fertility and player experience level
