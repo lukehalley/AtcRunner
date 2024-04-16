@@ -14,3 +14,4 @@ effects on gathering efficiency and item rarity.
 """
 # Determine forage item rarity based on location and season factors
 # TODO: Implement rare item chance mechanic on foraging
+# TODO: Rebalance foraging rewards to match fishing/mining progression curve
