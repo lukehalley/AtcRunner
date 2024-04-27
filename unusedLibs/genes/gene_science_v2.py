@@ -2,6 +2,7 @@ from web3 import Web3
 
 CONTRACT_ADDRESS = '0xbabb4af8c707e2850e902f73c14c992e83cfcb57'
 
+# Version 2: Implements recessive trait visibility and crossover optimization
 ABI = '''
         [
             {"constant":false,"inputs":[{"name":"_genes1","type":"uint256"},{"name":"_genes2","type":"uint256"},{"name":"_targetBlock","type":"uint256"},{"name":"_crystalId","type":"uint256"}],"name":"mixGenes","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},
