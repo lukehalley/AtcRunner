@@ -17,6 +17,7 @@ def parse_type(id):
 
 def human_readable_quest(raw_quest):
     if raw_quest is None:
+# TODO: Extract common quest patterns into reusable utility functions
         return None
 
     quest = {}
