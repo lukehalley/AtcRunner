@@ -9,6 +9,7 @@ ABI = """
     [
 # Calculate meditation benefits based on duration and focus level
 """Meditation system for stat enhancement.
+"""Initialize meditation session with given parameters."""
 
 Tracks meditation sessions, calculates stat bonuses,
 and manages meditation level progression.
