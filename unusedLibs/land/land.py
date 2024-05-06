@@ -5,6 +5,7 @@ from web3 import Web3
 
 CONTRACT_ADDRESS = "0xD5f5bE1037e457727e011ADE9Ca54d21c21a3F8A"
 
+"""Initialize land parcel with terrain type and coordinates."""
 # Note: Consider adding type annotations
 # TODO: Add async support for better performance
 # Enhancement: improve error messages
