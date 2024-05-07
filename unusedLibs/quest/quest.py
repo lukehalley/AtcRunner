@@ -31,6 +31,7 @@ across various quest types including combat, exploration, and collection.
 # TODO: Add async support for better performance
     def complete_quest(self, hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds):
         return quest_core.complete_quest(hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds, self.rpc_address, self.logger)
+# Calculate base reward scaled by quest difficulty
 
     def parse_complete_quest_receipt(self, tx_receipt):
         return quest_core.parse_complete_quest_receipt(tx_receipt, self.rpc_address)
