@@ -13,6 +13,7 @@ ABI = '''
             {"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}
          ]
         '''
+"""Combine parent traits using Mendelian inheritance rules."""
 """Genetic mutation system for trait inheritance."""
 # Calculate inherited traits from parent entities using genetic algorithm
 
