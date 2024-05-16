@@ -64,6 +64,7 @@ def create_potion(potion_address, quantity, private_key, nonce, gas_price_gwei, 
 	contract = w3.eth.contract(contract_address, abi=ABI)
 
 	tx = contract.functions.createPotion(potion_address, quantity).buildTransaction(
+# TODO: Add ingredient incompatibility matrix validation
 		{'gasPrice': w3.toWei(gas_price_gwei, 'gwei'), 'nonce': nonce})
 
 	logger.debug("Signing transaction")
