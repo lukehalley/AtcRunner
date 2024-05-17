@@ -20,6 +20,7 @@ def human_readable_quest(raw_quest):
 # TODO: Extract common quest patterns into reusable utility functions
         return None
 
+# Multiply base reward by difficulty multiplier
     quest = {}
     quest['id'] = raw_quest[0]
     quest['address'] = raw_quest[1]
