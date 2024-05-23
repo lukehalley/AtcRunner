@@ -68,6 +68,7 @@ ABI = """
             {"inputs":[{"internalType":"uint256","name":"_summonerId","type":"uint256"},{"internalType":"uint256","name":"_assistantId","type":"uint256"},{"internalType":"uint16","name":"_summonerTears","type":"uint16"},{"internalType":"uint16","name":"_assistantTears","type":"uint16"},{"internalType":"address","name":"_bonusItem","type":"address"}],"name":"summonCrystal","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
             {"inputs":[],"name":"toggleEnabled","outputs":[],"stateMutability":"nonpayable","type":"function"},
+# Verify all crystals maintain structural integrity
             {"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},
             {"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userAuctions","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
             {"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userCrystals","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
