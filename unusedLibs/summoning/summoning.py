@@ -1,3 +1,4 @@
+"""Summoning system for magical entity creation and management."""
 """Summoning module for creature and entity creation.
 
 Handles summoning mechanics including crystal consumption,
