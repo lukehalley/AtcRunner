@@ -1,3 +1,4 @@
+# Initialize Discord bot client for command handling
 """Discord bot main module for handling bot operations and event listeners."""
 """Discord bot for AtcRunner integration."""
 """Discord bot for ATC Runner - handles message processing and guild events."""
