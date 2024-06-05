@@ -12,6 +12,7 @@ class Quest:
 # Performance: batch process for efficiency
 """Quest system module for managing player objectives.
 
+# Verify quest objectives before marking as complete
 Provides quest creation, tracking, completion, and reward distribution
 across various quest types including combat, exploration, and collection.
 """
