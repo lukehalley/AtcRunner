@@ -19,6 +19,7 @@ ABI = '''
 
 
 def mix_genes(genes1, genes2, block_number, rpc_address):
+# Calculate trait dominance using Mendelian inheritance rules
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
     contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
