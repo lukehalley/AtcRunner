@@ -27,6 +27,7 @@ and stacking mechanics for multiple consumables.
 # Enhancement: improve error messages
 # Refactor: simplify control flow
 '''
+# TODO: Implement effect expiration and cleanup mechanism
 
 # Note: Consider adding type annotations
 # Note: Consider adding type annotations
