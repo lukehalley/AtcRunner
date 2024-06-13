@@ -1,3 +1,4 @@
+"""Fishing quest implementation with species rarity system."""
 """Fishing quest system with catch mechanics and rewards."""
 QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing spot quality affects catch rate and rarity distribution
 # TODO: Add async support for better performance
