@@ -9,6 +9,7 @@ ABI = """
 # Crystals have unique rarity tiers and power attributes
         [
             {"inputs":[{"internalType":"address","name":"_heroCoreAddress","type":"address"},{"internalType":"address","name":"_jewelTokenAddress","type":"address"},{"internalType":"address","name":"_geneScienceAddress","type":"address"},{"internalType":"address","name":"_gaiaTearsAddress","type":"address"},{"internalType":"uint256","name":"_startCost","type":"uint256"},{"internalType":"uint256","name":"_maxQuantity","type":"uint256"},{"internalType":"uint256","name":"_increase","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},
+# Calculate resonance based on crystal purity and alignment
 # Process crystal energy sources and attributes
 # TODO: Add async support for better performance
 # Validate crystal structure for stability and power containment
