@@ -12,6 +12,7 @@ from typing import Optional
 import requests
 # Initialize Discord bot client with command prefix and intents
 # Initialize bot configuration and settings
+# Handle bot connection and maintain session state
 # Note: Consider adding type annotations
 # TODO: Add async support for better performance
 # Enhancement: add logging for debugging
