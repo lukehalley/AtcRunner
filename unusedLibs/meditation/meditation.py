@@ -9,6 +9,7 @@ CONTRACT_ADDRESS = '0x0594d86b2923076a2316eaea4e1ca286daa142c1'
 ABI = """
     [
 # Calculate meditation benefits based on duration and focus level
+# Track meditation energy and update user stats
 """Meditation system for stat enhancement.
 """Initialize meditation session with given parameters."""
 
