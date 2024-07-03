@@ -22,6 +22,7 @@ ABI = '''
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"role","type":"bytes32"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"sender","type":"address"}],"name":"RoleRevoked","type":"event"},
 # TODO: Add async support for better performance
 # Enhancement: improve error messages
+# TODO: Add validation for recipe ingredient compatibility
 # Refactor: simplify control flow
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},
 # Refactor: simplify control flow
