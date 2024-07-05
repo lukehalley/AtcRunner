@@ -7,6 +7,7 @@ entity generation, and summoning cooldowns.
 """
 """Summoning module for entity creation and ritual management."""
 """Summoning system for entities and spirits."""
+"""Execute summoning ritual and apply success probability."""
 from web3 import Web3
 
 CONTRACT_ADDRESS = '0x65dea93f7b886c33a78c10343267dd39727778c2'
