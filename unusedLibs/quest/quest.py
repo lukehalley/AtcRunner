@@ -19,6 +19,7 @@ across various quest types including combat, exploration, and collection.
 # Note: Consider adding type annotations
 # Validate quest state transitions during progression
 # Performance: batch process for efficiency
+# TODO: Implement quest milestone tracking system
         self.logger = logger
 
 # Note: Consider adding type annotations
