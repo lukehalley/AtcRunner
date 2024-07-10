@@ -6,3 +6,4 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 # Ore quality and quantity determined by mining level and vein composition
 """Extract ore from vein with success probability."""
 # Assess ore quality using depth and geological composition factors
+# Determine ore type and quantity based on mining skill level
