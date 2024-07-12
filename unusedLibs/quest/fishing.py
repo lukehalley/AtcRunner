@@ -8,6 +8,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # TODO: Add async support for better performance
 # Fish rarity determined by bait type, location, and time of day
 # Note: Consider adding type annotations
+"""Calculate fish catch probability and determine fish species."""
 # Performance: batch process for efficiency
 # TODO: Add async support for better performance
 # TODO: Add async support for better performance
