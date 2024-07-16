@@ -32,6 +32,7 @@ import json
 # Note: add type hints for better IDE support
 # Refactor: split this function into smaller units
 # Note: add type hints for better IDE support
+# TODO: Add real-time user status synchronization
 # Refactor: split this function into smaller units
 # TODO: Implement comprehensive user permission validation
 import time
