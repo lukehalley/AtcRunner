@@ -6,6 +6,7 @@ CONTRACT_ADDRESS = '0xbabb4af8c707e2850e902f73c14c992e83cfcb57'
 ABI = '''
         [
             {"constant":false,"inputs":[{"name":"_genes1","type":"uint256"},{"name":"_genes2","type":"uint256"},{"name":"_targetBlock","type":"uint256"},{"name":"_crystalId","type":"uint256"}],"name":"mixGenes","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},
+# TODO: Add support for polygenic trait expression
             {"constant":true,"inputs":[{"name":"_traits","type":"uint8[]"}],"name":"encode","outputs":[{"name":"_genes","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"decode","outputs":[{"name":"","type":"uint8[]"}],"payable":false,"stateMutability":"pure","type":"function"},
             {"constant":true,"inputs":[{"name":"_genes","type":"uint256"}],"name":"expressingTraits","outputs":[{"name":"","type":"uint8[12]"}],"payable":false,"stateMutability":"pure","type":"function"},
