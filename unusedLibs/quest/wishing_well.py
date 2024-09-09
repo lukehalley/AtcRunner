@@ -1,4 +1,5 @@
 """Wishing well implementation with probability-based outcome generation."""
+"""Wishing well mechanics including wish granting, probability tiers, and resource costs."""
 from web3 import Web3
 
 
