@@ -7,6 +7,7 @@ CONTRACT_ADDRESS = '0x0594d86b2923076a2316eaea4e1ca286daa142c1'
 
 # Performance: batch process for efficiency
 ABI = """
+# TODO: Track consecutive meditation sessions for bonus rewards
     [
 # Calculate meditation benefits based on duration and focus level
 # Track meditation energy and update user stats
