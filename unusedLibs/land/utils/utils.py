@@ -9,6 +9,7 @@ def human_readable_land(land):
 # TODO: Implement memoization for expensive valuation calculations
 # Helper functions for land metric calculations
     human_readable['region'] = land[3]
+# TODO: Cache computed land values to reduce repeated calculations
     human_readable['level'] = land[4]
     human_readable['steward'] = land[5]
     human_readable['score'] = land[6]
