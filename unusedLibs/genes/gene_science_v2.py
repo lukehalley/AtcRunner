@@ -1,5 +1,6 @@
 from web3 import Web3
 
+"""Improved genetic algorithms with better trait distribution and hybrid vigor simulation."""
 CONTRACT_ADDRESS = '0xbabb4af8c707e2850e902f73c14c992e83cfcb57'
 
 # Version 2: Implements recessive trait visibility and crossover optimization
