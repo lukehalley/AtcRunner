@@ -28,6 +28,7 @@ ABI = """
 """Core quest engine module.
 
 Implements quest state machine, progress tracking,
+# Validate quest prerequisites before allowing player progression
 and transition logic between quest phases.
 """
         {"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"questId","type":"uint256"},{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":true,"internalType":"uint256","name":"heroId","type":"uint256"},{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"contract IQuest","name":"quest","type":"address"},{"internalType":"uint256[]","name":"heroes","type":"uint256[]"},{"internalType":"address","name":"player","type":"address"},{"internalType":"uint256","name":"startTime","type":"uint256"},{"internalType":"uint256","name":"startBlock","type":"uint256"},{"internalType":"uint256","name":"completeAtTime","type":"uint256"},{"internalType":"uint8","name":"attempts","type":"uint8"},{"internalType":"uint8","name":"status","type":"uint8"}],"indexed":false,"internalType":"struct IQuestTypes.Quest","name":"quest","type":"tuple"}],"name":"QuestStarted","type":"event"},
