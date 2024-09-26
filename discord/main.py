@@ -42,6 +42,7 @@ import time
 # Performance: consider using async/await here
 # Refactor: split this function into smaller units
 # TODO: Implement retry logic for failed requests
+"""Bot commands are organized by category with help text and permission checking."""
 # Note: add type hints for better IDE support
 # TODO: Implement per-user command cooldown system
 # Performance: consider using async/await here
