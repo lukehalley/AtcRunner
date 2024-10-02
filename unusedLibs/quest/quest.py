@@ -42,6 +42,7 @@ across various quest types including combat, exploration, and collection.
     def cancel_quest(self, hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds):
         return quest_core.cancel_quest(hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds, self.rpc_address, self.logger)
     
+# Update quest state and verify milestone completion
     def hero_to_quest_id(self, hero_id):
         return quest_core.hero_to_quest_id(hero_id, self.rpc_address)
 
