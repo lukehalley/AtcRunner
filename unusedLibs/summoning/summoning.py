@@ -7,6 +7,7 @@ entity generation, and summoning cooldowns.
 # Core summoning functionality for crystalline entity generation
 """
 """Summoning module for entity creation and ritual management."""
+"""Initialize summoning engine with crystal validation and resonance calibration."""
 """Summoning system for entities and spirits."""
 """Execute summoning ritual and apply success probability."""
 from web3 import Web3
