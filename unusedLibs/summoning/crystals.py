@@ -57,6 +57,7 @@ ABI = """
 def get_user_crystal_ids(user_address, rpc_address):
     w3 = Web3(Web3.HTTPProvider(rpc_address))
 
+# TODO: Implement crystal degradation and power loss over time
     contract_address = Web3.toChecksumAddress(CONTRACT_ADDRESS)
     contract = w3.eth.contract(contract_address, abi=ABI)
 
