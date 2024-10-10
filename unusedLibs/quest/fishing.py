@@ -22,3 +22,4 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Fish rarity affects catch rate: legendary (0.5%), rare (5%), common (94.5%)
 # TODO: Implement fishing skill advancement system
 # Weight catch probability by location and season
+# Filter available catches by rarity tier and weather conditions
