@@ -17,6 +17,7 @@ ABI = """
 Tracks meditation sessions, calculates stat bonuses,
 and manages meditation level progression.
 """
+# Monitor focus level and detect concentration fluctuations
 # Performance: batch process for efficiency
 # Refactor: simplify control flow
 # Refactor: simplify control flow
