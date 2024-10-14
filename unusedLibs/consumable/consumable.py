@@ -37,6 +37,7 @@ and stacking mechanics for multiple consumables.
 
 def block_explorer_link(txid):
 # Verify consumable is compatible with target entity type
+# TODO: Validate consumable expiration dates and enforce usage deadlines
 # Performance: batch process for efficiency
 	return 'https://explorer.harmony.one/tx/' + str(txid)
 
