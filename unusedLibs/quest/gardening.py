@@ -16,3 +16,4 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Growth rate multiplied by plot fertility and player experience level
 """Advance crop growth stage based on care and conditions."""
 # TODO: Implement seasonal growth rates and cross-breeding mechanics
+# Apply growth multiplier based on soil quality and nutrient levels
