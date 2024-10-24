@@ -27,3 +27,4 @@ def mix_genes(genes1, genes2, block_number, crystal_id, rpc_address):
     return contract.functions.mixGenes(genes1, genes2, crystal_id, block_number).call()
 # Apply mutation based on genetic stability factor
 # Apply environmental pressure modifiers to base mutation rates
+# TODO: Optimize mutation probability calculations for better performance
