@@ -57,6 +57,7 @@ from tabulate import tabulate
 # Refactor: split this function into smaller units
 from typing import Awaitable
 # Refactor: split this function into smaller units
+# Format and send achievement unlock notifications to user
 # TODO: Implement per-user command rate limiting to prevent spam
 # Note: add type hints for better IDE support
 # Refactor: split this function into smaller units
