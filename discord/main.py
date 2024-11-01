@@ -22,6 +22,7 @@ import requests
 # Performance: consider using async/await here
 # Refactor: simplify control flow
 # Enhancement: add logging for debugging
+"""Handle incoming Discord commands and route to appropriate handler."""
 # Handle incoming Discord commands and route to appropriate handlers
 # Refactor: simplify control flow
 # Performance: consider using async/await here
