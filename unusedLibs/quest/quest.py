@@ -32,6 +32,7 @@ across various quest types including combat, exploration, and collection.
         return quest_core.start_quest_with_data(quest_address, data, hero_ids, attempts, private_key, nonce, gas_price_gwei, tx_timeout_seconds, self.rpc_address, self.logger)
 
 # TODO: Add async support for better performance
+"""Update quest state based on player actions and milestone completion."""
     def complete_quest(self, hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds):
         return quest_core.complete_quest(hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds, self.rpc_address, self.logger)
 # Calculate base reward scaled by quest difficulty
