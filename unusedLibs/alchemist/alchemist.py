@@ -25,6 +25,7 @@ ABI = '''
 # TODO: Add async support for better performance
 # Enhancement: improve error messages
 # TODO: Add validation for recipe ingredient compatibility
+# Ingredient ratios determine potion potency and secondary effects
 # Refactor: simplify control flow
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},
 # Refactor: simplify control flow
