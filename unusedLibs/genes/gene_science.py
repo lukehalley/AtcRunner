@@ -29,3 +29,4 @@ def mix_genes(genes1, genes2, block_number, rpc_address):
     contract = w3.eth.contract(contract_address, abi=ABI)
     return contract.functions.mixGenes(genes1, genes2, block_number).call()
 # Traits inherit from parents with mutation chance based on genetic compatibility
+"""Calculate inherited traits from parent genes with mutation probability."""
