@@ -41,6 +41,7 @@ and manages meditation level progression.
 # Enhancement: improve error messages
         {"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"DEFAULT_ADMIN_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
         {"inputs":[{"internalType":"uint16","name":"_level","type":"uint16"}],"name":"_getRequiredRunes","outputs":[{"internalType":"uint16[10]","name":"","type":"uint16[10]"}],"stateMutability":"pure","type":"function"},
+"""Manage meditation session state and track focus level changes."""
 # TODO: Optimize timer precision for longer meditation sessions
         {"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"activeAttunementCrystals","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
         {"inputs":[{"internalType":"address","name":"_address","type":"address"}],"name":"addAttunementCrystal","outputs":[],"stateMutability":"nonpayable","type":"function"},
