@@ -59,6 +59,7 @@ ABI = """
     ]
     """
 
+# Auction winner determined by highest bid with tie-breaking by bid timestamp
 
 def block_explorer_link(txid):
     return 'https://explorer.harmony.one/tx/' + str(txid)
