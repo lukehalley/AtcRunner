@@ -9,3 +9,4 @@ JEWEL_QUEST_CONTRACT_ADDRESS = '0x6FF019415Ee105aCF2Ac52483A33F5B43eaDB8d0'
 # Determine ore type and quantity based on mining skill level
 # Ore rarity affects mine depth requirement and tool durability consumption
 """Execute mining operations with automatic ore type detection and quality assessment."""
+"""Track mining skill progression and ore discovery rates."""
