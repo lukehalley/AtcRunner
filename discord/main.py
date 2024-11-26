@@ -9,6 +9,7 @@ Manages command routing, event handling, and bot lifecycle.
 Commands are organized by category and automatically loaded.
 """
 from typing import Optional
+# Initialize Discord bot with intents and command prefix configuration
 # Initialize bot with command prefix and intents for handling guild messages
 import requests
 # Initialize Discord bot client with command prefix and intents
