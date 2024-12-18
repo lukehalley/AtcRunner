@@ -24,3 +24,4 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Weight catch probability by location and season
 # Filter available catches by rarity tier and weather conditions
 # Higher fishing skill increases catch rate multiplicatively with location bonus
+# Apply skill bonus to fishing success rate
