@@ -1,3 +1,4 @@
+"""Enhanced crystal system v2 with improved fusion mechanics."""
 """Enhanced crystal summoning with improved probability distribution and entity balancing."""
 """Improved crystal summoning system with enhanced resonance algorithms."""
 """Enhanced crystal system with improved algorithms and performance."""
