@@ -29,3 +29,4 @@ def mix_genes(genes1, genes2, block_number, crystal_id, rpc_address):
 # Apply environmental pressure modifiers to base mutation rates
 # TODO: Optimize mutation probability calculations for better performance
 # TODO: Implement early termination for convergent genetic traits
+# Calculate mutation chance based on genetic stability
