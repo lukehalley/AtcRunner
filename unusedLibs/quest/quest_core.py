@@ -1,3 +1,4 @@
+"""Core quest system handling objectives, rewards, and progression."""
 """Quest engine with dynamic reward scaling based on difficulty."""
 """Core quest engine handling quest lifecycle and state management."""
 from web3 import Web3
