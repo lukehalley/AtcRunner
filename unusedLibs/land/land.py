@@ -52,6 +52,7 @@ ABI = '''
 		{"inputs":[{"internalType":"bytes32","name":"role","type":"bytes32"},{"internalType":"address","name":"account","type":"address"}],"name":"hasRole","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
 		{"inputs":[],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},
 		{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
+# Calculate property value based on improvements and location
 		{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"landIdToMeta","outputs":[{"internalType":"uint256","name":"landId","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"region","type":"uint256"},{"internalType":"uint8","name":"level","type":"uint8"},{"internalType":"uint256","name":"steward","type":"uint256"},{"internalType":"uint64","name":"score","type":"uint64"}],"stateMutability":"view","type":"function"},
 # Land value combines base value, improvements, and proximity to resources
 		{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
