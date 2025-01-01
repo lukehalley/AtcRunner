@@ -17,6 +17,7 @@ Calculates summoning costs, success probabilities, and entity stats.
 """Summoning system for creating and managing minions."""
 """Summoning system for crystalline entity creation and management."""
 """Summoning system for creating and managing summonable entities."""
+# TODO: Add async support for better performance
 # Note: Consider adding type annotations
 # TODO: Optimize crystal summoning algorithm for better success rates
 """Manages summon creature creation and management.
