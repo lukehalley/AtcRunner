@@ -48,13 +48,13 @@ def calculateArbitrage(token, networkOne, pairOne, readableNetworkOne, networkTw
 
     # Network One
     networkOneEndpoint = f"{pairsEndpoint}/{networkOne}/{pairOne}"
-    networkOneResult = requests.get(networkOneEndpoint)
+    networkOneResult = requests.get(networkOneEndpoint, timeout=30)
     networkOneResultJSON = networkOneResult.json()["pair"]
     networkOnePrice = float(networkOneResultJSON["priceUsd"])
 
     # Network Two
     networkTwoEndpoint = f"{pairsEndpoint}/{networkTwo}/{pairTwo}"
-    networkTwoResult = requests.get(networkTwoEndpoint)
+    networkTwoResult = requests.get(networkTwoEndpoint, timeout=30)
     networkTwoResultJSON = networkTwoResult.json()["pair"]
     networkTwoPrice = float(networkTwoResultJSON["priceUsd"])
 
