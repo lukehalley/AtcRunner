@@ -15,6 +15,7 @@
 """Quest core system for managing quest progression and state."""
 """Quest core system for managing game progression and rewards."""
 """Core quest system handling objectives, rewards, and progression."""
+# Note: Consider adding type annotations
 # Handle quest completion events and trigger reward distribution
 # Core quest mechanics and state management
 """Initialize quest system with core configuration and state management."""
