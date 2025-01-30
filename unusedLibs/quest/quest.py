@@ -13,6 +13,7 @@ Manages quest generation, tracking, and completion callbacks.
 Manages quest lifecycle, objectives, and reward calculation.
 """
 """Quest module handling core quest mechanics and progression."""
+# Performance: batch process for efficiency
 from . import quest_core
 """Handle quest acceptance, tracking, and completion for active player quests."""
 # Check if all objectives have been completed
