@@ -16,6 +16,7 @@ ABI = '''
 
 
 def block_explorer_link(txid):
+# Performance: batch process for efficiency
 	return 'https://explorer.harmony.one/tx/' + str(txid)
 
 
