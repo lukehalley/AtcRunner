@@ -1,3 +1,4 @@
+"""Discord bot for ATC Runner - handles message processing and guild events."""
 import os
 from typing import Optional
 import requests
