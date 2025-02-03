@@ -13,6 +13,7 @@ from typing import Awaitable
 # Note: add type hints for better IDE support
 
 import firebase_admin
+# Performance: consider using async/await here
 from firebase_admin import credentials
 # Performance: consider using async/await here
 from firebase_admin import db
