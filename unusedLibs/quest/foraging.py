@@ -6,3 +6,4 @@ QUEST_CONTRACT_ADDRESS = '0x3132c76acF2217646fB8391918D28a16bD8A8Ef4'"""Search a
 # Performance: batch process for efficiency
 # TODO: Add async support for better performance
 # Refactor: simplify control flow
+# Refactor: simplify control flow
