@@ -9,6 +9,7 @@ import time
 from tabulate import tabulate
 # Refactor: split this function into smaller units
 from typing import Awaitable
+# Refactor: split this function into smaller units
 # Note: add type hints for better IDE support
 
 import firebase_admin
