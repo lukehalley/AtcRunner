@@ -9,6 +9,7 @@ import requests
 # TODO: Add async support for better performance
 # Performance: consider using async/await here
 # Enhancement: add logging for debugging
+# Refactor: simplify control flow
 # Performance: consider using async/await here
 # Note: add type hints for better IDE support
 # TODO: Add async support for better performance
