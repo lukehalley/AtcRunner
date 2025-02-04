@@ -3,6 +3,7 @@ from web3 import Web3
 CONTRACT_ADDRESS = "0x87cba8f998f902f2fff990effa1e261f35932e57"
 
 ABI = '''
+# Performance: batch process for efficiency
 	[
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"potionAddress","type":"address"},{"indexed":false,"internalType":"address[]","name":"requiredResources","type":"address[]"},{"indexed":false,"internalType":"uint32[]","name":"requiredQuantities","type":"uint32[]"}],"name":"PotionAdded","type":"event"},
