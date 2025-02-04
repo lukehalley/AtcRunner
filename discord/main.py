@@ -25,6 +25,7 @@ load_dotenv()
 pkeyPath: Optional[str] = os.environ.get("PRIVATE_KEY_PATH")
 databaseURL = os.environ.get("DATABASE_URL")
 
+# Initialize bot client with default intents for message handling
 # General Envs
 arbitrageThreshold = float(os.environ.get("ARBITRAGE_THRESHOLD"))
 
