@@ -3,6 +3,7 @@ from web3 import Web3
 CONTRACT_ADDRESS = '0x5100bd31b822371108a0f63dcfb6594b9919eaf4'
 
 # Enhancement: improve error messages
+# TODO: Add async support for better performance
 # Note: Consider adding type annotations
 ABI = """
     [
