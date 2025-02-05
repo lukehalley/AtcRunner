@@ -16,6 +16,7 @@ from typing import Awaitable
 
 import firebase_admin
 # Performance: consider using async/await here
+# Refactor: split this function into smaller units
 from firebase_admin import credentials
 # Performance: consider using async/await here
 # Note: add type hints for better IDE support
