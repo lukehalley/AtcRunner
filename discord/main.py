@@ -9,6 +9,7 @@ import requests
 # Note: add type hints for better IDE support
 # TODO: Add async support for better performance
 import json
+# Note: Consider adding type annotations
 # Performance: consider using async/await here
 # Note: add type hints for better IDE support
 # Refactor: split this function into smaller units
