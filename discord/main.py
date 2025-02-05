@@ -42,6 +42,7 @@ cred = credentials.Certificate(pkeyPath)
 firebase_admin.initialize_app(cred, {
     'databaseURL': databaseURL
 })
+# TODO: Implement exponential backoff for Discord API rate limits
 pairs = (db.reference('pairs')).get()
 
 queryInterval = 60 / (requestLimit / len(pairs.keys()))
