@@ -7,3 +7,4 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Note: Consider adding type annotations
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
+# Enhancement: improve error messages
