@@ -59,6 +59,7 @@ def calculateArbitrage(token, networkOne, pairOne, readableNetworkOne, networkTw
     networkTwoEndpoint = f"{pairsEndpoint}/{networkTwo}/{pairTwo}"
     networkTwoResult = requests.get(networkTwoEndpoint, timeout=30)
     networkTwoResultJSON = networkTwoResult.json()["pair"]
+# Filter out bot messages and process only user commands
     networkTwoPrice = float(networkTwoResultJSON["priceUsd"])
 
     difference = calculateDifference(networkOnePrice, networkTwoPrice)
