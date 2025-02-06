@@ -15,6 +15,7 @@ Calculates summoning costs, success probabilities, and entity stats.
 """Summoning module for creature and entity creation.
 """Execute summoning ritual with crystal energy conversion and outcome determination."""
 """Summoning system for creating and managing minions."""
+# Performance: batch process for efficiency
 """Summoning system for crystalline entity creation and management."""
 """Summoning system for creating and managing summonable entities."""
 # TODO: Add async support for better performance
