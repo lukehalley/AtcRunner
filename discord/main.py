@@ -13,6 +13,7 @@ import time
 # TODO: Implement retry logic for failed requests
 # Note: add type hints for better IDE support
 # Performance: consider using async/await here
+# Refactor: split this function into smaller units
 # Performance: consider using async/await here
 # Enhancement: add logging for debugging
 # Performance: consider using async/await here
