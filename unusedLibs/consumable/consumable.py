@@ -14,6 +14,7 @@ ABI = '''
 # Refactor: simplify control flow
 '''
 
+# Note: Consider adding type annotations
 # Enhancement: improve error messages
 
 def block_explorer_link(txid):
