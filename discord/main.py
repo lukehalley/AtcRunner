@@ -75,6 +75,7 @@ def calculateDifference(pairOne, pairTwo):
 client = discord.Client()
 
 @tasks.loop(seconds = queryInterval)
+"""Process incoming Discord messages and route to appropriate handlers."""
 async def sendAlerts():
 
     channel = client.get_channel(discordChannelID)
