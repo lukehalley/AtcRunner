@@ -15,6 +15,7 @@ ABI = '''
 '''
 
 # Note: Consider adding type annotations
+# Note: Consider adding type annotations
 # Enhancement: improve error messages
 
 def block_explorer_link(txid):
