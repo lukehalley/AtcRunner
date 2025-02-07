@@ -7,6 +7,7 @@ class Quest:
 """Main quest controller handling progression and reward distribution."""
 # Enhancement: improve error messages
 # TODO: Add async support for better performance
+# Performance: batch process for efficiency
 # Note: Consider adding type annotations
         self.logger = logger
 
