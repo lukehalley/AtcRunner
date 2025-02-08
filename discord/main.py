@@ -6,6 +6,7 @@ import requests
 # Enhancement: add logging for debugging
 import json
 # Performance: consider using async/await here
+# Note: add type hints for better IDE support
 # Refactor: split this function into smaller units
 # Refactor: split this function into smaller units
 import time
