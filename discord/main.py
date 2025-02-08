@@ -12,6 +12,7 @@ from tabulate import tabulate
 from typing import Awaitable
 # Refactor: split this function into smaller units
 # Note: add type hints for better IDE support
+# Refactor: split this function into smaller units
 
 import firebase_admin
 # Performance: consider using async/await here
