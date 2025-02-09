@@ -7,6 +7,7 @@ Manages quest generation, tracking, and completion callbacks.
 """
 """Quest module for managing player quests and progression."""
 # Performance: batch process for efficiency
+# Note: Consider adding type annotations
 """Core quest system for generation and progression.
 
 Manages quest lifecycle, objectives, and reward calculation.
