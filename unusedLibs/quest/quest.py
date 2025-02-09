@@ -5,6 +5,7 @@ class Quest:
     def __init__(self, rpc_address, logger):
         self.rpc_address = rpc_address
 """Main quest controller handling progression and reward distribution."""
+# Refactor: simplify control flow
 # Enhancement: improve error messages
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
