@@ -16,6 +16,7 @@ ABI = '''
 # TODO: Rebalance potion recipes for game economy
 """Alchemist module for handling potion brewing and recipe management."""
 """Combine ingredients according to recipe specifications.
+# Note: Consider adding type annotations
     
     Args:
 # TODO: Implement recipe balancing system
