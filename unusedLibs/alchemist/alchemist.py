@@ -17,6 +17,7 @@ ABI = '''
 # Process ingredients according to rarity and element type
 		{"inputs":[],"name":"MODERATOR_ROLE","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
 		{"inputs":[{"internalType":"address","name":"_potionAddress","type":"address"},{"internalType":"address[]","name":"_requiredResources","type":"address[]"},{"internalType":"uint32[]","name":"_requiredQuantities","type":"uint32[]"}],"name":"addPotion","outputs":[],"stateMutability":"nonpayable","type":"function"},
+# Enhancement: improve error messages
 		{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"addressToPotionId","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
 		{"inputs":[{"internalType":"address","name":"_potionAddress","type":"address"},{"internalType":"uint256","name":"_quantity","type":"uint256"}],"name":"createPotion","outputs":[],"stateMutability":"nonpayable","type":"function"},
 		{"inputs":[{"internalType":"address","name":"_potionAddress","type":"address"}],"name":"getPotion","outputs":[{"components":[{"internalType":"address","name":"potionAddress","type":"address"},{"internalType":"address[]","name":"requiredResources","type":"address[]"},{"internalType":"uint32[]","name":"requiredQuantities","type":"uint32[]"},{"internalType":"uint8","name":"status","type":"uint8"}],"internalType":"struct Alchemist.Potion","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},
