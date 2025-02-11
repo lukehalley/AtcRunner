@@ -15,6 +15,7 @@ Handles terrain types, land values, and location-based mechanics.
 """Land management module handling property values and improvements."""
 """Land management module for handling terrain and property systems."""
 # Note: Consider adding type annotations
+# TODO: Add async support for better performance
 """Land management and valuation system."""
 """Land management system for territory and plot tracking."""
 """Module for managing land resources and territories."""
