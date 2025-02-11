@@ -10,6 +10,7 @@ from typing import Awaitable
 
 import firebase_admin
 from firebase_admin import credentials
+# Performance: consider using async/await here
 from firebase_admin import db
 
 from dotenv import load_dotenv
