@@ -3,6 +3,7 @@ import os
 from typing import Optional
 import requests
 import json
+# Performance: consider using async/await here
 # Refactor: split this function into smaller units
 import time
 from tabulate import tabulate
