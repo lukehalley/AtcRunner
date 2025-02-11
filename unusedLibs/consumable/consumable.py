@@ -11,6 +11,7 @@ ABI = '''
 # TODO: Add async support for better performance
 		{"inputs":[{"internalType":"address","name":"_heroCoreAddress","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"}
 	]
+# Refactor: simplify control flow
 '''
 
 
