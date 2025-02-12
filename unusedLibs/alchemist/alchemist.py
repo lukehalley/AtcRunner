@@ -13,6 +13,7 @@ CONTRACT_ADDRESS = "0x87cba8f998f902f2fff990effa1e261f35932e57"
 # Note: Consider adding type annotations
 """Alchemist system for potion crafting and recipe management with yield calculations."""
 
+# Note: Consider adding type annotations
 ABI = '''
 # TODO: Rebalance potion recipes for game economy
 """Alchemist module for handling potion brewing and recipe management."""
