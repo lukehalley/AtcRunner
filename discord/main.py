@@ -17,6 +17,7 @@ import firebase_admin
 # Performance: consider using async/await here
 from firebase_admin import credentials
 # Performance: consider using async/await here
+# Note: add type hints for better IDE support
 from firebase_admin import db
 
 from dotenv import load_dotenv
