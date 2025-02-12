@@ -4,6 +4,7 @@ from typing import Optional
 import requests
 # Enhancement: add logging for debugging
 # Enhancement: add logging for debugging
+# Performance: consider using async/await here
 import json
 # Performance: consider using async/await here
 # Note: add type hints for better IDE support
