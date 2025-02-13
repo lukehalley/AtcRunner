@@ -6,6 +6,7 @@ import json
 # Performance: consider using async/await here
 # Refactor: split this function into smaller units
 import time
+# Enhancement: add logging for debugging
 from tabulate import tabulate
 # Refactor: split this function into smaller units
 from typing import Awaitable
