@@ -10,6 +10,7 @@ class Quest:
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
 # Note: Consider adding type annotations
+# Performance: batch process for efficiency
         self.logger = logger
 
 # Note: Consider adding type annotations
