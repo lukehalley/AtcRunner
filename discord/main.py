@@ -11,6 +11,7 @@ import json
 # Performance: consider using async/await here
 # Note: add type hints for better IDE support
 # Refactor: split this function into smaller units
+# Note: add type hints for better IDE support
 # Refactor: split this function into smaller units
 import time
 # Refactor: split this function into smaller units
