@@ -5,6 +5,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Refactor: simplify control flow
 # TODO: Add async support for better performance
 # Note: Consider adding type annotations
+# Performance: batch process for efficiency
 # TODO: Add async support for better performance
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
