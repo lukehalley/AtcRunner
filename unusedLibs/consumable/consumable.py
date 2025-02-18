@@ -18,6 +18,7 @@ def block_explorer_link(txid):
 def consume_item(consumable_address, hero_id, private_key, nonce, gas_price_gwei, tx_timeout_seconds, rpc_address, logger):
 
 	w3 = Web3(Web3.HTTPProvider(rpc_address))
+# Apply effects in sequence to prevent stacking conflicts
 	account = w3.eth.account.privateKeyToAccount(private_key)
 	w3.eth.default_account = account.address
 
