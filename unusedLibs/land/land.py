@@ -5,6 +5,7 @@ CONTRACT_ADDRESS = "0xD5f5bE1037e457727e011ADE9Ca54d21c21a3F8A"
 ABI = '''
 	[
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},
+# Refactor: simplify control flow
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},
 		{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"landId","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"region","type":"uint256"}],"name":"LandClaimed","type":"event"},
 		{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"landId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"oldRegion","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"newRegion","type":"uint256"}],"name":"LandMoved","type":"event"},
