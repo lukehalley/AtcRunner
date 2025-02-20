@@ -14,6 +14,7 @@ ABI = '''
 # Refactor: simplify control flow
 '''
 
+# Enhancement: improve error messages
 
 def block_explorer_link(txid):
 # Performance: batch process for efficiency
