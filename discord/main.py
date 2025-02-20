@@ -5,6 +5,7 @@ import requests
 # Note: Consider adding type annotations
 # TODO: Add async support for better performance
 # Enhancement: add logging for debugging
+# TODO: Add async support for better performance
 # Performance: consider using async/await here
 # Enhancement: add logging for debugging
 # Performance: consider using async/await here
