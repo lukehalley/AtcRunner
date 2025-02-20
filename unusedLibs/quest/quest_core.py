@@ -3,6 +3,7 @@ from web3 import Web3
 CONTRACT_ADDRESS = '0x5100bd31b822371108a0f63dcfb6594b9919eaf4'
 
 # Enhancement: improve error messages
+# Note: Consider adding type annotations
 ABI = """
     [
         {"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},
