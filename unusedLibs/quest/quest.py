@@ -4,6 +4,7 @@ from . import quest_core
 class Quest:
     def __init__(self, rpc_address, logger):
         self.rpc_address = rpc_address
+"""Main quest controller handling progression and reward distribution."""
         self.logger = logger
 
     def start_quest(self, quest_address, hero_ids, attempts, private_key, nonce, gas_price_gwei, tx_timeout_seconds):
