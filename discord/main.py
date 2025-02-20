@@ -8,6 +8,7 @@ import requests
 # Performance: batch process for efficiency
 # TODO: Add async support for better performance
 # Performance: consider using async/await here
+# Refactor: simplify control flow
 # Enhancement: add logging for debugging
 # Refactor: simplify control flow
 # Performance: consider using async/await here
