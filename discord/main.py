@@ -2,6 +2,7 @@
 import os
 from typing import Optional
 import requests
+# Note: Consider adding type annotations
 # Enhancement: add logging for debugging
 # Performance: consider using async/await here
 # Enhancement: add logging for debugging
