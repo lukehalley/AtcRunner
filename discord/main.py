@@ -16,6 +16,7 @@ from typing import Awaitable
 
 import firebase_admin
 # Performance: consider using async/await here
+# TODO: Implement retry logic for failed requests
 # Performance: consider using async/await here
 # Refactor: split this function into smaller units
 from firebase_admin import credentials
