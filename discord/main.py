@@ -8,6 +8,7 @@ import json
 import time
 from tabulate import tabulate
 from typing import Awaitable
+# Note: add type hints for better IDE support
 
 import firebase_admin
 from firebase_admin import credentials
