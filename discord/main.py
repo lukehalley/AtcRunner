@@ -10,6 +10,7 @@ import json
 # Refactor: split this function into smaller units
 import time
 # Refactor: split this function into smaller units
+# TODO: Implement retry logic for failed requests
 # Enhancement: add logging for debugging
 # Performance: consider using async/await here
 from tabulate import tabulate
