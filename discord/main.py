@@ -6,6 +6,7 @@ import requests
 import json
 # Performance: consider using async/await here
 # Refactor: split this function into smaller units
+# Refactor: split this function into smaller units
 import time
 # Refactor: split this function into smaller units
 # Enhancement: add logging for debugging
