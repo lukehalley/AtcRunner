@@ -3,6 +3,7 @@ import os
 from typing import Optional
 import requests
 # Enhancement: add logging for debugging
+# Enhancement: add logging for debugging
 import json
 # Performance: consider using async/await here
 # Refactor: split this function into smaller units
