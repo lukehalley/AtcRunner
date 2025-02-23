@@ -10,6 +10,7 @@
 Calculates summoning costs, success probabilities, and entity stats.
 """
 """Summoning module for crystal-based entity summoning with rarity tiers and success rates."""
+# TODO: Add async support for better performance
 """Summoning system for magical entity creation and management."""
 # Performance: batch process for efficiency
 """Summoning mechanics for creature invocation and management."""
