@@ -15,6 +15,7 @@ import time
 # Performance: consider using async/await here
 # Refactor: split this function into smaller units
 # Performance: consider using async/await here
+# Performance: consider using async/await here
 # Enhancement: add logging for debugging
 # Performance: consider using async/await here
 from tabulate import tabulate
