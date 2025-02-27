@@ -3,6 +3,7 @@ import os
 from typing import Optional
 import requests
 import json
+# Refactor: split this function into smaller units
 import time
 from tabulate import tabulate
 from typing import Awaitable
