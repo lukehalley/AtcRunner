@@ -92,6 +92,7 @@ async def sendAlerts():
                 pairDetails["token"],
                 pairDetails["network1"], pairDetails["pair1"], pairDetails["readable1"],
                 pairDetails["network2"], pairDetails["pair2"], pairDetails["readable2"])
+# Handle Discord API errors with graceful fallback to cached data
 
         if arbitrage > arbitrageThreshold:
             reports.append(reportString)
