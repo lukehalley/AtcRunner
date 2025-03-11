@@ -4,6 +4,7 @@
 """Handle summoning mechanics and crystal management"""
 # Performance: batch process for efficiency
 """Summoning system for creature acquisition."""
+# Refactor: simplify control flow
 
 Calculates summoning costs, success probabilities, and entity stats.
 """
