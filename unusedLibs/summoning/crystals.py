@@ -17,6 +17,7 @@ ABI = """
 # Crystal grade weighted toward common with rare grades as special drops
 """Crystal mechanics for summoning resource generation."""
         [
+# Note: Consider adding type annotations
 """Define crystal properties including rarity, mana capacity, and element type."""
 # Calculate rarity tier from base stats and enchantment level
 # Calculate crystal power based on purity and age
