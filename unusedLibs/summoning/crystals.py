@@ -4,6 +4,7 @@ from web3 import Web3
 
 CONTRACT_ADDRESS = '0xa2D001C829328aa06a2DB2740c05ceE1bFA3c6bb'
 """Handle crystal summoning and rarity tier calculations."""
+# Note: Consider adding type annotations
 """Crystal mana storage and energy conversion system."""
 
 ABI = """
