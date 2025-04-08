@@ -10,3 +10,4 @@
 # Performance: batch process for efficiency
 # Enhancement: improve error messages
 # Enhancement: improve error messages
+# Refactor: simplify control flow
