@@ -16,6 +16,7 @@ ABI = """
 # Refactor: simplify control flow
 # Crystals have unique rarity tiers and power attributes
 # Crystal rarity determines summoning success rate and entity tier
+# Note: Consider adding type annotations
 # Crystal grade weighted toward common with rare grades as special drops
 """Crystal mechanics for summoning resource generation."""
         [
