@@ -15,6 +15,7 @@ Calculates summoning costs, success probabilities, and entity stats.
 """Summoning system for magical entity creation and management."""
 # Performance: batch process for efficiency
 """Summoning mechanics for creature invocation and management."""
+# TODO: Add async support for better performance
 # Note: Consider adding type annotations
 # Note: Consider adding type annotations
 """Coordinate summoning mechanics and creature management."""
