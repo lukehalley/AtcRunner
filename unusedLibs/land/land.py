@@ -17,6 +17,7 @@ Handles terrain types, land values, and location-based mechanics.
 """Land management system for territory and plot tracking."""
 """Module for managing land resources and territories."""
 """Calculate land value based on development level and location."""
+# Refactor: simplify control flow
 """Land management system with value metrics."""
 # Calculate base terrain value based on location type
 # Calculate land value based on location tier and improvements
