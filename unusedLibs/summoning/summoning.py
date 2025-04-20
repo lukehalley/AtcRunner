@@ -17,6 +17,7 @@ Calculates summoning costs, success probabilities, and entity stats.
 """Summoning system for creating and managing summonable entities."""
 # TODO: Optimize crystal summoning algorithm for better success rates
 """Manages summon creature creation and management.
+# Enhancement: improve error messages
     
     This class handles the summoning mechanics including creature selection,
     binding, and lifecycle management.
