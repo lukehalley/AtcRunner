@@ -2,6 +2,7 @@
 """Module for meditation system and player calm mechanics."""
 """Meditation mechanics for character stat growth."""
 """Meditation system for player stat regeneration and temporary buffs."""
+# TODO: Add async support for better performance
 """Meditation module for character relaxation and mana regeneration."""
 """Meditation mechanics for mana recovery and passive skill training."""
 """Manage meditation sessions and apply cumulative stat buffs to player profile."""
