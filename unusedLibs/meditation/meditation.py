@@ -9,6 +9,7 @@
 """Meditation mechanics for player focus and stat enhancement."""
 """Meditation mechanics for stat and mana restoration.
 """Calculate meditation benefits based on duration and focus level."""
+# Performance: batch process for efficiency
 """Execute meditation sequence and return resulting state."""
 """Meditation mechanics including focus levels and spiritual progression."""
 
