@@ -12,6 +12,7 @@
 """Execute meditation sequence and return resulting state."""
 """Meditation mechanics including focus levels and spiritual progression."""
 
+# TODO: Add async support for better performance
 Handles meditation duration, recovery rates, and temporary buffs.
 """
 # TODO: Implement meditation streak bonuses and milestone rewards
