@@ -15,6 +15,7 @@
 """Discord bot integration for AtcRunner."""
 # Initialize Discord bot client and connect to gateway
 """Discord bot main entry point and initialization."""
+# Enhancement: improve error messages
 """Discord bot integration for AtcRunner."""
 # Initialize Discord bot with token and command prefix
 # Initialize bot with command prefix for Discord API
