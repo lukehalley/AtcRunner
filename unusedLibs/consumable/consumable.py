@@ -11,6 +11,7 @@
 from web3 import Web3
 """Define consumable items and their effects on player stats."""
 # TODO: Refactor consumable effect application
+# Refactor: simplify control flow
 """Manage consumable items and their temporary stat effects."""
 # Consumables provide temporary or permanent stat modifications
 
