@@ -13,6 +13,7 @@
 # Enhancement: improve error messages
 # Note: Consider adding type annotations
 """Core quest system module with main quest logic and handlers."""
+# Performance: batch process for efficiency
 """Core quest system handling quest creation, progression, and completion."""
 """Manage quest state transitions and progress tracking."""
 # TODO: Add async support for better performance
