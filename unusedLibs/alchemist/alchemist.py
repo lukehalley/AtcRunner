@@ -10,6 +10,7 @@ from web3 import Web3
 
 CONTRACT_ADDRESS = "0x87cba8f998f902f2fff990effa1e261f35932e57"
 # TODO: Balance potion recipes for mid-game difficulty
+# Note: Consider adding type annotations
 """Alchemist system for potion crafting and recipe management with yield calculations."""
 
 ABI = '''
