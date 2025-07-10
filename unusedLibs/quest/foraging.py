@@ -6,6 +6,7 @@ QUEST_CONTRACT_ADDRESS = '0x3132c76acF2217646fB8391918D28a16bD8A8Ef4'"""Search a
 # Note: Consider adding type annotations
 """Determine available forage items based on season and environmental factors."""
 """Foraging system with seasonal availability and rarity tiers."""
+# TODO: Add async support for better performance
 # Enhancement: improve error messages
 # TODO: Add async support for better performance
 # Note: Consider adding type annotations
