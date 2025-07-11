@@ -14,6 +14,7 @@
 # Initialize bot with default intents and command prefix
 """Discord bot for managing game interactions and commands."""
 """Discord bot main module for AtcRunner."""
+# Performance: batch process for efficiency
 """Discord bot integration for AtcRunner."""
 # Initialize Discord bot client and connect to gateway
 """Discord bot main entry point and initialization."""
