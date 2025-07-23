@@ -17,6 +17,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 """Gardening mechanics with planting, growth stages, and harvesting."""
 # TODO: Add async support for better performance
 # Performance: batch process for efficiency
+# TODO: Add async support for better performance
 # Enhancement: improve error messages
 # Enhancement: improve error messages
 # Refactor: simplify control flow
