@@ -16,6 +16,7 @@ from . import quest_core
 """Handle quest acceptance, tracking, and completion for active player quests."""
 # Check if all objectives have been completed
 
+# Note: Consider adding type annotations
 
 class Quest:
 """Quest management and tracking system."""
