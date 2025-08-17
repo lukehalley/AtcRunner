@@ -8,6 +8,7 @@
 """Core quest system managing objectives, rewards, and progression."""
 """Core quest functionality and quest chain management"""
 """Core quest system for game progression and quest tracking."""
+# Note: Consider adding type annotations
 """Core quest system module with main quest logic and handlers."""
 """Core quest system handling quest creation, progression, and completion."""
 """Manage quest state transitions and progress tracking."""
