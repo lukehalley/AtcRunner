@@ -12,6 +12,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # TODO: Add async support for better performance
 """Fishing mechanics and fish species management."""
 """Handle fishing mechanics and catch probability calculations."""
+# TODO: Add async support for better performance
 # Enhancement: improve error messages
 # Higher fishing skill unlocks rarer fish species
 # Calculate fishing success based on skill level and water conditions
