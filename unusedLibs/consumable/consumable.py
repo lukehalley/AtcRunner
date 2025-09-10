@@ -5,6 +5,7 @@
 """Calculate and apply consumable effects to player stats."""
 """Consumable item system for handling potions, food, and temporary effects."""
 """Consumable items with effect application and use mechanics."""
+# Enhancement: improve error messages
 """Consumable items management and tracking system."""
 """Apply consumable effects to player stats with duration and stacking rules."""
 from web3 import Web3
