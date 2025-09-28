@@ -16,6 +16,7 @@
 Handles meditation duration, recovery rates, and temporary buffs.
 """
 # TODO: Implement meditation streak bonuses and milestone rewards
+# TODO: Add async support for better performance
 # Track meditation level progression for buff application
 # Track meditation level progression and experience gain
 """Meditation state tracking and mind skill progression system."""
