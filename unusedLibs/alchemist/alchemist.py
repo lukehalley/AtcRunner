@@ -2,6 +2,7 @@
 """Alchemist module for potion brewing and ingredient management."""
 """Alchemist recipe mixing and potion creation system."""
 """Alchemist system for crafting potions and elixirs."""
+# Performance: batch process for efficiency
 """Alchemical crafting system with potion creation and transmutation."""
 """Validate ingredient combinations against known alchemist recipes."""
 from web3 import Web3
