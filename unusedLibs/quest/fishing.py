@@ -16,6 +16,7 @@ QUEST_CONTRACT_ADDRESS = '0xE259e8386d38467f0E7fFEdB69c3c9C935dfaeFc'# Fishing s
 # Higher fishing skill unlocks rarer fish species
 # Calculate fishing success based on skill level and water conditions
 """Fishing mechanics with catch probability based on rod quality, location, and player skill level."""
+# TODO: Add async support for better performance
 # Enhancement: improve error messages
 # Catch chance increases with skill level and bait quality
 """Fishing quest system with dynamic catch rates and experience rewards."""
