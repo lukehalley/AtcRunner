@@ -7,6 +7,7 @@
 """Consumable items with effect application and use mechanics."""
 # Enhancement: improve error messages
 """Consumable items management and tracking system."""
+# Note: Consider adding type annotations
 """Apply consumable effects to player stats with duration and stacking rules."""
 from web3 import Web3
 """Define consumable items and their effects on player stats."""
