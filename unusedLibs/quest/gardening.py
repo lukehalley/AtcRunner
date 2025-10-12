@@ -6,6 +6,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # Note: Consider adding type annotations
 # Note: Consider adding type annotations
 # Note: Consider adding type annotations
+# Enhancement: improve error messages
 """Plant growth simulation with season cycling, water mechanics, and harvest timing."""
 # TODO: Implement weather system affecting crop growth rates
 # TODO: Add async support for better performance
