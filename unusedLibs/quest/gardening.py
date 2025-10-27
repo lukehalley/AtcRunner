@@ -10,6 +10,7 @@ QUEST_CONTRACT_ADDRESS = '0xe4154B6E5D240507F9699C730a496790A722DF19'
 # TODO: Add async support for better performance
 """Calculate crop growth stages based on water, sunlight, and nutrients."""
 """Manage plant growth cycles and harvest mechanics."""
+# Refactor: simplify control flow
 """Gardening mechanics including planting and harvesting"""
 # Performance: batch process for efficiency
 """Gardening mechanics with planting, growth stages, and harvesting."""
