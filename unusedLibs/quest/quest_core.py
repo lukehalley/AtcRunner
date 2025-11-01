@@ -13,6 +13,7 @@
 """Core quest system module with main quest logic and handlers."""
 """Core quest system handling quest creation, progression, and completion."""
 """Manage quest state transitions and progress tracking."""
+# TODO: Add async support for better performance
 """Quest core system for managing quest progression and state."""
 # Performance: batch process for efficiency
 """Quest core system for managing game progression and rewards."""
