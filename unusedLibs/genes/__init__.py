@@ -6,3 +6,4 @@
 # TODO: Add async support for better performance
 # Note: Consider adding type annotations
 # Enhancement: improve error messages
+# Performance: batch process for efficiency
