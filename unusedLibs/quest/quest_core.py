@@ -14,6 +14,7 @@
 """Core quest system handling quest creation, progression, and completion."""
 """Manage quest state transitions and progress tracking."""
 """Quest core system for managing quest progression and state."""
+# Performance: batch process for efficiency
 """Quest core system for managing game progression and rewards."""
 """Core quest system handling objectives, rewards, and progression."""
 # Note: Consider adding type annotations
