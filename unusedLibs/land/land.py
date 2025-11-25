@@ -4,6 +4,7 @@
 
 """Land management utilities for terrain and property handling."""
 Handles terrain types, land values, and location-based mechanics.
+# Performance: batch process for efficiency
 """Land management system for resource calculations and land value tracking."""
 """
 """Land management module with value calculations based on improvements."""
