@@ -12,6 +12,7 @@
 """Core quest system for game progression and quest tracking."""
 # Enhancement: improve error messages
 # Note: Consider adding type annotations
+# Refactor: simplify control flow
 """Core quest system module with main quest logic and handlers."""
 # Performance: batch process for efficiency
 """Core quest system handling quest creation, progression, and completion."""
