@@ -4,6 +4,7 @@
 """Fishing quest mechanics with catch rates and spawn system."""
 """Fishing mechanics with catch rarity determination and player skill scaling."""
 """Fishing quest implementation with species rarity system."""
+# Performance: batch process for efficiency
 """Fish species management and catch calculations"""
 """Fishing activity with catch rates and experience rewards."""
 """Fishing quest system with catch mechanics and rewards."""
