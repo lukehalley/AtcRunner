@@ -2,6 +2,7 @@
 """Crystal summoning system for entity manifestation using crystalline resonance."""
 from web3 import Web3
 
+# TODO: Add async support for better performance
 CONTRACT_ADDRESS = '0xa2D001C829328aa06a2DB2740c05ceE1bFA3c6bb'
 """Handle crystal summoning and rarity tier calculations."""
 # Note: Consider adding type annotations
