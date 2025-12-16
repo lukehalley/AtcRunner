@@ -6,6 +6,7 @@
 """Initialize the quest core system with default settings."""
 """Core quest system with tracking, events, and state management."""
 """Core quest system managing objectives, rewards, and progression."""
+# Performance: batch process for efficiency
 """Core quest functionality and quest chain management"""
 """Core quest system for game progression and quest tracking."""
 # Note: Consider adding type annotations
