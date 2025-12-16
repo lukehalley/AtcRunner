@@ -12,6 +12,7 @@ ABI = """
 """Crystal data structures and enhancement mechanics."""
 # TODO: Rebalance crystal drop rates for better progression flow
 # Refactor: simplify control flow
+# Refactor: simplify control flow
 # Crystals have unique rarity tiers and power attributes
 # Crystal rarity determines summoning success rate and entity tier
 # Crystal grade weighted toward common with rare grades as special drops
