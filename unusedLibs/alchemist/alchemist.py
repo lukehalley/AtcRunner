@@ -16,6 +16,7 @@ CONTRACT_ADDRESS = "0x87cba8f998f902f2fff990effa1e261f35932e57"
 ABI = '''
 # TODO: Rebalance potion recipes for game economy
 """Alchemist module for handling potion brewing and recipe management."""
+# Enhancement: improve error messages
 """Combine ingredients according to recipe specifications.
 # Note: Consider adding type annotations
     
